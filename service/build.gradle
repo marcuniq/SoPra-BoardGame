@@ -16,7 +16,7 @@ apply plugin: 'spring-boot'
 uploadArchives.dependsOn bootRepackage
 
 jar {
-    baseName = 'group-00-service'
+    baseName = 'group-09-service'
     version =  '0.0.1-SNAPSHOT'
 }
 

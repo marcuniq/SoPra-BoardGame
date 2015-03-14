@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs15.group_00_android.activities;
+package ch.uzh.ifi.seal.soprafs15.group_09_android.activities;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,8 +7,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 
-import ch.uzh.ifi.seal.soprafs15.group_00_android.R;
-import ch.uzh.ifi.seal.soprafs15.group_00_android.fragments.LoginFragment;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.fragments.LoginFragment;
 
 public class MainActivity extends FragmentActivity implements LoginFragment.OnFragmentInteractionListener {
 

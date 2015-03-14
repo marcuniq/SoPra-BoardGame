@@ -1,9 +1,9 @@
-package ch.uzh.ifi.seal.soprafs15.group_00_android.models;
+package ch.uzh.ifi.seal.soprafs15.group_09_android.models;
 
 import android.os.Parcelable;
 
 import auto.parcel.AutoParcel;
-import ch.uzh.ifi.seal.soprafs15.group_00_android.models.gson.AutoGson;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoGson;
 
 @AutoParcel @AutoGson
 public abstract class User implements Parcelable {

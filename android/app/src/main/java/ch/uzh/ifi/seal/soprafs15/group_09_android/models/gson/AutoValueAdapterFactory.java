@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs15.group_00_android.models.gson;
+package ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ch.uzh.ifi.seal.soprafs15.group_00_android">
+    package="ch.uzh.ifi.seal.soprafs15.group_09_android">
 
     <uses-permission android:name="android.permission.INTERNET" />
 

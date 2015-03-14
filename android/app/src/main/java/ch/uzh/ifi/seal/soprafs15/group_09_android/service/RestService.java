@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs15.group_00_android.service;
+package ch.uzh.ifi.seal.soprafs15.group_09_android.service;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -6,7 +6,7 @@ import android.content.pm.ApplicationInfo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import ch.uzh.ifi.seal.soprafs15.group_00_android.models.gson.AutoValueAdapterFactory;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoValueAdapterFactory;
 import retrofit.RestAdapter;
 import retrofit.client.Client;
 import retrofit.client.OkClient;

@@ -4,20 +4,17 @@ apply plugin: 'android-apt'
 android {
     compileSdkVersion 21
     buildToolsVersion '21.1.2'
-
     defaultConfig {
-        applicationId "ch.uzh.ifi.seal.soprafs15.group_00_android"
+        applicationId 'ch.uzh.ifi.seal.soprafs15.group_09_android'
         minSdkVersion 16
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
-
     // Due to an issue in okio: https://github.com/square/okio/issues/58
     lintOptions {
         warning 'InvalidPackage'
     }
-
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
@@ -28,11 +25,13 @@ android {
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/ASL2.0'
     }
-
+    productFlavors {
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar']) // auto include jar files
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    // auto include jar files
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.squareup.okhttp:okhttp:2.1.0'
