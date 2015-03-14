@@ -10,6 +10,6 @@ public class IndexController {
 	@RequestMapping(value="/")
 	@ResponseBody
 	public String index() {
-		return "SoPra 2015 with Codeship!";
+		return "SoPra 2015 with Codeship and Heroku (Group09)!";
 	}
 }

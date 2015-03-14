@@ -26,12 +26,12 @@ public class UserServiceController extends GenericService {
 
 	Logger logger = LoggerFactory.getLogger(UserServiceController.class);
 	
-	static final String CONTEXT = "/user"; 
+	static final String CONTEXT = "/users";
 
 	@Autowired
 	private UserRepository userRepo;
 
-	@RequestMapping(method=RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET, value = CONTEXT)
 	@ResponseStatus(HttpStatus.OK)
 	public List<UserResponseBean> listUsers() {
 		logger.debug("listUsers");
@@ -57,7 +57,7 @@ public class UserServiceController extends GenericService {
 		return result;
 	}
 
-	@RequestMapping(method = RequestMethod.PUT)
+	@RequestMapping(method = RequestMethod.POST, value = CONTEXT)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public JsonUriWrapper addUser(@RequestBody UserRequestBean userRequestBean) {
@@ -74,7 +74,7 @@ public class UserServiceController extends GenericService {
 	}
 
 	
-	@RequestMapping(method=RequestMethod.GET, value = "{userId}")
+	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{userId}")
 	@ResponseStatus(HttpStatus.OK)
 	public UserResponseBean getUser(@PathVariable Long userId) {
 		logger.debug("getUser: " + userId);
@@ -97,7 +97,7 @@ public class UserServiceController extends GenericService {
 		return userResponseBean;
 	}
 	
-	@RequestMapping(method = RequestMethod.POST, value = "{userId}/login")
+	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{userId}/login")
 	@ResponseStatus(HttpStatus.OK)
 	public UserLoginLogoutResponseBean login(@PathVariable Long userId) {
 		logger.debug("login: " + userId);
@@ -118,7 +118,7 @@ public class UserServiceController extends GenericService {
 		return null;
 	}
 	
-	@RequestMapping(method = RequestMethod.POST, value = "{userId}/logout")
+	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{userId}/logout")
 	@ResponseStatus(HttpStatus.OK)
 	public void logout(@PathVariable Long userId, @RequestBody UserLoginLogoutRequestBean userLoginLogoutRequestBean) {
 		logger.debug("getUser: " + userId);

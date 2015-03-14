@@ -32,13 +32,13 @@ public class GameServiceController extends GenericService {
 	@Autowired
 	private GameRepository gameRepo;
 
-	private final String CONTEXT = "/game";
+	private final String CONTEXT = "/games";
 
 	/*
 	 *	Context: /game
 	 */
 	
-	@RequestMapping(value = CONTEXT)
+	@RequestMapping(method = RequestMethod.GET, value = CONTEXT)
 	@ResponseStatus(HttpStatus.OK)
 	public List<GameResponseBean> listGames() {
 		logger.debug("listGames");
@@ -62,8 +62,8 @@ public class GameServiceController extends GenericService {
 		return result;
 	}
 	
-	@RequestMapping(value = CONTEXT, method = RequestMethod.POST)
-	@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(method = RequestMethod.POST, value = CONTEXT)
+	@ResponseStatus(HttpStatus.CREATED)
 	public String addGame(@RequestBody GameRequestBean gameRequestBean) {
 		logger.debug("addGame: " + gameRequestBean);
 
@@ -87,7 +87,7 @@ public class GameServiceController extends GenericService {
 	/*
 	 *	Context: /game/{game-id} 
 	 */
-	@RequestMapping(value = CONTEXT + "/{gameId}")
+	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}")
 	@ResponseStatus(HttpStatus.OK)
 	public GameResponseBean getGame(@PathVariable Long gameId) {
 		logger.debug("getGame: " + gameId);
@@ -107,7 +107,7 @@ public class GameServiceController extends GenericService {
 		return gameResponseBean;
 	}
 	
-	@RequestMapping(value = CONTEXT + "/{gameId}/start", method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/start")
 	@ResponseStatus(HttpStatus.OK)
 	public void startGame(@PathVariable Long gameId, @RequestBody String userToken) {
 		logger.debug("startGame: " + gameId);
@@ -121,7 +121,7 @@ public class GameServiceController extends GenericService {
 		}
 	}
 	
-	@RequestMapping(value = CONTEXT + "/{gameId}/stop", method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/stop")
 	@ResponseStatus(HttpStatus.OK)
 	public void stopGame(@PathVariable Long gameId, @RequestBody String userToken) {
 		logger.debug("startGame: " + gameId);
@@ -138,7 +138,7 @@ public class GameServiceController extends GenericService {
 	 *	Context: /game/{game-id}/move
 	 */
 	
-	@RequestMapping(value = CONTEXT + "/{gameId}/move")
+	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/moves")
 	@ResponseStatus(HttpStatus.OK)
 	public List<GameMoveResponseBean> listMoves(@PathVariable Long gameId) {
 		logger.debug("listMoves");
@@ -158,14 +158,14 @@ public class GameServiceController extends GenericService {
 		return result;
 	}
 	
-	@RequestMapping(value = CONTEXT + "/{gameId}/move", method = RequestMethod.POST)
-	@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/moves")
+	@ResponseStatus(HttpStatus.CREATED)
 	public void addMove(@RequestBody GameMoveRequestBean gameMoveRequestBean) {
 		logger.debug("addMove: " + gameMoveRequestBean);
 		//TODO Mapping into Move + execution of move
 	}
 	
-	@RequestMapping(value = CONTEXT + "/{gameId}/move/{moveId}")
+	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/moves/{moveId}")
 	@ResponseStatus(HttpStatus.OK)
 	public GameMoveResponseBean getMove(@PathVariable Long gameId, @PathVariable Integer moveId) {
 		logger.debug("getMove: " + gameId);
@@ -182,7 +182,7 @@ public class GameServiceController extends GenericService {
 	/*
 	 *	Context: /game/{game-id}/player
 	 */
-	@RequestMapping(value = CONTEXT + "/{gameId}/player")
+	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/players")
 	@ResponseStatus(HttpStatus.OK)
 	public List<GamePlayerResponseBean> listPlayers(@PathVariable Long gameId) {
 		logger.debug("listPlayers");
@@ -203,7 +203,7 @@ public class GameServiceController extends GenericService {
 		return result;
 	}
 	
-	@RequestMapping(value = CONTEXT + "/{gameId}/player", method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/players")
 	@ResponseStatus(HttpStatus.OK)
 	public String addPlayer(@PathVariable Long gameId, @RequestBody GamePlayerRequestBean gamePlayerRequestBean) {
 		logger.debug("addPlayer: " + gamePlayerRequestBean);
@@ -222,7 +222,7 @@ public class GameServiceController extends GenericService {
 		return null;
 	}
 	
-	@RequestMapping(value = CONTEXT + "/{gameId}/player/{playerId}")
+	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/players/{playerId}")
 	@ResponseStatus(HttpStatus.OK)
 	public GamePlayerResponseBean getPlayer(@PathVariable Long gameId, @PathVariable Integer playerId) {
 		logger.debug("getPlayer: " + gameId);
