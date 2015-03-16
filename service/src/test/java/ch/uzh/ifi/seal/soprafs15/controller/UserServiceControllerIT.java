@@ -51,7 +51,7 @@ public class UserServiceControllerIT {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testCreateUserSuccess() {		
-		List<UserResponseBean> usersBefore = template.getForObject(base + "/user", List.class);
+		List<UserResponseBean> usersBefore = template.getForObject(base + "/users", List.class);
 		Assert.assertEquals(0, usersBefore.size());
 		
 		UserRequestBean request = new UserRequestBean();
@@ -60,10 +60,10 @@ public class UserServiceControllerIT {
 
 		HttpEntity<UserRequestBean> httpEntity = new HttpEntity<UserRequestBean>(request);
 		
-		ResponseEntity<JsonUriWrapper> response = template.exchange(base + "/user/", HttpMethod.PUT, httpEntity, JsonUriWrapper.class);
-		Assert.assertEquals("/user/1", response.getBody().getUri());
+		ResponseEntity<JsonUriWrapper> response = template.exchange(base + "/users", HttpMethod.POST, httpEntity, JsonUriWrapper.class);
+		Assert.assertEquals("/users/1", response.getBody().getUri());
 		
-	    List<UserResponseBean> usersAfter = template.getForObject(base + "/user", List.class);
+	    List<UserResponseBean> usersAfter = template.getForObject(base + "/users", List.class);
 		Assert.assertEquals(1, usersAfter.size());		
 		
 		ResponseEntity<UserResponseBean> userResponseEntity = template.getForEntity(base + response.getBody().getUri(), UserResponseBean.class);

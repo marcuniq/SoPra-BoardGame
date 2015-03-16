@@ -21,7 +21,6 @@ import ch.uzh.ifi.seal.soprafs15.model.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 
 @RestController
-@RequestMapping(UserServiceController.CONTEXT)
 public class UserServiceController extends GenericService {
 
 	Logger logger = LoggerFactory.getLogger(UserServiceController.class);
