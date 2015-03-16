@@ -1,0 +1,24 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout2"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".GameActivity" android:weightSum="1" android:background="#ffdfe836">
+
+    <Button
+            android:layout_width="352dp"
+            android:layout_height="wrap_content"
+            android:text="New Game"
+            android:id="@+id/newGameButton" android:layout_marginTop="150dp" android:background="#ff9080af"/>
+    <Button
+            android:layout_width="352dp"
+            android:layout_height="wrap_content"
+            android:text="Exit"
+            android:id="@+id/exitButton" android:background="#ff29af64"
+            android:layout_marginTop="30dp"/>
+</LinearLayout>

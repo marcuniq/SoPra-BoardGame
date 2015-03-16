@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity" >
+    tools:context=".AuthActivity" android:weightSum="1" android:background="#ffdfe836">
 
     <EditText
         android:id="@+id/name"
@@ -43,12 +43,13 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="start|top"
-        android:text="Create User"  />
+        android:text="Login" android:layout_marginBottom="30dp" android:layout_marginTop="20dp"
+        android:background="#ff9080af"/>
 
     <TextView
         android:id="@+id/logBox"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Ready!" />
+        android:text="Ready!" android:layout_weight="0.05"/>
 
 </LinearLayout>
