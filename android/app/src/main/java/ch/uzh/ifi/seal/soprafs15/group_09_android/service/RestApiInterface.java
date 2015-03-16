@@ -7,7 +7,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
-import retrofit.http.PUT;
+import retrofit.http.POST;
 
 public interface RestApiInterface {
 
@@ -16,7 +16,7 @@ public interface RestApiInterface {
      *
      * @param cb
      */
-    @GET("/user")
+    @GET("/users")
     void getUsers(Callback<List<User>> cb);
 
     /**
@@ -24,7 +24,7 @@ public interface RestApiInterface {
      * @User user: User to register
      * @param cb
      */
-    @PUT("/user")
+    @POST("/users")
     void createUser(@Body User user, Callback<RestUri> cb);
 
 
