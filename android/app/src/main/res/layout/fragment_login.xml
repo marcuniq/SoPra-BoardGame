@@ -11,32 +11,31 @@
     tools:context=".AuthActivity" android:weightSum="1" android:background="#ffdfe836">
 
     <EditText
-        android:id="@+id/name"
+        android:id="@+id/username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Mike Meyers" />
+        android:text="Miss Dromedary" />
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name" />
+        android:text="Username" />
 
     <EditText
-        android:inputType="textPersonName"
-        android:id="@+id/username"
+            android:id="@+id/age"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:text="mm" />
+        android:text="56" android:inputType="number"/>
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Username" />
+        android:text="Age" />
 
     <Button
         android:id="@+id/btnLogin"

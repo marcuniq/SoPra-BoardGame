@@ -41,7 +41,7 @@ public class UserServiceController extends GenericService {
 			tmpUserResponseBean = new UserResponseBean();
 			
 			tmpUserResponseBean.setId(user.getId());
-			tmpUserResponseBean.setName(user.getName());
+			tmpUserResponseBean.setAge(user.getAge());
 			tmpUserResponseBean.setUsername(user.getUsername());
 			
 			List<String>games = new ArrayList<>();
@@ -63,7 +63,7 @@ public class UserServiceController extends GenericService {
 		logger.debug("addUser: " + userRequestBean);
 
 		User user = new User();
-		user.setName(userRequestBean.getName());
+		user.setAge(userRequestBean.getAge());
 		user.setUsername(userRequestBean.getUsername());
 		user.setStatus(UserStatus.OFFLINE);
 		user.setToken(UUID.randomUUID().toString());
@@ -83,7 +83,7 @@ public class UserServiceController extends GenericService {
 		UserResponseBean userResponseBean = new UserResponseBean();
 		if(user != null) {
 			userResponseBean.setId(user.getId());
-			userResponseBean.setName(user.getName());
+			userResponseBean.setAge(user.getAge());
 			userResponseBean.setUsername(user.getUsername());
 			
 			List<String>games = new ArrayList<>();

@@ -25,7 +25,7 @@ public class User implements Serializable {
 	private Long id;
 	
 	@Column(nullable = false) 
-	private String name;
+	private Integer age;
 	
 	@Column(nullable = false, unique = true) 
 	private String username;
@@ -50,12 +50,12 @@ public class User implements Serializable {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public Integer getAge() {
+		return age;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setAge(Integer age) {
+		this.age = age;
 	}
 
 	public String getUsername() {

@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.IntegerRes;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,8 +31,8 @@ import retrofit.client.Response;
  */
 public class LoginFragment extends Fragment {
 
-    private EditText etNameEditText;
-    private EditText etUsernameEditText;
+    private EditText etAge;
+    private EditText etUsername;
     private TextView tvLogBox;
     private Button btnLogin;
 
@@ -80,10 +81,10 @@ public class LoginFragment extends Fragment {
 
     private void onClickCreateUserBtn(View v) {
 
-        String name = etNameEditText.getText().toString();
-        String username = etUsernameEditText.getText().toString();
+        String username = etUsername.getText().toString();
+        Integer age = Integer.parseInt(etAge.getText().toString());
 
-        User user = User.create(name, username);
+        User user = User.create(username, age);
 
         RestService.getInstance(getActivity()).createUser(user, new Callback<RestUri>() {
             @Override
@@ -103,8 +104,8 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_login, container, false);
 
-        etNameEditText = (EditText) v.findViewById(R.id.name);
-        etUsernameEditText = (EditText) v.findViewById(R.id.username);
+        etUsername = (EditText) v.findViewById(R.id.username);
+        etAge = (EditText) v.findViewById(R.id.age);
         tvLogBox = (TextView) v.findViewById(R.id.logBox);
 
         btnLogin = (Button) v.findViewById(R.id.btnLogin);
