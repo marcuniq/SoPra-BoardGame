@@ -55,7 +55,7 @@ public class UserServiceControllerIT {
 		Assert.assertEquals(0, usersBefore.size());
 		
 		UserRequestBean request = new UserRequestBean();
-		request.setName("Mike Meyers");
+		request.setAge(43);
 		request.setUsername("mm");
 
 		HttpEntity<UserRequestBean> httpEntity = new HttpEntity<UserRequestBean>(request);
@@ -68,7 +68,7 @@ public class UserServiceControllerIT {
 		
 		ResponseEntity<UserResponseBean> userResponseEntity = template.getForEntity(base + response.getBody().getUri(), UserResponseBean.class);
 		UserResponseBean userResponse = userResponseEntity.getBody(); 
-		Assert.assertEquals(request.getName(), userResponse.getName());
+		Assert.assertEquals(request.getAge(), userResponse.getAge());
 		Assert.assertEquals(request.getUsername(), userResponse.getUsername());
 	}
 
