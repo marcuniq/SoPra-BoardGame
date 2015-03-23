@@ -23,8 +23,8 @@ import retrofit.client.Response;
 public class GamesListFragment extends ListFragment {
 
     private TextView tvLogBox;
-    private boolean callbackHasFinished = false;
-    private ArrayList<String> gamesList = new ArrayList<>(); // later needs to be Game rather than User
+    private LayoutInflater theInflater; // later used for callback
+    private ArrayList<String> gamesList = new ArrayList<>(); // TODO: later needs to be Game rather than User
 
     /* empty constructor */
     public GamesListFragment() {
@@ -41,40 +41,36 @@ public class GamesListFragment extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        theInflater = inflater; // this is some hack to get the inflater accessed inside the callback
         RestService.getInstance(getActivity()).getUsers(new Callback<List<User>>() {
             @Override
             public void success(List<User> games, Response response) {
+
+                // TODO: needs to be Game Object rather than User in later phase
                 for ( User game : games ) {
                     gamesList.add(game.username());
-                    Log.v("added User: ", game.username());
                 }
-                callbackHasFinished = true;
+
+                /* Create a list view with the data from above using the fragment_games_list
+                 * as template and the gamesList ArrayList to fill it. */
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(theInflater.getContext(),
+                        R.layout.fragment_games_list,
+                        R.id.games_list_item_label,
+                        gamesList);
+                setListAdapter(arrayAdapter);
             }
             @Override
             public void failure(RetrofitError error) {
                 tvLogBox.setText("ERROR: " + error.getMessage());
             }
         });
-
-        /* This does not work since somehow the callback is executed AFTER onCreateView ha finished
-         * so, the arrayadapter is never set (but it works perfectly (if the callback would have
-         * been executed BEFORE ..*/
-        if (callbackHasFinished) {
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(inflater.getContext(),
-                    R.layout.fragment_games_list,
-                    R.id.games_list_item_label,
-                    gamesList);
-            setListAdapter(arrayAdapter);
-        } else {
-            Log.v("Justen: ", "we have a problem");
-        }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-    /* Implement some behaviour when clicking on an item
-    * in future: should open some detailed view of a game
-    * including: the users that have already joined that game and a "join game" button
-    * where the user can join that specific game if he wants to */
+    /* TODO: Implement some behaviour when clicking on an item:
+    *        in future: should open some detailed view of a game
+    *        including: the users that have already joined that game and a "join game" button
+    *        where the user can join that specific game if he wants to */
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
 
