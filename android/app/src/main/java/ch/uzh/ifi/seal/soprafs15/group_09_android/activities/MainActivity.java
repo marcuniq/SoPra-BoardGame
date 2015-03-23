@@ -26,11 +26,15 @@ public class MainActivity extends FragmentActivity implements LoginFragment.OnFr
         return true;
     }
 
-    protected void setFragment(Fragment fragment) {
+    public void setFragment(Fragment fragment) {
+        /* setFragment() replaces the currently active Fragment (and thus, "closes" it in a way.
+         * As soon as it isn't attached to the hierarchy anymore it will get garbage-collected) */
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
     protected void pushFragment(Fragment fragment) {
+        /* pushFragment() puts a new Fragment on top of the existing one (the back-button can be
+         * used to navigate back through the fragments that are underneath) */
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment);
         transaction.addToBackStack(null).commit();
     }

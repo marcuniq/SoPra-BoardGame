@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IntegerRes;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MainActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RestUri;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
@@ -80,7 +82,6 @@ public class LoginFragment extends Fragment {
     }
 
     private void onClickCreateUserBtn(View v) {
-
         String username = etUsername.getText().toString();
         Integer age = Integer.parseInt(etAge.getText().toString());
 
@@ -90,6 +91,9 @@ public class LoginFragment extends Fragment {
             @Override
             public void success(RestUri restUri, Response response) {
                 tvLogBox.setText("SUCCESS: User generated at: " + restUri.uri());
+                /* As you don't want the user to be able to login again if he did successfully,
+                 * setFragment() might be the right choice here */
+                ((MainActivity)getActivity()).setFragment(GamesListFragment.newInstance());
             }
 
             @Override
@@ -97,7 +101,6 @@ public class LoginFragment extends Fragment {
                 tvLogBox.setText("ERROR: " + error.getMessage());
             }
         });
-
     }
 
     @Override
