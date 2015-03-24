@@ -64,8 +64,6 @@ public class GamesListFragment extends ListFragment {
 
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
 
-        onResume();
-
         return rootView;
     }
 
