@@ -716,12 +716,12 @@ A single Game Move object with all its details
     
             [{   
                 "id": 3,
-                "name": "Marco",
+                "age": 78,
                 "username": "marcuniq",
                 "games" : ["Camel Run Zürich"]
             },{   
                 "id": 4,
-                "name": "Josua",
+                "age": 99,
                 "username": "jofroe",
                 "games" : ["Camel Run Zürich"]
             }]
@@ -737,15 +737,15 @@ A single Game Move object with all its details
                 "definitions" : {
                     "user": {
                         "type" : "object",
-                        "required" : ["id", "name", "username", "games"],
+                        "required" : ["id", "age", "username", "games"],
                         "properties" : {
                             "id" : {
                                 "description" : "game id",
                                 "type" : "integer"
                             },
-                            "name": {
-                                "description": "name of user",
-                                "type" : "string"
+                            "age": {
+                                "description": "age of user",
+                                "type" : "integer"
                             },
                             "username": {
                                 "description": "username",
@@ -769,7 +769,7 @@ A single Game Move object with all its details
     + Body
     
             {
-                "name": "Marco",
+                "age": 68,
                 "username": "marcuniq"
             }
             
@@ -779,11 +779,11 @@ A single Game Move object with all its details
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "UserRequestBean",
                 "type" : "object",
-                "required" : ["name", "username"],
+                "required" : ["age", "username"],
                 "properties" : {
                     "name" : {
-                        "description" : "real name of user",
-                        "type" : "string"
+                        "description" : "age of user",
+                        "type" : "integer"
                     },
                     "username" : {
                         "description" : "chosen username of user",
