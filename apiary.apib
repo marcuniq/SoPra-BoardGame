@@ -716,13 +716,13 @@ A single Game Move object with all its details
     
             [{   
                 "id": 3,
-                "age": 78,
                 "username": "marcuniq",
+                "age": 78,
                 "games" : ["Camel Run Zürich"]
             },{   
                 "id": 4,
-                "age": 99,
                 "username": "jofroe",
+                "age": 99,
                 "games" : ["Camel Run Zürich"]
             }]
             
@@ -737,19 +737,19 @@ A single Game Move object with all its details
                 "definitions" : {
                     "user": {
                         "type" : "object",
-                        "required" : ["id", "age", "username", "games"],
+                        "required" : ["id", "username", "age", "games"],
                         "properties" : {
                             "id" : {
                                 "description" : "game id",
                                 "type" : "integer"
                             },
-                            "age": {
-                                "description": "age of user",
-                                "type" : "integer"
-                            },
                             "username": {
                                 "description": "username",
                                 "type" : "string"
+                            },
+                            "age": {
+                                "description": "age of user",
+                                "type" : "integer"
                             },
                             "games": {
                                 "type" : "array",
@@ -769,8 +769,8 @@ A single Game Move object with all its details
     + Body
     
             {
-                "age": 68,
                 "username": "marcuniq"
+                "age": 68,
             }
             
     + Schema
@@ -779,15 +779,15 @@ A single Game Move object with all its details
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "UserRequestBean",
                 "type" : "object",
-                "required" : ["age", "username"],
+                "required" : ["username", "age"],
                 "properties" : {
-                    "name" : {
-                        "description" : "age of user",
-                        "type" : "integer"
-                    },
                     "username" : {
                         "description" : "chosen username of user",
                         "type" : "string"
+                    },
+                    "age" : {
+                        "description" : "age of user",
+                        "type" : "integer"
                     }
                 }
             }
@@ -810,8 +810,8 @@ A single User object with all its details
     
             {   
                 "id": 3,
-                "name": "Marco",
                 "username": "marcuniq",
+                "age": 68,
                 "games" : ["Camel Run Zürich"]
             }
 
@@ -821,19 +821,19 @@ A single User object with all its details
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "UserRequestBean",
                 "type" : "object",
-                "required" : ["id", "name", "username", "games"],
+                "required" : ["id", "username", "age", "games"],
                 "properties" : {
                     "id" : {
                         "description" : "game id",
                         "type" : "integer"
                     },
-                    "name": {
-                        "description": "name of user",
-                        "type" : "string"
-                    },
                     "username": {
                         "description": "username",
                         "type" : "string"
+                    },
+                    "age": {
+                        "description": "age of user",
+                        "type" : "integer"
                     },
                     "games": {
                         "type" : "array",
