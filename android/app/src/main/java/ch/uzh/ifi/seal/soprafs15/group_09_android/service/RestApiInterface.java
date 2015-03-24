@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs15.group_09_android.service;
 
 import java.util.List;
 
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RestUri;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import retrofit.Callback;
@@ -27,5 +28,19 @@ public interface RestApiInterface {
     @POST("/users")
     void createUser(@Body User user, Callback<RestUri> cb);
 
+    /**
+     * Returns all games
+     * @param cb
+     */
+    @GET("/games")
+    void getGames(Callback<List<Game>> cb);
+
+    /**
+     * Creates a new game
+     * @Game game: The new game
+     * @param cb
+     */
+    @POST("/games")
+    void createGame(@Body Game game, Callback<RestUri> cb);
 
 }
