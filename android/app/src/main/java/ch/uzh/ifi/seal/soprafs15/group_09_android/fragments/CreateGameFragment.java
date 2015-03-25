@@ -1,10 +1,8 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.IntegerRes;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,28 +13,28 @@ import android.widget.TextView;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MainActivity;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RestUri;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
-
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import com.google.android.gms.plus.PlusOneButton;
+
 /**
- * A simple {@link Fragment} subclass.
+ * A fragment with a Google +1 button.
  * Activities that contain this fragment must implement the
- * {@link LoginFragment.OnFragmentInteractionListener} interface
+ * {@link CreateGameFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link LoginFragment#newInstance} factory method to
+ * Use the {@link CreateGameFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LoginFragment extends Fragment {
+public class CreateGameFragment extends Fragment {
 
-    private EditText etAge;
-    private EditText etUsername;
+    private EditText etName;
     private TextView tvLogBox;
-    private Button btnLogin;
+    private Button createGameButton;
 
     private OnFragmentInteractionListener mListener;
 
@@ -47,8 +45,8 @@ public class LoginFragment extends Fragment {
      * @return A new instance of fragment LoginFragment.
      */
 
-    public static LoginFragment newInstance() {
-        LoginFragment fragment = new LoginFragment();
+    public static CreateGameFragment newInstance() {
+        CreateGameFragment fragment = new CreateGameFragment();
 
         /*
         * To pass objects and parameters to fragments, use the Bundle-Class
@@ -62,7 +60,7 @@ public class LoginFragment extends Fragment {
         return fragment;
     }
 
-    public LoginFragment() {
+    public CreateGameFragment() {
         // Required empty public constructor
     }
 
@@ -81,19 +79,18 @@ public class LoginFragment extends Fragment {
 
     }
 
-    private void onClickCreateUserBtn(View v) {
-        String username = etUsername.getText().toString();
-        Integer age = Integer.parseInt(etAge.getText().toString());
+    private void onClickCreateGameButton(View v) {
+        String name = etName.getText().toString();
 
-        User user = User.create(username, age);
+        Game game = Game.create(name);
 
-        RestService.getInstance(getActivity()).createUser(user, new Callback<RestUri>() {
+        RestService.getInstance(getActivity()).createGame(game, new Callback<RestUri>() {
             @Override
             public void success(RestUri restUri, Response response) {
-                tvLogBox.setText("SUCCESS: User generated at: " + restUri.uri());
+                tvLogBox.setText("SUCCESS: Game generated at: " + restUri.uri());
                 /* As you don't want the user to be able to login again if he did successfully,
                  * setFragment() might be the right choice here */
-                ((MainActivity)getActivity()).setFragment(MainMenuFragment.newInstance());
+                ((MainActivity) getActivity()).setFragment(GamesListFragment.newInstance());
             }
 
             @Override
@@ -105,17 +102,16 @@ public class LoginFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_login, container, false);
+        View v = inflater.inflate(R.layout.fragment_create_game, container, false);
 
-        etUsername = (EditText) v.findViewById(R.id.username);
-        etAge = (EditText) v.findViewById(R.id.age);
+        etName = (EditText) v.findViewById(R.id.username);
         tvLogBox = (TextView) v.findViewById(R.id.logBox);
 
-        btnLogin = (Button) v.findViewById(R.id.btnLogin);
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        createGameButton = (Button) v.findViewById(R.id.createGameButton);
+        createGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickCreateUserBtn(v);
+                onClickCreateGameButton(v);
             }
         });
 
@@ -151,5 +147,4 @@ public class LoginFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction(Uri uri);
     }
-
 }
