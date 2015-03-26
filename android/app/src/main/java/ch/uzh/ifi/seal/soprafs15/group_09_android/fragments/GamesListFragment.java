@@ -56,7 +56,7 @@ public class GamesListFragment extends ListFragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        arrayAdapter = new ArrayAdapter<>(inflater.getContext(),
+        arrayAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.fragment_games_list,
                 R.id.games_list_item_label,
                 new ArrayList<String>());
@@ -86,26 +86,6 @@ public class GamesListFragment extends ListFragment {
                 tvLogBox.setText("ERROR: " + error.getMessage());
             }
         });
-    }
-
-    /**
-     * Stop  Fragment
-     */
-    @Override
-    public void onStop() {
-        Log.w("TAG", "App stopped");
-
-        super.onStop();
-    }
-
-    /**
-     * Destroy Fragment
-     */
-    @Override
-    public void onDestroy() {
-        Log.w("TAG", "App destoryed");
-
-        super.onDestroy();
     }
 
     /**

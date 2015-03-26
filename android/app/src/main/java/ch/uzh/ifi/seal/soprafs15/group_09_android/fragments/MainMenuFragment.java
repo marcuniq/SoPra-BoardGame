@@ -21,29 +21,37 @@ import retrofit.client.Response;
 import com.google.android.gms.plus.PlusOneButton;
 
 /**
- * A fragment with a Google +1 button.
+ * This Fragment displays the Main Menu
+ * Including Buttons for the navigation
  */
 public class MainMenuFragment extends Fragment {
 
     private Button createGameMenuButton;
     private Button listGamesMenuButton;
 
-
-    public MainMenuFragment() {
-        // Required empty public constructor
-    }
+    public MainMenuFragment() {}
 
     public static MainMenuFragment newInstance() {
         return new MainMenuFragment();
     }
 
 
+    /**
+     * Displays two buttons for navigation:
+     * - createGameMenuButton: switches to the CreateGameFrame
+     * - listGamesMenuButton:  switches to the GamesListFragment
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_main_menu, container, false);
 
+        /* TODO we need !urgent! some consistency in naming the id's !!! */
         createGameMenuButton = (Button) v.findViewById(R.id.createGameMenuButton);
         createGameMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,14 +67,23 @@ public class MainMenuFragment extends Fragment {
             }
         });
 
-
         return v;
     }
 
+    /**
+     * switches View to the CreateGameFrame
+     *
+     * @param v the current View
+     */
     private void onClickCreateGameMenuButton(View v) {
         ((MainActivity)getActivity()).pushFragment(CreateGameFragment.newInstance());
     }
 
+    /**
+     * switches View to the GamesListFragment
+     *
+     * @param v the current View
+     */
     private void onClickListGamesMenuButton(View v) {
         ((MainActivity)getActivity()).pushFragment(GamesListFragment.newInstance());
     }
@@ -74,8 +91,5 @@ public class MainMenuFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        // Refresh the state of the +1 button each time the activity receives focus.
-        // createGameButton.initialize(PLUS_ONE_URL, PLUS_ONE_REQUEST_CODE);
     }
 }

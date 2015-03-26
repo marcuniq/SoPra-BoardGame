@@ -16,7 +16,15 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="start|top"
-        android:text="New Game" android:layout_marginBottom="30dp" android:layout_marginTop="20dp"
+        android:text="Create New" android:layout_marginBottom="30dp" android:layout_marginTop="20dp"
+        android:background="#ff9080af"/>
+
+    <Button
+        android:id="@+id/listGamesMenuButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|top"
+        android:text="Join Existing" android:layout_marginBottom="30dp" android:layout_marginTop="20dp"
         android:background="#ff9080af"/>
 
     <TextView
@@ -24,19 +32,5 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Ready!" android:layout_weight="0.05"/>
-
-    <Button
-        android:id="@+id/listGamesMenuButton"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start|top"
-        android:text="Join Existing Game" android:layout_marginBottom="30dp" android:layout_marginTop="20dp"
-        android:background="#ff9080af"/>
-
-    <!--<TextView-->
-        <!--android:id="@+id/logBox"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Ready!" android:layout_weight="0.05"/>-->
 
 </LinearLayout>

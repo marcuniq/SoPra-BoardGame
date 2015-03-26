@@ -14,7 +14,8 @@ import retrofit.converter.GsonConverter;
 
 public class RestService {
 
-    private final static String baseUrl = "http://10.0.2.2:8080/"; // 10.0.2.2 for Android Emulator
+    //private final static String baseUrl = "http://10.0.2.2:8080/"; // 10.0.2.2 for Android Emulator
+    private final static String baseUrl = "http://sopra-fs15-group09.herokuapp.com"; // Hiroku URL
     //private final static String baseUrl = "http://private-de094-sopra.apiary-mock.com/"; // Apiary URL
 
     public RestApiInterface restApiInterface;

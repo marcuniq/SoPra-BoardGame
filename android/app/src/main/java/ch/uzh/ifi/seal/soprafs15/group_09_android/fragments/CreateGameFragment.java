@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,21 +23,12 @@ import retrofit.client.Response;
 
 import com.google.android.gms.plus.PlusOneButton;
 
-/**
- * A fragment with a Google +1 button.
- * Activities that contain this fragment must implement the
- * {@link CreateGameFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link CreateGameFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class CreateGameFragment extends Fragment {
 
     private EditText etName;
     private TextView tvLogBox;
     private Button createGameButton;
-
-    private OnFragmentInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -44,68 +36,31 @@ public class CreateGameFragment extends Fragment {
      *
      * @return A new instance of fragment LoginFragment.
      */
-
     public static CreateGameFragment newInstance() {
-        CreateGameFragment fragment = new CreateGameFragment();
-
-        /*
-        * To pass objects and parameters to fragments, use the Bundle-Class
-        *
-        * Bundle args = new Bundle();
-        * args.putString(ARG_PARAM1, param1);
-        * args.putString(ARG_PARAM2, param2);
-        * fragment.setArguments(args);
-        */
-
-        return fragment;
+        return new CreateGameFragment();
     }
 
-    public CreateGameFragment() {
-        // Required empty public constructor
-    }
+    public CreateGameFragment() { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        /*
-        *   To retrieve passed arguments to a fragment:
-        *
-        *   if (getArguments() != null) {
-        *       mParam1 = getArguments().getString(ARG_PARAM1);
-        *       mParam2 = getArguments().getString(ARG_PARAM2);
-        *   }
-        */
-
     }
 
-    private void onClickCreateGameButton(View v) {
-        String name = etName.getText().toString();
-
-        Game game = Game.create(name);
-
-        RestService.getInstance(getActivity()).createGame(game, new Callback<RestUri>() {
-            @Override
-            public void success(RestUri restUri, Response response) {
-                tvLogBox.setText("SUCCESS: Game generated at: " + restUri.uri());
-                /* As you don't want the user to be able to login again if he did successfully,
-                 * setFragment() might be the right choice here */
-                ((MainActivity) getActivity()).setFragment(GamesListFragment.newInstance());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
-            }
-        });
-    }
-
+    /**
+     * User can add a game name and make a POST request to the server and thus create a new game
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_create_game, container, false);
 
-        etName = (EditText) v.findViewById(R.id.username);
-        tvLogBox = (TextView) v.findViewById(R.id.logBox);
+        etName = (EditText) v.findViewById(R.id.etNewGameName);
+        tvLogBox = (TextView) v.findViewById(R.id.tvNewGameName);
 
         createGameButton = (Button) v.findViewById(R.id.createGameButton);
         createGameButton.setOnClickListener(new View.OnClickListener() {
@@ -118,33 +73,34 @@ public class CreateGameFragment extends Fragment {
         return v;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Creates a new view with a editText field to insert the gamename and a button to make the
+     * POST request on the server
+     *
+     * @param v the current View
      */
-    public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(Uri uri);
+    private void onClickCreateGameButton(View v) {
+        String name = etName.getText().toString();
+        Game game = Game.create(name);
+
+        RestService.getInstance(getActivity()).createGame(game, new Callback<RestUri>() {
+            @Override
+            public void success(RestUri restUri, Response response) {
+
+                /* TODO When the server doesn't create the game as suppoed, we get a NULL Object.
+                *  This is a problem because we cannot access e.g. the restUri etc. */
+                if (restUri == null){
+                    Log.v("GameCreate","Creation Failed. NULL Object returned.");
+                }
+                 /* See all already created games (testing) */
+                 /* TODO Create (push) Fragment_Lobby */
+                 ((MainActivity) getActivity()).pushFragment(GamesListFragment.newInstance());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                tvLogBox.setText("ERROR: " + error.getMessage());
+            }
+        });
     }
 }
