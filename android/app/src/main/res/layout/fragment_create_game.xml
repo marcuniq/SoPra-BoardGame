@@ -16,26 +16,31 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="SampleGame" />
+        android:text="SampleGame"
+        android:layout_marginTop="100dp"
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/tvNewGameName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name of the Game" />
+        android:text="Name of the Game"
+        android:layout_gravity="center_horizontal" />
 
     <Button
         android:id="@+id/createGameButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="start|top"
-        android:text="Create Game" android:layout_marginBottom="30dp" android:layout_marginTop="20dp"
+        android:text="Create New Game"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="50dp"
         android:background="#ff9080af"/>
 
     <TextView
         android:id="@+id/logBox"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Ready!" android:layout_weight="0.05"/>
+        android:text="" android:layout_weight="0.05"/>
 
 </LinearLayout>

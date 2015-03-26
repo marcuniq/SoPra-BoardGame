@@ -16,39 +16,47 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Miss Dromedary" />
+        android:text="Miss Dromedary"
+        android:layout_marginTop="100dp"
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Username" />
+        android:text="Username"
+        android:layout_gravity="center_horizontal" />
 
     <EditText
-            android:id="@+id/age"
+        android:id="@+id/age"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:text="56" android:inputType="number"/>
+        android:text="56" android:inputType="number"
+        android:gravity="center"
+        android:layout_marginTop="30dp"/>
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Age" />
+        android:text="Age"
+        android:layout_gravity="center_horizontal" />
 
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="start|top"
-        android:text="Login" android:layout_marginBottom="30dp" android:layout_marginTop="20dp"
-        android:background="#ff9080af"/>
+        android:text="Login"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="50dp"
+        android:background="#ff9080af" />
 
     <TextView
         android:id="@+id/logBox"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Ready!" android:layout_weight="0.05"/>
+        android:text="" android:layout_weight="0.05"/>
 
 </LinearLayout>

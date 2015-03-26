@@ -4,15 +4,16 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:padding="6dip"
-    android:background="#ffdfe836">
-
+    android:background="#ffdfe836"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/games_list_item_label"
         android:layout_width="fill_parent"
-        android:layout_height="26dip"
+        android:layout_height="48dip"
         android:singleLine="true"
         android:text="Description"
-        android:textSize="12sp" />
+        android:textSize="24sp"
+        android:background="#ffdfe836"/>
 
 </LinearLayout>

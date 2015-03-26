@@ -105,7 +105,7 @@ public class GamesListFragment extends ListFragment {
 
         /* For now just display what item has been selected */
         String item = (String) getListAdapter().getItem(position);
-        Toast.makeText(v.getContext(), item + " selected", Toast.LENGTH_LONG).show();
+        Toast.makeText(v.getContext(), "You joined the game \"" + item + "\"", Toast.LENGTH_LONG).show();
     }
 }
 
