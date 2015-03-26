@@ -51,10 +51,10 @@ public class GameServiceController extends GenericService {
 			tmpGameResponseBean.setId(game.getId());
 			tmpGameResponseBean.setGame(game.getName());
 			tmpGameResponseBean.setOwner(game.getOwner());
-			tmpGameResponseBean.setStatus(game.getStatus());
-			tmpGameResponseBean.setNumberOfMoves(game.getMoves().size());
-			tmpGameResponseBean.setNumberOfPlayers(game.getPlayers().size());
-			tmpGameResponseBean.setNextPlayer(game.getNextPlayer().getUsername());
+			//tmpGameResponseBean.setStatus(game.getStatus());
+			//tmpGameResponseBean.setNumberOfMoves(game.getMoves().size());
+			//tmpGameResponseBean.setNumberOfPlayers(game.getPlayers().size());
+			//tmpGameResponseBean.setNextPlayer(game.getNextPlayer().getUsername());
 			
 			result.add(tmpGameResponseBean);
 		}
@@ -64,7 +64,7 @@ public class GameServiceController extends GenericService {
 	
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT)
 	@ResponseStatus(HttpStatus.CREATED)
-	public String addGame(@RequestBody GameRequestBean gameRequestBean) {
+	public GameResponseBean addGame(@RequestBody GameRequestBean gameRequestBean) {
 		logger.debug("addGame: " + gameRequestBean);
 
 		User owner = userRepo.findByToken(gameRequestBean.getUserToken());
@@ -77,8 +77,18 @@ public class GameServiceController extends GenericService {
 			//TODO Mapping into Game
 
 			game = gameRepo.save(game);
-	
-			return CONTEXT + "/" + game.getId();
+
+            GameResponseBean gameResponseBean = new GameResponseBean();
+
+            gameResponseBean.setId(game.getId());
+            gameResponseBean.setGame(game.getName());
+            gameResponseBean.setOwner(game.getOwner());
+            //gameResponseBean.setStatus(game.getStatus());
+            //gameResponseBean.setNumberOfMoves(game.getMoves().size());
+            //gameResponseBean.setNumberOfPlayers(game.getPlayers().size());
+            //gameResponseBean.setNextPlayer(game.getNextPlayer().getUsername());
+
+			return gameResponseBean;
 		}
 			
 		return null;
@@ -99,10 +109,10 @@ public class GameServiceController extends GenericService {
 		gameResponseBean.setId(game.getId());
 		gameResponseBean.setGame(game.getName());
 		gameResponseBean.setOwner(game.getOwner());
-		gameResponseBean.setStatus(game.getStatus());
-		gameResponseBean.setNumberOfMoves(game.getMoves().size());
-		gameResponseBean.setNumberOfPlayers(game.getPlayers().size());
-		gameResponseBean.setNextPlayer(game.getNextPlayer().getUsername());
+		//gameResponseBean.setStatus(game.getStatus());
+		//gameResponseBean.setNumberOfMoves(game.getMoves().size());
+		//gameResponseBean.setNumberOfPlayers(game.getPlayers().size());
+		//gameResponseBean.setNextPlayer(game.getNextPlayer().getUsername());
 		
 		return gameResponseBean;
 	}
