@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs15.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.uzh.ifi.seal.soprafs15.controller.beans.JsonUriWrapper;
 import ch.uzh.ifi.seal.soprafs15.model.Move;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import org.slf4j.Logger;
@@ -64,9 +65,19 @@ public class GameServiceController extends GenericService {
 	
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT)
 	@ResponseStatus(HttpStatus.CREATED)
-	public GameResponseBean addGame(@RequestBody GameRequestBean gameRequestBean) {
+	public JsonUriWrapper addGame(@RequestBody GameRequestBean gameRequestBean) {
 		logger.debug("addGame: " + gameRequestBean);
 
+        Game game = new Game();
+        game.setName(gameRequestBean.getName());
+        game.setOwner("test");
+        game = gameRepo.save(game);
+
+
+
+        return getJsonUrl(CONTEXT + "/" + game.getId());
+
+        /*
 		User owner = userRepo.findByToken(gameRequestBean.getUserToken());
 		
 		if(owner != null) {
@@ -90,8 +101,10 @@ public class GameServiceController extends GenericService {
 
 			return gameResponseBean;
 		}
+
 			
 		return null;
+		*/
 	}
 	
 	/*

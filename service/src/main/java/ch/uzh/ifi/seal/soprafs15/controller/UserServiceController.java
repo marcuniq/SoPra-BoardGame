@@ -67,9 +67,13 @@ public class UserServiceController extends GenericService {
 		user.setUsername(userRequestBean.getUsername());
 		user.setStatus(UserStatus.OFFLINE);
 		user.setToken(UUID.randomUUID().toString());
-		user = userRepo.save(user);
-		
-		return getJsonUrl(CONTEXT + "/" + user.getId());
+        try {
+            user = userRepo.save(user);
+
+            return getJsonUrl(CONTEXT + "/" + user.getId());
+        } catch(Exception e){
+            return null;
+        }
 	}
 
 	

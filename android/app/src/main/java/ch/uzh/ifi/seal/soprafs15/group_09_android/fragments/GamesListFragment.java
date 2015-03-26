@@ -78,7 +78,7 @@ public class GamesListFragment extends ListFragment {
             @Override
             public void success(List<Game> games, Response response) {
                 for (Game game : games) {
-                    arrayAdapter.add(game.game());
+                    arrayAdapter.add(game.name());
                 }
             }
             @Override
