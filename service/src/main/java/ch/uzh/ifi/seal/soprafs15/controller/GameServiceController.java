@@ -50,7 +50,7 @@ public class GameServiceController extends GenericService {
 			tmpGameResponseBean = new GameResponseBean();
 			
 			tmpGameResponseBean.setId(game.getId());
-			tmpGameResponseBean.setGame(game.getName());
+			tmpGameResponseBean.setName(game.getName());
 			tmpGameResponseBean.setOwner(game.getOwner());
 			//tmpGameResponseBean.setStatus(game.getStatus());
 			//tmpGameResponseBean.setNumberOfMoves(game.getMoves().size());
@@ -120,7 +120,7 @@ public class GameServiceController extends GenericService {
 		GameResponseBean gameResponseBean = new GameResponseBean();
 		
 		gameResponseBean.setId(game.getId());
-		gameResponseBean.setGame(game.getName());
+		gameResponseBean.setName(game.getName());
 		gameResponseBean.setOwner(game.getOwner());
 		//gameResponseBean.setStatus(game.getStatus());
 		//gameResponseBean.setNumberOfMoves(game.getMoves().size());

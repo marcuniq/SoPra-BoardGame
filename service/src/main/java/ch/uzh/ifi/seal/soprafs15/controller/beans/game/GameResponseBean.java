@@ -3,7 +3,7 @@ package ch.uzh.ifi.seal.soprafs15.controller.beans.game;
 public class GameResponseBean {
 
 	private Long id;
-	private String game;
+	private String name;
 	private String owner;
 	private GameStatus status;
 	private Integer numberOfMoves;	
@@ -16,11 +16,11 @@ public class GameResponseBean {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getGame() {
-		return game;
+	public String getName() {
+		return name;
 	}
-	public void setGame(String game) {
-		this.game = game;
+	public void setName(String name) {
+		this.name = name;
 	}
 	public String getOwner() {
 		return owner;
