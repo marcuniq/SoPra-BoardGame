@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IntegerRes;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,7 +83,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void onClickCreateUserBtn(View v) {
-        String username = etUsername.getText().toString();
+        final String username = etUsername.getText().toString();
         Integer age = Integer.parseInt(etAge.getText().toString());
 
         User user = User.create(username, age);
@@ -90,10 +91,11 @@ public class LoginFragment extends Fragment {
         RestService.getInstance(getActivity()).createUser(user, new Callback<RestUri>() {
             @Override
             public void success(RestUri restUri, Response response) {
-                tvLogBox.setText("SUCCESS: User generated at: " + restUri.uri());
+                //tvLogBox.setText("SUCCESS: User generated at: " + restUri.uri());
+
                 /* As you don't want the user to be able to login again if he did successfully,
                  * setFragment() might be the right choice here */
-                ((MainActivity)getActivity()).setFragment(GamesListFragment.newInstance());
+                ((MainActivity)getActivity()).setFragment(MainMenuFragment.newInstance());
             }
 
             @Override

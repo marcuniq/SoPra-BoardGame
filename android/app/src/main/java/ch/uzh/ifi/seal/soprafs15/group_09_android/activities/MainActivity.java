@@ -32,7 +32,7 @@ public class MainActivity extends FragmentActivity implements LoginFragment.OnFr
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
-    protected void pushFragment(Fragment fragment) {
+    public void pushFragment(Fragment fragment) {
         /* pushFragment() puts a new Fragment on top of the existing one (the back-button can be
          * used to navigate back through the fragments that are underneath) */
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment);

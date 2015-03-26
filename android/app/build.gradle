@@ -32,6 +32,7 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     // auto include jar files
+    apt 'com.github.frankiesardo:auto-parcel-processor:0.3'
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.squareup.okhttp:okhttp:2.1.0'
@@ -39,5 +40,5 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.4.0'
     compile 'com.squareup.retrofit:retrofit:1.8.0'
     compile 'com.github.frankiesardo:auto-parcel:0.3'
-    apt 'com.github.frankiesardo:auto-parcel-processor:0.3'
+    compile 'com.google.android.gms:play-services:6.5.87'
 }
