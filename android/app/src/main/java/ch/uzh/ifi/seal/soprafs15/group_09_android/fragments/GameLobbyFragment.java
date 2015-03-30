@@ -13,26 +13,26 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class GamesListFragment extends ListFragment {
+public class GameLobbyFragment extends ListFragment {
 
     private TextView tvLogBox;
     private ArrayAdapter<String> arrayAdapter; // adapts the ArrayList of Games to the ListView
 
     /* empty constructor */
-    public GamesListFragment() {}
+    public GameLobbyFragment() {}
 
     /**
      * Called after User has successfully logged in.
      * @return A new instance of fragment GamesListFragment.
      */
-    public static GamesListFragment newInstance() {
-        return new GamesListFragment();
+    public static GameLobbyFragment newInstance() {
+        return new GameLobbyFragment();
     }
 
     /**
@@ -56,8 +56,8 @@ public class GamesListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         arrayAdapter = new ArrayAdapter<>(getActivity(),
-                R.layout.fragment_games_list,
-                R.id.games_list_item_label,
+                R.layout.fragment_game_lobby,
+                R.id.game_lobby_item_label,
                 new ArrayList<String>());
         setListAdapter(arrayAdapter);
 
@@ -73,13 +73,14 @@ public class GamesListFragment extends ListFragment {
     @Override
     public void onResume(){
         super.onResume();
-        RestService.getInstance(getActivity()).getGames(new Callback<List<Game>>() {
+        RestService.getInstance(getActivity()).getUsers(new Callback<List<User>>() {
             @Override
-            public void success(List<Game> games, Response response) {
-                for (Game game : games) {
-                    arrayAdapter.add(game.name());
+            public void success(List<User> users, Response response) {
+                for (User user : users) {
+                    arrayAdapter.add(user.username());
                 }
             }
+
             @Override
             public void failure(RetrofitError error) {
                 tvLogBox.setText("ERROR: " + error.getMessage());
@@ -95,10 +96,6 @@ public class GamesListFragment extends ListFragment {
      * @param position  Current position of the item in the view.
      * @param id        Id of the item from the list.
      */
-    /* TODO: Implement some behaviour when clicking on an item:
-    *        in future: should open some detailed view of a game
-    *        including: the users that have already joined that game and a "join game" button
-    *        where the user can join that specific game if he wants to */
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
 

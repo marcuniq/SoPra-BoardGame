@@ -3,7 +3,6 @@ package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +10,7 @@ import android.widget.Button;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MainActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RestUri;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
-import com.google.android.gms.plus.PlusOneButton;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 
 /**
  * This Fragment displays the Main Menu
@@ -76,7 +68,7 @@ public class MainMenuFragment extends Fragment {
      * @param v the current View
      */
     private void onClickCreateGameMenuButton(View v) {
-        ((MainActivity)getActivity()).pushFragment(CreateGameFragment.newInstance());
+        ((MenuActivity)getActivity()).pushFragment(CreateGameFragment.newInstance());
     }
 
     /**
@@ -85,7 +77,7 @@ public class MainMenuFragment extends Fragment {
      * @param v the current View
      */
     private void onClickListGamesMenuButton(View v) {
-        ((MainActivity)getActivity()).pushFragment(GamesListFragment.newInstance());
+        ((MenuActivity)getActivity()).pushFragment(GamesListFragment.newInstance());
     }
 
     @Override

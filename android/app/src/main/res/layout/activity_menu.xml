@@ -5,7 +5,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    tools:context=".AuthActivity" >
+    tools:context=".MainActivity" >
 
     <LinearLayout
         android:id="@+id/container"

@@ -1,7 +1,5 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -13,16 +11,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MainActivity;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RestUri;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import com.google.android.gms.plus.PlusOneButton;
-
 
 public class CreateGameFragment extends Fragment {
 
@@ -93,8 +88,7 @@ public class CreateGameFragment extends Fragment {
                     Log.v("GameCreate","Creation Failed. NULL Object returned.");
                 }
                  /* See all already created games (testing) */
-                 /* TODO Create (push) Fragment_Lobby */
-                 ((MainActivity) getActivity()).pushFragment(GamesListFragment.newInstance());
+                 ((MenuActivity)getActivity()).setFragment(GameLobbyFragment.newInstance());
             }
 
             @Override
