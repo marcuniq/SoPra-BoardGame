@@ -26,22 +26,30 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             [{
-                "id": 3,
-                "game": "Camel Run Zurich",
-                "owner": "marcuniq",
+                "id" : 3,
+                "name" : "Camel Run Zurich",
+                "owner" : "marcuniq",
+                "currentPlayer" : null,
+                "players" : [ "owner", "player 1" ],
+                "moves" : [ "1", "2" ],
                 "status" : "PENDING",
-                "numberOfMoves" : 0,
-                "numberOfPlayers" : 1,
-                "nextPlayer" : "marcuniq"
+                "raceTrack" : null,
+                "legBettingArea" : null,
+                "raceBettingArea" : null,
+                "diceArea" : null
             },
             {
                 "id": 4,
                 "game": "Uni Bern",
                 "owner": "niels",
+                "currentPlayer" : null,
+                "players" : [ "owner", "player 1", "player x", "hans" ],
+                "moves" : [ "1", "2", "3" ],
                 "status" : "RUNNING",
-                "numberOfMoves" : 5,
-                "numberOfPlayers" : 3,
-                "nextPlayer" : "thomas"
+                "raceTrack" : null,
+                "legBettingArea" : null,
+                "raceBettingArea" : null,
+                "diceArea" : null
             }]
         
         
@@ -55,34 +63,52 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "definitions" : {
                     "game": {
                         "type" : "object",
-                        "required" : ["id", "game", "owner", "status", "numberOfMoves", "numberOfPlayers", "nextPlayer"],
+                        "required" : ["id", "name", "owner", "currentPlayer", "players", "moves", "status", "raceTrack", "legBettingArea", "raceBettingArea", "diceArea"],
                         "properties" : {
                             "id" : {
                                 "description" : "game id",
                                 "type" : "integer"
                             },
-                            "game": {
+                            "name": {
                                 "description": "name of the game",
                                 "type" : "string"
                             },
+                            "currentPlayer": {
+                                "description": "the current player",
+                                "type" : "User"
+                            },
+                            "players": {
+                                "description": "list of joined players",
+                                "type" : "array",
+                                "items": { "type": "User"}
+                            },
+                            "moves": {
+                                "description": "list of moves",
+                                "type" : "array",
+                                "items": { "type": "Move"}
+                            },
                             "owner": {
-                                "description": "username of owner",
-                                "type" : "string"
+                                "description": "the owner",
+                                "type" : "User"
                             },
                             "status": {
                                 "enum": ["PENDING", "RUNNING", "FINISHED"]
                             },
-                            "numberOfMoves": {
-                                "description": "name of the game",
-                                "type" : "integer"
+                            "raceTrack": {
+                                "description": "the race Track",
+                                "type" : "RaceTrack"
                             },
-                            "numberOfPlayers": {
-                                "description": "name of the game",
-                                "type" : "integer"
+                            "legBettingArea": {
+                                "description": "the legBettingArea",
+                                "type" : "LegBettingArea"
                             },
-                            "nextPlayer": {
-                                "description": "username of player whos turn it is next",
-                                "type" : "string"
+                            "raceBettingArea": {
+                                "description": "the raceBettingArea",
+                                "type" : "RaceBettingArea"
+                            },
+                            "diceArea": {
+                                "description": "the diceArea",
+                                "type" : "diceArea"
                             }
                         }
                     }
@@ -871,15 +897,27 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             [{   
-                "id": 3,
-                "username": "marcuniq",
-                "age": 78,
-                "games" : ["Camel Run Zürich"]
+                "id" : 3,
+                "username" : "marcuniq",
+                "age" : 78,
+                "token" : "111e6162-3b6f-4ae2-a171-2470b63dff00",
+                "status" : "ACTIVE",
+                "game" : null,
+                "moves" : [ "1", "2" ],
+                "money" : 999,
+                "raceBettingCards" : null,
+                "legBettingTiles" : null
             },{   
                 "id": 4,
                 "username": "jofroe",
                 "age": 99,
-                "games" : ["Camel Run Zürich"]
+                "token" : "000e6162-3b6f-4ae2-a171-2470b63dff00",
+                "status" : "JOINED",
+                "game" : "Camel Run Bern",
+                "moves" : [ "1", "2", "3" ],
+                "money" : 9,
+                "raceBettingCards" : null,
+                "legBettingTiles" : null
             }]
             
             
@@ -893,7 +931,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "definitions" : {
                     "user": {
                         "type" : "object",
-                        "required" : ["id", "username", "age", "games"],
+                        "required" : [ "id", "username", "age", "token", "status", "game", "moves", "money", "raceBettingCards", "legBettingTiles" ],
                         "properties" : {
                             "id" : {
                                 "description" : "game id",
@@ -907,9 +945,32 @@ The backend server with this API implements the 2014 board game of the year "Cam
                                 "description": "age of user",
                                 "type" : "integer"
                             },
-                            "games": {
-                                "type" : "array",
-                                "items": { "type": "string"}
+                            "token" : {
+                                "description": "token",
+                                "type" : "string"
+                            },
+                            "status" : {
+                                "enum" : [ "RUNNING", "PENDING", "BUSY", "FINISHED" ]
+                            },
+                            "game": {
+                                "description": "the game the user has joined",
+                                "type": "string"
+                            },
+                            "moves": {
+                                "type": "array",
+                                "item" : ["type": "move"]
+                            },
+                            "money": {
+                                "description": "the amount of money a user has",
+                                "type": "integer"
+                            },
+                            "raceBettingCards": {
+                                "description": "raceBettingCards",
+                                "type": "raceBettingCards"
+                            },
+                            "legBettingTiles": {
+                                "description": "legBettingTiles",
+                                "type": "legBettingTiles"
                             }
                         }
                     }
