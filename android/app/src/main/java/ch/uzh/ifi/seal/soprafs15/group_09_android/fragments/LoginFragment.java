@@ -1,6 +1,10 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
 import android.content.Intent;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -77,7 +81,8 @@ public class LoginFragment extends Fragment {
         RestService.getInstance(getActivity()).createUser(user, new Callback<RestUri>() {
             @Override
             public void success(RestUri restUri, Response response) {
-                //tvLogBox.setText("SUCCESS: User generated at: " + restUri.uri());
+                AlertDialog dialog = userCreatedSuccessfullyAlert();
+                dialog.show();
 
                 /* Start new Activity LobbyActivity and close current Fragment */
                 Intent intent = new Intent();
@@ -90,6 +95,28 @@ public class LoginFragment extends Fragment {
                 tvLogBox.setText("ERROR: " + error.getMessage());
             }
         });
+    }
+
+    /**
+     * Create small pop up dialog box
+     * @return AlertDialog builder.create()
+     */
+    private AlertDialog userCreatedSuccessfullyAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("User created successfully!")
+            .setTitle("User created");
+        // Add the buttons
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+        return builder.create();
     }
 
     @Override
