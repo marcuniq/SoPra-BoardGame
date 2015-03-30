@@ -25,6 +25,7 @@ idea {
     }
 }
 
+
 jar {
     baseName = 'group-09-service'
     version =  '0.0.1-SNAPSHOT'
@@ -34,8 +35,16 @@ repositories {
     mavenCentral()
     jcenter()
 }
+configurations {
+    newrelic	// Custom configuration to allow for the copying of the New Relic agent at run time.
+    springLoaded
+}
 
 dependencies {
+    newrelic("com.newrelic.agent.java:newrelic-agent:3.14.0")
+
+    springLoaded("org.springframework:springloaded:1.2.0.RELEASE")
+
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("org.hibernate:hibernate-validator")
@@ -60,5 +69,29 @@ task wrapper(type: Wrapper) {
 task stage { 
   dependsOn "build"
 }
+
+bootRun {
+    def springLoadedFile = configurations.springLoaded.find {it.name == "springloaded-1.2.0.RELEASE.jar"}
+
+    jvmArgs = ["-javaagent:$springLoadedFile", "-noverify"]
+}
+
+task copyAgent(type: Copy) {
+    from configurations.newrelic
+    into "$buildDir/libs"
+    rename ('newrelic-agent-3.14.0.jar', 'newrelic.jar')
+    from "$projectDir/newrelic.yml"
+    into "$buildDir/libs"
+}
+
+
+
+springBoot {
+    mainClass = 'ch.uzh.ifi.seal.soprafs15.Application'
+    agent = file("$buildDir/libs/newrelic.jar")
+}
+
+project.tasks.bootRun.dependsOn([copyAgent])
+
 
 defaultTasks "bootRepackage", "build"
