@@ -37,8 +37,12 @@ public class CreateGameFragment extends Fragment {
      *
      * @return A new instance of fragment LoginFragment.
      */
-    public static CreateGameFragment newInstance() {
-        return new CreateGameFragment();
+    public static CreateGameFragment newInstance(User user) {
+        CreateGameFragment fragment = new CreateGameFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("user", user);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     public CreateGameFragment() { }
@@ -46,6 +50,7 @@ public class CreateGameFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = getArguments().getParcelable("user");
     }
 
     /**
@@ -85,21 +90,23 @@ public class CreateGameFragment extends Fragment {
         List<User> players = new ArrayList<User>();
         players.add(user);
 
-        Game game = Game.create( null, name, user, null,
-                                 players, null, GameStatus.TEST, null,
-                                 null, null, null);
+        Game game = Game.create( null,                  // game id
+                                 name,                  // name of the game
+                                 user,                  // host/owner
+                                 null,                  // current player
+                                 players,               // List of players
+                                 null,                  // List of moves
+                                 GameStatus.PENDING,    // Game status
+                                 null,                  // RaceTrack
+                                 null,                  // LegBettingArea
+                                 null,                  // RaceBettingArea
+                                 null );                // DiceArea
 
-        RestService.getInstance(getActivity()).createGame(game, new Callback<RestUri>() {
+        RestService.getInstance(getActivity()).createGame(game, new Callback<Game>() {
             @Override
-            public void success(RestUri restUri, Response response) {
-
-                /* TODO When the server doesn't create the game as suppoed, we get a NULL Object.
-                *  This is a problem because we cannot access e.g. the restUri etc. */
-                if (restUri == null){
-                    Log.v("GameCreate","Creation Failed. NULL Object returned.");
-                }
+            public void success(Game game, Response response) {
                  /* See all already created games (testing) */
-                 ((MenuActivity)getActivity()).setFragment(GameLobbyFragment.newInstance());
+                 ((MenuActivity)getActivity()).setFragment(GameLobbyFragment.newInstance(user, game));
             }
 
             @Override

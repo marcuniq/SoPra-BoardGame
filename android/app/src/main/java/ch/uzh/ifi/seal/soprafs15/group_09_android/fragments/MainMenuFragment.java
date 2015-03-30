@@ -11,6 +11,7 @@ import android.widget.Button;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MainActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 
 /**
  * This Fragment displays the Main Menu
@@ -20,13 +21,23 @@ public class MainMenuFragment extends Fragment {
 
     private Button createGameMenuButton;
     private Button listGamesMenuButton;
+    private User user;
 
     public MainMenuFragment() {}
 
-    public static MainMenuFragment newInstance() {
-        return new MainMenuFragment();
+    public static MainMenuFragment newInstance(User user) {
+        MainMenuFragment fragment = new MainMenuFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("user", user);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        user = getArguments().getParcelable("user");
+    }
 
     /**
      * Displays two buttons for navigation:
@@ -68,7 +79,7 @@ public class MainMenuFragment extends Fragment {
      * @param v the current View
      */
     private void onClickCreateGameMenuButton(View v) {
-        ((MenuActivity)getActivity()).pushFragment(CreateGameFragment.newInstance());
+        ((MenuActivity)getActivity()).pushFragment(CreateGameFragment.newInstance(user));
     }
 
     /**
@@ -77,7 +88,7 @@ public class MainMenuFragment extends Fragment {
      * @param v the current View
      */
     private void onClickListGamesMenuButton(View v) {
-        ((MenuActivity)getActivity()).pushFragment(GamesListFragment.newInstance());
+        ((MenuActivity)getActivity()).pushFragment(GamesListFragment.newInstance(user));
     }
 
     @Override

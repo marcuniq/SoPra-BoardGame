@@ -20,6 +20,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RestUri;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.UserStatus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -76,17 +77,27 @@ public class LoginFragment extends Fragment {
         final String username = etUsername.getText().toString();
         Integer age = Integer.parseInt(etAge.getText().toString());
 
-        User user = User.create(username, age);
+        User user = User.create( null,                  // id
+                                 username,              // username
+                                 age,                   // age
+                                 null,                  // token
+                                 UserStatus.INACTIVE,   // user status
+                                 null,                  // the game the user has joined to
+                                 null,                  // List of moves
+                                 null,                  // money (coins)
+                                 null,                  // List of RaceBettingCards
+                                 null);                 // List of LegBettingTiles
 
-        RestService.getInstance(getActivity()).createUser(user, new Callback<RestUri>() {
+        RestService.getInstance(getActivity()).createUser(user, new Callback<User>() {
             @Override
-            public void success(RestUri restUri, Response response) {
+            public void success(User user, Response response) {
                 AlertDialog dialog = userCreatedSuccessfullyAlert();
                 dialog.show();
 
                 /* Start new Activity LobbyActivity and close current Fragment */
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), MenuActivity.class);
+                intent.putExtra("user", user);
                 startActivity(intent);
             }
 

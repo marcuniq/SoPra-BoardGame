@@ -26,7 +26,7 @@ public interface RestApiInterface {
      * @param cb
      */
     @POST("/users")
-    void createUser(@Body User user, Callback<RestUri> cb);
+    void createUser(@Body User user, Callback<User> cb);
 
     /**
      * Returns all games
@@ -41,6 +41,6 @@ public interface RestApiInterface {
      * @param cb
      */
     @POST("/games")
-    void createGame(@Body Game game, Callback<RestUri> cb);
+    void createGame(@Body Game game, Callback<Game> cb);
 
 }

@@ -1,11 +1,8 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.utils;
 
-/**
- * Created by Fröhlich on 30.03.2015.
- */
 public enum GameStatus{
-    TEST,
-    PENDING,
-    RUNNING,
-    FINISHED
+    PENDING,    // waiting in the lobby for players
+    BUSY,       // game remaining in the lobby but no new players can join
+    RUNNING,    // currently running
+    FINISHED    // game has finished
 }

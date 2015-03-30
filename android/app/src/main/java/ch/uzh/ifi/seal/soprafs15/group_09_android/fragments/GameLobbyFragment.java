@@ -13,8 +13,10 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.UserArrayAdapter;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -22,7 +24,9 @@ import retrofit.client.Response;
 public class GameLobbyFragment extends ListFragment {
 
     private TextView tvLogBox;
-    private ArrayAdapter<String> arrayAdapter; // adapts the ArrayList of Games to the ListView
+    private UserArrayAdapter arrayAdapter; // adapts the ArrayList of Games to the ListView
+    private User user;
+    private Game game;
 
     /* empty constructor */
     public GameLobbyFragment() {}
@@ -31,8 +35,13 @@ public class GameLobbyFragment extends ListFragment {
      * Called after User has successfully logged in.
      * @return A new instance of fragment GamesListFragment.
      */
-    public static GameLobbyFragment newInstance() {
-        return new GameLobbyFragment();
+    public static GameLobbyFragment newInstance(User user, Game game) {
+        GameLobbyFragment fragment = new GameLobbyFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("user", user);
+        bundle.putParcelable("game", game);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     /**
@@ -42,6 +51,8 @@ public class GameLobbyFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = getArguments().getParcelable("user");
+        game = getArguments().getParcelable("game");
     }
 
     /**
@@ -55,10 +66,10 @@ public class GameLobbyFragment extends ListFragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        arrayAdapter = new ArrayAdapter<>(getActivity(),
-                R.layout.fragment_game_lobby,
-                R.id.game_lobby_item_label,
-                new ArrayList<String>());
+        arrayAdapter = new UserArrayAdapter(getActivity(),
+/*                R.layout.fragment_game_lobby,
+                R.id.game_lobby_item_label,*/
+                new ArrayList<User>());
         setListAdapter(arrayAdapter);
 
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
@@ -77,7 +88,7 @@ public class GameLobbyFragment extends ListFragment {
             @Override
             public void success(List<User> users, Response response) {
                 for (User user : users) {
-                    arrayAdapter.add(user.username());
+                    arrayAdapter.add(user);
                 }
             }
 
