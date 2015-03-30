@@ -11,6 +11,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserStatus;
+import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingTile;
+import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingCard;
 
 @Entity
 public class User implements Serializable {
@@ -42,7 +44,44 @@ public class User implements Serializable {
     @OneToMany(mappedBy="user")
     private List<Move> moves;
 
-	public Long getId() {
+    @Column
+    private Integer money;
+
+    @Column
+    private List<RaceBettingCard> raceBettingCards;
+
+    @Column
+    private List<LegBettingTile> legBettingTiles;
+
+    private void init() {
+
+    }
+
+    public List<RaceBettingCard> getRaceBettingCards() {
+        return raceBettingCards;
+    }
+
+    public void setRaceBettingCards(List<RaceBettingCard> raceBettingCards) {
+        this.raceBettingCards = raceBettingCards;
+    }
+
+    public Integer getMoney() {
+        return money;
+    }
+
+    public void setMoney(Integer money) {
+        this.money = money;
+    }
+
+    public List<LegBettingTile> getLegBettingTiles() {
+        return legBettingTiles;
+    }
+
+    public void setLegBettingTiles(List<LegBettingTile> legBettingTiles) {
+        this.legBettingTiles = legBettingTiles;
+    }
+
+    public Long getId() {
 		return id;
 	}
 

@@ -11,6 +11,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameStatus;
+import ch.uzh.ifi.seal.soprafs15.model.game.DiceArea;
+import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingArea;
+import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingArea;
+import ch.uzh.ifi.seal.soprafs15.model.game.RaceTrack;
 
 @Entity
 public class Game implements Serializable {
@@ -33,7 +37,7 @@ public class Game implements Serializable {
 	@Column 
 	private GameStatus status;
 	
-	@Column 
+	@Column
 	private Integer currentPlayer;
 
     @OneToMany(mappedBy="game")
@@ -41,8 +45,56 @@ public class Game implements Serializable {
     
     @ManyToMany(mappedBy="games")
     private List<User> players;
-    
-	public Long getId() {
+
+    @Column
+    private RaceTrack raceTrack;
+
+    @Column
+    private LegBettingArea legBettingArea;
+
+    @Column
+    private RaceBettingArea raceBettingArea;
+
+    @Column
+    private DiceArea diceArea;
+
+    private void init() {
+
+    }
+
+    public RaceTrack getRaceTrack() {
+        return raceTrack;
+    }
+
+    public void setRaceTrack(RaceTrack raceTrack) {
+        this.raceTrack = raceTrack;
+    }
+
+    public LegBettingArea getLegBettingArea() {
+        return legBettingArea;
+    }
+
+    public void setLegBettingArea(LegBettingArea legBettingArea) {
+        this.legBettingArea = legBettingArea;
+    }
+
+    public RaceBettingArea getRaceBettingArea() {
+        return raceBettingArea;
+    }
+
+    public void setRaceBettingArea(RaceBettingArea raceBettingArea) {
+        this.raceBettingArea = raceBettingArea;
+    }
+
+    public DiceArea getDiceArea() {
+        return diceArea;
+    }
+
+    public void setDiceArea(DiceArea diceArea) {
+        this.diceArea = diceArea;
+    }
+
+    public Long getId() {
 		return id;
 	}
 
