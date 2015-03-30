@@ -2,8 +2,6 @@ package ch.uzh.ifi.seal.soprafs15.group_09_android.models;
 
 import android.os.Parcelable;
 
-import com.google.android.gms.auth.GoogleAuthUtil;
-
 import auto.parcel.AutoParcel;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoGson;
 
