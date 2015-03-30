@@ -1,6 +1,8 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
+import android.app.ActivityManager;
 import android.os.Bundle;
+import android.os.UserManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -75,7 +77,7 @@ public class CreateGameFragment extends Fragment {
     }
 
     /**
-     * Creates a new view with a editText field to insert the gamename and a button to make the
+     * Creates a new view with a editText field to insert the game name and a button to make the
      * POST request on the server
      *
      * @param v the current View
@@ -85,6 +87,7 @@ public class CreateGameFragment extends Fragment {
         List<User> players = new ArrayList<User>();
         players.add(user);
 
+//        TODO: We get here an error when we create a new game because user is null. How could we access the current user?
         Game game = Game.create( null, name, user, null,
                                  players, null, GameStatus.TEST, null,
                                  null, null, null);
@@ -93,7 +96,7 @@ public class CreateGameFragment extends Fragment {
             @Override
             public void success(RestUri restUri, Response response) {
 
-                /* TODO When the server doesn't create the game as suppoed, we get a NULL Object.
+                /* TODO When the server doesn't create the game as supposed, we get a NULL Object.
                 *  This is a problem because we cannot access e.g. the restUri etc. */
                 if (restUri == null){
                     Log.v("GameCreate","Creation Failed. NULL Object returned.");
