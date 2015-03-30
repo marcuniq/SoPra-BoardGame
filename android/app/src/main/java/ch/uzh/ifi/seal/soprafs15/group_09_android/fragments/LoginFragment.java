@@ -103,19 +103,7 @@ public class LoginFragment extends Fragment {
      */
     private AlertDialog userCreatedSuccessfullyAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("User created successfully!")
-            .setTitle("User created");
-        // Add the buttons
-        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog
-            }
-        });
+        builder.setMessage("User created successfully!").setTitle("User created");
         return builder.create();
     }
 
