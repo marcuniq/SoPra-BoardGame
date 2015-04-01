@@ -2,8 +2,6 @@ package ch.uzh.ifi.seal.soprafs15.controller.beans.game;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.Size;
-
 public class GameRequestBean {
 
     @NotEmpty

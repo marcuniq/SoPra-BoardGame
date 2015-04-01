@@ -46,7 +46,12 @@ public class GameMapperServiceImpl extends GameMapperService {
 
     @Override
     public GameResponseBean toGameResponseBean(Game game) {
-        return null;
+        GameResponseBean bean = new GameResponseBean();
+        bean.setId(game.getId());
+        bean.setName(game.getName());
+        bean.setOwner(game.getOwner());
+
+        return bean;
     }
 
     @Override

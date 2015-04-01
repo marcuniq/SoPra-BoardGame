@@ -2,7 +2,6 @@ package ch.uzh.ifi.seal.soprafs15.service.mapper;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.*;
 import ch.uzh.ifi.seal.soprafs15.model.User;
-import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,6 +80,6 @@ public class UserMapperServiceImpl extends UserMapperService {
     public UserLoginLogoutResponseBean toLLResponseBean(User user) {
         UserLoginLogoutResponseBean bean = new UserLoginLogoutResponseBean();
         bean.setToken(user.getToken());
-        return null;
+        return bean;
     }
 }
