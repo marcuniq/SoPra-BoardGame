@@ -1,16 +1,14 @@
 package ch.uzh.ifi.seal.soprafs15.model;
 
+import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserStatus;
+import ch.uzh.ifi.seal.soprafs15.model.game.Game;
+import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingTile;
+import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingCard;
+import ch.uzh.ifi.seal.soprafs15.model.move.Move;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-
-import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserStatus;
 
 @Entity
 public class User implements Serializable {
@@ -32,17 +30,59 @@ public class User implements Serializable {
 	
 	@Column(nullable = false, unique = true) 
 	private String token;
-	
+
+    @Enumerated
 	@Column(nullable = false) 
 	private UserStatus status;
 
-    @ManyToMany
-    private List<Game> games;
+    @ManyToOne
+    private Game game;
 	
     @OneToMany(mappedBy="user")
     private List<Move> moves;
 
-	public Long getId() {
+    @Column
+    private Integer money;
+
+    @OneToMany(mappedBy = "user")
+    private List<RaceBettingCard> raceBettingCards;
+
+    @OneToMany(mappedBy = "user")
+    private List<LegBettingTile> legBettingTiles;
+
+    public User(){
+
+    }
+
+    private void init() {
+
+    }
+
+    public List<RaceBettingCard> getRaceBettingCards() {
+        return raceBettingCards;
+    }
+
+    public void setRaceBettingCards(List<RaceBettingCard> raceBettingCards) {
+        this.raceBettingCards = raceBettingCards;
+    }
+
+    public Integer getMoney() {
+        return money;
+    }
+
+    public void setMoney(Integer money) {
+        this.money = money;
+    }
+
+    public List<LegBettingTile> getLegBettingTiles() {
+        return legBettingTiles;
+    }
+
+    public void setLegBettingTiles(List<LegBettingTile> legBettingTiles) {
+        this.legBettingTiles = legBettingTiles;
+    }
+
+    public Long getId() {
 		return id;
 	}
 
@@ -66,12 +106,12 @@ public class User implements Serializable {
 		this.username = username;
 	}
 
-	public List<Game> getGames() {
-		return games;
+	public Game getGame() {
+		return game;
 	}
 
-	public void setGames(List<Game> games) {
-		this.games = games;
+	public void setGame(Game game) {
+		this.game = game;
 	}
 
 	public List<Move> getMoves() {

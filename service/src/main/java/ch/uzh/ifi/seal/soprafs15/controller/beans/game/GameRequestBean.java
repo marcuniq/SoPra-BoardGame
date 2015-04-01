@@ -1,9 +1,14 @@
 package ch.uzh.ifi.seal.soprafs15.controller.beans.game;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class GameRequestBean {
 
+    @NotEmpty
 	private String name;
-	private String userToken;
+
+    @NotEmpty
+	private String token;
 	
 	public String getName() {
 		return name;
@@ -11,10 +16,10 @@ public class GameRequestBean {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getUserToken() {
-		return userToken;
+	public String getToken() {
+		return token;
 	}
-	public void setUserToken(String userToken) {
-		this.userToken = userToken;
+	public void setToken(String token) {
+		this.token = token;
 	}
 }

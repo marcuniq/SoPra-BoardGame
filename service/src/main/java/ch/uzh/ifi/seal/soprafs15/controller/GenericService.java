@@ -1,15 +1,18 @@
 package ch.uzh.ifi.seal.soprafs15.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
+import ch.uzh.ifi.seal.soprafs15.controller.beans.JsonUriWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.TransactionSystemException;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import ch.uzh.ifi.seal.soprafs15.controller.beans.JsonUriWrapper;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 public abstract class GenericService {
 	
@@ -33,4 +36,20 @@ public abstract class GenericService {
 	public void handleException(Exception exception, HttpServletRequest request) {
 		logger.error("", exception);
 	}
+
+
+    /*
+     *  Handles exceptions if request beans are not valid
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public String handleValidationException(MethodArgumentNotValidException e, HttpServletRequest request) {
+        logger.debug("got invalid bean, request:  " + request.toString());
+
+        List<ObjectError> errors = e.getBindingResult().getAllErrors();
+        logger.debug("got invalid bean, errors: " + errors.toString());
+
+        return "invalid bean";
+    }
 }

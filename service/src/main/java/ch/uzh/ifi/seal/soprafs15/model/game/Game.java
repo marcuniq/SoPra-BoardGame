@@ -1,16 +1,12 @@
-package ch.uzh.ifi.seal.soprafs15.model;
-
-import java.io.Serializable;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameStatus;
+import ch.uzh.ifi.seal.soprafs15.model.User;
+import ch.uzh.ifi.seal.soprafs15.model.move.Move;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
 
 @Entity
 public class Game implements Serializable {
@@ -33,16 +29,73 @@ public class Game implements Serializable {
 	@Column 
 	private GameStatus status;
 	
-	@Column 
+	@Column
 	private Integer currentPlayer;
 
     @OneToMany(mappedBy="game")
     private List<Move> moves;
     
-    @ManyToMany(mappedBy="games")
+    @OneToMany(mappedBy="game")
     private List<User> players;
-    
-	public Long getId() {
+
+    @OneToOne
+    private RaceTrack raceTrack;
+
+    @OneToOne
+    private LegBettingArea legBettingArea;
+
+    @OneToOne
+    private RaceBettingArea raceBettingArea;
+
+    @OneToOne
+    private DiceArea diceArea;
+
+
+    public Game(){
+
+    }
+
+    private void init() {
+
+    }
+
+    public void addPlayer(User player){
+        players.add(player);
+    }
+
+    public RaceTrack getRaceTrack() {
+        return raceTrack;
+    }
+
+    public void setRaceTrack(RaceTrack raceTrack) {
+        this.raceTrack = raceTrack;
+    }
+
+    public LegBettingArea getLegBettingArea() {
+        return legBettingArea;
+    }
+
+    public void setLegBettingArea(LegBettingArea legBettingArea) {
+        this.legBettingArea = legBettingArea;
+    }
+
+    public RaceBettingArea getRaceBettingArea() {
+        return raceBettingArea;
+    }
+
+    public void setRaceBettingArea(RaceBettingArea raceBettingArea) {
+        this.raceBettingArea = raceBettingArea;
+    }
+
+    public DiceArea getDiceArea() {
+        return diceArea;
+    }
+
+    public void setDiceArea(DiceArea diceArea) {
+        this.diceArea = diceArea;
+    }
+
+    public Long getId() {
 		return id;
 	}
 

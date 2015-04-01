@@ -1,13 +1,16 @@
 package ch.uzh.ifi.seal.soprafs15.controller.beans.game;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class GamePlayerRequestBean {
 
-	private String userToken;
+    @NotEmpty
+	private String token;
 	
-	public String getUserToken() {
-		return userToken;
+	public String getToken() {
+		return token;
 	}
-	public void setUserToken(String userToken) {
-		this.userToken = userToken;
+	public void setToken(String token) {
+		this.token = token;
 	}
 }
