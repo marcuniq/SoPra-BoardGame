@@ -44,12 +44,32 @@ public class UserServiceImpl extends UserService {
 
     @Override
     public User updateUser(Long userId, User user) {
+        User user_1 = userRepository.findOne(userId);
+
+        if(user_1 != null && user_1.getToken().equals(user.getToken())) {
+            user_1.setRaceBettingCards(user.getRaceBettingCards());
+            user_1.setMoney(user.getMoney());
+            user_1.setLegBettingTiles(user.getLegBettingTiles());
+            user_1.setId(user.getId());
+            user_1.setAge(user.getAge());
+            user_1.setUsername(user.getUsername());
+            user_1.setGame(user.getGame());
+            user_1.setMoves(user.getMoves());
+            user_1.setToken(user.getToken());
+            user_1.setStatus(user.getStatus());
+
+            return user_1;
+        }
         return null;
     }
 
     @Override
     public void deleteUser(Long userId, User user) {
+        User user_1 = userRepository.findOne(userId);
 
+        if(user_1 != null && user_1.getToken().equals(user.getToken())) {
+            userRepository.delete(userId);
+        }
     }
 
     @Override
