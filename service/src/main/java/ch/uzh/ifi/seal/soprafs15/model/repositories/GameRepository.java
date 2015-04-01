@@ -1,7 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.model.repositories;
 
-import ch.uzh.ifi.seal.soprafs15.model.Game;
-import ch.uzh.ifi.seal.soprafs15.model.User;
+import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,11 +1,11 @@
 package ch.uzh.ifi.seal.soprafs15.service;
 
-import ch.uzh.ifi.seal.soprafs15.model.Move;
+import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.MoveRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * @author Marco
  */
 
-@Component("gameMoveService")
+@Service("gameMoveService")
 public class GameMoveServiceImpl extends GameMoveService {
 
     Logger logger = LoggerFactory.getLogger(GameMoveServiceImpl.class);
@@ -26,7 +26,7 @@ public class GameMoveServiceImpl extends GameMoveService {
     }
 
     @Override
-    public List<Move> listMoves() {
+    public List<Move> listMoves(Long gameId) {
         return null;
     }
 

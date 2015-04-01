@@ -2,18 +2,25 @@ package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import ch.uzh.ifi.seal.soprafs15.model.User;
 
-import javax.persistence.Column;
+import java.io.Serializable;
 
 /**
  * Created by Hakuna on 30.03.2015.
  */
-public class DesertTile extends RaceTrackObject {
+public class DesertTile extends RaceTrackObject implements Serializable {
 
-    @Column
+    private static final long serialVersionUID = 1L;
+
     private User owner;
 
-    @Column
     private Boolean isOasis;
+
+    public DesertTile(){}
+
+    public DesertTile(User owner, Boolean isOasis){
+        this.owner = owner;
+        this.isOasis = isOasis;
+    }
 
     public void useAsOasis() {
 

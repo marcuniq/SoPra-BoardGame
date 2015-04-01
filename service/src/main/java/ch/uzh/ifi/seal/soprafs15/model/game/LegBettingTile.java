@@ -1,20 +1,44 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
+import ch.uzh.ifi.seal.soprafs15.model.User;
+
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import java.io.Serializable;
 
 /**
  * Created by Hakuna on 30.03.2015.
  */
-public class LegBettingTile extends Card {
+@Entity
+public class LegBettingTile extends Card implements Serializable {
 
-    @Column
+    private static final long serialVersionUID = 1L;
+
+
+    @Column(nullable = false)
     private Integer leadingPositionGain;
 
-    @Column
+    @Column(nullable = false)
     private Integer secondPositionGain;
 
-    @Column
+    @Column(nullable = false)
     private Integer otherPositionLoss;
+
+    @ManyToOne
+    private User user;
+
+
+    public LegBettingTile(){
+
+    }
+
+    public LegBettingTile(Integer leadingPositionGain, Integer secondPositionGain, Integer otherPositionLoss){
+        this.leadingPositionGain = leadingPositionGain;
+        this.secondPositionGain = secondPositionGain;
+        this.otherPositionLoss = otherPositionLoss;
+    }
+
 
     public Integer getLeadingPositionGain() {
         return leadingPositionGain;
@@ -38,5 +62,13 @@ public class LegBettingTile extends Card {
 
     public void setOtherPositionLoss(Integer otherPositionLoss) {
         this.otherPositionLoss = otherPositionLoss;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

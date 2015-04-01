@@ -1,10 +1,10 @@
 package ch.uzh.ifi.seal.soprafs15.service;
 
-import java.util.List;
-
 import ch.uzh.ifi.seal.soprafs15.controller.GenericService;
-import ch.uzh.ifi.seal.soprafs15.model.Game;
 import ch.uzh.ifi.seal.soprafs15.model.User;
+import ch.uzh.ifi.seal.soprafs15.model.game.Game;
+
+import java.util.List;
 
 /**
  * @author Marco

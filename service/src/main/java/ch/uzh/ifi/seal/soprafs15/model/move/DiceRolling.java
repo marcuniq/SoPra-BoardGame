@@ -1,6 +1,5 @@
 package ch.uzh.ifi.seal.soprafs15.model.move;
 
-import ch.uzh.ifi.seal.soprafs15.model.Move;
 import ch.uzh.ifi.seal.soprafs15.model.game.Dice;
 
 import javax.persistence.Column;

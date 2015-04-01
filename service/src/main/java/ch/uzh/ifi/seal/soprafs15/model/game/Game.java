@@ -1,20 +1,12 @@
-package ch.uzh.ifi.seal.soprafs15.model;
-
-import java.io.Serializable;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameStatus;
-import ch.uzh.ifi.seal.soprafs15.model.game.DiceArea;
-import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingArea;
-import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingArea;
-import ch.uzh.ifi.seal.soprafs15.model.game.RaceTrack;
+import ch.uzh.ifi.seal.soprafs15.model.User;
+import ch.uzh.ifi.seal.soprafs15.model.move.Move;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
 
 @Entity
 public class Game implements Serializable {
@@ -43,23 +35,32 @@ public class Game implements Serializable {
     @OneToMany(mappedBy="game")
     private List<Move> moves;
     
-    @ManyToMany(mappedBy="games")
+    @OneToMany(mappedBy="game")
     private List<User> players;
 
-    @Column
+    @OneToOne
     private RaceTrack raceTrack;
 
-    @Column
+    @OneToOne
     private LegBettingArea legBettingArea;
 
-    @Column
+    @OneToOne
     private RaceBettingArea raceBettingArea;
 
-    @Column
+    @OneToOne
     private DiceArea diceArea;
+
+
+    public Game(){
+
+    }
 
     private void init() {
 
+    }
+
+    public void addPlayer(User player){
+        players.add(player);
     }
 
     public RaceTrack getRaceTrack() {

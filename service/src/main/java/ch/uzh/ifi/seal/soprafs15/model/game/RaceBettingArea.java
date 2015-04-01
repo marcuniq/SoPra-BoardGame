@@ -1,9 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
@@ -22,11 +19,18 @@ public class RaceBettingArea implements Serializable {
     @GeneratedValue
     private Long id;
 
+    @ElementCollection
     @Column
     private List<RaceBettingCard> winnerBetting;
 
+    @ElementCollection
     @Column
     private List<RaceBettingCard> loserBetting;
+
+
+    public RaceBettingArea(){
+
+    }
 
     private void init() {
 

@@ -1,12 +1,9 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 /**
@@ -24,8 +21,14 @@ public class LegBettingArea implements Serializable {
     @GeneratedValue
     private Long id;
 
+    @ElementCollection
     @Column
-    private HashMap<Color, Stack<LegBettingTile>> legBettingTiles;
+    private Map<Color, Stack<LegBettingTile>> legBettingTiles;
+
+
+    public LegBettingArea(){
+
+    }
 
     private void init() {
 
@@ -39,11 +42,11 @@ public class LegBettingArea implements Serializable {
         this.id = id;
     }
 
-    public HashMap<Color, Stack<LegBettingTile>> getLegBettingTiles() {
+    public Map<Color, Stack<LegBettingTile>> getLegBettingTiles() {
         return legBettingTiles;
     }
 
-    public void setLegBettingTiles(HashMap<Color, Stack<LegBettingTile>> legBettingTiles) {
+    public void setLegBettingTiles(Map<Color, Stack<LegBettingTile>> legBettingTiles) {
         this.legBettingTiles = legBettingTiles;
     }
 

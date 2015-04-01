@@ -1,6 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.model.repositories;
 
-import ch.uzh.ifi.seal.soprafs15.model.RaceTrack;
+import ch.uzh.ifi.seal.soprafs15.model.game.RaceTrack;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,5 @@
 package ch.uzh.ifi.seal.soprafs15.model.move;
 
-import ch.uzh.ifi.seal.soprafs15.model.Move;
-
 import javax.persistence.Column;
 
 /**

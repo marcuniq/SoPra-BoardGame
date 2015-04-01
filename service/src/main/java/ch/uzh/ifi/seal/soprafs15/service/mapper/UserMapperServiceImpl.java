@@ -1,23 +1,22 @@
 package ch.uzh.ifi.seal.soprafs15.service.mapper;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.*;
-import ch.uzh.ifi.seal.soprafs15.model.Game;
 import ch.uzh.ifi.seal.soprafs15.model.User;
+import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
-import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Marco
  */
-@Component("userMapperService")
+@Service("userMapperService")
 public class UserMapperServiceImpl extends UserMapperService {
 
     Logger logger = LoggerFactory.getLogger(UserMapperServiceImpl.class);
@@ -46,12 +45,8 @@ public class UserMapperServiceImpl extends UserMapperService {
             userResponseBean.setId(user.getId());
             userResponseBean.setAge(user.getAge());
             userResponseBean.setUsername(user.getUsername());
-
-            List<String>games = new ArrayList<>();
-            for(Game game : user.getGames()) {
-                games.add(game.getName());
-            }
-            userResponseBean.setGames(games);
+            if(user.getGame() != null)
+                userResponseBean.setGamename(user.getGame().getName());
         }
 
         return userResponseBean;
@@ -69,12 +64,8 @@ public class UserMapperServiceImpl extends UserMapperService {
             tmpUserResponseBean.setId(user.getId());
             tmpUserResponseBean.setAge(user.getAge());
             tmpUserResponseBean.setUsername(user.getUsername());
-
-            List<String>games = new ArrayList<>();
-            for(Game game : user.getGames()) {
-                games.add(game.getName());
-            }
-            tmpUserResponseBean.setGames(games);
+            if(user.getGame() != null)
+                tmpUserResponseBean.setGamename(user.getGame().getName());
 
             result.add(tmpUserResponseBean);
         }

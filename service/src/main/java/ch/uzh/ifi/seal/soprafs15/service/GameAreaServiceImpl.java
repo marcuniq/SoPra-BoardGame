@@ -1,19 +1,19 @@
 package ch.uzh.ifi.seal.soprafs15.service;
 
-import ch.uzh.ifi.seal.soprafs15.model.DiceArea;
-import ch.uzh.ifi.seal.soprafs15.model.LegBettingArea;
-import ch.uzh.ifi.seal.soprafs15.model.RaceBettingArea;
-import ch.uzh.ifi.seal.soprafs15.model.RaceTrack;
+import ch.uzh.ifi.seal.soprafs15.model.game.DiceArea;
+import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingArea;
+import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingArea;
+import ch.uzh.ifi.seal.soprafs15.model.game.RaceTrack;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Marco
  */
-@Component("gameAreaService")
+@Service("gameAreaService")
 public class GameAreaServiceImpl extends GameAreaService {
 
     Logger logger = LoggerFactory.getLogger(GameAreaServiceImpl.class);

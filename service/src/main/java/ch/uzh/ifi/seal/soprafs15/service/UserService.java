@@ -2,7 +2,6 @@ package ch.uzh.ifi.seal.soprafs15.service;
 
 import ch.uzh.ifi.seal.soprafs15.controller.GenericService;
 import ch.uzh.ifi.seal.soprafs15.model.User;
-import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 
 import java.util.List;
 

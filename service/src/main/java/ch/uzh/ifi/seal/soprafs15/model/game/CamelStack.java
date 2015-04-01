@@ -1,21 +1,33 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import javax.persistence.Column;
-import java.util.Stack;
+import javax.persistence.ElementCollection;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Hakuna on 30.03.2015.
  */
-public class CamelStack extends RaceTrackObject {
+public class CamelStack extends RaceTrackObject implements Serializable{
 
+    private static final long serialVersionUID = 1L;
+
+    @ElementCollection
     @Column
-    private Stack<Camel> stack;
+    private List<Camel> stack;
 
-    public Stack<Camel> getStack() {
+    public CamelStack(){
+
+    }
+    public CamelStack(List<Camel> camels) {
+        this.stack = camels;
+    }
+
+    public List<Camel> getStack() {
         return stack;
     }
 
-    public void setStack(Stack<Camel> stack) {
+    public void setStack(List<Camel> stack) {
         this.stack = stack;
     }
 }

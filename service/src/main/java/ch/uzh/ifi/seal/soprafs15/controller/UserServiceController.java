@@ -11,16 +11,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
-
+/**
+ * @author Marco
+ */
 @RestController
 public class UserServiceController extends GenericService {
 
-	Logger logger = LoggerFactory.getLogger(UserServiceController.class);
-	
-	static final String CONTEXT = "/users";
+	private final Logger logger = LoggerFactory.getLogger(UserServiceController.class);
 
     @Autowired
     protected UserService userService;
@@ -28,18 +33,22 @@ public class UserServiceController extends GenericService {
     @Autowired
     protected UserMapperService userMapperService;
 
+    static final String CONTEXT = "/users";
+
 
     /*
      *	Context: /users
+     *  Description:
      */
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT)
 	@ResponseStatus(HttpStatus.OK)
+    @ResponseBody
 	public List<UserResponseBean> listUsers() {
 		logger.debug("listUsers");
+        logger.info("test");
 
         try {
             List<User> users = userService.listUsers();
-
             List<UserResponseBean> result = userMapperService.toUserResponseBean(users);
 
             return result;
@@ -51,18 +60,17 @@ public class UserServiceController extends GenericService {
 
     /*
      *	Context: /users
+     *  Description:
      */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
-	public UserResponseBean addUser(@RequestBody UserRequestBean userRequestBean) {
+	public UserResponseBean addUser(@RequestBody @Valid UserRequestBean userRequestBean) {
 		logger.debug("addUser: " + userRequestBean);
 
         try {
             User user = userMapperService.toUser(userRequestBean);
-
             user = userService.addUser(user);
-
             UserResponseBean result = userMapperService.toUserResponseBean(user);
 
             return result;
@@ -74,15 +82,16 @@ public class UserServiceController extends GenericService {
 
     /*
      *	Context: /users/{userId}
+     *  Description:
      */
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{userId}")
 	@ResponseStatus(HttpStatus.OK)
+    @ResponseBody
 	public UserResponseBean getUser(@PathVariable Long userId) {
 		logger.debug("getUser: " + userId);
 
         try {
             User user = userService.getUser(userId);
-
             UserResponseBean result = userMapperService.toUserResponseBean(user);
 
             return result;
@@ -94,15 +103,16 @@ public class UserServiceController extends GenericService {
 
     /*
      *	Context: /users/{userId}/login
+     *  Description:
      */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{userId}/login")
 	@ResponseStatus(HttpStatus.OK)
+    @ResponseBody
 	public UserLoginLogoutResponseBean login(@PathVariable Long userId) {
 		logger.debug("login: " + userId);
 
         try {
             User user = userService.login(userId);
-
             UserLoginLogoutResponseBean result = userMapperService.toLLResponseBean(user);
 
             return result;
@@ -114,15 +124,15 @@ public class UserServiceController extends GenericService {
 
     /*
      *	Context: /users/{userId}/logout
+     *  Description:
      */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{userId}/logout")
 	@ResponseStatus(HttpStatus.OK)
-	public void logout(@PathVariable Long userId, @RequestBody UserLoginLogoutRequestBean userLoginLogoutRequestBean) {
+	public void logout(@PathVariable Long userId, @RequestBody @Valid UserLoginLogoutRequestBean userLoginLogoutRequestBean) {
 		logger.debug("getUser: " + userId);
 
         try{
             User user = userMapperService.toUser(userLoginLogoutRequestBean);
-
             userService.logout(userId, user);
 
         } catch (Exception e){

@@ -2,15 +2,23 @@ package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import ch.uzh.ifi.seal.soprafs15.model.User;
 
-import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import java.io.Serializable;
 
 /**
  * Created by Hakuna on 30.03.2015.
  */
-public class RaceBettingCard extends Card {
+@Entity
+public class RaceBettingCard extends Card implements Serializable {
 
-    @Column
+    private static final long serialVersionUID = 1L;
+
+    @ManyToOne
     private User user;
+
+    public RaceBettingCard(){}
+
 
     public User getUser() {
         return user;

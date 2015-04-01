@@ -1,12 +1,12 @@
 package ch.uzh.ifi.seal.soprafs15.service;
 
-import ch.uzh.ifi.seal.soprafs15.model.Game;
 import ch.uzh.ifi.seal.soprafs15.model.User;
+import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * @author Marco
  */
 
-@Component("gameService")
+@Service("gameService")
 public class GameServiceImpl extends GameService {
 
     Logger logger = LoggerFactory.getLogger(GameServiceImpl.class);

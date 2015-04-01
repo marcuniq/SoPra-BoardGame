@@ -1,10 +1,10 @@
 package ch.uzh.ifi.seal.soprafs15.service;
 
 import ch.uzh.ifi.seal.soprafs15.controller.GenericService;
-import ch.uzh.ifi.seal.soprafs15.model.DiceArea;
-import ch.uzh.ifi.seal.soprafs15.model.LegBettingArea;
-import ch.uzh.ifi.seal.soprafs15.model.RaceBettingArea;
-import ch.uzh.ifi.seal.soprafs15.model.RaceTrack;
+import ch.uzh.ifi.seal.soprafs15.model.game.DiceArea;
+import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingArea;
+import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingArea;
+import ch.uzh.ifi.seal.soprafs15.model.game.RaceTrack;
 
 /**
  * @author Marco

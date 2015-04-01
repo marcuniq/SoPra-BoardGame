@@ -1,11 +1,8 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Hakuna on 30.03.2015.
@@ -22,8 +19,14 @@ public class RaceTrack implements Serializable {
     @GeneratedValue
     private Long id;
 
+    @ElementCollection
     @Column
-    private ArrayList<RaceTrackObject> fields;
+    private List<RaceTrackObject> fields;
+
+
+    public RaceTrack(){
+
+    }
 
     private void init() {
 
@@ -45,11 +48,11 @@ public class RaceTrack implements Serializable {
         this.id = id;
     }
 
-    public ArrayList<RaceTrackObject> getFields() {
+    public List<RaceTrackObject> getFields() {
         return fields;
     }
 
-    public void setFields(ArrayList<RaceTrackObject> fields) {
+    public void setFields(List<RaceTrackObject> fields) {
         this.fields = fields;
     }
 }

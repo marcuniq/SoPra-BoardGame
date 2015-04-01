@@ -1,8 +1,5 @@
 package ch.uzh.ifi.seal.soprafs15.model.move;
 
-import ch.uzh.ifi.seal.soprafs15.model.Move;
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import javax.persistence.Column;
 
 /**

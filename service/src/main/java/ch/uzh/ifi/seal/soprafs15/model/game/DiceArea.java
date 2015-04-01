@@ -1,14 +1,8 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
-import org.aspectj.lang.annotation.control.CodeGenerationHint;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * Created by Hakuna on 30.03.2015.
@@ -26,21 +20,36 @@ public class DiceArea implements Serializable {
     @GeneratedValue
     private Long id;
 
+    @ElementCollection(fetch=FetchType.EAGER)
     @Column
-    private Stack<Dice> diceInPyramid;
+    @Embedded
+    private List<Dice> diceInPyramid;
 
+    @ElementCollection(fetch=FetchType.EAGER)
     @Column
+    @Embedded
     private List<Dice> rolledDice;
+
+    public DiceArea(){}
+
 
     private void init() {
 
     }
 
-    public Stack<Dice> getDiceInPyramid() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<Dice> getDiceInPyramid() {
         return diceInPyramid;
     }
 
-    public void setDiceInPyramid(Stack<Dice> diceInPyramid) {
+    public void setDiceInPyramid(List<Dice> diceInPyramid) {
         this.diceInPyramid = diceInPyramid;
     }
 
