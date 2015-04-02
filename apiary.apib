@@ -9,12 +9,13 @@ The backend server with this API implements the 2014 board game of the year "Cam
 ## Games Collection [/games{?status}]
 
 + Parameters
-    + status (optional, string, `PENDING`)
+    + status (optional, string, `OPEN`)
     
         `status` of the Game. 
 
         + Values
-            + `PENDING`
+            + `OPEN`
+            + `FULL`
             + `RUNNING`
             + `FINISHED`
 
@@ -32,7 +33,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "currentPlayer" : null,
                 "players" : [ "owner", "player 1" ],
                 "moves" : [ "1", "2" ],
-                "status" : "PENDING",
+                "status" : "OPEN",
                 "raceTrack" : null,
                 "legBettingArea" : null,
                 "raceBettingArea" : null,
@@ -92,7 +93,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                                 "type" : "User"
                             },
                             "status": {
-                                "enum": ["PENDING", "RUNNING", "FINISHED"]
+                                "enum": ["OPEN", "FULL", "RUNNING", "FINISHED"]
                             },
                             "raceTrack": {
                                 "description": "the race Track",
@@ -135,7 +136,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
     
             {
                 "name": "Camel Run Zürich",
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
             }
             
     + Schema
@@ -144,9 +145,9 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GameRequestBean",
                 "type" : "object",
-                "required" : ["userToken", "name"],
+                "required" : ["token", "name"],
                 "properties" : {
-                    "userToken" : {
+                    "token" : {
                         "description" : "user token obtained from server at login",
                         "type" : "string"
                     },
@@ -174,7 +175,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "id": 3,
                 "game": "Camel Run Zürich",
                 "owner": "067e6162-3b6f-4ae2-a171-2470b63dff00",
-                "status" : "PENDING",
+                "status" : "OPEN",
                 "numberOfMoves" : 0,
                 "numberOfPlayers" : 1,
                 "nextPlayer" : "marcuniq"
@@ -201,7 +202,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                         "type" : "string"
                     },
                     "status": {
-                        "enum": ["PENDING", "RUNNING", "FINISHED"]
+                        "enum": ["OPEN", "FULL", "RUNNING", "FINISHED"]
                     },
                     "numberOfMoves": {
                         "description": "number of moves made by all players",
@@ -236,7 +237,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             {
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
             }
             
     + Schema
@@ -245,9 +246,9 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GamePlayerRequestBean",
                 "type" : "object",
-                "required" : ["userToken"],
+                "required" : ["token"],
                 "properties" : {
-                    "userToken" : {
+                    "token" : {
                         "description" : "user token obtained from server at login",
                         "type" : "string"
                     }
@@ -329,7 +330,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             {
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
             }
             
     + Schema
@@ -338,9 +339,9 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GamePlayerRequestBean",
                 "type" : "object",
-                "required" : ["userToken"],
+                "required" : ["token"],
                 "properties" : {
-                    "userToken" : {
+                    "token" : {
                         "description" : "user token obtained from server at login",
                         "type" : "string"
                     }
@@ -404,7 +405,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             {
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
             }
             
     + Schema
@@ -414,10 +415,10 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "description": "GamePlayerRequestBean",
                 "type" : "object",
                 "required" : [
-                    "userToken"
+                    "token"
                 ],
                 "properties" : {
-                    "userToken" : {
+                    "token" : {
                         "description" : "user token obtained from server at login",
                         "type" : "string"
                     }
@@ -438,7 +439,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             [{
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00",
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00",
                 "move" : "DesertTilePlacing",
                 "legBettingTileColor" : "BLUE",
                 "raceBettingOnWinner" : False,
@@ -446,7 +447,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "desertTilePosition" : 0
             },
             {
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00",
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00",
                 "move" : "DiceRolling",
                 "legBettingTileColor" : "BLUE",
                 "raceBettingOnWinner" : False,
@@ -465,14 +466,14 @@ The backend server with this API implements the 2014 board game of the year "Cam
                     "move": {
                         "description": "GameMoveRequestBean",
                         "type" : "object",
-                        "required" : ["userToken", "move"],
+                        "required" : ["token", "move"],
                         "properties" : {
-                            "userToken" : {
+                            "token" : {
                                 "description" : "user token obtained from server at login",
                                 "type" : "string"
                             },
                             "move" : {
-                                "enum": ["DiceRolling", "LegBetting", "RaceBetting", "DesertTilePlacing"]
+                                "enum": ["DICE_ROLLING", "LEG_BETTING", "RACE_BETTING", "DESERT_TILE_PLACING"]
                             },
                             "legBettingTileColor" : {
                                 "enum": ["BLUE", "YELLOW", "GREEN", "RED", "WHITE"]
@@ -510,8 +511,8 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             {
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00",
-                "move" : "DesertTilePlacing",
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00",
+                "move" : "DESERT_TILE_PLACING",
                 "legBettingTileColor" : "",
                 "raceBettingOnWinner" : False,
                 "desertTileAsOasis" : False,
@@ -524,14 +525,14 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GameMoveRequestBean",
                 "type" : "object",
-                "required" : ["userToken", "move"],
+                "required" : ["token", "move"],
                 "properties" : {
-                    "userToken" : {
+                    "token" : {
                         "description" : "user token obtained from server at login",
                         "type" : "string"
                     },
                     "move" : {
-                        "enum": ["DiceRolling", "LegBetting", "RaceBetting", "DesertTilePlacing"]
+                        "enum": ["DICE_ROLLING", "LEG_BETTING", "RACE_BETTING", "DESERT_TILE_PLACING"]
                     },
                     "legBettingTileColor" : {
                         "enum": ["BLUE", "YELLOW", "GREEN", "RED", "WHITE"]
@@ -581,7 +582,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GameMoveResponseBean",
                 "type" : "object",
-                "required" : ["userToken", "move"],
+                "required" : ["userId", "move"],
                 "properties" : {
                     "userId" : {
                         "description" : "user id",
@@ -789,7 +790,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             {
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
             }
             
     + Schema
@@ -798,9 +799,9 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "Game Race Track Objects",
                 "type" : "object",
-                "required" : ["userToken"],
+                "required" : ["token"],
                 "properties" : {
-                    "userToken" : {
+                    "token" : {
                         "description" : "user token obtained from server at login",
                         "type" : "string"
                     }
@@ -827,7 +828,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             {
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
             }
             
     + Schema
@@ -837,10 +838,10 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "description": "GamePlayerRequestBean",
                 "type" : "object",
                 "required" : [
-                    "userToken"
+                    "token"
                 ],
                 "properties" : {
-                    "userToken" : {
+                    "token" : {
                         "description" : "user token obtained from server at login",
                         "type" : "string"
                     }
@@ -865,7 +866,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             {
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
             }
             
     + Schema
@@ -874,9 +875,9 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GamePlayerRequestBean",
                 "type" : "object",
-                "required" : ["userToken"],
+                "required" : ["token"],
                 "properties" : {
-                    "userToken" : {
+                    "token" : {
                         "description" : "user token obtained from server at login",
                         "type" : "string"
                     }
@@ -1109,7 +1110,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             {
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
             }
             
     + Schema
@@ -1118,9 +1119,9 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "UserLoginLogoutRequestBean",
                 "type" : "object",
-                "required" : ["userToken"],
+                "required" : ["token"],
                 "properties" : {
-                    "userToken" : {
+                    "token" : {
                         "description" : "user token obtained from server at login",
                         "type" : "string"
                     }
@@ -1146,7 +1147,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             {
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
             }
             
     + Schema
@@ -1155,9 +1156,9 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "UserLoginLogoutResponseBean",
                 "type" : "object",
-                "required" : ["userToken"],
+                "required" : ["token"],
                 "properties" : {
-                    "userToken" : {
+                    "token" : {
                         "description" : "user token for further communicatio with server",
                         "type" : "string"
                     }
