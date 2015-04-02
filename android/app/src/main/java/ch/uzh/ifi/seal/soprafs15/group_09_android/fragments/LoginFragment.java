@@ -78,8 +78,8 @@ public class LoginFragment extends Fragment {
         RestService.getInstance(getActivity()).createUser(user, new Callback<RestUri>() {
             @Override
             public void success(RestUri restUri, Response response) {
-                AlertDialog dialog = userCreatedSuccessfullyAlert();
-                dialog.show();
+//                AlertDialog dialog = userCreatedSuccessfullyAlert();
+//                dialog.show();
 
                 /* Start new Activity LobbyActivity and close current Fragment */
                 Intent intent = new Intent();

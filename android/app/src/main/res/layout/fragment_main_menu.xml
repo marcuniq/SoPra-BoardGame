@@ -8,34 +8,34 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".AuthActivity" android:weightSum="1" android:background="#ffdfe836">
+    tools:context=".AuthActivity" android:weightSum="1" android:background="@drawable/camelup">
 
 
-    <Button
-        android:id="@+id/createGameMenuButton"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start|top"
-        android:text="Create New"
-        android:layout_marginBottom="30dp"
-        android:layout_marginTop="150dp"
-        android:background="#ff9080af"/>
-
-    <Button
-        android:id="@+id/listGamesMenuButton"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start|top"
-        android:text="Join Existing"
-        android:layout_marginBottom="30dp"
-        android:layout_marginTop="20dp"
-        android:background="#ff29af64"/>
-
-    <TextView
-        android:id="@+id/logBox"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:layout_weight="0.05"/>
+    <FrameLayout
+            android:layout_width="390dp"
+            android:layout_height="fill_parent" android:layout_gravity="center" android:background="#70d35400">
+        <TextView
+            android:id="@+id/logBox"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_weight="0.05"/>
+        <Button
+            android:id="@+id/listGamesMenuButton"
+            android:layout_width="330dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:text="Join Existing"
+            android:layout_marginTop="50dp"
+            android:background="#ff175a26" android:textColor="#fff" android:focusable="true" android:clickable="true"/>
+        <Button
+            android:id="@+id/createGameMenuButton"
+            android:layout_width="330dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal|top"
+            android:text="Create new Game"
+            android:layout_marginTop="65dp"
+            android:background="#ff175a26" android:textColor="#fff" android:focusable="true" android:clickable="true"/>
+    </FrameLayout>
 
 </LinearLayout>
