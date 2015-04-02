@@ -41,13 +41,22 @@ public class GameMoveServiceImpl extends GameMoveService {
     @Override
     public Move addMove(Long gameId, Move move) {
         Game game = gameRepository.findOne(gameId);
-        //TODO addMove
 
+        if(game != null) {
+            game.addMove(move);
+
+            return move;
+        }
         return null;
     }
 
     @Override
     public Move getMove(Long gameId, Long moveId) {
+        Move move = moveRepository.findOne(moveId);
+
+        if(move != null) {
+            return move;
+        }
         return null;
     }
 }

@@ -59,6 +59,10 @@ public class Game implements Serializable {
 
     }
 
+    public void addMove(Move move) {
+        moves.add(move);
+    }
+
     public void addPlayer(User player){
         players.add(player);
     }
