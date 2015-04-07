@@ -87,8 +87,15 @@ public class GameCreatorFragment extends Fragment {
                 if (game == null){
                     Log.v("GameCreate","Creation Failed. NULL Object returned.");
                 }
+
+                Fragment fragment = GameLobbyFragment.newInstance();
+                Long gameId = game.id();
+                Bundle bundle = new Bundle();
+                bundle.putLong("gameId", gameId);
+                fragment.setArguments(bundle);
+
                  /* See all already created games (testing) */
-                 ((MenuActivity)getActivity()).setFragment(GameLobbyFragment.newInstance());
+                ((MenuActivity) getActivity()).setFragment(fragment);
             }
 
             @Override

@@ -9,15 +9,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameLobbyFragment extends ListFragment {
 
@@ -55,6 +55,7 @@ public class GameLobbyFragment extends ListFragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         arrayAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.fragment_game_lobby,
                 R.id.playerList,
@@ -73,11 +74,14 @@ public class GameLobbyFragment extends ListFragment {
     @Override
     public void onResume(){
         super.onResume();
-        RestService.getInstance(getActivity()).getUsers(new Callback<List<User>>() {
+
+        Long gameId = this.getArguments().getLong("gameId");
+
+        RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<User>>() {
             @Override
-            public void success(List<User> users, Response response) {
-                for (User user : users) {
-                    arrayAdapter.add(user.username());
+            public void success(List<User> players, Response response) {
+                for (User player : players) {
+                    arrayAdapter.add(player.username());
                 }
             }
 

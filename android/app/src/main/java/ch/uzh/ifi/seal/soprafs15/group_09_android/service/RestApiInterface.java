@@ -6,6 +6,7 @@ import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.Path;
 
 import java.util.List;
 
@@ -33,6 +34,15 @@ public interface RestApiInterface {
      */
     @GET("/games")
     void getGames(Callback<List<Game>> callback);
+
+    /**
+     * Returns all players
+     * @param gameId
+     * @param callback
+     * @help  http://stackoverflow.com/questions/20382253/dynamically-add-optional-parameters-to-api-requests
+     */
+    @GET("/games/{gameId}/players")
+    void getPlayers(@Path("gameId") Long gameId, Callback<List<User>> callback);
 
     /**
      * Creates a new game
