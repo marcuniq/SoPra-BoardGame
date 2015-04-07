@@ -45,6 +45,8 @@ public class GameMoveServiceImpl extends GameMoveService {
         if(game != null) {
             game.addMove(move);
 
+            gameRepository.save(game);
+
             return move;
         }
         return null;
