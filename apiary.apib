@@ -30,27 +30,19 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "id" : 3,
                 "name" : "Camel Run Zurich",
                 "owner" : "marcuniq",
-                "currentPlayer" : null,
-                "players" : [ "owner", "player 1" ],
-                "moves" : [ "1", "2" ],
                 "status" : "OPEN",
-                "raceTrack" : null,
-                "legBettingArea" : null,
-                "raceBettingArea" : null,
-                "diceArea" : null
+                "numberOfMoves" : 0,
+                "numberOfPlayers" : 1, 
+                "currentPlayer" : ""
             },
             {
                 "id": 4,
-                "game": "Uni Bern",
+                "name": "Uni Bern",
                 "owner": "niels",
-                "currentPlayer" : null,
-                "players" : [ "owner", "player 1", "player x", "hans" ],
-                "moves" : [ "1", "2", "3" ],
                 "status" : "RUNNING",
-                "raceTrack" : null,
-                "legBettingArea" : null,
-                "raceBettingArea" : null,
-                "diceArea" : null
+                "numberOfMoves" : 7,
+                "numberOfPlayers" : 3, 
+                "currentPlayer" : "josua"
             }]
         
         
@@ -64,7 +56,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "definitions" : {
                     "game": {
                         "type" : "object",
-                        "required" : ["id", "name", "owner", "currentPlayer", "players", "moves", "status", "raceTrack", "legBettingArea", "raceBettingArea", "diceArea"],
+                        "required" : ["id", "name", "owner", "status", "numberOfMoves", "numberOfPlayers", "currentPlayer"],
                         "properties" : {
                             "id" : {
                                 "description" : "game id",
@@ -74,42 +66,24 @@ The backend server with this API implements the 2014 board game of the year "Cam
                                 "description": "name of the game",
                                 "type" : "string"
                             },
-                            "currentPlayer": {
-                                "description": "the current player",
-                                "type" : "User"
-                            },
-                            "players": {
-                                "description": "list of joined players",
-                                "type" : "array",
-                                "items": { "type": "User"}
-                            },
-                            "moves": {
-                                "description": "list of moves",
-                                "type" : "array",
-                                "items": { "type": "Move"}
-                            },
                             "owner": {
-                                "description": "the owner",
-                                "type" : "User"
+                                "description": "token of owner",
+                                "type" : "string"
                             },
                             "status": {
                                 "enum": ["OPEN", "FULL", "RUNNING", "FINISHED"]
                             },
-                            "raceTrack": {
-                                "description": "the race Track",
-                                "type" : "RaceTrack"
+                            "numberOfMoves": {
+                                "description": "number of moves made by all players",
+                                "type" : "integer"
                             },
-                            "legBettingArea": {
-                                "description": "the legBettingArea",
-                                "type" : "LegBettingArea"
+                            "numberOfPlayers": {
+                                "description": "number of players in the game",
+                                "type" : "integer"
                             },
-                            "raceBettingArea": {
-                                "description": "the raceBettingArea",
-                                "type" : "RaceBettingArea"
-                            },
-                            "diceArea": {
-                                "description": "the diceArea",
-                                "type" : "diceArea"
+                            "currentPlayer": {
+                                "description": "username of player whos turn it is",
+                                "type" : "string"
                             }
                         }
                     }
@@ -173,12 +147,12 @@ The backend server with this API implements the 2014 board game of the year "Cam
     
             {   
                 "id": 3,
-                "game": "Camel Run Zürich",
-                "owner": "067e6162-3b6f-4ae2-a171-2470b63dff00",
+                "name": "Camel Run Zürich",
+                "owner": "marcuniq",
                 "status" : "OPEN",
                 "numberOfMoves" : 0,
                 "numberOfPlayers" : 1,
-                "nextPlayer" : "marcuniq"
+                "currentPlayer" : "marcuniq"
             }
 
     + Schema
@@ -187,13 +161,13 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GameResponseBean",
                 "type" : "object",
-                "required" : ["id", "game", "owner", "status", "numberOfMoves", "numberOfPlayers", "nextPlayer"],
+                "required" : ["id", "name", "owner", "status", "numberOfMoves", "numberOfPlayers", "currentPlayer"],
                 "properties" : {
                     "id" : {
                         "description" : "game id",
                         "type" : "integer"
                     },
-                    "game": {
+                    "name": {
                         "description": "name of the game",
                         "type" : "string"
                     },
@@ -212,8 +186,8 @@ The backend server with this API implements the 2014 board game of the year "Cam
                         "description": "number of players in the game",
                         "type" : "integer"
                     },
-                    "nextPlayer": {
-                        "description": "username of player whos turn it is next",
+                    "currentPlayer": {
+                        "description": "username of player whos turn it is",
                         "type" : "string"
                     }
                 }
@@ -268,15 +242,15 @@ The backend server with this API implements the 2014 board game of the year "Cam
 
             [{   
                 "id": 3,
-                "name": "Marco",
                 "username": "marcuniq",
-                "games" : ["Camel Run Zürich"]
+                "money" : 7,
+                "numberOfMoves" : 5
             },
             {   
                 "id": 4,
-                "name": "Josua",
                 "username": "jofroe",
-                "games" : ["Camel Run Zürich"]
+                "money" : 9,
+                "numberOfMoves" : 5
             }]
             
     + Schema
@@ -289,23 +263,23 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "definitions" : {
                     "gameplayer": {
                         "type" : "object",
-                        "required" : ["id", "name", "username", "games"],
+                        "required" : ["id", "username", "money", "numberOfMoves"],
                         "properties" : {
                             "id" : {
-                                "description" : "game id",
+                                "description" : "user id",
                                 "type" : "integer"
-                            },
-                            "name": {
-                                "description": "name of player",
-                                "type" : "string"
-                            },
+                            }
                             "username": {
                                 "description": "username of player",
                                 "type" : "string"
                             },
-                            "games": {
-                                "type" : "array",
-                                "items": { "type": "string"}
+                            "money": {
+                                "type" : "integer",
+                                "description": "amount of money"
+                            },
+                            "numberOfMoves": {
+                                "type" : "integer",
+                                "description": ""
                             }
                         }
                     }
