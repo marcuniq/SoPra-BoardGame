@@ -68,7 +68,7 @@ public class GameMapperServiceImpl extends GameMapperService {
             //tmpGameResponseBean.setStatus(game.getStatus());
             //tmpGameResponseBean.setNumberOfMoves(game.getMoves().size());
             //tmpGameResponseBean.setNumberOfPlayers(game.getPlayers().size());
-            //tmpGameResponseBean.setNextPlayer(game.getNextPlayer().getUsername());
+            //tmpGameResponseBean.setCurrentPlayer(game.getCurrentPlayer().getUsername());
 
             result.add(tmpGameResponseBean);
         }
@@ -84,7 +84,7 @@ public class GameMapperServiceImpl extends GameMapperService {
     @Override
     public GamePlayerResponseBean toGamePlayerResponseBean(User player) {
         GamePlayerResponseBean gamePlayerResponseBean = new GamePlayerResponseBean();
-        gamePlayerResponseBean.setUserId(player.getId());
+        gamePlayerResponseBean.setId(player.getId());
         gamePlayerResponseBean.setNumberOfMoves(player.getMoves().size());
 
         return gamePlayerResponseBean;
@@ -98,7 +98,7 @@ public class GameMapperServiceImpl extends GameMapperService {
         for(User player : players) {
             tmpGamePlayerResponseBean = new GamePlayerResponseBean();
 
-            tmpGamePlayerResponseBean.setUserId(player.getId());
+            tmpGamePlayerResponseBean.setId(player.getId());
             tmpGamePlayerResponseBean.setNumberOfMoves(player.getMoves().size());
 
             result.add(tmpGamePlayerResponseBean);
