@@ -8,39 +8,42 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".AuthActivity" android:weightSum="1" android:background="#ffdfe836">
+    tools:context=".AuthActivity" android:weightSum="1" android:background="@drawable/camelup">
 
-    <EditText
-        android:id="@+id/etNewGameName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="SampleGame"
-        android:layout_marginTop="100dp"
-        android:gravity="center" />
-
-    <TextView
-        android:id="@+id/tvNewGameName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Name of the Game"
-        android:layout_gravity="center_horizontal" />
-
-    <Button
-        android:id="@+id/createGameButton"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start|top"
-        android:text="Create New Game"
-        android:layout_marginBottom="30dp"
-        android:layout_marginTop="50dp"
-        android:background="#ff9080af"/>
-
-    <TextView
-        android:id="@+id/logBox"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="" android:layout_weight="0.05"/>
+    <FrameLayout
+            android:layout_width="390dp"
+            android:layout_height="320dp" android:layout_gravity="center" android:background="#70d35400"
+            android:alpha="1">
+        <TextView
+            android:id="@+id/tvNewGameName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name of the game"
+            android:textSize="18dp"
+            android:textColor="#000000" android:layout_gravity="center_horizontal|top" android:textStyle="bold"
+            android:layout_marginTop="65dp"/>
+        <TextView
+            android:id="@+id/logBox"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="" android:layout_weight="0.05"/>
+        <Button
+            android:id="@+id/createGameButton"
+            android:layout_width="330dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:text="Create new Game"
+            android:layout_marginTop="40dp"
+            android:background="#ff175a26" android:textColor="#ffffff"/>
+        <EditText
+            android:id="@+id/etNewGameName"
+            android:layout_width="330dp"
+            android:layout_height="50dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Sample Game"
+            android:gravity="center" android:background="#eeeeeeee" android:layout_gravity="center"
+            android:autoText="false" android:alpha="1" android:layout_marginTop="-40dp"/>
+    </FrameLayout>
 
 </LinearLayout>

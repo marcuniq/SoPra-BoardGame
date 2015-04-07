@@ -1,8 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
-import android.app.ActivityManager;
 import android.os.Bundle;
-import android.os.UserManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,20 +9,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RestUri;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameStatus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CreateGameFragment extends Fragment {
 
@@ -92,13 +88,13 @@ public class CreateGameFragment extends Fragment {
                                  players, null, GameStatus.TEST, null,
                                  null, null, null);
 
-        RestService.getInstance(getActivity()).createGame(game, new Callback<RestUri>() {
+        RestService.getInstance(getActivity()).createGame(game, new Callback<Game>() {
             @Override
-            public void success(RestUri restUri, Response response) {
+            public void success(Game game, Response response) {
 
                 /* TODO When the server doesn't create the game as supposed, we get a NULL Object.
                 *  This is a problem because we cannot access e.g. the restUri etc. */
-                if (restUri == null){
+                if (game == null){
                     Log.v("GameCreate","Creation Failed. NULL Object returned.");
                 }
                  /* See all already created games (testing) */

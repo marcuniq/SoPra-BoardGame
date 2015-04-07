@@ -4,16 +4,20 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:padding="6dip"
-    android:background="#ffdfe836"
+    android:background="@drawable/camelup"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/game_lobby_item_label"
-        android:layout_width="fill_parent"
-        android:layout_height="48dip"
-        android:singleLine="true"
-        android:text="Description"
-        android:textSize="24sp"
-        android:background="#ffdfe836"/>
+    <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" android:background="#70d35400">
+        <TextView
+            android:id="@+id/game_lobby_item_label"
+            android:layout_width="fill_parent"
+            android:layout_height="48dip"
+            android:singleLine="true"
+            android:text="Description"
+            android:textSize="24sp"
+            android:textColor="#000000" android:layout_gravity="left|top"/>
+    </FrameLayout>
 
 </LinearLayout>

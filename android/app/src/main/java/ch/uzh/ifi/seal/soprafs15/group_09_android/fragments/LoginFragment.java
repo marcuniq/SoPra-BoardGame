@@ -1,7 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
-import android.content.Intent;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,13 +10,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RestUri;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
-
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -75,11 +72,11 @@ public class LoginFragment extends Fragment {
 
         User user = User.create(username, age);
 
-        RestService.getInstance(getActivity()).createUser(user, new Callback<RestUri>() {
+        RestService.getInstance(getActivity()).createUser(user, new Callback<User>() {
             @Override
-            public void success(RestUri restUri, Response response) {
-                AlertDialog dialog = userCreatedSuccessfullyAlert();
-                dialog.show();
+            public void success(User user, Response response) {
+//                AlertDialog dialog = userCreatedSuccessfullyAlert();
+//                dialog.show();
 
                 /* Start new Activity LobbyActivity and close current Fragment */
                 Intent intent = new Intent();
