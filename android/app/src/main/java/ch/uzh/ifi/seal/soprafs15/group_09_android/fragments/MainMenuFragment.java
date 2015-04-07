@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MainActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 
 /**
@@ -68,7 +67,7 @@ public class MainMenuFragment extends Fragment {
      * @param v the current View
      */
     private void onClickCreateGameMenuButton(View v) {
-        ((MenuActivity)getActivity()).pushFragment(CreateGameFragment.newInstance());
+        ((MenuActivity)getActivity()).pushFragment(GameCreatorFragment.newInstance());
     }
 
     /**
@@ -77,7 +76,7 @@ public class MainMenuFragment extends Fragment {
      * @param v the current View
      */
     private void onClickListGamesMenuButton(View v) {
-        ((MenuActivity)getActivity()).pushFragment(GamesListFragment.newInstance());
+        ((MenuActivity)getActivity()).pushFragment(GameListFragment.newInstance());
     }
 
     @Override

@@ -19,20 +19,20 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class GamesListFragment extends ListFragment {
+public class GameListFragment extends ListFragment {
 
     private TextView tvLogBox;
     private ArrayAdapter<String> arrayAdapter; // adapts the ArrayList of Games to the ListView
 
     /* empty constructor */
-    public GamesListFragment() {}
+    public GameListFragment() {}
 
     /**
      * Called after User has successfully logged in.
      * @return A new instance of fragment GamesListFragment.
      */
-    public static GamesListFragment newInstance() {
-        return new GamesListFragment();
+    public static GameListFragment newInstance() {
+        return new GameListFragment();
     }
 
     /**
@@ -56,8 +56,8 @@ public class GamesListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         arrayAdapter = new ArrayAdapter<>(getActivity(),
-                R.layout.fragment_games_list,
-                R.id.games_list_item_label,
+                R.layout.fragment_game_list,
+                R.id.gameList,
                 new ArrayList<String>());
         setListAdapter(arrayAdapter);
 

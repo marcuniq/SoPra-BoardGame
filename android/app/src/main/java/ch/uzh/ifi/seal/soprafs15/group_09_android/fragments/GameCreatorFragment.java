@@ -12,22 +12,16 @@ import android.widget.TextView;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameStatus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class CreateGameFragment extends Fragment {
+public class GameCreatorFragment extends Fragment {
 
     private EditText etName;
     private TextView tvLogBox;
     private Button createGameButton;
-    private User user;
 
     /**
      * Use this factory method to create a new instance of
@@ -35,11 +29,11 @@ public class CreateGameFragment extends Fragment {
      *
      * @return A new instance of fragment LoginFragment.
      */
-    public static CreateGameFragment newInstance() {
-        return new CreateGameFragment();
+    public static GameCreatorFragment newInstance() {
+        return new GameCreatorFragment();
     }
 
-    public CreateGameFragment() { }
+    public GameCreatorFragment() { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +50,7 @@ public class CreateGameFragment extends Fragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_create_game, container, false);
+        View v = inflater.inflate(R.layout.fragment_game_creator, container, false);
 
         etName = (EditText) v.findViewById(R.id.etNewGameName);
         tvLogBox = (TextView) v.findViewById(R.id.tvNewGameName);
@@ -80,13 +74,9 @@ public class CreateGameFragment extends Fragment {
      */
     private void onClickCreateGameButton(View v) {
         String name = etName.getText().toString();
-        List<User> players = new ArrayList<User>();
-        players.add(user);
+        String token = "067e6162-3b6f-4ae2-a171-2470b63dff00"; // TODO: get token via http://developer.android.com/training/basics/data-storage/shared-preferences.html
 
-//        TODO: We get here an error when we create a new game because user is null. How could we access the current user?
-        Game game = Game.create( null, name, user, null,
-                                 players, null, GameStatus.TEST, null,
-                                 null, null, null);
+        Game game = Game.create( null, name, token, null, null, null, null, null );
 
         RestService.getInstance(getActivity()).createGame(game, new Callback<Game>() {
             @Override

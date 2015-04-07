@@ -12,7 +12,7 @@
             android:layout_height="fill_parent" android:background="#70d35400">
 
         <TextView
-                android:id="@+id/games_list_item_label"
+                android:id="@+id/gameList"
                 android:layout_width="fill_parent"
                 android:layout_height="48dip"
                 android:singleLine="true"

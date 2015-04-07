@@ -57,7 +57,7 @@ public class GameLobbyFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         arrayAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.fragment_game_lobby,
-                R.id.game_lobby_item_label,
+                R.id.playerList,
                 new ArrayList<String>());
         setListAdapter(arrayAdapter);
 

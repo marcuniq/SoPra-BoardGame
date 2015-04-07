@@ -16,36 +16,28 @@ public abstract class Game implements Parcelable {
     @Nullable
     public abstract Long id();
     public abstract String name();
-    public abstract User owner();
     @Nullable
-    public abstract Integer currentPlayer();
-    public abstract List<User> players(); // at least the owner
+    public abstract String token();
     @Nullable
-    public abstract List<Move> moves();
+    public abstract String owner();
+    @Nullable
     public abstract GameStatus status();
     @Nullable
-    public abstract RaceTrack raceTrack();
+    public abstract Integer numberOfMoves();
     @Nullable
-    public abstract LegBettingArea legBettingArea();
+    public abstract Integer numberOfPlayers();
     @Nullable
-    public abstract RaceBettingArea raceBettingArea();
-    @Nullable
-    public abstract DiceArea diceArea();
+    public abstract String currentPlayer();
 
     public static Game create( Long id,
                                String name,
-                               User owner,
-                               Integer currentPlayer,
-                               List<User> players,
-                               List<Move> moves,
+                               String token,
+                               String owner,
                                GameStatus status,
-                               RaceTrack raceTrack,
-                               LegBettingArea legBettingArea,
-                               RaceBettingArea raceBettingArea,
-                               DiceArea diceArea ) {
-        return new AutoParcel_Game( id, name, owner, currentPlayer,
-                                    players, moves, status, raceTrack,
-                                    legBettingArea, raceBettingArea, diceArea);
+                               Integer numberOfMoves,
+                               Integer numberOfPlayers,
+                               String currentPlayer ) {
+        return new AutoParcel_Game( id, name, token, owner, status, numberOfMoves, numberOfPlayers, currentPlayer );
     }
 
 }

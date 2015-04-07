@@ -10,14 +10,31 @@
     <FrameLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" android:background="#70d35400">
+        <Button
+                android:id="@+id/startButton"
+                android:layout_width="205dp"
+                android:layout_height="wrap_content"
+                android:text="Start Game"
+                android:background="#ff175a26" android:maxHeight="50dp"
+                android:minHeight="50dp" android:textColor="#fff" android:textSize="18dp" android:layout_gravity="right|bottom"
+                android:alpha="1" android:layout_marginBottom="20dp" android:clickable="true" android:focusable="true"
+                android:layout_marginRight="20dp"/>
         <TextView
-            android:id="@+id/game_lobby_item_label"
-            android:layout_width="fill_parent"
-            android:layout_height="48dip"
+                android:id="@+id/playerListLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="List of players"
+                android:textSize="18dp"
+                android:textColor="#000000" android:layout_gravity="left|center_vertical" android:textStyle="bold"
+                android:layout_marginTop="-30dp"/>
+        <TextView
+            android:id="@+id/playerList"
+            android:layout_width="304dp"
+            android:layout_height="30dp"
             android:singleLine="true"
-            android:text="Description"
+            android:text="Player List"
             android:textSize="24sp"
-            android:textColor="#000000" android:layout_gravity="left|top"/>
+            android:textColor="#000000" android:layout_gravity="left|center_vertical" android:background="#eeeeeeee"/>
     </FrameLayout>
 
 </LinearLayout>
