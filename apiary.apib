@@ -337,8 +337,10 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             {   
-                "userId": 3,
-                "numberOfMoves" : 0
+                "id": 3,
+                "username": "marcuniq",
+                "money" : 7,
+                "numberOfMoves" : 5
             }
 
     + Schema
@@ -347,15 +349,23 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GamePlayerResponseBean",
                 "type" : "object",
-                "required" : ["userId", "numberOfMoves"],
+                "required" : ["id", "username", "money", "numberOfMoves"],
                 "properties" : {
-                    "userId" : {
+                    "id" : {
                         "description" : "user id",
+                        "type" : "integer"
+                    }
+                    "username": {
+                        "description": "username of player",
                         "type" : "string"
                     },
-                    "numberOfMoves" : {
-                        "description" : "number of moves done by this player for this game",
-                        "type" : "integer"
+                    "money": {
+                        "type" : "integer",
+                        "description": "amount of money"
+                    },
+                    "numberOfMoves": {
+                        "type" : "integer",
+                        "description": ""
                     }
                 }
             }
@@ -413,20 +423,25 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             [{
-                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00",
-                "move" : "DesertTilePlacing",
-                "legBettingTileColor" : "BLUE",
-                "raceBettingOnWinner" : False,
-                "desertTileAsOasis" : False,
-                "desertTilePosition" : 0
+                "id" : 72
+                "userId": 3,
+                "move" : "LEG_BETTING",
+                "legBettingTile" : {
+                    "id" : 23,
+                    "camel" : {"color" : "ORANGE"},
+                    "leadingPositionGain" : 5,
+                    "secondPositionGain" : 3,
+                    "otherPositionLoss" : 1
+                }
             },
             {
-                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00",
-                "move" : "DiceRolling",
-                "legBettingTileColor" : "BLUE",
-                "raceBettingOnWinner" : False,
-                "desertTileAsOasis" : False,
-                "desertTilePosition" : 0
+                "id" : 73
+                "userId": 3,
+                "move" : "DICE_ROLLING",
+                "dice" : {
+                    "color" : "WHITE",
+                    "faceValue" : 2
+                }
             }]
 
     + Schema
@@ -438,31 +453,20 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "items": { "$ref": "#/definitions/move" },
                 "definitions" : {
                     "move": {
-                        "description": "GameMoveRequestBean",
+                        "description": "GameMoveResponseBean",
                         "type" : "object",
-                        "required" : ["token", "move"],
+                        "required" : ["id", "userId", "move"],
                         "properties" : {
-                            "token" : {
-                                "description" : "user token obtained from server at login",
-                                "type" : "string"
+                            "id" : {
+                                "description" : "move id",
+                                "type" : "integer"
+                            },
+                            "userId" : {
+                                "description" : "user id",
+                                "type" : "integer"
                             },
                             "move" : {
                                 "enum": ["DICE_ROLLING", "LEG_BETTING", "RACE_BETTING", "DESERT_TILE_PLACING"]
-                            },
-                            "legBettingTileColor" : {
-                                "enum": ["BLUE", "YELLOW", "GREEN", "RED", "WHITE"]
-                            },
-                            "raceBettingOnWinner" : {
-                                "description" : "",
-                                "type" : "boolean"
-                            },
-                            "desertTileAsOasis" : {
-                                "description" : "",
-                                "type" : "boolean"
-                            },
-                            "desertTilePosition" : {
-                                "description" : "",
-                                "type" : "integer"
                             }
                         }
                     }
@@ -487,10 +491,10 @@ The backend server with this API implements the 2014 board game of the year "Cam
             {
                 "token": "067e6162-3b6f-4ae2-a171-2470b63dff00",
                 "move" : "DESERT_TILE_PLACING",
-                "legBettingTileColor" : "",
-                "raceBettingOnWinner" : False,
-                "desertTileAsOasis" : False,
-                "desertTilePosition" : 0
+                "legBettingTileColor" : null,
+                "raceBettingOnWinner" : null,
+                "desertTileAsOasis" : True,
+                "desertTilePosition" : 5
             }
             
     + Schema
@@ -542,12 +546,16 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             {
-                "userId": 5,
-                "move" : "DesertTilePlacing",
-                "legBettingTile" : {},
-                "raceBettingOnWinner" : False,
-                "desertTileAsOasis" : False,
-                "desertTilePosition" : 0
+                "id" : 72
+                "userId": 3,
+                "move" : "LEG_BETTING",
+                "legBettingTile" : {
+                    "id" : 23,
+                    "camel" : {"color" : "ORANGE"},
+                    "leadingPositionGain" : 5,
+                    "secondPositionGain" : 3,
+                    "otherPositionLoss" : 1
+                }
             }
             
     + Schema
@@ -556,30 +564,18 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GameMoveResponseBean",
                 "type" : "object",
-                "required" : ["userId", "move"],
+                "required" : ["id", "userId", "move"],
                 "properties" : {
+                    "id" : {
+                        "description" : "move id",
+                        "type" : "integer"
+                    },
                     "userId" : {
                         "description" : "user id",
                         "type" : "integer"
                     },
                     "move" : {
-                        "enum": ["DiceRolling", "LegBetting", "RaceBetting", "DesertTilePlacing"]
-                    },
-                    "legBettingTile" : {
-                        "description" : "leg betting tile object with leadingCamelGain etc"
-                        "type" : "object"
-                    },
-                    "raceBettingOnWinner" : {
-                        "description" : "",
-                        "type" : "boolean"
-                    },
-                    "desertTileAsOasis" : {
-                        "description" : "",
-                        "type" : "boolean"
-                    },
-                    "desertTilePosition" : {
-                        "description" : "",
-                        "type" : "integer"
+                        "enum": ["DICE_ROLLING", "LEG_BETTING", "RACE_BETTING", "DESERT_TILE_PLACING"]
                     }
                 }
             }
