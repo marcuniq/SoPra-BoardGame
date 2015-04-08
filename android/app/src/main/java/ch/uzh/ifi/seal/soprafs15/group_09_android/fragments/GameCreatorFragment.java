@@ -76,7 +76,9 @@ public class GameCreatorFragment extends Fragment {
         String name = etName.getText().toString();
         String token = "067e6162-3b6f-4ae2-a171-2470b63dff00"; // TODO: get token via http://developer.android.com/training/basics/data-storage/shared-preferences.html
 
-        Game game = Game.create( null, name, token, null, null, null, null, null );
+        /* TODO correct naming of null values */
+        Game game = Game.create( name,                  // name of the game
+                                 token);                // token of current user
 
         RestService.getInstance(getActivity()).createGame(game, new Callback<Game>() {
             @Override
@@ -88,8 +90,15 @@ public class GameCreatorFragment extends Fragment {
                     Log.v("GameCreate","Creation Failed. NULL Object returned.");
                 }
 
-                Fragment fragment = GameLobbyFragment.newInstance();
+
                 Long gameId = game.id();
+                if (gameId == null){
+                    Log.v("GameCreate","Creation Failed. Game Id is NULL.");
+                    gameId = 1L;
+                }
+
+                Fragment fragment = GameLobbyFragment.newInstance();
+
                 Bundle bundle = new Bundle();
                 bundle.putLong("gameId", gameId);
                 fragment.setArguments(bundle);

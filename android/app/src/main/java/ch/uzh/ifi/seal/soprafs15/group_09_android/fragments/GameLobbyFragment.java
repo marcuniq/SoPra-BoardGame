@@ -10,8 +10,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.UserArrayAdapter;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -55,16 +57,15 @@ public class GameLobbyFragment extends ListFragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_game_lobby, container, false);
 
         arrayAdapter = new ArrayAdapter<>(getActivity(),
-                R.layout.fragment_game_lobby,
-                R.id.playerList,
+                R.layout.player_list,
+                R.id.player_list_item,
                 new ArrayList<String>());
         setListAdapter(arrayAdapter);
 
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-
-        return rootView;
+        return v;
     }
 
     /**
@@ -105,7 +106,7 @@ public class GameLobbyFragment extends ListFragment {
 
         /* For now just display what item has been selected */
         String item = (String) getListAdapter().getItem(position);
-        Toast.makeText(v.getContext(), "You joined the game \"" + item + "\"", Toast.LENGTH_LONG).show();
+        Toast.makeText(v.getContext(), "You selected user \"" + item + "\"", Toast.LENGTH_LONG).show();
     }
 }
 

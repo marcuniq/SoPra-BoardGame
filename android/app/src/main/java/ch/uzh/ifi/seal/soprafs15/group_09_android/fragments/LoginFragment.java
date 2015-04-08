@@ -4,16 +4,21 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
+
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -33,44 +38,22 @@ public class LoginFragment extends Fragment {
      */
 
     public static LoginFragment newInstance() {
-        LoginFragment fragment = new LoginFragment();
-
-        /*
-        * To pass objects and parameters to fragments, use the Bundle-Class
-        *
-        * Bundle args = new Bundle();
-        * args.putString(ARG_PARAM1, param1);
-        * args.putString(ARG_PARAM2, param2);
-        * fragment.setArguments(args);
-        */
-
-        return fragment;
+        return new LoginFragment();
     }
 
-    public LoginFragment() {
-        // Required empty public constructor
-    }
+    public LoginFragment() { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        /*
-        *   To retrieve passed arguments to a fragment:
-        *
-        *   if (getArguments() != null) {
-        *       mParam1 = getArguments().getString(ARG_PARAM1);
-        *       mParam2 = getArguments().getString(ARG_PARAM2);
-        *   }
-        */
-
     }
 
     private void onClickCreateUserBtn(View v) {
         final String username = etUsername.getText().toString();
         Integer age = Integer.parseInt(etAge.getText().toString());
 
-        User user = User.create(username, age);
+        User user = User.create( username,              // username
+                                 age);                  // age
 
         RestService.getInstance(getActivity()).createUser(user, new Callback<User>() {
             @Override
@@ -78,10 +61,17 @@ public class LoginFragment extends Fragment {
 //                AlertDialog dialog = userCreatedSuccessfullyAlert();
 //                dialog.show();
 
+                if (user == null){
+                    Log.v("UserCreate", "Creation Failed. NULL Object returned.");
+                    Log.v("UserCreate", new Gson().toJson(user));
+                } else {
+
                 /* Start new Activity LobbyActivity and close current Fragment */
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), MenuActivity.class);
+                intent.putExtra("user", user);
                 startActivity(intent);
+                }
             }
 
             @Override

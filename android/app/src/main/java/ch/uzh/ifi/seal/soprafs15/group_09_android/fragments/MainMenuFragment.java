@@ -10,6 +10,7 @@ import android.widget.Button;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 
 /**
  * This Fragment displays the Main Menu
@@ -25,7 +26,6 @@ public class MainMenuFragment extends Fragment {
     public static MainMenuFragment newInstance() {
         return new MainMenuFragment();
     }
-
 
     /**
      * Displays two buttons for navigation:
@@ -77,10 +77,5 @@ public class MainMenuFragment extends Fragment {
      */
     private void onClickListGamesMenuButton(View v) {
         ((MenuActivity)getActivity()).pushFragment(GameListFragment.newInstance());
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 }
