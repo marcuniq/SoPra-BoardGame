@@ -14,6 +14,8 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
+
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.UserStatus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -70,7 +72,8 @@ public class LoginFragment extends Fragment {
         final String username = etUsername.getText().toString();
         Integer age = Integer.parseInt(etAge.getText().toString());
 
-        User user = User.create(username, age);
+        User user = User.create( username,              // username
+                                 age);                  // age
 
         RestService.getInstance(getActivity()).createUser(user, new Callback<User>() {
             @Override
@@ -81,6 +84,7 @@ public class LoginFragment extends Fragment {
                 /* Start new Activity LobbyActivity and close current Fragment */
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), MenuActivity.class);
+                intent.putExtra("user", user);
                 startActivity(intent);
             }
 

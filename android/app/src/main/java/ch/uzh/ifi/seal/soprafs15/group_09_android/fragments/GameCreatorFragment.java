@@ -38,6 +38,7 @@ public class GameCreatorFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = getArguments().getParcelable("user");
     }
 
     /**
@@ -76,7 +77,15 @@ public class GameCreatorFragment extends Fragment {
         String name = etName.getText().toString();
         String token = "067e6162-3b6f-4ae2-a171-2470b63dff00"; // TODO: get token via http://developer.android.com/training/basics/data-storage/shared-preferences.html
 
-        Game game = Game.create( null, name, token, null, null, null, null, null );
+        /* TODO correct naming of null values */
+        Game game = Game.create( null,                  // game id
+                                 name,                  // name of the game
+                                 token,                 // host/owner
+                                 null,                  // current player
+                                 null,                  // List of players
+                                 null,                  // List of moves
+                                 null,                  // Game status
+                                 null );                // DiceArea
 
         RestService.getInstance(getActivity()).createGame(game, new Callback<Game>() {
             @Override

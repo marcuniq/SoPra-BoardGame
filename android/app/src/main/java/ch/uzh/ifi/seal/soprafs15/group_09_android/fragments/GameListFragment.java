@@ -5,7 +5,6 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,7 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameArrayAdapter;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GenericArrayAdapter;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -22,7 +24,8 @@ import retrofit.client.Response;
 public class GameListFragment extends ListFragment {
 
     private TextView tvLogBox;
-    private ArrayAdapter<String> arrayAdapter; // adapts the ArrayList of Games to the ListView
+    private GameArrayAdapter gameArrayAdapter; // adapts the ArrayList of Games to the ListView
+    private User user;
 
     /* empty constructor */
     public GameListFragment() {}
@@ -42,6 +45,7 @@ public class GameListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = getArguments().getParcelable("user");
     }
 
     /**
@@ -55,11 +59,11 @@ public class GameListFragment extends ListFragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        arrayAdapter = new ArrayAdapter<>(getActivity(),
-                R.layout.fragment_game_list,
-                R.id.gameList,
-                new ArrayList<String>());
-        setListAdapter(arrayAdapter);
+        gameArrayAdapter = new GameArrayAdapter(getActivity(),
+/*                R.layout.fragment_games_list,
+                R.id.games_list_item_label,*/
+                new ArrayList<Game>());
+        setListAdapter(gameArrayAdapter);
 
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
 
@@ -77,7 +81,7 @@ public class GameListFragment extends ListFragment {
             @Override
             public void success(List<Game> games, Response response) {
                 for (Game game : games) {
-                    arrayAdapter.add(game.name());
+                    gameArrayAdapter.add(game);
                 }
             }
             @Override

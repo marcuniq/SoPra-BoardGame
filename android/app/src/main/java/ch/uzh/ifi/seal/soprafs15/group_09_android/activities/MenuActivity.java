@@ -1,10 +1,12 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.fragments.MainMenuFragment;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 
 public class MenuActivity extends MainActivity {
 
@@ -13,7 +15,9 @@ public class MenuActivity extends MainActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         if (savedInstanceState == null) {
-            setFragment(MainMenuFragment.newInstance());
+            User user = getIntent().getParcelableExtra("user");
+
+            setFragment(MainMenuFragment.newInstance(user));
         }
     }
 
