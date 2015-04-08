@@ -1,11 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.controller;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.*;
-import ch.uzh.ifi.seal.soprafs15.model.User;
-import ch.uzh.ifi.seal.soprafs15.model.game.Game;
-import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 import ch.uzh.ifi.seal.soprafs15.service.*;
-import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +34,6 @@ public class GameServiceController extends GenericService {
     @Autowired
     protected GameActionService gameActionService;
 
-    @Autowired
-    protected GameMapperService gameMapperService;
 
 	private final String CONTEXT = "/games";
 
@@ -55,9 +49,7 @@ public class GameServiceController extends GenericService {
 		logger.debug("listGames");
 
         try {
-            List<Game> games = gameService.listGames();
-            List<GameResponseBean> result = gameMapperService.toGameResponseBean(games);
-
+            List<GameResponseBean> result = gameService.listGames();
             return result;
         } catch (Exception e){
             return null;
@@ -76,10 +68,7 @@ public class GameServiceController extends GenericService {
 		logger.debug("addGame: " + gameRequestBean);
 
         try {
-            Game game = gameMapperService.toGame(gameRequestBean);
-            game = gameService.addGame(game);
-            GameResponseBean result = gameMapperService.toGameResponseBean(game);
-
+            GameResponseBean result = gameService.addGame(gameRequestBean);
             return result;
         } catch (Exception e){
             return null;
@@ -97,9 +86,7 @@ public class GameServiceController extends GenericService {
 		logger.debug("getGame: " + gameId);
 
         try {
-            Game game = gameService.getGame(gameId);
-            GameResponseBean result = gameMapperService.toGameResponseBean(game);
-
+            GameResponseBean result = gameService.getGame(gameId);
             return result;
         } catch (Exception e){
             return null;
@@ -118,10 +105,7 @@ public class GameServiceController extends GenericService {
 		logger.debug("startGame: " + gameId);
 
         try {
-            User user = gameMapperService.toUser(gamePlayerRequestBean);
-            Game game = gameActionService.startGame(gameId, user);
-            GameResponseBean result = gameMapperService.toGameResponseBean(game);
-
+            GameResponseBean result = gameActionService.startGame(gameId, gamePlayerRequestBean);
             return result;
         } catch (Exception e){
             return null;
@@ -140,10 +124,7 @@ public class GameServiceController extends GenericService {
 		logger.debug("startGame: " + gameId);
 
         try {
-            User user = gameMapperService.toUser(gamePlayerRequestBean);
-            Game game = gameActionService.stopGame(gameId, user);
-            GameResponseBean result = gameMapperService.toGameResponseBean(game);
-
+            GameResponseBean result = gameActionService.stopGame(gameId, gamePlayerRequestBean);
             return result;
         } catch (Exception e){
             return null;
@@ -162,10 +143,7 @@ public class GameServiceController extends GenericService {
         logger.debug("start fast mode: " + gameId);
 
         try {
-            User user = gameMapperService.toUser(gamePlayerRequestBean);
-            Game game = gameActionService.startFastMode(gameId, user);
-            GameResponseBean result = gameMapperService.toGameResponseBean(game);
-
+            GameResponseBean result = gameActionService.startFastMode(gameId, gamePlayerRequestBean);
             return result;
         } catch (Exception e){
             return null;
@@ -184,9 +162,7 @@ public class GameServiceController extends GenericService {
 		logger.debug("listMoves");
 
         try {
-            List<Move> moves = gameMoveService.listMoves(gameId);
-            List<GameMoveResponseBean> result = gameMapperService.toGameMoveResponseBean(moves);
-
+            List<GameMoveResponseBean> result = gameMoveService.listMoves(gameId);
             return result;
         } catch (Exception e){
             return null;
@@ -205,10 +181,7 @@ public class GameServiceController extends GenericService {
 		logger.debug("addMove: " + gameMoveRequestBean);
 
         try {
-            Move move = gameMapperService.toMove(gameMoveRequestBean);
-            move = gameMoveService.addMove(gameId, move);
-            GameMoveResponseBean result = gameMapperService.toGameMoveResponseBean(move);
-
+            GameMoveResponseBean result = gameMoveService.addMove(gameId, gameMoveRequestBean);
             return result;
         } catch (Exception e){
             return null;
@@ -227,9 +200,7 @@ public class GameServiceController extends GenericService {
 		logger.debug("getMove: " + gameId);
 
         try {
-            Move move = gameMoveService.getMove(gameId, moveId);
-            GameMoveResponseBean result = gameMapperService.toGameMoveResponseBean(move);
-
+            GameMoveResponseBean result = gameMoveService.getMove(gameId, moveId);
             return result;
         } catch (Exception e){
             return null;
@@ -248,9 +219,7 @@ public class GameServiceController extends GenericService {
 		logger.debug("listPlayers");
 
         try {
-            List<User> players = gamePlayerService.listPlayer(gameId);
-            List<GamePlayerResponseBean> result = gameMapperService.toGamePlayerResponseBean(players);
-
+            List<GamePlayerResponseBean> result = gamePlayerService.listPlayer(gameId);
             return result;
         } catch (Exception e){
             return null;
@@ -269,10 +238,7 @@ public class GameServiceController extends GenericService {
 		logger.debug("addPlayer: " + gamePlayerRequestBean);
 
         try {
-            User player = gameMapperService.toUser(gamePlayerRequestBean);
-            player = gamePlayerService.addPlayer(gameId, player);
-            GamePlayerResponseBean result = gameMapperService.toGamePlayerResponseBean(player);
-
+            GamePlayerResponseBean result = gamePlayerService.addPlayer(gameId, gamePlayerRequestBean);
             return result;
         } catch (Exception e) {
             return null;
@@ -291,9 +257,7 @@ public class GameServiceController extends GenericService {
 		logger.debug("getPlayer: " + gameId);
 
         try {
-            User player = gamePlayerService.getPlayer(gameId, playerId);
-            GamePlayerResponseBean result = gameMapperService.toGamePlayerResponseBean(player);
-
+            GamePlayerResponseBean result = gamePlayerService.getPlayer(gameId, playerId);
             return result;
         } catch (Exception e){
             return null;

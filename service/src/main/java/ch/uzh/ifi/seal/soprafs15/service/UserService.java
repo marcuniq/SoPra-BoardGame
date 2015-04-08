@@ -1,7 +1,10 @@
 package ch.uzh.ifi.seal.soprafs15.service;
 
 import ch.uzh.ifi.seal.soprafs15.controller.GenericService;
-import ch.uzh.ifi.seal.soprafs15.model.User;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutRequestBean;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutResponseBean;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
 
 import java.util.List;
 
@@ -10,11 +13,11 @@ import java.util.List;
  */
 public abstract class UserService extends GenericService {
 
-    public abstract List<User> listUsers();
-    public abstract User addUser(User user);
-    public abstract User getUser(Long userId);
-    public abstract User updateUser(Long userId, User user);
-    public abstract void deleteUser(Long userId, User user);
-    public abstract User login(Long userId);
-    public abstract void logout(Long userId, User user);
+    public abstract List<UserResponseBean> listUsers();
+    public abstract UserResponseBean addUser(UserRequestBean bean);
+    public abstract UserResponseBean getUser(Long userId);
+    public abstract UserResponseBean updateUser(Long userId, UserRequestBean bean);
+    public abstract void deleteUser(Long userId, UserRequestBean bean);
+    public abstract UserLoginLogoutResponseBean login(Long userId);
+    public abstract void logout(Long userId, UserLoginLogoutRequestBean bean);
 }
