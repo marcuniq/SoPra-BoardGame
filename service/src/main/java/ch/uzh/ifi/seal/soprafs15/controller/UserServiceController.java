@@ -26,9 +26,6 @@ public class UserServiceController extends GenericService {
     @Autowired
     protected UserService userService;
 
-    @Autowired
-    protected UserMapperService userMapperService;
-
     static final String CONTEXT = "/users";
 
 
@@ -43,9 +40,7 @@ public class UserServiceController extends GenericService {
 		logger.debug("listUsers");
 
         try {
-            List<User> users = userService.listUsers();
-            List<UserResponseBean> result = userMapperService.toUserResponseBean(users);
-
+            List<UserResponseBean> result = userService.listUsers();
             return result;
         } catch (Exception e){
             return null;
@@ -64,10 +59,7 @@ public class UserServiceController extends GenericService {
 		logger.debug("addUser: " + userRequestBean);
 
         try {
-            User user = userMapperService.toUser(userRequestBean);
-            user = userService.addUser(user);
-            UserResponseBean result = userMapperService.toUserResponseBean(user);
-
+            UserResponseBean result = userService.addUser(userRequestBean);
             return result;
         } catch(Exception e){
             return null;
@@ -86,9 +78,7 @@ public class UserServiceController extends GenericService {
 		logger.debug("getUser: " + userId);
 
         try {
-            User user = userService.getUser(userId);
-            UserResponseBean result = userMapperService.toUserResponseBean(user);
-
+            UserResponseBean result = userService.getUser(userId);
             return result;
         } catch (Exception e){
             return null;
@@ -107,9 +97,7 @@ public class UserServiceController extends GenericService {
 		logger.debug("login: " + userId);
 
         try {
-            User user = userService.login(userId);
-            UserLoginLogoutResponseBean result = userMapperService.toLLResponseBean(user);
-
+            UserLoginLogoutResponseBean result = userService.login(userId);
             return result;
         } catch (Exception e){
             return null;
@@ -127,8 +115,7 @@ public class UserServiceController extends GenericService {
 		logger.debug("getUser: " + userId);
 
         try{
-            User user = userMapperService.toUser(userLoginLogoutRequestBean);
-            userService.logout(userId, user);
+            userService.logout(userId, userLoginLogoutRequestBean);
 
         } catch (Exception e){
 

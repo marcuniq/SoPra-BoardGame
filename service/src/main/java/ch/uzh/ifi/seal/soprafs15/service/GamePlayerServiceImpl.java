@@ -1,21 +1,25 @@
 package ch.uzh.ifi.seal.soprafs15.service;
 
 import ch.uzh.ifi.seal.soprafs15.GameConstants;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerRequestBean;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
+import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
  * @author Marco
  */
-
+@Transactional
 @Service("gamePlayerService")
 public class GamePlayerServiceImpl extends GamePlayerService {
 
@@ -23,20 +27,26 @@ public class GamePlayerServiceImpl extends GamePlayerService {
 
     protected GameRepository gameRepository;
     protected UserRepository userRepository;
+    protected GameMapperService gameMapperService;
 
     @Autowired
-    public GamePlayerServiceImpl(GameRepository gameRepository, UserRepository userRepository){
+    public GamePlayerServiceImpl(GameRepository gameRepository, UserRepository userRepository, GameMapperService gameMapperService){
         this.gameRepository = gameRepository;
         this.userRepository = userRepository;
+        this.gameMapperService = gameMapperService;
     }
 
     @Override
-    public List<User> listPlayer(Long gameId) {
-        return gameRepository.findOne(gameId).getPlayers();
+    public List<GamePlayerResponseBean> listPlayer(Long gameId) {
+        List<User> players = gameRepository.findOne(gameId).getPlayers();
+
+        return gameMapperService.toGamePlayerResponseBean(players);
     }
 
     @Override
-    public User addPlayer(Long gameId, User player) {
+    public GamePlayerResponseBean addPlayer(Long gameId, GamePlayerRequestBean bean) {
+        User player = gameMapperService.toUser(bean);
+
         Game game = gameRepository.findOne(gameId);
 
         if(game != null && player != null && game.getPlayers().size() < GameConstants.MAX_PLAYERS) {
@@ -44,7 +54,7 @@ public class GamePlayerServiceImpl extends GamePlayerService {
 
             logger.debug("Game: " + game.getName() + " - player added: " + player.getUsername());
 
-            return player;
+            return gameMapperService.toGamePlayerResponseBean(player);
         } else {
             logger.error("Error adding player with token: " + player.getToken());
         }
@@ -52,10 +62,10 @@ public class GamePlayerServiceImpl extends GamePlayerService {
     }
 
     @Override
-    public User getPlayer(Long gameId, Integer playerId) {
+    public GamePlayerResponseBean getPlayer(Long gameId, Integer playerId) {
         Game game = gameRepository.findOne(gameId);
         User player = game.getPlayers().get(playerId);
 
-        return player;
+        return gameMapperService.toGamePlayerResponseBean(player);
     }
 }

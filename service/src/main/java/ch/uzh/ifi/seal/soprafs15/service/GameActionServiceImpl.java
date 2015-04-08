@@ -1,61 +1,71 @@
 package ch.uzh.ifi.seal.soprafs15.service;
 
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerRequestBean;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
+import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Marco
  */
+@Transactional
 @Service("gameActionService")
 public class GameActionServiceImpl extends GameActionService {
 
     Logger logger = LoggerFactory.getLogger(GameActionServiceImpl.class);
 
     protected GameRepository gameRepository;
+    protected GameMapperService gameMapperService;
 
     @Autowired
-    public GameActionServiceImpl(GameRepository gameRepository){
+    public GameActionServiceImpl(GameRepository gameRepository, GameMapperService gameMapperService){
         this.gameRepository = gameRepository;
+        this.gameMapperService = gameMapperService;
     }
 
     @Override
-    public Game startGame(Long gameId, User user) {
+    public GameResponseBean startGame(Long gameId, GamePlayerRequestBean bean) {
         Game game = gameRepository.findOne(gameId);
+        User owner = gameMapperService.toUser(bean);
 
-        if(user != null && game != null && game.getOwner().equals(user.getUsername())) {
+        if(owner != null && game != null && game.getOwner().equals(owner.getUsername())) {
             //TODO: Start game
 
         }
 
-        return game;
+        return gameMapperService.toGameResponseBean(game);
     }
 
     @Override
-    public Game stopGame(Long gameId, User user) {
+    public GameResponseBean stopGame(Long gameId, GamePlayerRequestBean bean) {
         Game game = gameRepository.findOne(gameId);
+        User owner = gameMapperService.toUser(bean);
 
-        if(user != null && game != null && game.getOwner().equals(user.getUsername())) {
+        if(owner != null && game != null && game.getOwner().equals(owner.getUsername())) {
             //TODO: Stop game
 
         }
 
-        return game;
+        return gameMapperService.toGameResponseBean(game);
     }
 
     @Override
-    public Game startFastMode(Long gameId, User user) {
+    public GameResponseBean startFastMode(Long gameId, GamePlayerRequestBean bean) {
         Game game = gameRepository.findOne(gameId);
+        User owner = gameMapperService.toUser(bean);
 
-        if(user != null && game != null && game.getOwner().equals(user.getUsername())) {
+        if(owner != null && game != null && game.getOwner().equals(owner.getUsername())) {
             //TODO: Start fast mode
 
         }
 
-        return game;
+        return gameMapperService.toGameResponseBean(game);
     }
 }
