@@ -35,11 +35,10 @@ public class User implements Serializable {
 	@Column(nullable = false) 
 	private UserStatus status;
 
-    @ManyToOne //(fetch = FetchType.EAGER)
-    //@JoinColumn(name = "GAME_ID")
+    @ManyToOne
     private Game game;
 	
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     private List<Move> moves;
 
     @Column

@@ -269,8 +269,8 @@ public class GameServiceController extends GenericService {
 		logger.debug("addPlayer: " + gamePlayerRequestBean);
 
         try {
-            User player = gameMapperService.toUser(gamePlayerRequestBean);
-            player = gamePlayerService.addPlayer(gameId, player);
+            //User player = gameMapperService.toUser(gamePlayerRequestBean);
+            User player = gamePlayerService.addPlayer(gameId, gamePlayerRequestBean);
             GamePlayerResponseBean result = gameMapperService.toGamePlayerResponseBean(player);
 
             return result;

@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.service;
 
 import ch.uzh.ifi.seal.soprafs15.GameConstants;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerRequestBean;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
@@ -17,7 +18,6 @@ import java.util.List;
  * @author Marco
  */
 
-@Transactional
 @Service("gamePlayerService")
 public class GamePlayerServiceImpl extends GamePlayerService {
 
@@ -33,14 +33,16 @@ public class GamePlayerServiceImpl extends GamePlayerService {
     }
 
     @Override
-    @Transactional
     public List<User> listPlayer(Long gameId) {
         return gameRepository.findOne(gameId).getPlayers();
     }
 
     @Override
     @Transactional
-    public User addPlayer(Long gameId, User player) {
+    public User addPlayer(Long gameId, GamePlayerRequestBean bean) {
+
+        // find player
+        User player = userRepository.findByToken(bean.getToken());
 
         // find game
         Game game = gameRepository.findOne(gameId);
@@ -50,9 +52,6 @@ public class GamePlayerServiceImpl extends GamePlayerService {
             // initialize player for game play & save
             player.init();
             game.addPlayer(player);
-
-            //gameRepository.save(game);
-            //player = userRepository.save(player);
 
             logger.debug("Game: " + game.getName() + " - player added: " + player.getUsername());
 
@@ -64,7 +63,6 @@ public class GamePlayerServiceImpl extends GamePlayerService {
     }
 
     @Override
-    @Transactional
     public User getPlayer(Long gameId, Long playerId) {
         Game game = gameRepository.findOne(gameId);
         User player = game.getPlayers().stream().filter(p -> p.getId() == playerId).findFirst().get();

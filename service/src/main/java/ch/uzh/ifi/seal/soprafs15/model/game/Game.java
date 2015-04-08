@@ -33,7 +33,7 @@ public class Game implements Serializable {
 	@Column
 	private Integer currentPlayer;
 
-    @OneToMany(mappedBy="game")
+    @OneToMany(mappedBy="game", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     private List<Move> moves;
     
     @OneToMany(mappedBy="game", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
