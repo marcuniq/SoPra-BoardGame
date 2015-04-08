@@ -24,9 +24,7 @@ import java.util.List;
 public class GameLobbyFragment extends ListFragment {
 
     private TextView tvLogBox;
-    private UserArrayAdapter arrayAdapter; // adapts the ArrayList of Games to the ListView
-    private User user;
-    private Game game;
+    private ArrayAdapter<String> arrayAdapter; // adapts the ArrayList of Games to the ListView
 
     /* empty constructor */
     public GameLobbyFragment() {}
@@ -35,13 +33,8 @@ public class GameLobbyFragment extends ListFragment {
      * Called after User has successfully logged in.
      * @return A new instance of fragment GamesListFragment.
      */
-    public static GameLobbyFragment newInstance(User user, Game game) {
-        GameLobbyFragment fragment = new GameLobbyFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("user", user);
-        bundle.putParcelable("game", game);
-        fragment.setArguments(bundle);
-        return fragment;
+    public static GameLobbyFragment newInstance() {
+        return new GameLobbyFragment();
     }
 
     /**
@@ -51,8 +44,6 @@ public class GameLobbyFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        user = getArguments().getParcelable("user");
-        game = getArguments().getParcelable("game");
     }
 
     /**
@@ -66,15 +57,15 @@ public class GameLobbyFragment extends ListFragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        arrayAdapter = new UserArrayAdapter(getActivity(),
-/*                R.layout.fragment_game_lobby,
-                R.id.game_lobby_item_label,*/
-                new ArrayList<User>());
+        View v = inflater.inflate(R.layout.fragment_game_lobby, container, false);
+
+        arrayAdapter = new ArrayAdapter<>(getActivity(),
+                R.layout.player_list,
+                R.id.player_list_item,
+                new ArrayList<String>());
         setListAdapter(arrayAdapter);
 
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-
-        return rootView;
+        return v;
     }
 
     /**
@@ -115,7 +106,7 @@ public class GameLobbyFragment extends ListFragment {
 
         /* For now just display what item has been selected */
         String item = (String) getListAdapter().getItem(position);
-        Toast.makeText(v.getContext(), "You joined the game \"" + item + "\"", Toast.LENGTH_LONG).show();
+        Toast.makeText(v.getContext(), "You selected user \"" + item + "\"", Toast.LENGTH_LONG).show();
     }
 }
 

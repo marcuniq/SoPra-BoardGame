@@ -20,22 +20,11 @@ public class MainMenuFragment extends Fragment {
 
     private Button createGameMenuButton;
     private Button listGamesMenuButton;
-    private User user;
 
     public MainMenuFragment() {}
 
-    public static MainMenuFragment newInstance(User user) {
-        MainMenuFragment fragment = new MainMenuFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("user", user);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        user = getArguments().getParcelable("user");
+    public static MainMenuFragment newInstance() {
+        return new MainMenuFragment();
     }
 
     /**
@@ -88,10 +77,5 @@ public class MainMenuFragment extends Fragment {
      */
     private void onClickListGamesMenuButton(View v) {
         ((MenuActivity)getActivity()).pushFragment(GameListFragment.newInstance());
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 }

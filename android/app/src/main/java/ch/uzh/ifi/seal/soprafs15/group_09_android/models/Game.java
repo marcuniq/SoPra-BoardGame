@@ -16,7 +16,6 @@ public abstract class Game implements Parcelable {
     @Nullable
     public abstract Long id();
     public abstract String name();
-    @Nullable
     public abstract String token();
     @Nullable
     public abstract String owner();
@@ -29,7 +28,12 @@ public abstract class Game implements Parcelable {
     @Nullable
     public abstract String currentPlayer();
 
-    public static Game create( Long id,
+    public static Game create( String name,
+                               String token ) {
+        return new AutoParcel_Game( null, name, token, null, null, null, null, null );
+    }
+
+    public static Game update( Long id,
                                String name,
                                String token,
                                String owner,

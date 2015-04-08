@@ -19,6 +19,7 @@ public abstract class User implements Parcelable {
     public abstract Integer age();
     @Nullable
     public abstract String token();
+    @Nullable
     public abstract UserStatus status();
     @Nullable
     public abstract Game game();
@@ -32,7 +33,14 @@ public abstract class User implements Parcelable {
     public abstract List<LegBettingTile> legBettingTiles();
 
 
-    public static User create( Long id,
+    public static User create( String username,
+                               Integer age) {
+        return new AutoParcel_User( null, username, age, null,
+                                    null, null, null, null,
+                                    null, null);
+    }
+
+    public static User update( Long id,
                                String username,
                                Integer age,
                                String token,
@@ -43,8 +51,8 @@ public abstract class User implements Parcelable {
                                List<RaceBettingCard> raceBettingCards,
                                List<LegBettingTile> legBettingTiles ) {
         return new AutoParcel_User( id, username, age, token,
-                                    status, game, moves, money,
-                                    raceBettingCards, legBettingTiles);
+                status, game, moves, money,
+                raceBettingCards, legBettingTiles);
     }
 
 }

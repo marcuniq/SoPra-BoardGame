@@ -1,10 +1,12 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,6 +14,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
@@ -24,8 +27,7 @@ import retrofit.client.Response;
 public class GameListFragment extends ListFragment {
 
     private TextView tvLogBox;
-    private GameArrayAdapter gameArrayAdapter; // adapts the ArrayList of Games to the ListView
-    private User user;
+    private ArrayAdapter<String> gameArrayAdapter; // adapts the ArrayList of Games to the ListView
 
     /* empty constructor */
     public GameListFragment() {}
@@ -45,7 +47,6 @@ public class GameListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        user = getArguments().getParcelable("user");
     }
 
     /**
@@ -59,15 +60,13 @@ public class GameListFragment extends ListFragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        gameArrayAdapter = new GameArrayAdapter(getActivity(),
-/*                R.layout.fragment_games_list,
-                R.id.games_list_item_label,*/
-                new ArrayList<Game>());
+        gameArrayAdapter = new ArrayAdapter<>(getActivity(),
+                R.layout.fragment_game_list,
+                R.id.game_list_item,
+                new ArrayList<String>());
         setListAdapter(gameArrayAdapter);
 
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-
-        return rootView;
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     /**
@@ -81,7 +80,7 @@ public class GameListFragment extends ListFragment {
             @Override
             public void success(List<Game> games, Response response) {
                 for (Game game : games) {
-                    gameArrayAdapter.add(game);
+                    gameArrayAdapter.add(game.name());
                 }
             }
             @Override
@@ -109,6 +108,15 @@ public class GameListFragment extends ListFragment {
         /* For now just display what item has been selected */
         String item = (String) getListAdapter().getItem(position);
         Toast.makeText(v.getContext(), "You joined the game \"" + item + "\"", Toast.LENGTH_LONG).show();
+
+        Fragment fragment = GameLobbyFragment.newInstance();
+        Long gameId = 1L; // TODO get correct game ID
+        Bundle bundle = new Bundle();
+        bundle.putLong("gameId", gameId);
+        fragment.setArguments(bundle);
+
+        /* See all already created games (testing) */
+        ((MenuActivity) getActivity()).setFragment(fragment);
     }
 }
 
