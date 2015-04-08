@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,11 +33,13 @@ public class GameServiceImpl extends GameService {
     }
 
     @Override
+    @Transactional
     public Game addGame(Game game) {
         return gameRepository.save(game);
     }
 
     @Override
+    @Transactional
     public Game getGame(Long gameId) {
         return gameRepository.findOne(gameId);
     }

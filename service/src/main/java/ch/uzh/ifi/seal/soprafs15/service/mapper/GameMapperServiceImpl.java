@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
  * @author Marco
  */
 
+@Transactional
 @Service("gameMapperService")
 public class GameMapperServiceImpl extends GameMapperService {
 
@@ -39,7 +41,11 @@ public class GameMapperServiceImpl extends GameMapperService {
     public Game toGame(GameRequestBean bean) {
         Game game = new Game();
         game.setName(bean.getName());
-        game.setOwner("test");
+
+        User owner = userRepository.findByToken(bean.getToken());
+        game.setOwner(owner.getUsername());
+
+        game.addPlayer(owner);
 
         return game;
     }
@@ -50,6 +56,7 @@ public class GameMapperServiceImpl extends GameMapperService {
         bean.setId(game.getId());
         bean.setName(game.getName());
         bean.setOwner(game.getOwner());
+        bean.setNumberOfPlayers(game.getPlayers().size());
 
         return bean;
     }
@@ -58,19 +65,8 @@ public class GameMapperServiceImpl extends GameMapperService {
     public List<GameResponseBean> toGameResponseBean(List<Game> games) {
         List<GameResponseBean> result = new ArrayList<>();
 
-        GameResponseBean tmpGameResponseBean;
         for(Game game : games) {
-            tmpGameResponseBean = new GameResponseBean();
-
-            tmpGameResponseBean.setId(game.getId());
-            tmpGameResponseBean.setName(game.getName());
-            tmpGameResponseBean.setOwner(game.getOwner());
-            //tmpGameResponseBean.setStatus(game.getStatus());
-            //tmpGameResponseBean.setNumberOfMoves(game.getMoves().size());
-            //tmpGameResponseBean.setNumberOfPlayers(game.getPlayers().size());
-            //tmpGameResponseBean.setCurrentPlayer(game.getCurrentPlayer().getUsername());
-
-            result.add(tmpGameResponseBean);
+            result.add(toGameResponseBean(game));
         }
 
         return result;
@@ -78,7 +74,7 @@ public class GameMapperServiceImpl extends GameMapperService {
 
     @Override
     public User toUser(GamePlayerRequestBean bean) {
-        return null;
+        return userRepository.findByToken(bean.getToken());
     }
 
     @Override
@@ -94,14 +90,8 @@ public class GameMapperServiceImpl extends GameMapperService {
     public List<GamePlayerResponseBean> toGamePlayerResponseBean(List<User> players) {
         List<GamePlayerResponseBean> result = new ArrayList<>();
 
-        GamePlayerResponseBean tmpGamePlayerResponseBean;
         for(User player : players) {
-            tmpGamePlayerResponseBean = new GamePlayerResponseBean();
-
-            tmpGamePlayerResponseBean.setId(player.getId());
-            tmpGamePlayerResponseBean.setNumberOfMoves(player.getMoves().size());
-
-            result.add(tmpGamePlayerResponseBean);
+            result.add(toGamePlayerResponseBean(player));
         }
 
         return result;

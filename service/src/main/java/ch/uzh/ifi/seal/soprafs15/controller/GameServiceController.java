@@ -239,7 +239,7 @@ public class GameServiceController extends GenericService {
 
 	/*
      *	Context: /games/{gameId}/players
-     *  Description:
+     *  Description: List of all players of the game with gameId
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/players")
 	@ResponseStatus(HttpStatus.OK)
@@ -260,7 +260,7 @@ public class GameServiceController extends GenericService {
 
     /*
      *	Context: /games/{gameId}/players
-     *  Description:
+     *  Description: User joins game with gameId
      */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/players")
 	@ResponseStatus(HttpStatus.OK)
@@ -282,12 +282,12 @@ public class GameServiceController extends GenericService {
 
     /*
      *	Context: /games/{gameId}/players/{playerId}
-     *  Description:
+     *  Description: Get player with playerId of game with gameId
      */
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/players/{playerId}")
 	@ResponseStatus(HttpStatus.OK)
     @ResponseBody
-	public GamePlayerResponseBean getPlayer(@PathVariable Long gameId, @PathVariable Integer playerId) {
+	public GamePlayerResponseBean getPlayer(@PathVariable Long gameId, @PathVariable Long playerId) {
 		logger.debug("getPlayer: " + gameId);
 
         try {

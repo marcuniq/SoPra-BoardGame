@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,10 +17,11 @@ import java.util.List;
  * @author Marco
  */
 
+@Transactional
 @Service("gamePlayerService")
 public class GamePlayerServiceImpl extends GamePlayerService {
 
-    Logger logger = LoggerFactory.getLogger(GamePlayerServiceImpl.class);
+    protected Logger logger = LoggerFactory.getLogger(GamePlayerServiceImpl.class);
 
     protected GameRepository gameRepository;
     protected UserRepository userRepository;
@@ -31,20 +33,30 @@ public class GamePlayerServiceImpl extends GamePlayerService {
     }
 
     @Override
+    @Transactional
     public List<User> listPlayer(Long gameId) {
         return gameRepository.findOne(gameId).getPlayers();
     }
 
     @Override
+    @Transactional
     public User addPlayer(Long gameId, User player) {
+
+        // find game
         Game game = gameRepository.findOne(gameId);
 
-        if(game != null && player != null && game.getPlayers().size() < GameConstants.MAX_PLAYERS) {
+        if(game != null && game.getPlayers().size() < GameConstants.MAX_PLAYERS) {
+
+            // initialize player for game play & save
+            player.init();
             game.addPlayer(player);
+
+            //gameRepository.save(game);
+            //player = userRepository.save(player);
 
             logger.debug("Game: " + game.getName() + " - player added: " + player.getUsername());
 
-            return player;
+            return getPlayer(gameId, player.getId());
         } else {
             logger.error("Error adding player with token: " + player.getToken());
         }
@@ -52,10 +64,19 @@ public class GamePlayerServiceImpl extends GamePlayerService {
     }
 
     @Override
-    public User getPlayer(Long gameId, Integer playerId) {
+    @Transactional
+    public User getPlayer(Long gameId, Long playerId) {
         Game game = gameRepository.findOne(gameId);
-        User player = game.getPlayers().get(playerId);
+        User player = game.getPlayers().stream().filter(p -> p.getId() == playerId).findFirst().get();
 
         return player;
+    }
+
+    private static int safeLongToInt(long l) {
+        if (l < Integer.MIN_VALUE || l > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException
+                    (l + " cannot be cast to int without changing its value.");
+        }
+        return (int) l;
     }
 }

@@ -35,7 +35,8 @@ public class User implements Serializable {
 	@Column(nullable = false) 
 	private UserStatus status;
 
-    @ManyToOne
+    @ManyToOne //(fetch = FetchType.EAGER)
+    //@JoinColumn(name = "GAME_ID")
     private Game game;
 	
     @OneToMany(mappedBy="user")
@@ -54,7 +55,11 @@ public class User implements Serializable {
 
     }
 
-    private void init() {
+    public void init() {
+        // money
+        money = 3;
+
+        //
 
     }
 

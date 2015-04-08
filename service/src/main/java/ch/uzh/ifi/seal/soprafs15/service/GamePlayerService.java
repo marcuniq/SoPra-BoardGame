@@ -12,5 +12,5 @@ public abstract class GamePlayerService extends GenericService {
 
     public abstract List<User> listPlayer(Long gameId);
     public abstract User addPlayer(Long gameId, User player);
-    public abstract User getPlayer(Long gameId, Integer playerId);
+    public abstract User getPlayer(Long gameId, Long playerId);
 }
