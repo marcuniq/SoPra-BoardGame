@@ -4,6 +4,8 @@ import ch.uzh.ifi.seal.soprafs15.controller.GenericService;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameResponseBean;
+import ch.uzh.ifi.seal.soprafs15.model.User;
+import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 
 import java.util.List;
 
