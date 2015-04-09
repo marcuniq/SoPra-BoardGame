@@ -23,7 +23,7 @@ import java.util.List;
 @Service("gamePlayerService")
 public class GamePlayerServiceImpl extends GamePlayerService {
 
-    Logger logger = LoggerFactory.getLogger(GamePlayerServiceImpl.class);
+    protected Logger logger = LoggerFactory.getLogger(GamePlayerServiceImpl.class);
 
     protected GameRepository gameRepository;
     protected UserRepository userRepository;
@@ -44,17 +44,22 @@ public class GamePlayerServiceImpl extends GamePlayerService {
     }
 
     @Override
+    @Transactional
     public GamePlayerResponseBean addPlayer(Long gameId, GamePlayerRequestBean bean) {
         User player = gameMapperService.toUser(bean);
 
+        // find game
         Game game = gameRepository.findOne(gameId);
 
-        if(game != null && player != null && game.getPlayers().size() < GameConstants.MAX_PLAYERS) {
+        if(game != null && game.getPlayers().size() < GameConstants.MAX_PLAYERS) {
+
+            // initialize player for game play & save
+            player.init();
             game.addPlayer(player);
 
             logger.debug("Game: " + game.getName() + " - player added: " + player.getUsername());
 
-            return gameMapperService.toGamePlayerResponseBean(player);
+            return getPlayer(gameId, player.getId());
         } else {
             logger.error("Error adding player with token: " + player.getToken());
         }
@@ -62,10 +67,18 @@ public class GamePlayerServiceImpl extends GamePlayerService {
     }
 
     @Override
-    public GamePlayerResponseBean getPlayer(Long gameId, Integer playerId) {
+    public GamePlayerResponseBean getPlayer(Long gameId, Long playerId) {
         Game game = gameRepository.findOne(gameId);
-        User player = game.getPlayers().get(playerId);
+        User player = game.getPlayers().stream().filter(p -> p.getId() == playerId).findFirst().get();
 
         return gameMapperService.toGamePlayerResponseBean(player);
+    }
+
+    private static int safeLongToInt(long l) {
+        if (l < Integer.MIN_VALUE || l > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException
+                    (l + " cannot be cast to int without changing its value.");
+        }
+        return (int) l;
     }
 }

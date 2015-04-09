@@ -1,17 +1,26 @@
 package ch.uzh.ifi.seal.soprafs15.controller.beans.game;
 
+import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingTile;
+
+import java.util.List;
+
 public class GamePlayerResponseBean {
 
-	private Long userId;
+	private Long id;
+    private String username;
+    private Integer money;
+    private List<LegBettingTile> legBettingTiles;
 	private Integer numberOfMoves;
 	
 
-	public Long getUserId() {
-		return userId;
+	public Long getId() {
+		return id;
 	}
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	public void setId(Long id) {
+		this.id = id;
 	}
+
+
 	public Integer getNumberOfMoves() {
 		return numberOfMoves;
 	}

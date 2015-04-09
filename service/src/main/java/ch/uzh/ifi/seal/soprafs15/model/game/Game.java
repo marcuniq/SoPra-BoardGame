@@ -6,6 +6,7 @@ import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -32,11 +33,12 @@ public class Game implements Serializable {
 	@Column
 	private Integer currentPlayer;
 
-    @OneToMany(mappedBy="game")
+    @OneToMany(mappedBy="game", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     private List<Move> moves;
     
-    @OneToMany(mappedBy="game")
-    private List<User> players;
+    @OneToMany(mappedBy="game", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @OrderColumn
+    private List<User> players = new ArrayList<User>();
 
     @OneToOne
     private RaceTrack raceTrack;
@@ -52,7 +54,6 @@ public class Game implements Serializable {
 
 
     public Game(){
-
     }
 
     private void init() {
@@ -64,7 +65,10 @@ public class Game implements Serializable {
     }
 
     public void addPlayer(User player){
-        players.add(player);
+        if(!players.contains(player)) {
+            players.add(player);
+            player.setGame(this);
+        }
     }
 
     public RaceTrack getRaceTrack() {

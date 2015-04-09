@@ -7,6 +7,7 @@ import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
+import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import java.util.List;
 /**
  * @author Marco
  */
+
 @Transactional
 @Service("gameService")
 public class GameServiceImpl extends GameService {
@@ -25,11 +27,13 @@ public class GameServiceImpl extends GameService {
     Logger logger = LoggerFactory.getLogger(GameServiceImpl.class);
 
     protected GameRepository gameRepository;
+    protected UserRepository userRepository;
     protected GameMapperService gameMapperService;
 
     @Autowired
-    public GameServiceImpl(GameRepository gameRepository, GameMapperService gameMapperService){
+    public GameServiceImpl(GameRepository gameRepository, UserRepository userRepository, GameMapperService gameMapperService){
         this.gameRepository = gameRepository;
+        this.userRepository = userRepository;
         this.gameMapperService = gameMapperService;
     }
 
@@ -42,6 +46,13 @@ public class GameServiceImpl extends GameService {
     @Override
     public GameResponseBean addGame(GameRequestBean bean) {
         Game game = gameMapperService.toGame(bean);
+
+        // add owner to player list
+        String username = game.getOwner();
+        User owner = userRepository.findByUsername(username);
+        owner.init();
+        game.addPlayer(owner);
+
         game = gameRepository.save(game);
         return gameMapperService.toGameResponseBean(game);
     }

@@ -38,7 +38,7 @@ public class User implements Serializable {
     @ManyToOne
     private Game game;
 	
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     private List<Move> moves;
 
     @Column
@@ -54,7 +54,11 @@ public class User implements Serializable {
 
     }
 
-    private void init() {
+    public void init() {
+        // money
+        money = 3;
+
+        //
 
     }
 
