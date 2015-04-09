@@ -39,21 +39,5 @@ public abstract class User implements Parcelable {
                                     null, null, null, null,
                                     null, null);
     }
-
-    public static User update( Long id,
-                               String username,
-                               Integer age,
-                               String token,
-                               UserStatus status,
-                               Game game,
-                               List<Move> moves,
-                               Integer money,
-                               List<RaceBettingCard> raceBettingCards,
-                               List<LegBettingTile> legBettingTiles ) {
-        return new AutoParcel_User( id, username, age, token,
-                status, game, moves, money,
-                raceBettingCards, legBettingTiles);
-    }
-
 }
 

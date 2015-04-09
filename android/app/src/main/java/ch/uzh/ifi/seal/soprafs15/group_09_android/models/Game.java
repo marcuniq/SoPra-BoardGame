@@ -32,17 +32,5 @@ public abstract class Game implements Parcelable {
                                String token ) {
         return new AutoParcel_Game( null, name, token, null, null, null, null, null );
     }
-
-    public static Game update( Long id,
-                               String name,
-                               String token,
-                               String owner,
-                               GameStatus status,
-                               Integer numberOfMoves,
-                               Integer numberOfPlayers,
-                               String currentPlayer ) {
-        return new AutoParcel_Game( id, name, token, owner, status, numberOfMoves, numberOfPlayers, currentPlayer );
-    }
-
 }
 

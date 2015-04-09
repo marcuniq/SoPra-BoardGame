@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -22,6 +23,7 @@ public class GameCreatorFragment extends Fragment {
     private EditText etName;
     private TextView tvLogBox;
     private Button createGameButton;
+    private String token;
 
     /**
      * Use this factory method to create a new instance of
@@ -38,6 +40,11 @@ public class GameCreatorFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            token = bundle.getString("user", "");
+        }
+        Log.v("token","the token is:" + token);
     }
 
     /**
@@ -74,7 +81,10 @@ public class GameCreatorFragment extends Fragment {
      */
     private void onClickCreateGameButton(View v) {
         String name = etName.getText().toString();
-        String token = "067e6162-3b6f-4ae2-a171-2470b63dff00"; // TODO: get token via http://developer.android.com/training/basics/data-storage/shared-preferences.html
+        if (token == null) {
+            Log.v("Token","Is NULL.");
+            token = "067e6162-3b6f-4ae2-a171-2470b63dff00"; // TODO: get token via http://developer.android.com/training/basics/data-storage/shared-preferences.html
+        }
 
         /* TODO correct naming of null values */
         Game game = Game.create( name,                  // name of the game

@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
@@ -16,10 +17,7 @@ import java.util.List;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameArrayAdapter;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GenericArrayAdapter;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -109,8 +107,9 @@ public class GameListFragment extends ListFragment {
         String item = (String) getListAdapter().getItem(position);
         Toast.makeText(v.getContext(), "You joined the game \"" + item + "\"", Toast.LENGTH_LONG).show();
 
-        Fragment fragment = GameLobbyFragment.newInstance();
         Long gameId = 1L; // TODO get correct game ID
+
+        Fragment fragment = GameLobbyFragment.newInstance();
         Bundle bundle = new Bundle();
         bundle.putLong("gameId", gameId);
         fragment.setArguments(bundle);

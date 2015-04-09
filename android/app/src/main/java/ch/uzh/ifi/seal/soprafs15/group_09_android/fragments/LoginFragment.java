@@ -36,7 +36,6 @@ public class LoginFragment extends Fragment {
      *
      * @return A new instance of fragment LoginFragment.
      */
-
     public static LoginFragment newInstance() {
         return new LoginFragment();
     }
@@ -63,14 +62,12 @@ public class LoginFragment extends Fragment {
 
                 if (user == null){
                     Log.v("UserCreate", "Creation Failed. NULL Object returned.");
-                    Log.v("UserCreate", new Gson().toJson(user));
                 } else {
-
-                /* Start new Activity LobbyActivity and close current Fragment */
-                Intent intent = new Intent();
-                intent.setClass(getActivity(), MenuActivity.class);
-                intent.putExtra("user", user);
-                startActivity(intent);
+                    /* Start new Activity LobbyActivity and close current Fragment */
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity(), MenuActivity.class);
+                    intent.putExtra("user", user.token());
+                    startActivity(intent);
                 }
             }
 
