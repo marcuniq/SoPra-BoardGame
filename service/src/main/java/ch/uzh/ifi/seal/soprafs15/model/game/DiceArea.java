@@ -30,6 +30,10 @@ public class DiceArea implements Serializable {
     @Embedded
     private List<Dice> rolledDice;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @PrimaryKeyJoinColumn
+    private Game game;
+
     public DiceArea(){}
 
 
@@ -59,5 +63,25 @@ public class DiceArea implements Serializable {
 
     public void setRolledDice(List<Dice> rolledDice) {
         this.rolledDice = rolledDice;
+    }
+
+    public Dice rollDice() {
+        int size = diceInPyramid.size();
+
+        if(size > 0) {
+            Dice dice = diceInPyramid.remove(size - 1);
+            rolledDice.add(dice);
+
+            return dice;
+        }
+        return null;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 }

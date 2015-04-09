@@ -8,6 +8,7 @@ import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -39,7 +40,7 @@ public class User implements Serializable {
     private Game game;
 	
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
-    private List<Move> moves;
+    private List<Move> moves = new ArrayList<Move>();
 
     @Column
     private Integer money;

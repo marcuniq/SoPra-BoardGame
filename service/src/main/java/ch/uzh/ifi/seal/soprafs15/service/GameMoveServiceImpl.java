@@ -48,14 +48,15 @@ public class GameMoveServiceImpl extends GameMoveService {
     @Override
     public GameMoveResponseBean addMove(Long gameId, GameMoveRequestBean bean) {
         Game game = gameRepository.findOne(gameId);
-        Move move = gameMapperService.toMove(bean);
+        //Move move = gameMapperService.toMove(game, bean);
+        Move move = null;
 
         if(game != null && move != null) {
             game.addMove(move);
 
-            gameRepository.save(game);
+            //gameRepository.save(game);
 
-            return gameMapperService.toGameMoveResponseBean(move);
+            //return gameMapperService.toGameMoveResponseBean(move);
         }
         return null;
     }

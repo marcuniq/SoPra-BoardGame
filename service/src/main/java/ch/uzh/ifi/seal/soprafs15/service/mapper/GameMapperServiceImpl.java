@@ -2,8 +2,8 @@ package ch.uzh.ifi.seal.soprafs15.service.mapper;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.*;
 import ch.uzh.ifi.seal.soprafs15.model.User;
-import ch.uzh.ifi.seal.soprafs15.model.game.Game;
-import ch.uzh.ifi.seal.soprafs15.model.move.Move;
+import ch.uzh.ifi.seal.soprafs15.model.game.*;
+import ch.uzh.ifi.seal.soprafs15.model.move.*;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.MoveRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
@@ -96,7 +96,54 @@ public class GameMapperServiceImpl extends GameMapperService {
     }
 
     @Override
-    public Move toMove(GameMoveRequestBean bean) {
+    public Move toMove(Game game, GameMoveRequestBean bean) {
+        /*
+        User player = userRepository.findByToken(bean.getToken());
+
+        if(bean.getMove() == MoveEnum.DESERT_TILE_PLACING) {
+            DesertTilePlacing desertTilePlacing = new DesertTilePlacing();
+            //desertTilePlacing.setUser(player);
+            //desertTilePlacing.setAsOasis(bean.getDesertTileAsOasis());
+            //desertTilePlacing.setPosition(bean.getDesertTilePosition());
+            //desertTilePlacing.setGame(game);
+
+            return desertTilePlacing;
+        } else if(bean.getMove() == MoveEnum.DICE_ROLLING) {
+            DiceRolling diceRolling = new DiceRolling();
+            //diceRolling.setUser(player);
+            //diceRolling.setGame(game);
+
+            //DiceArea diceArea = game.getDiceArea();
+            //Dice dice = diceArea.rollDice();
+
+            //diceRolling.setDice(dice);
+
+            return diceRolling;
+        } else if(bean.getMove() == MoveEnum.LEG_BETTING) {
+            LegBetting legBetting = new LegBetting();
+            //legBetting.setUser((player));
+            //legBetting.setGame(game);
+
+            //LegBettingArea legBettingArea = game.getLegBettingArea();
+            //LegBettingTile legBettingTile = legBettingArea.getLegBettingTile(bean.getLegBettingTileColor());
+
+            //legBetting.setLegBettingTile(legBettingTile);
+
+            return legBetting;
+        } else if(bean.getMove() == MoveEnum.RACE_BETTING) {
+            RaceBetting raceBetting = new RaceBetting();
+            //raceBetting.setUser(player);
+            //raceBetting.setGame(game);
+
+            if(bean.getRaceBettingOnWinner()) {
+                raceBetting.setBetOnWinner(true);
+            } else {
+                raceBetting.setBetOnWinner(false);
+            }
+
+            return raceBetting;
+        }
+        */
         return null;
     }
 

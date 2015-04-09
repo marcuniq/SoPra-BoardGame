@@ -34,22 +34,22 @@ public class Game implements Serializable {
 	private Integer currentPlayer;
 
     @OneToMany(mappedBy="game", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
-    private List<Move> moves;
+    private List<Move> moves = new ArrayList<Move>();
     
     @OneToMany(mappedBy="game", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     @OrderColumn
     private List<User> players = new ArrayList<User>();
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "game")
     private RaceTrack raceTrack;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "game")
     private LegBettingArea legBettingArea;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "game")
     private RaceBettingArea raceBettingArea;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "game")
     private DiceArea diceArea;
 
 
@@ -61,7 +61,11 @@ public class Game implements Serializable {
     }
 
     public void addMove(Move move) {
-        moves.add(move);
+        if(!moves.contains(move)) {
+            moves.add(move);
+            move.setGame(this);
+        }
+
     }
 
     public void addPlayer(User player){

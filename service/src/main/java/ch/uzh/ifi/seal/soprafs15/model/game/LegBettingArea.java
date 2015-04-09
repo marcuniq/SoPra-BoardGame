@@ -1,7 +1,10 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
+import ch.uzh.ifi.seal.soprafs15.model.move.LegBetting;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -25,6 +28,9 @@ public class LegBettingArea implements Serializable {
     @Column
     private Map<Color, Stack<LegBettingTile>> legBettingTiles;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @PrimaryKeyJoinColumn
+    private Game game;
 
     public LegBettingArea(){
 
@@ -51,9 +57,24 @@ public class LegBettingArea implements Serializable {
     }
 
     public List<LegBettingTile> topLegBettingTiles() {
-        return null;
+        List result = new ArrayList<LegBettingTile>();
+
+        for(Color color : legBettingTiles.keySet()) {
+            result.add(legBettingTiles.get(color).peek());
+        }
+
+        return result;
     }
 
+    public LegBettingTile getLegBettingTile(Color c) {
+        return legBettingTiles.get(c).pop();
+    }
 
+    public Game getGame() {
+        return game;
+    }
 
+    public void setGame(Game game) {
+        this.game = game;
+    }
 }
