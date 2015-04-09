@@ -45,7 +45,7 @@ public class UserMapperServiceImpl extends UserMapperService {
             userResponseBean.setAge(user.getAge());
             userResponseBean.setUsername(user.getUsername());
             if(user.getGame() != null)
-                userResponseBean.setGamename(user.getGame().getName());
+                userResponseBean.setGame(user.getGame().getName());
         }
 
         return userResponseBean;
@@ -64,7 +64,7 @@ public class UserMapperServiceImpl extends UserMapperService {
             tmpUserResponseBean.setAge(user.getAge());
             tmpUserResponseBean.setUsername(user.getUsername());
             if(user.getGame() != null)
-                tmpUserResponseBean.setGamename(user.getGame().getName());
+                tmpUserResponseBean.setGame(user.getGame().getName());
 
             result.add(tmpUserResponseBean);
         }
