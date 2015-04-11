@@ -18,15 +18,15 @@ public abstract class Move implements Serializable {
 	
 	@Id
 	@GeneratedValue
-	private Long id;
+	protected Long id;
 	
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="GAME_ID")
-    private Game game;
+    protected Game game;
     
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="USER_ID")
-    private User user;
+    protected User user;
 
     public Move(){}
 
@@ -55,4 +55,6 @@ public abstract class Move implements Serializable {
 	}
 
     public abstract GameMoveResponseBean toGameMoveResponseBean();
+
+    public abstract Move execute();
 }

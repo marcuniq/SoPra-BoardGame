@@ -31,7 +31,7 @@ public class Game implements Serializable {
 	private GameStatus status;
 	
 	@Column
-	private Integer currentPlayer;
+	private Integer currentPlayer = 0;
 
     @OneToMany(mappedBy="game", cascade = CascadeType.ALL) //, fetch=FetchType.EAGER)
     private List<Move> moves = new ArrayList<Move>();
@@ -69,7 +69,7 @@ public class Game implements Serializable {
     public void addMove(Move move) {
         if(!moves.contains(move)) {
             moves.add(move);
-            move.setGame(this);
+            //move.setGame(this);
         }
 
     }

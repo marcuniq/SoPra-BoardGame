@@ -96,17 +96,15 @@ public class GameMapperServiceImpl extends GameMapperService {
     }
 
     @Override
-    public Move toMove(Game game, GameMoveRequestBean bean) {
-
-        User player = userRepository.findByToken(bean.getToken());
-
+    public Move toMove(Game game, User player, GameMoveRequestBean bean) {
 
         if(bean.getMove() == MoveEnum.DESERT_TILE_PLACING) {
             DesertTilePlacing desertTilePlacing = new DesertTilePlacing();
-            //desertTilePlacing.setUser(player);
-            //desertTilePlacing.setAsOasis(bean.getDesertTileAsOasis());
-            //desertTilePlacing.setPosition(bean.getDesertTilePosition());
-            //desertTilePlacing.setGame(game);
+            desertTilePlacing.setUser(player);
+            desertTilePlacing.setGame(game);
+            desertTilePlacing.setAsOasis(bean.getDesertTileAsOasis());
+            desertTilePlacing.setPosition(bean.getDesertTilePosition());
+
 
             return desertTilePlacing;
         } else if(bean.getMove() == MoveEnum.DICE_ROLLING) {
@@ -114,27 +112,23 @@ public class GameMapperServiceImpl extends GameMapperService {
             diceRolling.setUser(player);
             diceRolling.setGame(game);
 
-            DiceArea diceArea = game.getDiceArea();
-            Die die = diceArea.rollDice();
-
-            diceRolling.setDie(die);
-
             return diceRolling;
         } else if(bean.getMove() == MoveEnum.LEG_BETTING) {
             LegBetting legBetting = new LegBetting();
-            //legBetting.setUser((player));
-            //legBetting.setGame(game);
+            legBetting.setUser((player));
+            legBetting.setGame(game);
 
-            //LegBettingArea legBettingArea = game.getLegBettingArea();
-            //LegBettingTile legBettingTile = legBettingArea.getLegBettingTile(bean.getLegBettingTileColor());
-
-            //legBetting.setLegBettingTile(legBettingTile);
+            // create dummy leg betting tile to transport color
+            // real leg betting tile will be fetched in move.execute()
+            LegBettingTile legBettingTile = new LegBettingTile();
+            legBettingTile.setColor(bean.getLegBettingTileColor());
+            legBetting.setLegBettingTile(legBettingTile);
 
             return legBetting;
         } else if(bean.getMove() == MoveEnum.RACE_BETTING) {
             RaceBetting raceBetting = new RaceBetting();
-            //raceBetting.setUser(player);
-            //raceBetting.setGame(game);
+            raceBetting.setUser(player);
+            raceBetting.setGame(game);
 
             if(bean.getRaceBettingOnWinner()) {
                 raceBetting.setBetOnWinner(true);
@@ -150,6 +144,10 @@ public class GameMapperServiceImpl extends GameMapperService {
 
     @Override
     public GameMoveResponseBean toGameMoveResponseBean(Move move) {
+        // instead of
+        // if(move instanceof DiceRolling) ...
+        // else if(move instanceof LegBetting) ...
+
         return move.toGameMoveResponseBean();
     }
 

@@ -2,7 +2,9 @@ package ch.uzh.ifi.seal.soprafs15.model.move;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
+import ch.uzh.ifi.seal.soprafs15.model.game.DiceArea;
 import ch.uzh.ifi.seal.soprafs15.model.game.Die;
+import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,15 +26,29 @@ public class DiceRolling extends Move {
         this.die = die;
     }
 
+    /**
+     * Mapping from Move to Bean
+     */
     @Override
     public GameMoveResponseBean toGameMoveResponseBean() {
         GameMoveResponseBean bean = new GameMoveResponseBean();
-        bean.setId(getId());
-        bean.setGameId(getGame().getId());
-        bean.setUserId(getUser().getId());
+        bean.setId(id);
+        bean.setGameId(game.getId());
+        bean.setUserId(user.getId());
         bean.setMove(MoveEnum.DICE_ROLLING);
         bean.setDie(die);
 
         return bean;
+    }
+
+    /**
+     * Game logic for dice rolling
+     */
+    @Override
+    public Move execute() {
+        DiceArea diceArea = game.getDiceArea();
+        die = diceArea.rollDice();
+
+        return this;
     }
 }

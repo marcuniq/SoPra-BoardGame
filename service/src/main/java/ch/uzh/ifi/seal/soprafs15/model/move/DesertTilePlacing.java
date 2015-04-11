@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs15.model.move;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
+import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,16 +35,27 @@ public class DesertTilePlacing extends Move {
         this.position = position;
     }
 
+    /**
+     * Mapping from Move to Bean
+     */
     @Override
     public GameMoveResponseBean toGameMoveResponseBean() {
         GameMoveResponseBean bean = new GameMoveResponseBean();
-        bean.setId(getId());
-        bean.setGameId(getGame().getId());
-        bean.setUserId(getUser().getId());
+        bean.setId(id);
+        bean.setGameId(game.getId());
+        bean.setUserId(user.getId());
         bean.setMove(MoveEnum.DESERT_TILE_PLACING);
         bean.setDesertTileAsOasis(asOasis);
         bean.setDesertTilePosition(position);
 
         return bean;
+    }
+
+    /**
+     * Game logic for dice rolling
+     */
+    @Override
+    public Move execute() {
+        return this;
     }
 }

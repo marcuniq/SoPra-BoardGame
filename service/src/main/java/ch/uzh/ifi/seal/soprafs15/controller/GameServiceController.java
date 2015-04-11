@@ -151,6 +151,25 @@ public class GameServiceController extends GenericService {
     }
 
 
+    /*
+     *	Context: /games/{gameId}/moves
+     *  Description:
+     */
+    @RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/possible-moves")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<GameMoveResponseBean> listPossibleMoves(@PathVariable Long gameId) {
+        logger.debug("listMoves");
+
+        try {
+            List<GameMoveResponseBean> result = gameMoveService.listMoves(gameId);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
+    }
+
+
 	/*
 	 *	Context: /games/{gameId}/moves
      *  Description:

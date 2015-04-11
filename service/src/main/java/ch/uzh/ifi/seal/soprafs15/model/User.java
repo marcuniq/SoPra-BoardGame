@@ -49,6 +49,7 @@ public class User implements Serializable {
     private List<RaceBettingCard> raceBettingCards;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Column(columnDefinition = "BLOB")
     private List<LegBettingTile> legBettingTiles;
 
     public User(){
@@ -61,6 +62,13 @@ public class User implements Serializable {
 
         //
 
+    }
+
+    public void addLegBettingTile(LegBettingTile tile){
+        if(!legBettingTiles.contains(tile)){
+            legBettingTiles.add(tile);
+            tile.setUser(this);
+        }
     }
 
     public List<RaceBettingCard> getRaceBettingCards() {

@@ -2,10 +2,13 @@ package ch.uzh.ifi.seal.soprafs15.service;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
+import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.MoveRepository;
+import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.PlayerTurnException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +29,20 @@ public class GameMoveServiceImpl extends GameMoveService {
 
     protected MoveRepository moveRepository;
     protected GameRepository gameRepository;
+    protected UserRepository userRepository;
+
     protected GameMapperService gameMapperService;
+    protected GameLogicService gameLogicService;
 
     @Autowired
-    public GameMoveServiceImpl(MoveRepository moveRepository, GameRepository gameRepository, GameMapperService gameMapperService){
+    public GameMoveServiceImpl(MoveRepository moveRepository, GameRepository gameRepository,
+                               UserRepository userRepository,
+                               GameMapperService gameMapperService, GameLogicService gameLogicService){
         this.moveRepository = moveRepository;
         this.gameRepository = gameRepository;
+        this.userRepository = userRepository;
         this.gameMapperService = gameMapperService;
+        this.gameLogicService = gameLogicService;
     }
 
     @Override
@@ -47,20 +57,22 @@ public class GameMoveServiceImpl extends GameMoveService {
     }
 
     @Override
-    public GameMoveResponseBean addMove(Long gameId, GameMoveRequestBean bean) {
+    public GameMoveResponseBean addMove(Long gameId, GameMoveRequestBean bean) throws PlayerTurnException {
         logger.debug("add move, gameId: " + gameId);
 
         Game game = gameRepository.findOne(gameId);
-        Move move = gameMapperService.toMove(game, bean);
-        move = (Move) moveRepository.save(move);
-        //Move move = null;
+        User player = userRepository.findByToken(bean.getToken());
+        Move move = gameMapperService.toMove(game, player, bean);
 
         if(game != null && move != null) {
 
+            // execute game logic with move
+            move = gameLogicService.processMove(game, player, move);
+            //move = move.execute(game);
 
+            // save move to repo and add to game
+            move = (Move) moveRepository.save(move);
             game.addMove(move);
-
-            //gameRepository.save(game);
 
             return getMove(gameId, move.getId());
         }

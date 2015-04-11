@@ -1,10 +1,10 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import ch.uzh.ifi.seal.soprafs15.model.User;
+import ch.uzh.ifi.seal.soprafs15.model.move.LegBetting;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -25,12 +25,22 @@ public class LegBettingTile extends Card implements Serializable {
     @Column(nullable = false)
     private Integer otherPositionLoss;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="LEGBETTINGTILESTACK_ID")
+    private LegBettingTileStack stack;
+
     @ManyToOne
+    @JsonIgnore
     private User user;
 
 
-    public LegBettingTile(){
+    public LegBettingTile(){}
 
+    public LegBettingTile(Color c, Integer leadingPositionGain, Integer secondPositionGain, Integer otherPositionLoss){
+        this.color = c;
+        this.leadingPositionGain = leadingPositionGain;
+        this.secondPositionGain = secondPositionGain;
+        this.otherPositionLoss = otherPositionLoss;
     }
 
     public LegBettingTile(Integer leadingPositionGain, Integer secondPositionGain, Integer otherPositionLoss){
@@ -70,5 +80,13 @@ public class LegBettingTile extends Card implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public LegBettingTileStack getStack() {
+        return stack;
+    }
+
+    public void setStack(LegBettingTileStack stack) {
+        this.stack = stack;
     }
 }
