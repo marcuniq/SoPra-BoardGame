@@ -13,7 +13,6 @@ import android.widget.Button;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 
 /**
  * This Fragment displays the Main Menu
@@ -22,7 +21,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 public class MainMenuFragment extends Fragment {
 
     private Button createGameMenuButton;
-    private Button listGamesMenuButton;
+    private Button listGameMenuButton;
     private Long token;
 
     public MainMenuFragment() {}
@@ -34,7 +33,7 @@ public class MainMenuFragment extends Fragment {
     /**
      * Displays two buttons for navigation:
      * - createGameMenuButton: switches to the CreateGameFrame
-     * - listGamesMenuButton:  switches to the GamesListFragment
+     * - listGameMenuButton:  switches to the GamesListFragment
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,11 +53,11 @@ public class MainMenuFragment extends Fragment {
                 onClickCreateGameMenuButton(v);
             }
         });
-        listGamesMenuButton = (Button) v.findViewById(R.id.listGamesMenuButton);
-        listGamesMenuButton.setOnClickListener(new View.OnClickListener() {
+        listGameMenuButton = (Button) v.findViewById(R.id.listGameMenuButton);
+        listGameMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickListGamesMenuButton(v);
+                onClickListGameMenuButton(v);
             }
         });
 
@@ -75,11 +74,11 @@ public class MainMenuFragment extends Fragment {
     }
 
     /**
-     * switches View to the GamesListFragment
+     * switches View to the GameListFragment
      *
      * @param v the current View
      */
-    private void onClickListGamesMenuButton(View v) {
+    private void onClickListGameMenuButton(View v) {
         ((MenuActivity)getActivity()).pushFragment(GameListFragment.newInstance());
     }
 }

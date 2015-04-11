@@ -12,8 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
@@ -28,7 +26,7 @@ public class LoginFragment extends Fragment {
     private EditText etAge;
     private EditText etUsername;
     private TextView tvLogBox;
-    private Button btnLogin;
+    private Button loginButton;
 
     /**
      * Use this factory method to create a new instance of
@@ -96,8 +94,8 @@ public class LoginFragment extends Fragment {
         etAge = (EditText) v.findViewById(R.id.age);
         tvLogBox = (TextView) v.findViewById(R.id.logBox);
 
-        btnLogin = (Button) v.findViewById(R.id.btnLogin);
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        loginButton = (Button) v.findViewById(R.id.loginButton);
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onClickCreateUserBtn(v);

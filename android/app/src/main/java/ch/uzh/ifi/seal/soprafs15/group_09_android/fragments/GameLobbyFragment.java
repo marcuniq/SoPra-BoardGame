@@ -1,28 +1,15 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
-import java.util.ArrayList;
-import java.util.List;
 
 //public class GameLobbyFragment extends ListFragment {
 public class GameLobbyFragment extends Fragment {
@@ -68,7 +55,7 @@ public class GameLobbyFragment extends Fragment {
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickStarteGameBtn(v);
+                onClickStartGameButton(v);
             }
         });
 
@@ -115,7 +102,7 @@ public class GameLobbyFragment extends Fragment {
         Toast.makeText(v.getContext(), "You selected player \"" + item + "\"", Toast.LENGTH_LONG).show();
     }*/
 
-    private void onClickStarteGameBtn(View v) {
+    private void onClickStartGameButton(View v) {
         // TODO: start game
         Toast.makeText(v.getContext(), "You started game \"" + gameId + "\"", Toast.LENGTH_LONG).show();
     }
