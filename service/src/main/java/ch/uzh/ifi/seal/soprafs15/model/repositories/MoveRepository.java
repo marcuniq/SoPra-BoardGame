@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository("moveRepository")
-public interface MoveRepository extends CrudRepository<Move, Long> {
-    List<Move> findByGame(Game game);
+public interface MoveRepository<T extends Move> extends CrudRepository<T, Long> {
+    List<T> findByGame(Game game);
 }

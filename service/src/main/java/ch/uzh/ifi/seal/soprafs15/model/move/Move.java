@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.model.move;
 
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 
@@ -7,7 +8,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-public class Move implements Serializable {
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+public abstract class Move implements Serializable {
 	
 	/**
 	 * 
@@ -18,17 +20,15 @@ public class Move implements Serializable {
 	@GeneratedValue
 	private Long id;
 	
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="GAME_ID")
     private Game game;
     
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="USER_ID")
     private User user;
 
-    public Move(){
-
-    }
+    public Move(){}
 
 	public Long getId() {
 		return id;
@@ -53,4 +53,6 @@ public class Move implements Serializable {
 	public void setUser(User user) {
 		this.user = user;
 	}
+
+    public abstract GameMoveResponseBean toGameMoveResponseBean();
 }

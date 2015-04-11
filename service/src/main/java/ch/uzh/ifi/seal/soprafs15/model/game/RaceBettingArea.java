@@ -27,8 +27,8 @@ public class RaceBettingArea implements Serializable {
     @Column
     private List<RaceBettingCard> loserBetting;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @PrimaryKeyJoinColumn
+    @OneToOne(cascade=CascadeType.ALL)//(fetch = FetchType.EAGER)
+    @JoinColumn(name="GAME_ID")
     private Game game;
 
 

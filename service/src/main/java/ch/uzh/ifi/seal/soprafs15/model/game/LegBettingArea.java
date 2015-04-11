@@ -28,8 +28,8 @@ public class LegBettingArea implements Serializable {
     @Column
     private Map<Color, Stack<LegBettingTile>> legBettingTiles;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @PrimaryKeyJoinColumn
+    @OneToOne(cascade=CascadeType.ALL)//(fetch = FetchType.EAGER)
+    @JoinColumn(name="GAME_ID")
     private Game game;
 
     public LegBettingArea(){

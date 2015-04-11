@@ -37,6 +37,7 @@ public class GameMoveServiceImpl extends GameMoveService {
 
     @Override
     public List<GameMoveResponseBean> listMoves(Long gameId) {
+        logger.debug("list moves");
         Game game = gameRepository.findOne(gameId);
 
         if(game != null) {
@@ -47,23 +48,28 @@ public class GameMoveServiceImpl extends GameMoveService {
 
     @Override
     public GameMoveResponseBean addMove(Long gameId, GameMoveRequestBean bean) {
+        logger.debug("add move, gameId: " + gameId);
+
         Game game = gameRepository.findOne(gameId);
-        //Move move = gameMapperService.toMove(game, bean);
-        Move move = null;
+        Move move = gameMapperService.toMove(game, bean);
+        move = (Move) moveRepository.save(move);
+        //Move move = null;
 
         if(game != null && move != null) {
+
+
             game.addMove(move);
 
             //gameRepository.save(game);
 
-            //return gameMapperService.toGameMoveResponseBean(move);
+            return getMove(gameId, move.getId());
         }
         return null;
     }
 
     @Override
     public GameMoveResponseBean getMove(Long gameId, Long moveId) {
-        Move move = moveRepository.findOne(moveId);
+        Move move = (Move) moveRepository.findOne(moveId);
 
         if(move != null) {
             return gameMapperService.toGameMoveResponseBean(move);

@@ -97,8 +97,9 @@ public class GameMapperServiceImpl extends GameMapperService {
 
     @Override
     public Move toMove(Game game, GameMoveRequestBean bean) {
-        /*
+
         User player = userRepository.findByToken(bean.getToken());
+
 
         if(bean.getMove() == MoveEnum.DESERT_TILE_PLACING) {
             DesertTilePlacing desertTilePlacing = new DesertTilePlacing();
@@ -110,13 +111,13 @@ public class GameMapperServiceImpl extends GameMapperService {
             return desertTilePlacing;
         } else if(bean.getMove() == MoveEnum.DICE_ROLLING) {
             DiceRolling diceRolling = new DiceRolling();
-            //diceRolling.setUser(player);
-            //diceRolling.setGame(game);
+            diceRolling.setUser(player);
+            diceRolling.setGame(game);
 
-            //DiceArea diceArea = game.getDiceArea();
-            //Dice dice = diceArea.rollDice();
+            DiceArea diceArea = game.getDiceArea();
+            Die die = diceArea.rollDice();
 
-            //diceRolling.setDice(dice);
+            diceRolling.setDie(die);
 
             return diceRolling;
         } else if(bean.getMove() == MoveEnum.LEG_BETTING) {
@@ -143,17 +144,22 @@ public class GameMapperServiceImpl extends GameMapperService {
 
             return raceBetting;
         }
-        */
+
         return null;
     }
 
     @Override
     public GameMoveResponseBean toGameMoveResponseBean(Move move) {
-        return null;
+        return move.toGameMoveResponseBean();
     }
 
     @Override
     public List<GameMoveResponseBean> toGameMoveResponseBean(List<Move> moves) {
-        return null;
+        List<GameMoveResponseBean> result = new ArrayList<>();
+
+        for(Move m : moves)
+            result.add(m.toGameMoveResponseBean());
+
+        return result;
     }
 }
