@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Created by Hakuna on 30.03.2015.
  */
 @Embeddable
-public class Dice implements Serializable {
+public class Die implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -15,16 +15,11 @@ public class Dice implements Serializable {
 
     private Integer faceValue;
 
-    public Dice(){}
+    public Die(){}
 
-    public Dice(Color c, Integer v){
+    public Die(Color c, Integer v){
         this.color = c;
         this.faceValue = v;
-    }
-
-    // returns number between 1 and 3
-    public Integer rollDice() {
-        return (int) Math.random() % 3 + 1;
     }
 
     public Color getColor() {

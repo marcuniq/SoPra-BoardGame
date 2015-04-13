@@ -1,17 +1,18 @@
 package ch.uzh.ifi.seal.soprafs15.controller.beans.game;
 
-import ch.uzh.ifi.seal.soprafs15.model.game.Dice;
+import ch.uzh.ifi.seal.soprafs15.model.game.Die;
 import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingTile;
 
 public class GameMoveResponseBean {
     private Long id;
+    private Long gameId;
     private Long userId;
     private MoveEnum move;
     private LegBettingTile legBettingTile;
     private Boolean raceBettingOnWinner;
     private Boolean desertTileAsOasis;
     private Integer desertTilePosition;
-    private Dice dice;
+    private Die die;
 
     public Long getId() {
         return id;
@@ -19,6 +20,14 @@ public class GameMoveResponseBean {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(Long gameId) {
+        this.gameId = gameId;
     }
 
     public Long getUserId() {
@@ -69,11 +78,13 @@ public class GameMoveResponseBean {
         this.desertTilePosition = desertTilePosition;
     }
 
-    public Dice getDice() {
-        return dice;
+    public Die getDie() {
+        return die;
     }
 
-    public void setDice(Dice dice) {
-        this.dice = dice;
+    public void setDie(Die die) {
+        this.die = die;
     }
+
+
 }

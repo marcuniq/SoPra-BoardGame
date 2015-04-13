@@ -2,6 +2,10 @@ package ch.uzh.ifi.seal.soprafs15.controller;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.*;
 import ch.uzh.ifi.seal.soprafs15.service.*;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.InvalidMoveException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.PlayerTurnException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,6 +155,25 @@ public class GameServiceController extends GenericService {
     }
 
 
+    /*
+     *	Context: /games/{gameId}/moves
+     *  Description:
+     */
+    @RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/possible-moves")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<GameMoveResponseBean> listPossibleMoves(@PathVariable Long gameId) {
+        logger.debug("listMoves");
+
+        try {
+            List<GameMoveResponseBean> result = gameMoveService.listMoves(gameId);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
+    }
+
+
 	/*
 	 *	Context: /games/{gameId}/moves
      *  Description:
@@ -177,15 +200,12 @@ public class GameServiceController extends GenericService {
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/moves")
 	@ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-	public GameMoveResponseBean addMove(@PathVariable Long gameId, @RequestBody @Valid GameMoveRequestBean gameMoveRequestBean) {
+	public GameMoveResponseBean addMove(@PathVariable Long gameId, @RequestBody @Valid GameMoveRequestBean gameMoveRequestBean)
+            throws PlayerTurnException, GameNotFoundException, UserNotFoundException, InvalidMoveException {
 		logger.debug("addMove: " + gameMoveRequestBean);
 
-        try {
-            GameMoveResponseBean result = gameMoveService.addMove(gameId, gameMoveRequestBean);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameMoveResponseBean result = gameMoveService.addMove(gameId, gameMoveRequestBean);
+        return result;
 	}
 
 
@@ -197,10 +217,10 @@ public class GameServiceController extends GenericService {
 	@ResponseStatus(HttpStatus.OK)
     @ResponseBody
 	public GameMoveResponseBean getMove(@PathVariable Long gameId, @PathVariable Long moveId) {
-		logger.debug("getMove: " + gameId);
+		logger.debug("gameId: " + gameId + " , moveId" + moveId);
 
         try {
-            GameMoveResponseBean result = gameMoveService.getMove(gameId, moveId);
+            GameMoveResponseBean result = gameMoveService.getMove(moveId);
             return result;
         } catch (Exception e){
             return null;
