@@ -998,14 +998,9 @@ The backend server with this API implements the 2014 board game of the year "Cam
             {   
                 "id" : 3,
                 "username" : "marcuniq",
-                "age" : 78,
-                "token" : "111e6162-3b6f-4ae2-a171-2470b63dff00",
+                "age" : 78
                 "status" : "ACTIVE",
-                "game" : "Camel Run Zurich",
-                "moves" : "",
-                "money" : 999,
-                "raceBettingCards" : "",
-                "legBettingTiles" : ""
+                "game" : "Camel Run Zurich"
             }
 
     + Schema
@@ -1014,7 +1009,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "UserRequestBean",
                 "type" : "object",
-                "required" : [ "id", "username", "age", "token", "status", "game", "moves", "money", "raceBettingCards", "legBettingTiles" ],
+                "required" : [ "id", "username", "age", "status", "game" ],
                 "properties" : {
                     "id" : {
                         "description" : "game id",
@@ -1028,31 +1023,11 @@ The backend server with this API implements the 2014 board game of the year "Cam
                         "description": "age of user",
                         "type" : "integer"
                     },
-                    "token" : {
-                        "description": "token",
-                        "type" : "string"
-                    },
                     "status" : {
                         "enum" : [ "ACTIVE", "UNKNOWN", "INACTIVE" ]
                     },
                     "game": {
                         "description": "the game the user has joined",
-                        "type": "string"
-                    },
-                    "moves": {
-                        "description": "moves",
-                        "type": "string"
-                    },
-                    "money": {
-                        "description": "the amount of money a user has",
-                        "type": "integer"
-                    },
-                    "raceBettingCards": {
-                        "description": "raceBettingCards",
-                        "type": "string"
-                    },
-                    "legBettingTiles": {
-                        "description": "legBettingTiles",
                         "type": "string"
                     }
                 }
