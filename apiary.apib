@@ -93,7 +93,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
 ### List all Games [GET]
 ###### Response object: List[GameResponseBean]
 
-+ Response 200 (application/json)
++ Response 200
     
     [Games Collection][]
 
@@ -132,7 +132,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 }
             }
 
-+ Response 201 (application/json)
++ Response 201
 
     [Game][]
 
@@ -196,7 +196,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
 ### Retrieve a Game [GET]
 ###### Response object: GameResponseBean
 
-+ Response 200 (application/json)
++ Response 200
 
     [Game][]
 
@@ -289,7 +289,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
 ### List all Players [GET]
 ###### Response object: List[GamePlayerResponseBean]
 
-+ Response 200 (application/json)
++ Response 200
 
     [Game Players Collection][]
 
@@ -322,7 +322,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 }
             }
         
-+ Response 201 (application/json)
++ Response 201
 
     [Game Player][]
 
@@ -374,7 +374,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
 ### Retrieve a Game Player [GET]
 ###### Response object: GamePlayerResponseBean
 
-+ Response 200 (application/json)
++ Response 200
 
     [Game Player][]
 
@@ -475,7 +475,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
 ### List all Moves [GET]
 ###### Response object: List[GameMoveResponseBean]
 
-+ Response 200 (application/json)
++ Response 200
 
     [Game Moves Collection][]
 
@@ -530,7 +530,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 }
             }
         
-+ Response 201 (application/json)
++ Response 201
 
     [Game Move][]
 
@@ -583,7 +583,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
 ### Retrieve a Game Move [GET]
 ###### Response object: GameMoveResponseBean
 
-+ Response 200 (application/json)
++ Response 200
 
     [Game Move][]
 
@@ -622,7 +622,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
 ### Retrieve Race Track [GET]
 ###### Response object: GameRaceTrackResponseBean
 
-+ Response 200 (application/json)
++ Response 200
 
     [Game Race Track][]
     
@@ -661,7 +661,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
 ### Retrieve Leg Betting Area [GET]
 ###### Response object:GameLegBettingAreaResponseBean
 
-+ Response 200 (application/json)
++ Response 200
 
     [Game Leg Betting Area][]
 
@@ -699,7 +699,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
 ### Retrieve Race Betting Area [GET]
 ###### Response object:GameRaceBettingAreaResponseBean
 
-+ Response 200 (application/json)
++ Response 200
 
     [Game Race Betting Area][]
 
@@ -738,7 +738,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
 ### Retrieve Dice Area [GET]
 ###### Response object: GameDiceAreaResponseBean
 
-+ Response 200 (application/json)
++ Response 200
 
     [Game Dice Area][]
     
@@ -778,7 +778,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 }
             }
 
-+ Response 200 (application/json)
++ Response 200
 
     [Game][]
     
@@ -818,7 +818,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 }
             }
         
-+ Response 200 (application/json)
++ Response 200
 
     [Game][]
     
@@ -981,7 +981,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
             }
         
 
-+ Response 201 (application/json)
++ Response 201
 
     [User][]
 
@@ -996,11 +996,16 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             {   
-                "id": 3,
-                "username": "marcuniq",
-                "age": 68,
+                "id" : 3,
+                "username" : "marcuniq",
+                "age" : 78,
                 "token" : "111e6162-3b6f-4ae2-a171-2470b63dff00",
-                "games" : ["Camel Run Zürich"]
+                "status" : "ACTIVE",
+                "game" : null,
+                "moves" : [ 1, 2 ],
+                "money" : 999,
+                "raceBettingCards" : null,
+                "legBettingTiles" : null
             }
 
     + Schema
@@ -1009,7 +1014,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "UserRequestBean",
                 "type" : "object",
-                "required" : ["id", "username", "age", "token", "games"],
+                "required" : [ "id", "username", "age", "token", "status", "game", "moves", "money", "raceBettingCards", "legBettingTiles" ],
                 "properties" : {
                     "id" : {
                         "description" : "game id",
@@ -1023,13 +1028,32 @@ The backend server with this API implements the 2014 board game of the year "Cam
                         "description": "age of user",
                         "type" : "integer"
                     },
-                    "token": {
+                    "token" : {
                         "description": "token",
                         "type" : "string"
                     },
-                    "games": {
-                        "type" : "array",
-                        "items": { "type": "string"}
+                    "status" : {
+                        "enum" : [ "ACTIVE", "UNKNOWN", "INACTIVE" ]
+                    },
+                    "game": {
+                        "description": "the game the user has joined",
+                        "type": "string"
+                    },
+                    "moves": {
+                        "type": "array",
+                        "item" : ["type": "integer"]
+                    },
+                    "money": {
+                        "description": "the amount of money a user has",
+                        "type": "integer"
+                    },
+                    "raceBettingCards": {
+                        "description": "raceBettingCards",
+                        "type": "string"
+                    },
+                    "legBettingTiles": {
+                        "description": "legBettingTiles",
+                        "type": "string"
                     }
                 }
             }
@@ -1037,7 +1061,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
 ### Retrieve a User [GET]
 ###### Response object: UserResponseBean
 
-+ Response 200 (application/json)
++ Response 200
 
     [User][]
 
@@ -1073,7 +1097,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 }
             }
 
-+ Response 200 (application/json)
++ Response 200
 
     [User][]
 
