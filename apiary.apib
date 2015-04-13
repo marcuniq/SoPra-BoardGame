@@ -983,7 +983,76 @@ The backend server with this API implements the 2014 board game of the year "Cam
 
 + Response 201 (application/json)
 
-    [User][]
+    + Body
+    
+            [{   
+                "id" : 3,
+                "username" : "marcuniq",
+                "age" : 78,
+                "token" : "111e6162-3b6f-4ae2-a171-2470b63dff00",
+                "status" : "ACTIVE",
+                "game" : null,
+                "moves" : [ "1", "2" ],
+                "money" : 999,
+                "raceBettingCards" : null,
+                "legBettingTiles" : null
+            }]
+            
+    + Schema
+    
+            {
+                "$schema": "http://json-schema.org/draft-04/schema#",
+                "description": "Users Collection",
+                "type" : "array",
+                "items": { "$ref": "#/definitions/user" },
+                "definitions" : {
+                    "user": {
+                        "type" : "object",
+                        "required" : [ "id", "username", "age", "token", "status", "game", "moves", "money", "raceBettingCards", "legBettingTiles" ],
+                        "properties" : {
+                            "id" : {
+                                "description" : "game id",
+                                "type" : "integer"
+                            },
+                            "username": {
+                                "description": "username",
+                                "type" : "string"
+                            },
+                            "age": {
+                                "description": "age of user",
+                                "type" : "integer"
+                            },
+                            "token" : {
+                                "description": "token",
+                                "type" : "string"
+                            },
+                            "status" : {
+                                "enum" : [ "ACTIVE", "INACTIVE" ]
+                            },
+                            "game": {
+                                "description": "the game the user has joined",
+                                "type": "string"
+                            },
+                            "moves": {
+                                "type": "array",
+                                "item" : ["type": "move"]
+                            },
+                            "money": {
+                                "description": "the amount of money a user has",
+                                "type": "integer"
+                            },
+                            "raceBettingCards": {
+                                "description": "raceBettingCards",
+                                "type": "raceBettingCards"
+                            },
+                            "legBettingTiles": {
+                                "description": "legBettingTiles",
+                                "type": "legBettingTiles"
+                            }
+                        }
+                    }
+                }
+            }
 
 
 ## User [/users/{userId}]
