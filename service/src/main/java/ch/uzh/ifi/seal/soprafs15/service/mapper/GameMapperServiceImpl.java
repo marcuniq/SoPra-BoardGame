@@ -130,11 +130,8 @@ public class GameMapperServiceImpl extends GameMapperService {
             raceBetting.setUser(player);
             raceBetting.setGame(game);
 
-            if(bean.getRaceBettingOnWinner()) {
-                raceBetting.setBetOnWinner(true);
-            } else {
-                raceBetting.setBetOnWinner(false);
-            }
+            raceBetting.setColor(bean.getRaceBettingColor());
+            raceBetting.setBetOnWinner(bean.getRaceBettingOnWinner());
 
             return raceBetting;
         }
@@ -144,7 +141,7 @@ public class GameMapperServiceImpl extends GameMapperService {
 
     @Override
     public GameMoveResponseBean toGameMoveResponseBean(Move move) {
-        // instead of
+        // using polymorphism instead of the following code:
         // if(move instanceof DiceRolling) ...
         // else if(move instanceof LegBetting) ...
 
