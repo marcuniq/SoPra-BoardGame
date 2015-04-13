@@ -873,22 +873,14 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "age" : 78,
                 "token" : "111e6162-3b6f-4ae2-a171-2470b63dff00",
                 "status" : "ACTIVE",
-                "game" : null,
-                "moves" : [ 1, 2 ],
-                "money" : 999,
-                "raceBettingCards" : null,
-                "legBettingTiles" : null
+                "game" : null
             },{   
                 "id": 4,
                 "username": "jofroe",
                 "age": 99,
                 "token" : "000e6162-3b6f-4ae2-a171-2470b63dff00",
                 "status" : "UNKNOWN",
-                "game" : "Camel Run Bern",
-                "moves" : [ 1, 2, 3 ],
-                "money" : 9,
-                "raceBettingCards" : null,
-                "legBettingTiles" : null
+                "game" : "Camel Run Bern"
             }]
             
             
@@ -902,7 +894,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "definitions" : {
                     "user": {
                         "type" : "object",
-                        "required" : [ "id", "username", "age", "token", "status", "game", "moves", "money", "raceBettingCards", "legBettingTiles" ],
+                        "required" : [ "id", "username", "age", "token", "status", "game"],
                         "properties" : {
                             "id" : {
                                 "description" : "game id",
@@ -925,22 +917,6 @@ The backend server with this API implements the 2014 board game of the year "Cam
                             },
                             "game": {
                                 "description": "the game the user has joined",
-                                "type": "string"
-                            },
-                            "moves": {
-                                "type": "array",
-                                "item" : ["type": "integer"]
-                            },
-                            "money": {
-                                "description": "the amount of money a user has",
-                                "type": "integer"
-                            },
-                            "raceBettingCards": {
-                                "description": "raceBettingCards",
-                                "type": "string"
-                            },
-                            "legBettingTiles": {
-                                "description": "legBettingTiles",
                                 "type": "string"
                             }
                         }
@@ -1113,7 +1089,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
 ### login [POST]
 ###### Response object: UserLoginLogoutResponseBean
 
-+ Request (application/json; charset=UTF-8)
++ Request (application/x-www-form-urlencoded)
 
 
 + Response 200 (application/json)
@@ -1129,7 +1105,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
             {
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "UserLoginLogoutResponseBean",
-                "type" : "object",
+                "type" : "String",
                 "required" : ["token"],
                 "properties" : {
                     "token" : {
