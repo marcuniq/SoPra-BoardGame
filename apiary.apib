@@ -874,7 +874,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "token" : "111e6162-3b6f-4ae2-a171-2470b63dff00",
                 "status" : "ACTIVE",
                 "game" : null,
-                "moves" : [ "1", "2" ],
+                "moves" : [ 1, 2 ],
                 "money" : 999,
                 "raceBettingCards" : null,
                 "legBettingTiles" : null
@@ -883,9 +883,9 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "username": "jofroe",
                 "age": 99,
                 "token" : "000e6162-3b6f-4ae2-a171-2470b63dff00",
-                "status" : "JOINED",
+                "status" : "UNKNOWN",
                 "game" : "Camel Run Bern",
-                "moves" : [ "1", "2", "3" ],
+                "moves" : [ 1, 2, 3 ],
                 "money" : 9,
                 "raceBettingCards" : null,
                 "legBettingTiles" : null
@@ -921,7 +921,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                                 "type" : "string"
                             },
                             "status" : {
-                                "enum" : [ "RUNNING", "PENDING", "BUSY", "FINISHED" ]
+                                "enum" : [ "ACTIVE", "UNKNOWN", "INACTIVE" ]
                             },
                             "game": {
                                 "description": "the game the user has joined",
@@ -929,7 +929,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                             },
                             "moves": {
                                 "type": "array",
-                                "item" : ["type": "move"]
+                                "item" : ["type": "integer"]
                             },
                             "money": {
                                 "description": "the amount of money a user has",
@@ -937,11 +937,11 @@ The backend server with this API implements the 2014 board game of the year "Cam
                             },
                             "raceBettingCards": {
                                 "description": "raceBettingCards",
-                                "type": "raceBettingCards"
+                                "type": "string"
                             },
                             "legBettingTiles": {
                                 "description": "legBettingTiles",
-                                "type": "legBettingTiles"
+                                "type": "string"
                             }
                         }
                     }
@@ -981,7 +981,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
             }
         
 
-+ Response 201 (application/json)
++ Response 201
 
     [User][]
 
@@ -1002,7 +1002,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "token" : "111e6162-3b6f-4ae2-a171-2470b63dff00",
                 "status" : "ACTIVE",
                 "game" : null,
-                "moves" : [ 1, 2 ],
+                "moves" : null,
                 "money" : 999,
                 "raceBettingCards" : null,
                 "legBettingTiles" : null
