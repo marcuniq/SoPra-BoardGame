@@ -104,7 +104,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
 ###### Request object: GameRequestBean
 ###### Response object: GameResponseBean
     
-+ Request (application/json)
++ Request (application/json; charset=UTF-8)
 
     + Body
     
@@ -294,10 +294,13 @@ The backend server with this API implements the 2014 board game of the year "Cam
     [Game Players Collection][]
 
 
+## User join [/games/{gameId}/join]
++ Parameters
+    + gameId (required, number, `1`) ... Numeric `id` of the User.
+
 ### Add Player to Game [POST]
 ###### Request object: GamePlayerRequestBean
 ###### Response object: GamePlayerResponseBean
-
 
 + Request (application/json)
 
