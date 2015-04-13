@@ -29,11 +29,17 @@ public class LegBettingTileStack implements Serializable {
 
     public LegBettingTileStack(){}
 
-    public LegBettingTileStack(Color c, List<LegBettingTile> tiles){
+    public LegBettingTileStack(LegBettingArea legBettingArea, Color color, List<LegBettingTile> tiles){
+        this.legBettingArea = legBettingArea;
         this.color = color;
         this.tiles = tiles;
+        this.tiles.stream().forEach(t -> t.setStack(this));
     }
 
+    /**
+     * Remove top tile from stack
+     * @return top tile from stack
+     */
     public LegBettingTile pop(){
         LegBettingTile result = null;
         if(tiles.size() > 0)
@@ -42,6 +48,10 @@ public class LegBettingTileStack implements Serializable {
         return result;
     }
 
+    /**
+     * See top tile
+     * @return top tile from stack
+     */
     public LegBettingTile peek(){
         LegBettingTile result = null;
         if(tiles.size() > 0)

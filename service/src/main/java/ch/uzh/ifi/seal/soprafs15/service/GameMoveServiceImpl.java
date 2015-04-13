@@ -8,7 +8,10 @@ import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.MoveRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.InvalidMoveException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.PlayerTurnException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,41 +49,46 @@ public class GameMoveServiceImpl extends GameMoveService {
     }
 
     @Override
-    public List<GameMoveResponseBean> listMoves(Long gameId) {
+    public List<GameMoveResponseBean> listMoves(Long gameId) throws GameNotFoundException {
         logger.debug("list moves");
         Game game = gameRepository.findOne(gameId);
 
-        if(game != null) {
-            return gameMapperService.toGameMoveResponseBean(game.getMoves());
-        }
-        return null;
+        if(game == null)
+            throw new GameNotFoundException(game);
+
+        return gameMapperService.toGameMoveResponseBean(game.getMoves());
     }
 
     @Override
-    public GameMoveResponseBean addMove(Long gameId, GameMoveRequestBean bean) throws PlayerTurnException {
+    public GameMoveResponseBean addMove(Long gameId, GameMoveRequestBean bean) throws PlayerTurnException, GameNotFoundException, UserNotFoundException, InvalidMoveException {
         logger.debug("add move, gameId: " + gameId);
 
+        // find game and player, map bean to move
         Game game = gameRepository.findOne(gameId);
         User player = userRepository.findByToken(bean.getToken());
         Move move = gameMapperService.toMove(game, player, bean);
 
-        if(game != null && move != null) {
+        if(game == null)
+            throw new GameNotFoundException(game);
 
-            // execute game logic with move
-            move = gameLogicService.processMove(game, player, move);
-            //move = move.execute(game);
+        if(player == null)
+            throw new UserNotFoundException(player);
 
-            // save move to repo and add to game
-            move = (Move) moveRepository.save(move);
-            game.addMove(move);
+        if(move == null)
+            throw new InvalidMoveException(move);
 
-            return getMove(gameId, move.getId());
-        }
-        return null;
+        // execute game logic with move
+        move = gameLogicService.processMove(game, player, move);
+
+        // save move to repo and add to game
+        move = (Move) moveRepository.save(move);
+        game.addMove(move);
+
+        return getMove(move.getId());
     }
 
     @Override
-    public GameMoveResponseBean getMove(Long gameId, Long moveId) {
+    public GameMoveResponseBean getMove(Long moveId) {
         Move move = (Move) moveRepository.findOne(moveId);
 
         if(move != null) {

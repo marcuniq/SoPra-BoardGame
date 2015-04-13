@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import ch.uzh.ifi.seal.soprafs15.model.move.LegBetting;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -27,7 +28,7 @@ public class LegBettingArea implements Serializable {
     @MapKeyEnumerated(EnumType.STRING)
     private Map<Color, LegBettingTileStack> legBettingTiles;
 
-    @OneToOne(cascade=CascadeType.ALL)//(fetch = FetchType.EAGER)
+    @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name="GAME_ID")
     private Game game;
 
@@ -35,6 +36,9 @@ public class LegBettingArea implements Serializable {
         init();
     }
 
+    /**
+     * Initialize leg betting area with the needed leg betting tiles
+     */
     public void init() {
         legBettingTiles = new HashMap<>();
 
@@ -48,10 +52,35 @@ public class LegBettingArea implements Serializable {
             list.add(tile_3);
             list.add(tile_5);
 
-            legBettingTiles.put(c, new LegBettingTileStack(c, list));
+            legBettingTiles.put(c, new LegBettingTileStack(this, c, list));
+        }
+    }
+
+    /**
+     * Player needs to see the top tiles s.t. she can make a move decision
+     * @return a list of LegBettingTile which are the top tile of each stack
+     */
+    public List<LegBettingTile> topLegBettingTiles() {
+        List result = new ArrayList<LegBettingTile>();
+
+        for(Color color : legBettingTiles.keySet()) {
+            LegBettingTileStack stack = legBettingTiles.get(color);
+
+            result.add(stack.peek());
         }
 
+        return result;
     }
+
+    /**
+     * Remove LegBettingTile from stack
+     * @param c Color
+     * @return LegBettingTile
+     */
+    public LegBettingTile getLegBettingTile(Color c) {
+        return legBettingTiles.get(c).pop();
+    }
+
 
     public Long getId() {
         return id;
@@ -67,22 +96,6 @@ public class LegBettingArea implements Serializable {
 
     public void setLegBettingTiles(Map<Color, LegBettingTileStack> legBettingTiles) {
         this.legBettingTiles = legBettingTiles;
-    }
-
-    public List<LegBettingTile> topLegBettingTiles() {
-        List result = new ArrayList<LegBettingTile>();
-
-        for(Color color : legBettingTiles.keySet()) {
-            LegBettingTileStack stack = legBettingTiles.get(color);
-
-            result.add(stack.peek());
-        }
-
-        return result;
-    }
-
-    public LegBettingTile getLegBettingTile(Color c) {
-        return legBettingTiles.get(c).pop();
     }
 
     public Game getGame() {

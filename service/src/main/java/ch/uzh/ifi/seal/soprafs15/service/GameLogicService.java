@@ -6,6 +6,8 @@ import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.PlayerTurnException;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author Marco
  */

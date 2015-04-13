@@ -48,6 +48,10 @@ public class DiceArea implements Serializable {
     }
 
 
+    /**
+     * Initialize a list of dice with random face values
+     * and shuffle dice s.t. we have a random order of colors
+     */
     public void init() {
         diceInPyramid = new ArrayList<Die>();
         rolledDice = new ArrayList<Die>();
@@ -58,6 +62,22 @@ public class DiceArea implements Serializable {
         }
         
         Collections.shuffle(diceInPyramid);
+    }
+
+    /**
+     * Get a die from the already shuffled pyramid
+     * @return Die
+     */
+    public Die rollDice() {
+        int size = diceInPyramid.size();
+
+        if(size > 0) {
+            Die die = diceInPyramid.remove(size - 1);
+            rolledDice.add(die);
+
+            return die;
+        }
+        return null;
     }
 
     public Long getId() {
@@ -82,18 +102,6 @@ public class DiceArea implements Serializable {
 
     public void setRolledDice(List<Die> rolledDice) {
         this.rolledDice = rolledDice;
-    }
-
-    public Die rollDice() {
-        int size = diceInPyramid.size();
-
-        if(size > 0) {
-            Die die = diceInPyramid.remove(size - 1);
-            rolledDice.add(die);
-
-            return die;
-        }
-        return null;
     }
 
     public Game getGame() {

@@ -27,12 +27,12 @@ public class LegBettingTile extends Card implements Serializable {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="LEGBETTINGTILESTACK_ID")
+    @JsonIgnore
     private LegBettingTileStack stack;
 
     @ManyToOne
     @JsonIgnore
     private User user;
-
 
     public LegBettingTile(){}
 
@@ -42,13 +42,6 @@ public class LegBettingTile extends Card implements Serializable {
         this.secondPositionGain = secondPositionGain;
         this.otherPositionLoss = otherPositionLoss;
     }
-
-    public LegBettingTile(Integer leadingPositionGain, Integer secondPositionGain, Integer otherPositionLoss){
-        this.leadingPositionGain = leadingPositionGain;
-        this.secondPositionGain = secondPositionGain;
-        this.otherPositionLoss = otherPositionLoss;
-    }
-
 
     public Integer getLeadingPositionGain() {
         return leadingPositionGain;

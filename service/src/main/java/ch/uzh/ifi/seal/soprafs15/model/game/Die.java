@@ -22,11 +22,6 @@ public class Die implements Serializable {
         this.faceValue = v;
     }
 
-    // returns number between 1 and 3
-    public Integer rollDice() {
-        return (int) Math.random() % 3 + 1;
-    }
-
     public Color getColor() {
         return color;
     }
