@@ -19,13 +19,13 @@ public class MenuActivity extends MainActivity {
 
         if (savedInstanceState == null) {
 
-            Intent intent = getIntent();
-            Long token = intent.getLongExtra("token", 1L);
+            /* get the token string */
+            Bundle b = getIntent().getExtras();
+            String token = b.getString("token");
 
-            Log.v("MenuActivity/Token", " = " + token);
-
+            /* create shared variable with token --> user identification*/
             SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-            sharedPref.edit().putLong("token",token).apply();
+            sharedPref.edit().putString("token", token).apply();
 
             setFragment(MainMenuFragment.newInstance());
         }

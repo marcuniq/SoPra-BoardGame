@@ -16,8 +16,8 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
  */
 public class UserArrayAdapter extends GenericArrayAdapter<User> {
 
-    public UserArrayAdapter(Context context, ArrayList<User> user) {
-        super(context, user);
+    public UserArrayAdapter(Context context, int resource, int textViewResourceId, ArrayList<User> user) {
+        super(context, resource, textViewResourceId, user);
     }
 
     /**

@@ -1,8 +1,11 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +16,10 @@ import android.widget.Toast;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Token;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameArrayAdapter;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -24,7 +30,10 @@ import java.util.List;
 public class GameListFragment extends ListFragment {
 
     private TextView tvLogBox;
-    private ArrayAdapter<String> gameArrayAdapter; // adapts the ArrayList of Games to the ListView
+    private GameArrayAdapter gameArrayAdapter; // adapts the ArrayList of Games to the ListView
+    private String token;
+    private User player;
+    private Long playerId;
 
     /* empty constructor */
     public GameListFragment() {}
@@ -57,10 +66,12 @@ public class GameListFragment extends ListFragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        gameArrayAdapter = new ArrayAdapter<>(getActivity(),
+
+        gameArrayAdapter = new GameArrayAdapter(
+                getActivity(),
                 R.layout.fragment_game_list,
                 R.id.game_list_item,
-                new ArrayList<String>());
+                new ArrayList<Game>());
         setListAdapter(gameArrayAdapter);
 
         return super.onCreateView(inflater, container, savedInstanceState);
@@ -77,7 +88,7 @@ public class GameListFragment extends ListFragment {
             @Override
             public void success(List<Game> games, Response response) {
                 for (Game game : games) {
-                    gameArrayAdapter.add(game.name());
+                    gameArrayAdapter.add(game);
                 }
             }
             @Override
@@ -95,26 +106,53 @@ public class GameListFragment extends ListFragment {
      * @param position  Current position of the item in the view.
      * @param id        Id of the item from the list.
      */
-    /* TODO: Implement some behaviour when clicking on an item:
-    *        in future: should open some detailed view of a game
-    *        including: the users that have already joined that game and a "join game" button
-    *        where the user can join that specific game if he wants to */
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        try {
+            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            token = sharedPref.getString("token", token);
 
-        /* For now just display what item has been selected */
-        String item = (String) getListAdapter().getItem(position);
-        Toast.makeText(v.getContext(), "You joined the game \"" + item + "\"", Toast.LENGTH_LONG).show();
+            /* For now just display what item has been selected */
+            Game selectedGame = (Game) getListAdapter().getItem(position);
+            Toast.makeText(v.getContext(), "You joined the game \"" + selectedGame.name() + "\" with the id (" + selectedGame.id() + ")", Toast.LENGTH_LONG).show();
 
-        Long gameId = 1L; // TODO get correct game ID
+            Long gameId = selectedGame.id();
 
-        Fragment fragment = GameLobbyFragment.newInstance();
-        Bundle bundle = new Bundle();
-        bundle.putLong("gameId", gameId);
-        fragment.setArguments(bundle);
+            joinGame(gameId);
 
-        /* See all already created games (testing) */
-        ((MenuActivity) getActivity()).setFragment(fragment);
+            Fragment fragment = GameLobbyFragment.newInstance();
+            Bundle bundle = new Bundle();
+            bundle.putLong("gameId", gameId);
+            bundle.putLong("playerId",player.id());
+            fragment.setArguments(bundle);
+
+            /* See all already created games (testing) */
+            ((MenuActivity) getActivity()).setFragment(fragment);
+        } catch (NullPointerException e) {
+            Log.e("GameCreate", "null pointer exception");
+        }
+    }
+
+    private void joinGame(Long gameId) {
+        Token theToken = Token.create(token);
+
+        RestService.getInstance(getActivity()).joinGame(gameId, theToken, new Callback<User>() {
+
+            @Override
+            public void success(User myPlayer, Response response) {
+                try {
+                    player = myPlayer;
+                } catch (NullPointerException e) {
+                    Log.e("GameJoin", "null pointer exception");
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e("ERROR", error.getMessage());
+                //tvLogBox.setText("ERROR: " + error.getMessage());
+            }
+        });
     }
 }
 

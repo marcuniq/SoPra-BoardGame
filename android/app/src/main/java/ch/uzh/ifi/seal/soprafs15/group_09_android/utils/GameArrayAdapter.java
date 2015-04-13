@@ -15,8 +15,8 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
  */
 public class GameArrayAdapter extends GenericArrayAdapter<Game> {
 
-    public GameArrayAdapter(Context context, ArrayList<Game> game) {
-        super(context, game);
+    public GameArrayAdapter(Context context,  int resource, int textViewResourceId, ArrayList<Game> game) {
+        super(context, resource, textViewResourceId, game);
     }
 
     /**

@@ -22,7 +22,7 @@ public class MainMenuFragment extends Fragment {
 
     private Button createGameMenuButton;
     private Button listGameMenuButton;
-    private Long token;
+    private String token;
 
     public MainMenuFragment() {}
 
@@ -41,7 +41,7 @@ public class MainMenuFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_main_menu, container, false);
 
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        token = sharedPref.getLong("token", 1L);
+        token = sharedPref.getString("token", token);
 
         Log.v("MainMenuFragment/Token", " = " + token);
 

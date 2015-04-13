@@ -5,7 +5,9 @@
     android:layout_height="fill_parent"
     android:layout_marginTop="68dp"
     android:layout_marginStart="6dp"
+    android:layout_marginLeft="6dp"
     android:layout_marginEnd="12dp"
+    android:layout_marginRight="12dp"
     android:layout_marginBottom="6dp"
     android:orientation="vertical"
     android:background="#70d35400">
@@ -18,9 +20,17 @@
             android:singleLine="true"
             android:textSize="24sp"
             android:layout_marginStart="12dp"
+            android:layout_marginLeft="12dp"
             android:layout_marginEnd="6dp"
+            android:layout_marginRight="6dp"
             android:textColor="#ffffffff"
             android:layout_gravity="center_horizontal|top"
             android:textIsSelectable="false" />
+
+    <TextView
+        android:id="@+id/logBox"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#ffb40006"/>
 
 </LinearLayout>

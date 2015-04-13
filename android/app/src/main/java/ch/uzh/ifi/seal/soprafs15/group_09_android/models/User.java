@@ -22,7 +22,8 @@ public abstract class User implements Parcelable {
     @Nullable
     public abstract UserStatus status();
     @Nullable
-    public abstract Game game();
+    public abstract String game();
+//    public abstract Game game();
     @Nullable
     public abstract List<Move> moves();
     @Nullable

@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.service;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Token;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import retrofit.Callback;
 import retrofit.http.Body;
@@ -52,4 +53,20 @@ public interface RestApiInterface {
     @POST("/games")
     void createGame(@Body Game game, Callback<Game> callback);
 
+    /**
+     * Logins a user
+     * @param userId the id (Long) of the user
+     * @param callback
+     */
+    @POST("/users/{userId}/login")
+    void loginUser(@Path("userId") Long userId, Callback<User> callback);
+
+    /**
+     *
+     * @param gameId
+     * @param token
+     * @param callback
+     */
+    @POST("/games/{gameId}/players")
+    void joinGame(@Path("gameId") Long gameId, @Body Token token, Callback<User> callback);
 }

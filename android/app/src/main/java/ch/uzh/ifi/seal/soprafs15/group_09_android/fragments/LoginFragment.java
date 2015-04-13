@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
@@ -27,6 +28,7 @@ public class LoginFragment extends Fragment {
     private EditText etUsername;
     private TextView tvLogBox;
     private Button loginButton;
+    private String token = "you fool";
 
     /**
      * Use this factory method to create a new instance of
@@ -45,7 +47,7 @@ public class LoginFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    private void onClickCreateUserBtn(View v) {
+    private void onClickCreateUserBtn(final View v) {
         final String username = etUsername.getText().toString();
         Integer age = Integer.parseInt(etAge.getText().toString());
 
@@ -58,14 +60,41 @@ public class LoginFragment extends Fragment {
 //                AlertDialog dialog = userCreatedSuccessfullyAlert();
 //                dialog.show();
 
-                if (user == null){
-                    Log.v("UserCreate", "Creation Failed. NULL Object returned.");
-                } else {
+                try{
+                    loginUser(user,v); // get the token
+
+                } catch ( NullPointerException e) {
+                    Log.e("UserCreate", "null pointer exception");
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                tvLogBox.setText("ERROR: " + error.getMessage());
+            }
+        });
+    }
+
+    private void loginUser(User user, final View v){
+        RestService.getInstance(getActivity()).loginUser(user.id(), new Callback<User>() {
+            @Override
+            public void success(User user, Response response) {
+                try{
+                    token = user.token();
+
+                    /* Show the token */
+                    Toast.makeText(v.getContext(), "Token = \"" + token + "\"", Toast.LENGTH_LONG).show();
+
                     /* Start new Activity LobbyActivity and close current Fragment */
                     Intent intent = new Intent();
                     intent.setClass(getActivity(), MenuActivity.class);
-                    intent.putExtra("user", user.token());
+                    Bundle b = new Bundle();
+                    b.putString("token", token);
+                    intent.putExtras(b);
                     startActivity(intent);
+
+                } catch ( NullPointerException e) {
+                    Log.e("UserLogin", "null pointer exception");
                 }
             }
 

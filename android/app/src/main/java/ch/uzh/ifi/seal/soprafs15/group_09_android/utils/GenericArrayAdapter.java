@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
+
 /**
  * This adapter is set to replace the custom ArrayAdapter. So we are able to display whatever we want
  * like not only Strings bur using whole objects and their methods (like Game.name or User.username
@@ -20,9 +22,13 @@ public abstract class GenericArrayAdapter<T> extends ArrayAdapter<T> {
 
         // Vars
         private LayoutInflater mInflater;
+        private int resource;
+        private int textViewResourceId;
 
-        public GenericArrayAdapter(Context context, ArrayList<T> objects) {
-            super(context, 0, objects);
+        public GenericArrayAdapter(Context context, int resource, int textViewResourceId, ArrayList<T> objects) {
+            super(context, resource, textViewResourceId, objects);
+            this.resource = resource;
+            this.textViewResourceId = textViewResourceId;
             init(context);
         }
 
@@ -36,7 +42,7 @@ public abstract class GenericArrayAdapter<T> extends ArrayAdapter<T> {
         @Override public View getView(int position, View convertView, ViewGroup parent) {
             final ViewHolder vh;
             if (convertView == null) {
-                convertView = mInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+                convertView = mInflater.inflate(resource, parent, false);
                 vh = new ViewHolder(convertView);
                 convertView.setTag(vh);
             } else {
@@ -48,12 +54,12 @@ public abstract class GenericArrayAdapter<T> extends ArrayAdapter<T> {
             return convertView;
         }
 
-        static class ViewHolder {
+        private class ViewHolder {
 
             TextView textView;
 
             private ViewHolder(View rootView) {
-                textView = (TextView) rootView.findViewById(android.R.id.text1);
+                textView = (TextView) rootView.findViewById(textViewResourceId);
             }
         }
     }
