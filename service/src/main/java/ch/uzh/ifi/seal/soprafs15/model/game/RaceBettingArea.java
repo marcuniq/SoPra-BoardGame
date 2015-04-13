@@ -27,6 +27,10 @@ public class RaceBettingArea implements Serializable {
     @Column
     private List<RaceBettingCard> loserBetting;
 
+    @OneToOne(cascade=CascadeType.ALL)//(fetch = FetchType.EAGER)
+    @JoinColumn(name="GAME_ID")
+    private Game game;
+
 
     public RaceBettingArea(){
 
@@ -58,5 +62,13 @@ public class RaceBettingArea implements Serializable {
 
     public void setLoserBetting(List<RaceBettingCard> loserBetting) {
         this.loserBetting = loserBetting;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 }

@@ -23,6 +23,9 @@ public class RaceTrack implements Serializable {
     @Column
     private List<RaceTrackObject> fields;
 
+    @OneToOne(cascade=CascadeType.ALL)//(fetch = FetchType.EAGER)
+    @JoinColumn(name="GAME_ID")
+    private Game game;
 
     public RaceTrack(){
 
@@ -54,5 +57,13 @@ public class RaceTrack implements Serializable {
 
     public void setFields(List<RaceTrackObject> fields) {
         this.fields = fields;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 }

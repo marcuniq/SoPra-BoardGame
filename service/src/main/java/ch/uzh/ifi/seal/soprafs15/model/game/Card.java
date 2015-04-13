@@ -16,10 +16,10 @@ public abstract class Card implements Serializable{
 
     @Id
     @GeneratedValue
-    private Long id;
+    protected Long id;
 
     @Column
-    private Camel camel;
+    protected Color color;
 
 
     public Long getId() {
@@ -30,11 +30,11 @@ public abstract class Card implements Serializable{
         this.id = id;
     }
 
-    public Camel getCamel() {
-        return camel;
+    public Color getColor() {
+        return color;
     }
 
-    public void setCamel(Camel camel) {
-        this.camel = camel;
+    public void setColor(Color color) {
+        this.color = color;
     }
 }
