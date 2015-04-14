@@ -39,8 +39,7 @@ public class GameLobbyFragment extends ListFragment {
     private Long playerId;
     private Button startGameButton;
     private Boolean isOwner;
-    private ArrayAdapter playerArrayAdapter; // adapts the ArrayList of Games to the ListView
-    private View viewContainer;
+    private PlayerArrayAdapter playerArrayAdapter; // adapts the ArrayList of Games to the ListView
 
     /* empty constructor */
     public GameLobbyFragment() {}
@@ -74,21 +73,22 @@ public class GameLobbyFragment extends ListFragment {
         startGameButton = (Button) v.findViewById(R.id.startButton);
 
         // Hide button if user is not the owner
-        if (!isOwner) {
+        if (isOwner) {
+            startGameButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickStartGameButton(v);
+                }
+            });
+        } else {
             startGameButton.setVisibility(View.INVISIBLE);
         }
-        startGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickStartGameButton(v);
-            }
-        });
 
-        playerArrayAdapter = new ArrayAdapter<>(
+        playerArrayAdapter = new PlayerArrayAdapter(
                 getActivity(),
                 R.layout.player_item,
                 R.id.player_list_item,
-                new ArrayList<String>());
+                new ArrayList<User>());
         setListAdapter(playerArrayAdapter);
 
         return v;
@@ -101,7 +101,7 @@ public class GameLobbyFragment extends ListFragment {
             @Override
             public void success(List<User> players, Response response) {
                 for (User player : players) {
-                    playerArrayAdapter.add(player.username());
+                    playerArrayAdapter.add(player);
                 }
             }
 
@@ -113,8 +113,7 @@ public class GameLobbyFragment extends ListFragment {
     }
 
     private void onClickStartGameButton(View v) {
-        // TODO: start game
-        Toast.makeText(v.getContext(), "You (" + playerId + ") started game \"" + gameId + "\"", Toast.LENGTH_LONG).show();
+        Toast.makeText(v.getContext(), "You (your ID = " + playerId + ") started game \"" + gameId + "\"", Toast.LENGTH_LONG).show();
         Intent intent = new Intent();
         intent.setClass(getActivity(), GameActivity.class);
         startActivity(intent);
@@ -122,8 +121,8 @@ public class GameLobbyFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        //User selectedPlayer = (User) getListAdapter().getItem(position);
-        //Toast.makeText(v.getContext(), "You joined the game \"" + selectedPlayer.username() + "\" with the id (" + selectedPlayer.id() + ")", Toast.LENGTH_LONG).show();
+        User selectedPlayer = (User) getListAdapter().getItem(position);
+        Toast.makeText(v.getContext(), "You selected User \"" + selectedPlayer.username() + "\" with his id (" + selectedPlayer.id() + ")", Toast.LENGTH_LONG).show();
     }
 }
 
