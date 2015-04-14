@@ -1,12 +1,9 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.activities;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.fragments.MainMenuFragment;
 
