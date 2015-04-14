@@ -1,7 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.service;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Token;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import retrofit.Callback;
 import retrofit.http.Body;
