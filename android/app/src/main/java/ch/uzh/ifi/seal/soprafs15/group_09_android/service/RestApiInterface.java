@@ -1,15 +1,14 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.service;
 
+import java.util.List;
+
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Token;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
-
-import java.util.List;
 
 public interface RestApiInterface {
 

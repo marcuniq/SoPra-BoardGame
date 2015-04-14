@@ -31,6 +31,8 @@ public abstract class User implements Parcelable {
     @Nullable
     public abstract Integer money();
     @Nullable
+    public abstract Integer numberOfMoves();
+    @Nullable
     public abstract List<RaceBettingCard> raceBettingCards();
     @Nullable
     public abstract List<LegBettingTile> legBettingTiles();
@@ -40,13 +42,13 @@ public abstract class User implements Parcelable {
                                Integer age) {
         return new AutoParcel_User( null, username, age, null,
                                     null, null, null, null,
-                                    null, null);
+                                    null, null, null);
     }
 
     public static User setToken( String token ) {
         return new AutoParcel_User( null, null, null, token,
                 null, null, null, null,
-                null, null);
+                null, null, null);
     }
 }
 
