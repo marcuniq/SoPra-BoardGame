@@ -121,7 +121,7 @@ public class GameCreatorFragment extends Fragment {
     }
 
     private void joinGame(Long gameId) {
-        Token theToken = Token.create(token);
+        User theToken = User.setToken(token);
 
         RestService.getInstance(getActivity()).joinGame(gameId, theToken, new Callback<User>() {
 
@@ -129,8 +129,9 @@ public class GameCreatorFragment extends Fragment {
             public void success(User myPlayer, Response response) {
                 try {
                     player = myPlayer;
+                    if (player == null) throw new NullPointerException();
                 } catch (NullPointerException e) {
-                    Log.e("GameCreate", "null pointer exception");
+                    Log.e("GameJoin", "null pointer exception" + e);
                 }
             }
 

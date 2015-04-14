@@ -134,7 +134,7 @@ public class GameListFragment extends ListFragment {
     }
 
     private void joinGame(Long gameId) {
-        Token theToken = Token.create(token);
+        User theToken = User.setToken(token);
 
         RestService.getInstance(getActivity()).joinGame(gameId, theToken, new Callback<User>() {
 
@@ -149,8 +149,7 @@ public class GameListFragment extends ListFragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Log.e("ERROR", error.getMessage());
-                //tvLogBox.setText("ERROR: " + error.getMessage());
+                tvLogBox.setText("ERROR: " + error.getMessage());
             }
         });
     }
