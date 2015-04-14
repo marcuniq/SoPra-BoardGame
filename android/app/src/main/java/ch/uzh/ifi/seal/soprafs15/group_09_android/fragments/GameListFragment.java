@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +30,7 @@ public class GameListFragment extends ListFragment {
     private TextView tvLogBox;
     private GameArrayAdapter gameArrayAdapter; // adapts the ArrayList of Games to the ListView
     private String token;
-    private User player;
-    private Long playerId;
+    private Long joinedGameId;
 
     /* empty constructor */
     public GameListFragment() {}
@@ -108,43 +106,29 @@ public class GameListFragment extends ListFragment {
      */
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        try {
-            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-            token = sharedPref.getString("token", token);
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        token = sharedPref.getString("token", token);
 
-            /* For now just display what item has been selected */
-            Game selectedGame = (Game) getListAdapter().getItem(position);
-            Toast.makeText(v.getContext(), "You joined the game \"" + selectedGame.name() + "\" with the id (" + selectedGame.id() + ")", Toast.LENGTH_LONG).show();
+        /* For now just display what item has been selected */
+        Game selectedGame = (Game) getListAdapter().getItem(position);
+        Toast.makeText(v.getContext(), "You joined the game \"" + selectedGame.name() + "\" with the id (" + selectedGame.id() + ")", Toast.LENGTH_LONG).show();
 
-            Long gameId = selectedGame.id();
+        Long gameId = selectedGame.id();
+        joinedGameId = gameId;
+        User user = User.setToken(token);
 
-            joinGame(gameId);
-
-            Fragment fragment = GameLobbyFragment.newInstance();
-            Bundle bundle = new Bundle();
-            bundle.putLong("gameId", gameId);
-            bundle.putLong("playerId",player.id());
-            fragment.setArguments(bundle);
-
-            /* See all already created games (testing) */
-            ((MenuActivity) getActivity()).setFragment(fragment);
-        } catch (NullPointerException e) {
-            Log.e("GameCreate", "null pointer exception");
-        }
-    }
-
-    private void joinGame(Long gameId) {
-        User theToken = User.setToken(token);
-
-        RestService.getInstance(getActivity()).joinGame(gameId, theToken, new Callback<User>() {
+        RestService.getInstance(getActivity()).joinGame(gameId, user, new Callback<User>() {
 
             @Override
-            public void success(User myPlayer, Response response) {
-                try {
-                    player = myPlayer;
-                } catch (NullPointerException e) {
-                    Log.e("GameJoin", "null pointer exception");
-                }
+            public void success(User player, Response response) {
+                Fragment fragment = GameLobbyFragment.newInstance();
+                Bundle bundle = new Bundle();
+                bundle.putLong("gameId", joinedGameId);
+                bundle.putLong("playerId", player.id());
+                fragment.setArguments(bundle);
+
+                /* See all already created games (testing) */
+                ((MenuActivity) getActivity()).setFragment(fragment);
             }
 
             @Override

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +27,7 @@ public class GameCreatorFragment extends Fragment {
     private Button createGameButton;
     private String token;
     private User player;
+    private Long joinedGameId;
 
     /**
      * Use this factory method to create a new instance of
@@ -92,22 +92,9 @@ public class GameCreatorFragment extends Fragment {
 
             @Override
             public void success(Game game, Response response) {
-                try {
-                    Long gameId = game.id();
-
-                    joinGame(gameId);
-
-                        Fragment fragment = GameLobbyFragment.newInstance();
-
-                        Bundle bundle = new Bundle();
-                        bundle.putLong("gameId", gameId);
-                        bundle.putLong("playerId",player.id());
-                        fragment.setArguments(bundle);
-
-                        ((MenuActivity) getActivity()).setFragment(fragment);
-                } catch ( NullPointerException e) {
-                    Log.e("GameCreate", "null pointer exception");
-                }
+                Long gameId = game.id();
+                joinedGameId = gameId;
+                joinGame(gameId);
             }
 
             @Override
@@ -123,13 +110,14 @@ public class GameCreatorFragment extends Fragment {
         RestService.getInstance(getActivity()).joinGame(gameId, theToken, new Callback<User>() {
 
             @Override
-            public void success(User myPlayer, Response response) {
-                try {
-                    player = myPlayer;
-                    if (player == null) throw new NullPointerException();
-                } catch (NullPointerException e) {
-                    Log.e("GameJoin", "null pointer exception" + e);
-                }
+            public void success(User player, Response response) {
+                Fragment fragment = GameLobbyFragment.newInstance();
+                Bundle bundle = new Bundle();
+                bundle.putLong("gameId", joinedGameId);
+                bundle.putLong("playerId", player.id());
+                fragment.setArguments(bundle);
+
+                ((MenuActivity) getActivity()).setFragment(fragment);
             }
 
             @Override

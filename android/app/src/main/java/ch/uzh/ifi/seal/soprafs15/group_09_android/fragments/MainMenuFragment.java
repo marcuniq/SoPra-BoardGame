@@ -1,16 +1,13 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 
@@ -36,16 +33,12 @@ public class MainMenuFragment extends Fragment {
      * - listGameMenuButton:  switches to the GamesListFragment
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_main_menu, container, false);
 
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
 
-        Log.v("MainMenuFragment/Token", " = " + token);
-
-        /* TODO we need !urgent! some consistency in naming the id's !!! */
         createGameMenuButton = (Button) v.findViewById(R.id.createGameMenuButton);
         createGameMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
