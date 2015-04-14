@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
@@ -113,6 +115,9 @@ public class GameLobbyFragment extends ListFragment {
     private void onClickStartGameButton(View v) {
         // TODO: start game
         Toast.makeText(v.getContext(), "You (" + playerId + ") started game \"" + gameId + "\"", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent();
+        intent.setClass(getActivity(), GameActivity.class);
+        startActivity(intent);
     }
 
     @Override
