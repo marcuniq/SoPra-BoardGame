@@ -36,6 +36,7 @@ public class GameLobbyFragment extends ListFragment {
     private Long gameId;
     private Long playerId;
     private Button startGameButton;
+    private Boolean isOwner;
     private ArrayAdapter playerArrayAdapter; // adapts the ArrayList of Games to the ListView
     private View viewContainer;
 
@@ -57,6 +58,7 @@ public class GameLobbyFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         gameId = this.getArguments().getLong("gameId");
         playerId = this.getArguments().getLong("playerId");
+        isOwner = this.getArguments().getBoolean("isOwner");
     }
 
     /**
@@ -68,6 +70,11 @@ public class GameLobbyFragment extends ListFragment {
         View v = inflater.inflate(R.layout.fragment_lobby, container, false);
 
         startGameButton = (Button) v.findViewById(R.id.startButton);
+
+        // Hide button if user is not the owner
+        if (!isOwner) {
+            startGameButton.setVisibility(View.INVISIBLE);
+        }
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

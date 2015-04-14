@@ -125,6 +125,7 @@ public class GameListFragment extends ListFragment {
                 Bundle bundle = new Bundle();
                 bundle.putLong("gameId", joinedGameId);
                 bundle.putLong("playerId", player.id());
+                bundle.putBoolean("isOwner", false);
                 fragment.setArguments(bundle);
 
                 /* See all already created games (testing) */

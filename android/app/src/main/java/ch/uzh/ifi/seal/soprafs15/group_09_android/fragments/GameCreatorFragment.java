@@ -115,6 +115,7 @@ public class GameCreatorFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putLong("gameId", joinedGameId);
                 bundle.putLong("playerId", player.id());
+                bundle.putBoolean("isOwner", true);
                 fragment.setArguments(bundle);
 
                 ((MenuActivity) getActivity()).setFragment(fragment);
