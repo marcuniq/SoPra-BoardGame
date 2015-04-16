@@ -34,9 +34,9 @@
         android:id="@+id/gridView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="5"
+        android:columnCount="13"
         android:rowCount="5"
-        android:orientation="vertical" >
+        android:orientation="vertical" android:focusable="true">
 
         <RelativeLayout
             android:layout_width="@dimen/grid_item_width_row_2"
@@ -59,7 +59,7 @@
             android:layout_height="@dimen/grid_item_height_row_4"
             android:id="@+id/field3"
             android:layout_row="4"
-            android:layout_column="4" android:background="#000" android:alpha="0.5">
+            android:layout_column="4">
         </RelativeLayout>
 
         <RelativeLayout
