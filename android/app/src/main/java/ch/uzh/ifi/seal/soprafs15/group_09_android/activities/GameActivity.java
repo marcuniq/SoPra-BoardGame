@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -39,18 +40,22 @@ public class GameActivity extends Activity {
 
     private ImageView addCamel(int margin, int imageResourceId){
 
-        ImageView image = new ImageView(this);
+        /*ImageView image = new ImageView(this);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-        /* TODO: correctly add margin and top/bottom allignment!!*/
+        // TODO: correctly add margin and top/bottom allignment!!
         params.setMargins(margin, 0, 0, margin); // ( left, top, right, bottom )
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);*/
 
+        ImageView image = new ImageView(this);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(image.getLayoutParams());
+        lp.setMargins(margin, 0, 0, margin);
         image.setImageResource(imageResourceId);
+        image.setLayoutParams(lp);
 
         return image;
     }
