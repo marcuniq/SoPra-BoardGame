@@ -6,7 +6,7 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     tools:context=".MainActivity"
-    android:background="@drawable/camelup">
+    android:background="@drawable/background">
 
     <FrameLayout
         android:id="@+id/container"
