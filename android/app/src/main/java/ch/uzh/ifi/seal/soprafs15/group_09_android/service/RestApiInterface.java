@@ -2,8 +2,7 @@ package ch.uzh.ifi.seal.soprafs15.group_09_android.service;
 
 import java.util.List;
 
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
@@ -43,6 +42,55 @@ public interface RestApiInterface {
      */
     @GET("/games/{gameId}/players")
     void getPlayers(@Path("gameId") Long gameId, Callback<List<User>> callback);
+
+    /**
+     * Returns all moves
+     * @param gameId
+     * @param callback
+     */
+    @GET("/games/{gameId}/moves")
+    void getGameMoves(@Path("gameId") Long gameId, Callback<List<Move>> callback);
+
+    /**
+     * Returns a specific move
+     * @param gameId
+     * @param moveId
+     * @param callback
+     */
+    @GET("/games/{gameId}/moves/{moveId}")
+    void getGameMove(@Path("gameId") Long gameId, @Path("moveId") Long moveId, Callback<List<Move>> callback);
+
+    /**
+     * Returns all race tracks
+     * @param gameId
+     * @param callback
+     */
+    @GET("/games/{gameId}/racetrack")
+    void getGameRaceTrack(@Path("gameId") Long gameId, Callback<List<RaceTrack>> callback);
+
+    /**
+     * Returns all leg betting areas
+     * @param gameId
+     * @param callback
+     */
+    @GET("/games/{gameId}/legbettingarea")
+    void getGameLegBettingArea(@Path("gameId") Long gameId, Callback<List<LegBettingArea>> callback);
+
+    /**
+     * Returns all race betting areas
+     * @param gameId
+     * @param callback
+     */
+    @GET("/games/{gameId}/racebettingarea")
+    void getGameRaceBettingArea(@Path("gameId") Long gameId, Callback<List<RaceBettingArea>> callback);
+
+    /**
+     * Returns all dice areas
+     * @param gameId
+     * @param callback
+     */
+    @GET("/games/{gameId}/dicearea")
+    void getGameDiceArea(@Path("gameId") Long gameId, Callback<List<DiceArea>> callback);
 
     /**
      * Creates a new game

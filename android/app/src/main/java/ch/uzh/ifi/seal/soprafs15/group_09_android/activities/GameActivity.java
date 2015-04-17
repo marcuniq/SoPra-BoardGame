@@ -8,13 +8,21 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import android.widget.TextView;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameField;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class GameActivity extends Activity {
 
     private ArrayList<GameField> gameFields = new ArrayList<>();
+    private TextView tvLogBox;
     private Long gameId;
     private Long playerId;
 
@@ -22,21 +30,20 @@ public class GameActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Set fullscreen mode
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         // get the gameId and current playerId
         Bundle b = getIntent().getExtras();
         gameId = b.getLong("gameId");
         playerId = b.getLong("playerId");
 
-        // Set Fullscreen mode
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                              WindowManager.LayoutParams.FLAG_FULLSCREEN );
-
-        setContentView(R.layout.activity_game);
-
         initializeGameField();
         play();
 
+        setContentView(R.layout.activity_game);
     }
 
     private ImageView addCamel(int margin, int imageResourceId){
@@ -81,12 +88,102 @@ public class GameActivity extends Activity {
     }
 
     private void play(){
-        getGameStatus();
+//        gameMoves();
+//        gameRaceTrack();
+//        gameLegBettingArea();
+//        gameRaceBettingArea();
+//        gameDiceArea();
         drawBoard();
     }
 
-    private void getGameStatus() {
-        // TODO: we need to get the current game status
+    /**
+     * @api  http://docs.sopra.apiary.io/#reference/games/game-move/retrieve-a-game-move
+     */
+    private void gameMoves() {
+        RestService.getInstance(this).getGameMoves(gameId, new Callback<List<Move>>() {
+
+            @Override
+            public void success(List<Move> moves, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                tvLogBox.setText("ERROR: " + error.getMessage());
+            }
+        });
+    }
+
+    /**
+     * @api  http://docs.sopra.apiary.io/#reference/games/game-race-track/retrieve-race-track
+     */
+    private void gameRaceTrack() {
+        RestService.getInstance(this).getGameRaceTrack(gameId, new Callback<List<RaceTrack>>() {
+
+            @Override
+            public void success(List<RaceTrack> raceTracks, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                tvLogBox.setText("ERROR: " + error.getMessage());
+            }
+        });
+    }
+
+    /**
+     * @api  http://docs.sopra.apiary.io/#reference/games/game-leg-betting-area/retrieve-leg-betting-area
+     */
+    private void gameLegBettingArea() {
+        RestService.getInstance(this).getGameLegBettingArea(gameId, new Callback<List<LegBettingArea>>() {
+
+            @Override
+            public void success(List<LegBettingArea> legBettingAreas, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                tvLogBox.setText("ERROR: " + error.getMessage());
+            }
+        });
+    }
+
+    /**
+     * @api  http://docs.sopra.apiary.io/#reference/games/game-race-betting-area/retrieve-race-betting-area
+     */
+    private void gameRaceBettingArea() {
+        RestService.getInstance(this).getGameRaceBettingArea(gameId, new Callback<List<RaceBettingArea>>() {
+
+            @Override
+            public void success(List<RaceBettingArea> raceBettingAreas, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                tvLogBox.setText("ERROR: " + error.getMessage());
+            }
+        });
+    }
+
+    /**
+     * @api  http://docs.sopra.apiary.io/#reference/games/game-dice-area/retrieve-dice-area
+     */
+    private void gameDiceArea() {
+        RestService.getInstance(this).getGameDiceArea(gameId, new Callback<List<DiceArea>>() {
+
+            @Override
+            public void success(List<DiceArea> diceAreas, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                tvLogBox.setText("ERROR: " + error.getMessage());
+            }
+        });
     }
 
     /**
