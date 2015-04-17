@@ -61,7 +61,6 @@ public class UserServiceControllerIT {
 	    List<UserResponseBean> usersAfter = template.getForObject(base + "/users", List.class);
 		Assert.assertEquals(1, usersAfter.size());
 
-        template.exchange(base + "/users/1", HttpMethod.DELETE, httpEntity, UserResponseBean.class);
 
 	}
 
