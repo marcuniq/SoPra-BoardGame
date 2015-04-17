@@ -7,12 +7,16 @@
     <!-- Grid Items of Game Board Properties -->
     <dimen  name="grid_item_width_row_0">115dp</dimen>
     <dimen  name="grid_item_height_row_0">96dp</dimen>
+
     <dimen  name="grid_item_width_row_1">115dp</dimen>
     <dimen  name="grid_item_height_row_1">108dp</dimen>
+
     <dimen  name="grid_item_width_row_2">115dp</dimen>
     <dimen  name="grid_item_height_row_2">108dp</dimen>
+
     <dimen  name="grid_item_width_row_3">115dp</dimen>
     <dimen  name="grid_item_height_row_3">110dp</dimen>
+
     <dimen  name="grid_item_width_row_4">115dp</dimen>
     <dimen  name="grid_item_height_row_4">84dp</dimen>
 

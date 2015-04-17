@@ -116,6 +116,10 @@ public class GameLobbyFragment extends ListFragment {
         Toast.makeText(v.getContext(), "You (your ID = " + playerId + ") started game \"" + gameId + "\"", Toast.LENGTH_LONG).show();
         Intent intent = new Intent();
         intent.setClass(getActivity(), GameActivity.class);
+        Bundle b = new Bundle();
+        b.putLong("gameId", gameId);
+        b.putLong("playerId", playerId);
+        intent.putExtras(b);
         startActivity(intent);
     }
 

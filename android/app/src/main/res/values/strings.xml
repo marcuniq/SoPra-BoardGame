@@ -11,7 +11,9 @@
     <string name="title_activity_game">Game</string>
     <string name="title_list_of_players">List of Players</string>
     <string name="title_list_of_games">List of Games</string>
+
     <string name="money">Money</string>
+    <string name="money_default">0</string>
 
     <!-- BUTTONS -->
     <string name="start_game">Start Game</string>
