@@ -98,7 +98,6 @@ public class GameCreatorFragment extends Fragment {
                 Fragment fragment = GameLobbyFragment.newInstance();
                 Bundle bundle = new Bundle();
                 bundle.putLong("gameId", joinedGameId);
-                bundle.putLong("playerId", player.id());
                 bundle.putBoolean("isOwner", true);
                 fragment.setArguments(bundle);
 

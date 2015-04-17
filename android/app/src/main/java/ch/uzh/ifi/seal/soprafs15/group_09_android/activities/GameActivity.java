@@ -24,7 +24,7 @@ public class GameActivity extends Activity {
     private ArrayList<GameField> gameFields = new ArrayList<>();
     private TextView tvLogBox;
     private Long gameId;
-    private Long playerId;
+    private boolean isOwner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +38,7 @@ public class GameActivity extends Activity {
         // get the gameId and current playerId
         Bundle b = getIntent().getExtras();
         gameId = b.getLong("gameId");
-        playerId = b.getLong("playerId");
+        isOwner = b.getBoolean("isOwner");
 
         initializeGameField();
         play();
