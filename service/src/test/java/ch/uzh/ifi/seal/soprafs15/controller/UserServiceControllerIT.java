@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.controller;
 
 import ch.uzh.ifi.seal.soprafs15.Application;
+import ch.uzh.ifi.seal.soprafs15.TestUtils;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
 import org.junit.Assert;
@@ -49,9 +50,7 @@ public class UserServiceControllerIT {
 		List<UserResponseBean> usersBefore = template.getForObject(base + "/users", List.class);
 		Assert.assertEquals(0, usersBefore.size());
 		
-		UserRequestBean request = new UserRequestBean();
-		request.setAge(43);
-		request.setUsername("mm");
+		UserRequestBean request = TestUtils.createUserRequestBean(43,"mm");
 
 		HttpEntity<UserRequestBean> httpEntity = new HttpEntity<UserRequestBean>(request);
 		
@@ -61,6 +60,9 @@ public class UserServiceControllerIT {
 		
 	    List<UserResponseBean> usersAfter = template.getForObject(base + "/users", List.class);
 		Assert.assertEquals(1, usersAfter.size());
+
+        template.exchange(base + "/users/1", HttpMethod.DELETE, httpEntity, UserResponseBean.class);
+
 	}
 
 }

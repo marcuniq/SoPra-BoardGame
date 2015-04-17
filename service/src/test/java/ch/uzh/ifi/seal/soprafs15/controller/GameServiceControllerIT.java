@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.controller;
 
 import ch.uzh.ifi.seal.soprafs15.Application;
+import ch.uzh.ifi.seal.soprafs15.TestUtils;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameStatus;
@@ -54,9 +55,7 @@ public class GameServiceControllerIT {
         Assert.assertEquals(0, gamesBefore.size());
 
         // Set up UserRequestBean Object
-        UserRequestBean userRequest = new UserRequestBean();
-        userRequest.setAge(43);
-        userRequest.setUsername("mm");
+        UserRequestBean userRequest = TestUtils.createUserRequestBean(43,"mm");
 
         HttpEntity<UserRequestBean> httpEntity = new HttpEntity<UserRequestBean>(userRequest);
 
@@ -91,5 +90,9 @@ public class GameServiceControllerIT {
         // Check if number of games is 1 AFTER creation
         List<GameResponseBean> gamesAfter = template.getForObject(base + "/games", List.class);
         Assert.assertEquals(1, gamesAfter.size());
+
+
+
+
     }
 }
