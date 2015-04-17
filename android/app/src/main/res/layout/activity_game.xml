@@ -1,29 +1,38 @@
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activities.GameActivity">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
-    <!-- The header bar -->
+    <!-- displays the header bar -->
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="48dp"
         android:background="#333333">
 
+        <!-- displays Game status -->
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="580dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/hello_world"
+            android:textColor="#ffffff"
+            android:id="@+id/status"
+            android:layout_marginTop="15dp"
+            android:paddingLeft="20dp"/>
+
+        <!-- displays "money" -->
+        <TextView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/money"
-            android:textColor="#ffffff" android:id="@+id/moneyLabel"
-            android:layout_gravity="end"
+            android:textColor="#ffffff"
+            android:id="@+id/moneyLabel"
             android:layout_marginTop="15dp"
-            android:layout_marginEnd="70dp"/>
+            android:paddingRight="20dp"/>
 
+        <!-- displays amount of money -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,148 +40,170 @@
             android:text="@string/money_default"
             android:textColor="#ffffff"
             android:id="@+id/money"
-            android:layout_gravity="end"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="-18dp"/>
+            android:layout_marginTop="15dp"
+            android:minWidth="40dp"/>
     </LinearLayout>
 
-    <!-- The game board -->
-    <GridLayout
-        android:id="@+id/gridView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnCount="5"
-        android:rowCount="5"
-        android:orientation="vertical"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:background="@drawable/board">
 
-        <RelativeLayout
-            android:layout_width="@dimen/grid_item_width_row_2"
-            android:layout_height="@dimen/grid_item_height_row_2"
-            android:id="@+id/field1"
-            android:layout_row="2"
-            android:layout_column="4">
-        </RelativeLayout>
+        <GridLayout
+            android:id="@+id/gridView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:columnCount="5"
+            android:rowCount="5"
+            android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="@dimen/grid_item_width_row_3"
-            android:layout_height="@dimen/grid_item_height_row_3"
-            android:id="@+id/field2"
-            android:layout_row="3"
-            android:layout_column="4">
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="@dimen/grid_item_width_row_2"
+                android:layout_height="@dimen/grid_item_height_row_2"
+                android:id="@+id/field1"
+                android:layout_row="2"
+                android:layout_column="4">
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="@dimen/grid_item_width_row_4"
-            android:layout_height="@dimen/grid_item_height_row_4"
-            android:id="@+id/field3"
-            android:layout_row="4"
-            android:layout_column="4">
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="@dimen/grid_item_width_row_3"
+                android:layout_height="@dimen/grid_item_height_row_3"
+                android:id="@+id/field2"
+                android:layout_row="3"
+                android:layout_column="4">
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="@dimen/grid_item_width_row_4"
-            android:layout_height="@dimen/grid_item_height_row_4"
-            android:id="@+id/field4"
-            android:layout_row="4"
-            android:layout_column="3" >
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="@dimen/grid_item_width_row_4"
+                android:layout_height="@dimen/grid_item_height_row_4"
+                android:id="@+id/field3"
+                android:layout_row="4"
+                android:layout_column="4">
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="@dimen/grid_item_width_row_4"
-            android:layout_height="@dimen/grid_item_height_row_4"
-            android:id="@+id/field5"
-            android:layout_row="4"
-            android:layout_column="2" >
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="@dimen/grid_item_width_row_4"
+                android:layout_height="@dimen/grid_item_height_row_4"
+                android:id="@+id/field4"
+                android:layout_row="4"
+                android:layout_column="3" >
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="@dimen/grid_item_width_row_4"
-            android:layout_height="@dimen/grid_item_height_row_4"
-            android:id="@+id/field6"
-            android:layout_row="4"
-            android:layout_column="1" >
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="@dimen/grid_item_width_row_4"
+                android:layout_height="@dimen/grid_item_height_row_4"
+                android:id="@+id/field5"
+                android:layout_row="4"
+                android:layout_column="2" >
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="@dimen/grid_item_width_row_4"
-            android:layout_height="@dimen/grid_item_height_row_4"
-            android:id="@+id/field7"
-            android:layout_row="4"
-            android:layout_column="0" >
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="@dimen/grid_item_width_row_4"
+                android:layout_height="@dimen/grid_item_height_row_4"
+                android:id="@+id/field6"
+                android:layout_row="4"
+                android:layout_column="1" >
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="@dimen/grid_item_width_row_3"
-            android:layout_height="@dimen/grid_item_height_row_3"
-            android:id="@+id/field8"
-            android:layout_row="3"
-            android:layout_column="0"  >
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="@dimen/grid_item_width_row_4"
+                android:layout_height="@dimen/grid_item_height_row_4"
+                android:id="@+id/field7"
+                android:layout_row="4"
+                android:layout_column="0" >
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="@dimen/grid_item_width_row_2"
-            android:layout_height="@dimen/grid_item_height_row_2"
-            android:id="@+id/field9"
-            android:layout_row="2"
-            android:layout_column="0" >
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="@dimen/grid_item_width_row_3"
+                android:layout_height="@dimen/grid_item_height_row_3"
+                android:id="@+id/field8"
+                android:layout_row="3"
+                android:layout_column="0"  >
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="@dimen/grid_item_width_row_1"
-            android:layout_height="@dimen/grid_item_height_row_1"
-            android:id="@+id/field10"
-            android:layout_row="1"
-            android:layout_column="0" >
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="@dimen/grid_item_width_row_2"
+                android:layout_height="@dimen/grid_item_height_row_2"
+                android:id="@+id/field9"
+                android:layout_row="2"
+                android:layout_column="0" >
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="@dimen/grid_item_width_row_0"
-            android:layout_height="@dimen/grid_item_height_row_0"
-            android:id="@+id/field11"
-            android:layout_row="0"
-            android:layout_column="0" >
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="@dimen/grid_item_width_row_1"
+                android:layout_height="@dimen/grid_item_height_row_1"
+                android:id="@+id/field10"
+                android:layout_row="1"
+                android:layout_column="0" >
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="@dimen/grid_item_width_row_0"
-            android:layout_height="@dimen/grid_item_height_row_0"
-            android:id="@+id/field12"
-            android:layout_row="0"
-            android:layout_column="1"  >
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="@dimen/grid_item_width_row_0"
+                android:layout_height="@dimen/grid_item_height_row_0"
+                android:id="@+id/field11"
+                android:layout_row="0"
+                android:layout_column="0" >
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="@dimen/grid_item_width_row_0"
-            android:layout_height="@dimen/grid_item_height_row_0"
-            android:id="@+id/field13"
-            android:layout_row="0"
-            android:layout_column="2" >
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="@dimen/grid_item_width_row_0"
+                android:layout_height="@dimen/grid_item_height_row_0"
+                android:id="@+id/field12"
+                android:layout_row="0"
+                android:layout_column="1"  >
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="@dimen/grid_item_width_row_0"
-            android:layout_height="@dimen/grid_item_height_row_0"
-            android:id="@+id/field14"
-            android:layout_row="0"
-            android:layout_column="3" >
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="@dimen/grid_item_width_row_0"
+                android:layout_height="@dimen/grid_item_height_row_0"
+                android:id="@+id/field13"
+                android:layout_row="0"
+                android:layout_column="2" >
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="@dimen/grid_item_width_row_0"
-            android:layout_height="@dimen/grid_item_height_row_0"
-            android:id="@+id/field15"
-            android:layout_row="0"
-            android:layout_column="4">
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="@dimen/grid_item_width_row_0"
+                android:layout_height="@dimen/grid_item_height_row_0"
+                android:id="@+id/field14"
+                android:layout_row="0"
+                android:layout_column="3" >
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="@dimen/grid_item_width_row_1"
-            android:layout_height="@dimen/grid_item_height_row_1"
-            android:id="@+id/field16"
-            android:layout_row="1"
-            android:layout_column="4">
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="@dimen/grid_item_width_row_0"
+                android:layout_height="@dimen/grid_item_height_row_0"
+                android:id="@+id/field15"
+                android:layout_row="0"
+                android:layout_column="4">
+            </RelativeLayout>
 
-    </GridLayout>
+            <RelativeLayout
+                android:layout_width="@dimen/grid_item_width_row_1"
+                android:layout_height="@dimen/grid_item_height_row_1"
+                android:id="@+id/field16"
+                android:layout_row="1"
+                android:layout_column="4">
+            </RelativeLayout>
+
+        </GridLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <Button
+                android:id="@+id/button"
+                android:layout_width="205dp"
+                android:layout_height="wrap_content"
+                android:text="@string/hello_world"
+                android:background="@string/button_green"
+                android:minHeight="50dp"
+                android:textColor="#fff"
+                android:textSize="24sp"
+                android:clickable="true"
+                android:layout_marginTop="60dp"
+                android:layout_marginStart="80dp"/>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

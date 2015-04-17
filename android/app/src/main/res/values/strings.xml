@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Colors -->
+    <string name="button_green">#ff175a26</string>
+
     <!-- OTHER -->
     <string name="app_name">Miss Dromedary</string>
     <string name="action_settings">Settings</string>
