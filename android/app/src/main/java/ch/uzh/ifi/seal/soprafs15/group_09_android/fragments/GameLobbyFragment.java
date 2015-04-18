@@ -113,7 +113,9 @@ public class GameLobbyFragment extends ListFragment {
     }
 
     private void onClickStartGameButton(View v) {
+        /*
         Toast.makeText(v.getContext(), "You (your ID = " + playerId + ") started game \"" + gameId + "\"", Toast.LENGTH_LONG).show();
+        */
         Intent intent = new Intent();
         intent.setClass(getActivity(), GameActivity.class);
         Bundle b = new Bundle();
@@ -121,13 +123,17 @@ public class GameLobbyFragment extends ListFragment {
         b.putLong("playerId", playerId);
         intent.putExtras(b);
         startActivity(intent);
+        getActivity().finish();
 
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        //TODO: what to do when clicking on a user?
+/*
         User selectedPlayer = (User) getListAdapter().getItem(position);
         Toast.makeText(v.getContext(), "You selected User \"" + selectedPlayer.username() + "\" with his id (" + selectedPlayer.id() + ")", Toast.LENGTH_LONG).show();
+*/
     }
 }
 

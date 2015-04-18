@@ -79,8 +79,9 @@ public class LoginFragment extends Fragment {
 
                 token = user.token();
 
-                /* Show the token */
+                /* Show the token
                 Toast.makeText(v.getContext(), "Token = \"" + token + "\"", Toast.LENGTH_LONG).show();
+                */
 
                 /* Start new Activity LobbyActivity and close current Fragment */
                 Intent intent = new Intent();

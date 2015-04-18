@@ -109,10 +109,10 @@ public class GameListFragment extends ListFragment {
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
 
-        /* For now just display what item has been selected */
         Game selectedGame = (Game) getListAdapter().getItem(position);
+/*
         Toast.makeText(v.getContext(), "You joined the game \"" + selectedGame.name() + "\" with the id (" + selectedGame.id() + ")", Toast.LENGTH_LONG).show();
-
+*/
         Long gameId = selectedGame.id();
         joinedGameId = gameId;
         User user = User.setToken(token);

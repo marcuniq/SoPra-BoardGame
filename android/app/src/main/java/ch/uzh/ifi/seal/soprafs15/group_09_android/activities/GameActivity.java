@@ -1,10 +1,13 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -20,9 +23,11 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class GameActivity extends Activity {
+public class GameActivity extends Activity implements View.OnClickListener {
 
     private ArrayList<RaceTrackField> raceTrack = new ArrayList<>();
+    private ArrayList<Integer> legBettingArea = new ArrayList<>();
+    private ArrayList<Integer> diceArea = new ArrayList<>();
     private TextView tvLogBox;
     private Long gameId;
     private boolean isOwner;
@@ -41,10 +46,59 @@ public class GameActivity extends Activity {
         gameId = b.getLong("gameId");
         isOwner = b.getBoolean("isOwner");
 
-        initializeRaceTrack();
-        play();
-
         setContentView(R.layout.activity_game);
+
+        initializeRaceTrack();
+        initializeLegBettingArea();
+        initializeDiceArea();
+
+        play();
+    }
+
+
+    public void onClick(View v) {
+        String message = "Oops! Not found!";
+
+        for (RaceTrackField field: raceTrack) {
+            if (field.getPosition() == v.getId()) {
+                message = (String) v.getContentDescription();
+                AlertDialog dialog = dummyPopup(message);
+                dialog.show();
+                return;
+            }
+        }
+        for (Integer legBet: legBettingArea) {
+            if (legBet == v.getId()) {
+                message = (String) v.getContentDescription();
+                AlertDialog dialog = dummyPopup(message);
+                dialog.show();
+                return;
+            }
+        }
+        if (R.id.dice == v.getId()){
+            message = (String) v.getContentDescription();
+        }
+
+        AlertDialog dialog = dummyPopup(message);
+        dialog.show();
+    }
+
+    private AlertDialog dummyPopup(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message)
+                .setTitle("Congratulations");
+        // Add the buttons
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+        return builder.create();
     }
 
     /**
@@ -74,7 +128,7 @@ public class GameActivity extends Activity {
     }
 
     /**
-     * Adds all the fields to the game
+     * Adds all the race track fields to the game's raceTrack
      */
     private void initializeRaceTrack(){
         raceTrack.add(new RaceTrackField(R.id.field1));
@@ -93,6 +147,34 @@ public class GameActivity extends Activity {
         raceTrack.add(new RaceTrackField(R.id.field14));
         raceTrack.add(new RaceTrackField(R.id.field15));
         raceTrack.add(new RaceTrackField(R.id.field16));
+
+        for (RaceTrackField field: raceTrack) {
+            (findViewById(field.getPosition())).setOnClickListener(this);
+        }
+    }
+
+    private void initializeLegBettingArea(){
+        legBettingArea.add(R.id.legbetting_blue);
+        legBettingArea.add(R.id.legbetting_green);
+        legBettingArea.add(R.id.legbetting_orange);
+        legBettingArea.add(R.id.legbetting_yellow);
+        legBettingArea.add(R.id.legbetting_white);
+        legBettingArea.add(R.id.winner_betting);
+        legBettingArea.add(R.id.loser_betting);
+
+        for (Integer legbet: legBettingArea) {
+            (findViewById(legbet)).setOnClickListener(this);
+        }
+    }
+
+    private void initializeDiceArea(){
+        diceArea.add(R.id.dice1);
+        diceArea.add(R.id.dice2);
+        diceArea.add(R.id.dice3);
+        diceArea.add(R.id.dice4);
+        diceArea.add(R.id.dice5);
+
+        (findViewById(R.id.dice)).setOnClickListener(this);
     }
 
     /**
@@ -100,6 +182,7 @@ public class GameActivity extends Activity {
      */
     private void play(){
         // TODO: on PUSH from SERVER; get all new information.
+        // TODO: create some "round" system
 //        gameMoves();
 //        gameRaceTrack();
 //        gameLegBettingArea();

@@ -11,8 +11,7 @@
     <!-- the pyramid (dice) -->
     <dimen  name="pyramid_height">170dp</dimen>
     <dimen  name="pyramid_width">170dp</dimen>
-    <dimen  name="pyramid_margin_left">-55dp</dimen>
-    <dimen  name="pyramid_margin_top">-35dp</dimen>
+    <dimen  name="pyramid_margin_left">175dp</dimen>
     <dimen  name="dice_size">57dp</dimen>
 
 </resources>
