@@ -29,22 +29,28 @@ public class GameActivity extends Activity implements View.OnClickListener {
     private ArrayList<Integer> legBettingArea = new ArrayList<>();
     private ArrayList<Integer> diceArea = new ArrayList<>();
     private TextView tvLogBox;
+    private Long playerId;
     private Long gameId;
-    private boolean isOwner;
 
+    /**
+     * When the activity is created, do the following:
+     *      - set window to full screen
+     *      - get the parameters passed by GameLobbyFragment (gameId and playerId)
+     *      - initialize the whole board (RaceTrack, DiceArea and LegBettingArea)
+     *      - start playing
+     * @param savedInstanceState -
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Set fullscreen mode
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        // get the gameId and current playerId
         Bundle b = getIntent().getExtras();
         gameId = b.getLong("gameId");
-        isOwner = b.getBoolean("isOwner");
+        playerId = b.getLong("playerId");
 
         setContentView(R.layout.activity_game);
 
@@ -55,7 +61,15 @@ public class GameActivity extends Activity implements View.OnClickListener {
         play();
     }
 
-
+    /**
+     * Adds possible interaction with the game.
+     * Searches through all lists (raceTrack, legBettingArea and the dice) and checks if the
+     * id of the parameter matches any id in the lists.
+     *
+     * When an id is found, do something with it (e.g. display an alert message)
+     *
+     * @param v the view that is clicked on
+     */
     public void onClick(View v) {
         String message = "Oops! Not found!";
 
@@ -83,6 +97,12 @@ public class GameActivity extends Activity implements View.OnClickListener {
         dialog.show();
     }
 
+    /**
+     * This is only for testing purposes, an alert popup that displays dynamic messages.
+     *
+     * @param message the message to be shown in the popup body
+     * @return the AlertDialog object with its (new) parameters
+     */
     private AlertDialog dummyPopup(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(message)
@@ -129,6 +149,7 @@ public class GameActivity extends Activity implements View.OnClickListener {
 
     /**
      * Adds all the race track fields to the game's raceTrack
+     * Adds all field to the OnClickListener
      */
     private void initializeRaceTrack(){
         raceTrack.add(new RaceTrackField(R.id.field1));
@@ -153,6 +174,10 @@ public class GameActivity extends Activity implements View.OnClickListener {
         }
     }
 
+    /**
+     * Adds all legBettingAreas to an ArrayList
+     * Adds all legBettingAreas to the OnClickListener
+     */
     private void initializeLegBettingArea(){
         legBettingArea.add(R.id.legbetting_blue);
         legBettingArea.add(R.id.legbetting_green);
@@ -167,6 +192,10 @@ public class GameActivity extends Activity implements View.OnClickListener {
         }
     }
 
+    /**
+     * Adds all diceAreas to the diceArea ArrayList
+     * Adds the dice button (pyramid) to the OnClickListener
+     */
     private void initializeDiceArea(){
         diceArea.add(R.id.dice1);
         diceArea.add(R.id.dice2);
