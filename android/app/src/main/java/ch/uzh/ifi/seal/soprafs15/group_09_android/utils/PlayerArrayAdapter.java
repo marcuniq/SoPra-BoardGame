@@ -1,10 +1,13 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.utils;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 
 /**
@@ -15,8 +18,20 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
  */
 public class PlayerArrayAdapter extends GenericArrayAdapter<User> {
 
-    public PlayerArrayAdapter(Context context, int resource, int textViewResourceId, ArrayList<User> player) {
-        super(context, resource, textViewResourceId, player);
+    private ArrayList<Integer> icons = new ArrayList<>();
+    private int position = 0;
+
+    public PlayerArrayAdapter(Context context, int resource, int textResourceId, int imageResourceId, ArrayList<User> player) {
+        super(context, resource, textResourceId, imageResourceId,player);
+
+        icons.add(R.drawable.c1_head);
+        icons.add(R.drawable.c2_head);
+        icons.add(R.drawable.c3_head);
+        icons.add(R.drawable.c4_head);
+        icons.add(R.drawable.c5_head);
+        icons.add(R.drawable.c6_head);
+        icons.add(R.drawable.c7_head);
+        icons.add(R.drawable.c8_head);
     }
 
     /**
@@ -25,8 +40,15 @@ public class PlayerArrayAdapter extends GenericArrayAdapter<User> {
      * @param textView
      * @param player
      */
-    @Override public void drawText(TextView textView, User player) {
+    @Override
+    public void drawText(TextView textView, User player) {
         textView.setText(player.username());
+    }
+
+    public void setIcon(ImageView imageView, User player){
+        if (position > 7) position = 0;
+        imageView.setBackgroundResource(icons.get(position));
+        position++;
     }
 
 }

@@ -49,5 +49,6 @@
     <string name="legbetting_white">You selected a white Legbetting Card</string>
     <string name="winner_betting">You bet on the overall winner</string>
     <string name="loser_betting">You bet on the overall loser</string>
+    <string name="pyramid_tile">This is a pyramid tile</string>
 
 </resources>

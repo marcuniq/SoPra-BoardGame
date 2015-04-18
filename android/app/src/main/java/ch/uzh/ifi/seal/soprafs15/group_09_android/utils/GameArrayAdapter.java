@@ -1,11 +1,14 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.utils;
 
 import android.content.Context;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 
 /**
  *  Uses the GenericArrayAdapter to be able to add any Object to our custom ArrayAdapter. Now we
@@ -15,8 +18,8 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
  */
 public class GameArrayAdapter extends GenericArrayAdapter<Game> {
 
-    public GameArrayAdapter(Context context,  int resource, int textViewResourceId, ArrayList<Game> game) {
-        super(context, resource, textViewResourceId, game);
+    public GameArrayAdapter(Context context,  int resource, int textResourceId, int imageResourceId, ArrayList<Game> game) {
+        super(context, resource, textResourceId, imageResourceId, game);
     }
 
     /**
@@ -25,8 +28,13 @@ public class GameArrayAdapter extends GenericArrayAdapter<Game> {
      * @param textView
      * @param game
      */
-    @Override public void drawText(TextView textView, Game game) {
+    @Override
+    public void drawText(TextView textView, Game game) {
         textView.setText(game.name());
     }
 
+
+    public void setIcon(ImageView imageView, Game game){
+        imageView.setBackgroundResource(R.drawable.ic_launcher);
+    }
 }

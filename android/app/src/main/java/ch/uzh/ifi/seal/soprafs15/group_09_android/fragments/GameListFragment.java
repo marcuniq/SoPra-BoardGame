@@ -63,15 +63,17 @@ public class GameListFragment extends ListFragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_game_list, container, false);
 
         gameArrayAdapter = new GameArrayAdapter(
                 getActivity(),
-                R.layout.fragment_game_list,
-                R.id.game_list_item,
+                R.layout.game_item,
+                R.id.game_item_text,
+                R.id.game_item_icon,
                 new ArrayList<Game>());
         setListAdapter(gameArrayAdapter);
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return v;
     }
 
     /**

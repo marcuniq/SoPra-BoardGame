@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +41,7 @@ public class GameLobbyFragment extends ListFragment {
     private Button startGameButton;
     private Boolean isOwner;
     private PlayerArrayAdapter playerArrayAdapter; // adapts the ArrayList of Games to the ListView
+    private ImageView ivPlayerCard;
 
     /* empty constructor */
     public GameLobbyFragment() {}
@@ -87,7 +89,8 @@ public class GameLobbyFragment extends ListFragment {
         playerArrayAdapter = new PlayerArrayAdapter(
                 getActivity(),
                 R.layout.player_item,
-                R.id.player_list_item,
+                R.id.player_item_text,
+                R.id.player_item_icon,
                 new ArrayList<User>());
         setListAdapter(playerArrayAdapter);
 

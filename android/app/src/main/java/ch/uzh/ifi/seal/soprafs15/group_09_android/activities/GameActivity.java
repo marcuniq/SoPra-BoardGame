@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -27,8 +28,13 @@ public class GameActivity extends Activity implements View.OnClickListener {
 
     private ArrayList<RaceTrackField> raceTrack = new ArrayList<>();
     private ArrayList<Integer> legBettingArea = new ArrayList<>();
-    private ArrayList<Integer> diceArea = new ArrayList<>();
-    private TextView tvLogBox;
+
+    private TextView tvPlayerName;
+    private ImageButton ivPlayerIcon;
+    private TextView tvCurrentPlayerName;
+    private ImageView  ivCurrentPlayerIcon;
+    private TextView tvMoney;
+
     private Long playerId;
     private Long gameId;
 
@@ -193,16 +199,9 @@ public class GameActivity extends Activity implements View.OnClickListener {
     }
 
     /**
-     * Adds all diceAreas to the diceArea ArrayList
      * Adds the dice button (pyramid) to the OnClickListener
      */
     private void initializeDiceArea(){
-        diceArea.add(R.id.dice1);
-        diceArea.add(R.id.dice2);
-        diceArea.add(R.id.dice3);
-        diceArea.add(R.id.dice4);
-        diceArea.add(R.id.dice5);
-
         (findViewById(R.id.dice)).setOnClickListener(this);
     }
 
@@ -235,7 +234,7 @@ public class GameActivity extends Activity implements View.OnClickListener {
 
             @Override
             public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
+
             }
         });
     }
@@ -253,7 +252,7 @@ public class GameActivity extends Activity implements View.OnClickListener {
 
             @Override
             public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
+
             }
         });
     }
@@ -271,7 +270,7 @@ public class GameActivity extends Activity implements View.OnClickListener {
 
             @Override
             public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
+
             }
         });
     }
@@ -289,7 +288,7 @@ public class GameActivity extends Activity implements View.OnClickListener {
 
             @Override
             public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
+
             }
         });
     }
@@ -307,7 +306,7 @@ public class GameActivity extends Activity implements View.OnClickListener {
 
             @Override
             public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
+
             }
         });
     }

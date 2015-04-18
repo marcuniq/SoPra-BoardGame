@@ -4,29 +4,28 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:id="@+id/player_list_item"
+    android:id="@+id/game_list_item"
     android:background="#70d35400"
     android:minHeight="80dp">
 
     <ImageView
-        android:id="@+id/player_item_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/game_item_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:contentDescription="@string/hello_world"
+        android:background="@drawable/ic_launcher"
         android:layout_gravity="center_vertical"
-        android:background="@drawable/c1_head"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
 
     <TextView
-        android:id="@+id/player_item_text"
+        android:id="@+id/game_item_text"
         android:text="@string/hello_world"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="24sp"
         android:textColor="#ffffffff"
         android:textIsSelectable="false"
-        android:gravity="fill_vertical"
         android:layout_gravity="center_vertical"/>
 
 </LinearLayout>
