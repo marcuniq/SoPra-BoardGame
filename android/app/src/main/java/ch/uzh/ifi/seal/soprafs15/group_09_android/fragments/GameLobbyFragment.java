@@ -121,6 +121,7 @@ public class GameLobbyFragment extends ListFragment {
         b.putLong("playerId", playerId);
         intent.putExtras(b);
         startActivity(intent);
+
     }
 
     @Override

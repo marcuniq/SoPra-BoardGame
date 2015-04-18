@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs15.group_09_android.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -14,14 +15,14 @@ import android.widget.TextView;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameField;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.RaceTrackField;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class GameActivity extends Activity {
 
-    private ArrayList<GameField> gameFields = new ArrayList<>();
+    private ArrayList<RaceTrackField> raceTrack = new ArrayList<>();
     private TextView tvLogBox;
     private Long gameId;
     private boolean isOwner;
@@ -40,60 +41,73 @@ public class GameActivity extends Activity {
         gameId = b.getLong("gameId");
         isOwner = b.getBoolean("isOwner");
 
-        initializeGameField();
+        initializeRaceTrack();
         play();
 
         setContentView(R.layout.activity_game);
     }
 
-    private ImageView addCamel(int margin, int imageResourceId){
+    /**
+     * creates a Camel, Oasis or Desert (or any) image view with defined margins to an ImageView
+     * and returns that view
+     *
+     * @param margin The margin a camel will be shifted from bottom-left:
+     *               each camel on the top is shifted by the predefined margin (array)
+     * @param raceTrackField The current field on the race track where the camel should be placed
+     * @param align1 The alignment in one direction (e.g. ALIGN_PARENT_BOTTOM)
+     * @param align2 The alignment in the other direction (e.g. ALIGN_PARENT_LEFT)
+     * @return the ImageView with the camel to enable adding that image to a layout
+     */
+    private ImageView createDynamicImage(int margin, int raceTrackField, int align1, int align2){
 
         ImageView image = new ImageView(this);
-        image.setImageResource(imageResourceId);
+        image.setImageResource(raceTrackField);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT );
         lp.setMargins(margin, 0, 0, margin);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        lp.addRule(align1);
+        lp.addRule(align2);
         image.setLayoutParams(lp);
 
         return image;
     }
 
-    private void addInteractionTile (RelativeLayout field, int imageResourceId){
-        field.setBackgroundResource(imageResourceId);
-    }
-
     /**
      * Adds all the fields to the game
      */
-    private void initializeGameField(){
-        gameFields.add(new GameField(R.id.field1));
-        gameFields.add(new GameField(R.id.field2));
-        gameFields.add(new GameField(R.id.field3));
-        gameFields.add(new GameField(R.id.field4));
-        gameFields.add(new GameField(R.id.field5));
-        gameFields.add(new GameField(R.id.field6));
-        gameFields.add(new GameField(R.id.field7));
-        gameFields.add(new GameField(R.id.field8));
-        gameFields.add(new GameField(R.id.field9));
-        gameFields.add(new GameField(R.id.field10));
-        gameFields.add(new GameField(R.id.field11));
-        gameFields.add(new GameField(R.id.field12));
-        gameFields.add(new GameField(R.id.field13));
-        gameFields.add(new GameField(R.id.field14));
-        gameFields.add(new GameField(R.id.field15));
-        gameFields.add(new GameField(R.id.field16));
+    private void initializeRaceTrack(){
+        raceTrack.add(new RaceTrackField(R.id.field1));
+        raceTrack.add(new RaceTrackField(R.id.field2));
+        raceTrack.add(new RaceTrackField(R.id.field3));
+        raceTrack.add(new RaceTrackField(R.id.field4));
+        raceTrack.add(new RaceTrackField(R.id.field5));
+        raceTrack.add(new RaceTrackField(R.id.field6));
+        raceTrack.add(new RaceTrackField(R.id.field7));
+        raceTrack.add(new RaceTrackField(R.id.field8));
+        raceTrack.add(new RaceTrackField(R.id.field9));
+        raceTrack.add(new RaceTrackField(R.id.field10));
+        raceTrack.add(new RaceTrackField(R.id.field11));
+        raceTrack.add(new RaceTrackField(R.id.field12));
+        raceTrack.add(new RaceTrackField(R.id.field13));
+        raceTrack.add(new RaceTrackField(R.id.field14));
+        raceTrack.add(new RaceTrackField(R.id.field15));
+        raceTrack.add(new RaceTrackField(R.id.field16));
     }
 
+    /**
+     * This is the main method. After each player has finished his turn, the whole board is redraw.
+     */
     private void play(){
+        // TODO: on PUSH from SERVER; get all new information.
 //        gameMoves();
 //        gameRaceTrack();
 //        gameLegBettingArea();
 //        gameRaceBettingArea();
 //        gameDiceArea();
-        drawBoard();
+        addItemsToRaceTrack();
+
+        // TODO: check if player is on his turn; then enable interaction
     }
 
     /**
@@ -121,7 +135,7 @@ public class GameActivity extends Activity {
         RestService.getInstance(this).getGameRaceTrack(gameId, new Callback<List<RaceTrack>>() {
 
             @Override
-            public void success(List<RaceTrack> raceTracks, Response response) {
+            public void success(List<RaceTrack> raceTrackField, Response response) {
 
             }
 
@@ -187,23 +201,46 @@ public class GameActivity extends Activity {
     }
 
     /**
-     * Draw the board according to the game status
+     * Draw the raceTrack according to the game status: all camels, all desert/oasis tiles etc.
      */
-    private void drawBoard() {
-        int[] margins = {0,10,20,30,40};
+    private void addItemsToRaceTrack() {
+        int[] margins = {0, 10, 20, 30, 40};
+        cleanRaceTrack();
 
-        for (GameField field: gameFields) {
+        for (RaceTrackField field: raceTrack) {
             ArrayList<Integer> camels = field.getCamels();
             RelativeLayout fieldLayout = (RelativeLayout) findViewById(field.getPosition());
 
             if (field.hasDesert()) {
-                //addInteractionTile(fieldLayout,R.id.desertTile);
-            } else if (field.hasOase()) {
-                //addInteractionTile(fieldLayout,R.id.oaseTile);
+                fieldLayout.addView(createDynamicImage(0,
+                        field.getDesert(),
+                        RelativeLayout.CENTER_HORIZONTAL,
+                        RelativeLayout.CENTER_VERTICAL));
+            } else if (field.hasOasis()) {
+                fieldLayout.addView(createDynamicImage(0,
+                        field.getOasis(),
+                        RelativeLayout.CENTER_HORIZONTAL,
+                        RelativeLayout.CENTER_VERTICAL));
             } else if (!camels.isEmpty()) {
                 for (int pos = 0; pos < camels.size(); pos++){
-                    fieldLayout.addView(addCamel(margins[pos], camels.get(pos)));
+                    fieldLayout.addView(createDynamicImage(margins[pos],
+                            camels.get(pos),
+                            RelativeLayout.ALIGN_PARENT_BOTTOM,
+                            RelativeLayout.ALIGN_PARENT_LEFT));
                 }
+            }
+        }
+    }
+
+    /**
+     * Removes all views from the racetrack
+     */
+    private void cleanRaceTrack() {
+        RelativeLayout fieldLayout;
+        for (RaceTrackField field: raceTrack) {
+            fieldLayout = (RelativeLayout) findViewById(field.getPosition());
+            if (!(fieldLayout == null) && fieldLayout.getChildCount() > 0) {
+                fieldLayout.removeAllViews();
             }
         }
     }

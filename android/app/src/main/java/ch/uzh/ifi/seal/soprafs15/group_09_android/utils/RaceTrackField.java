@@ -2,14 +2,14 @@ package ch.uzh.ifi.seal.soprafs15.group_09_android.utils;
 
 import java.util.ArrayList;
 
-public class GameField {
+public class RaceTrackField {
 
     private int position;
-    private boolean hasOase = false;
-    private boolean hasDesert = false;
+    private Integer oasis;
+    private Integer desert;
     private ArrayList<Integer> camels = new ArrayList<>();
 
-    public GameField(int position) {
+    public RaceTrackField(int position) {
         setPosition(position);
     }
 
@@ -29,20 +29,27 @@ public class GameField {
         this.position = position;
     }
 
-    public void setOase(boolean hasOase) {
-        this.hasOase = hasOase;
+    public void setOasis(Integer oasis) {
+        this.oasis = oasis;
     }
 
-    public boolean hasOase(){
-        return hasOase;
+    public Integer getOasis() {
+        return oasis;
     }
 
-    public void setDesert(boolean hasDesert) {
-        this.hasDesert = hasDesert;
+    public boolean hasOasis(){
+        return !(oasis == null);
+    }
+
+    public void setDesert(Integer desert) {
+        this.desert = desert;
     }
 
     public boolean hasDesert(){
-        return hasOase;
+        return !(desert == null);
     }
 
+    public Integer getDesert() {
+        return desert;
+    }
 }

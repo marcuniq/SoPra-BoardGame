@@ -121,15 +121,15 @@ public class GameListFragment extends ListFragment {
 
             @Override
             public void success(User player, Response response) {
-                Fragment fragment = GameLobbyFragment.newInstance();
+                Fragment gameLobbyFragment = GameLobbyFragment.newInstance();
                 Bundle bundle = new Bundle();
                 bundle.putLong("gameId", joinedGameId);
                 bundle.putLong("playerId", player.id());
                 bundle.putBoolean("isOwner", false);
-                fragment.setArguments(bundle);
+                gameLobbyFragment.setArguments(bundle);
 
                 /* See all already created games (testing) */
-                ((MenuActivity) getActivity()).setFragment(fragment);
+                ((MenuActivity) getActivity()).setFragment(gameLobbyFragment);
             }
 
             @Override
