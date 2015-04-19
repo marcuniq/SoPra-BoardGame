@@ -2,12 +2,15 @@ package ch.uzh.ifi.seal.soprafs15.controller;
 
 import ch.uzh.ifi.seal.soprafs15.Application;
 import ch.uzh.ifi.seal.soprafs15.TestUtils;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -21,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URL;
 import java.util.List;
+import java.util.logging.Logger;
 
 //import static org.hamcrest.Matchers.is;
 //import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,6 +33,7 @@ import java.util.List;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @IntegrationTest({"server.port=0"})
 public class UserServiceControllerIT {
 
@@ -46,22 +51,32 @@ public class UserServiceControllerIT {
 	
 	@Test
 	@SuppressWarnings("unchecked")
-	public void testCreateUserSuccess() {		
+	public void test1_createUserSuccess() {
 		List<UserResponseBean> usersBefore = template.getForObject(base + "/users", List.class);
 		Assert.assertEquals(0, usersBefore.size());
 		
-		UserRequestBean request = TestUtils.createUserRequestBean(43,"mm");
+		UserRequestBean request = TestUtils.createUserRequestBean(43,"testUser1");
 
 		HttpEntity<UserRequestBean> httpEntity = new HttpEntity<UserRequestBean>(request);
-		
+
 		ResponseEntity<UserResponseBean> response = template.exchange(base + "/users", HttpMethod.POST, httpEntity, UserResponseBean.class);
 		Assert.assertEquals(request.getAge(), response.getBody().getAge());
         Assert.assertEquals(request.getUsername(), response.getBody().getUsername());
 		
 	    List<UserResponseBean> usersAfter = template.getForObject(base + "/users", List.class);
 		Assert.assertEquals(1, usersAfter.size());
-
-
 	}
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void test2_loginUserSuccess() {
+        ResponseEntity<UserLoginLogoutResponseBean> response = template.exchange(base + "/users/1/login", HttpMethod.POST, null, UserLoginLogoutResponseBean.class);
+
+        Integer oracleTokenLength = "067e6162-3b6f-4ae2-a171-2470b63dff00".length();
+
+        Assert.assertEquals(response.getBody().getToken().length(), (int) oracleTokenLength);
+    }
+
+
 
 }
