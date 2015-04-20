@@ -160,4 +160,11 @@ public class GameMapperServiceImpl extends GameMapperService {
 
         return result;
     }
+
+    @Override
+    public GameAddPlayerResponseBean toGameAddPlayerResponseBean(Game game) {
+        GameAddPlayerResponseBean bean = new GameAddPlayerResponseBean();
+        bean.setChannelName(game.getPusherChannelName());
+        return bean;
+    }
 }

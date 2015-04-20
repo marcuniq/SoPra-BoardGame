@@ -24,4 +24,5 @@ public abstract class GameMapperService extends GenericService {
     public abstract Move toMove(Game game, User player, GameMoveRequestBean bean);
     public abstract GameMoveResponseBean toGameMoveResponseBean(Move move);
     public abstract List<GameMoveResponseBean> toGameMoveResponseBean(List<Move> moves);
+    public abstract GameAddPlayerResponseBean toGameAddPlayerResponseBean(Game game);
 }

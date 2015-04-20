@@ -16,6 +16,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.pusher.client.channel.SubscriptionEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +28,9 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoValueAdapterFactory;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameArrayAdapter;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.PlayerArrayAdapter;
@@ -71,6 +78,15 @@ public class GameLobbyFragment extends ListFragment {
         View v = inflater.inflate(R.layout.fragment_lobby, container, false);
 
         startGameButton = (Button) v.findViewById(R.id.startButton);
+
+        PusherService.getInstance().bind("MOVE_EVENT", new SubscriptionEventListener() {
+            @Override
+            public void onEvent(String channel, String event, String data) {
+                System.out.println("Received event with data: " + data);
+                Gson gson = new GsonBuilder().registerTypeAdapterFactory(new AutoValueAdapterFactory()).create();
+                MoveEvent e = gson.fromJson(data, MoveEvent.class);
+            }
+        });
 
         // Hide button if user is not the owner
         if (isOwner) {

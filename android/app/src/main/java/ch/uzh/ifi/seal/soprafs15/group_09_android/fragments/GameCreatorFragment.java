@@ -94,23 +94,7 @@ public class GameCreatorFragment extends Fragment {
             public void success(Game game, Response response) {
                 Long gameId = game.id();
                 joinedGameId = gameId;
-                joinGame(gameId);
-            }
 
-            @Override
-            public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
-            }
-        });
-    }
-
-    private void joinGame(Long gameId) {
-        User theToken = User.setToken(token);
-
-        RestService.getInstance(getActivity()).joinGame(gameId, theToken, new Callback<User>() {
-
-            @Override
-            public void success(User player, Response response) {
                 Fragment fragment = GameLobbyFragment.newInstance();
                 Bundle bundle = new Bundle();
                 bundle.putLong("gameId", joinedGameId);

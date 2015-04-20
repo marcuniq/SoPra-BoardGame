@@ -12,6 +12,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pusher.client.Pusher;
+import com.pusher.client.channel.SubscriptionEventListener;
+import com.pusher.client.connection.ConnectionEventListener;
+import com.pusher.client.connection.ConnectionState;
+import com.pusher.client.connection.ConnectionStateChange;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +25,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameArrayAdapter;
 import retrofit.Callback;
@@ -31,6 +38,7 @@ public class GameListFragment extends ListFragment {
     private GameArrayAdapter gameArrayAdapter; // adapts the ArrayList of Games to the ListView
     private String token;
     private Long joinedGameId;
+    private Long playerId;
 
     /* empty constructor */
     public GameListFragment() {}
@@ -115,16 +123,40 @@ public class GameListFragment extends ListFragment {
 
         Long gameId = selectedGame.id();
         joinedGameId = gameId;
-        User user = User.setToken(token);
+        User player = User.setToken(token);
+        playerId = player.id();
 
-        RestService.getInstance(getActivity()).joinGame(gameId, user, new Callback<User>() {
+        RestService.getInstance(getActivity()).joinGame(gameId, player, new Callback<Game>() {
 
             @Override
-            public void success(User player, Response response) {
+            public void success(Game game, Response response) {
+
+                PusherService.getInstance().connect(new ConnectionEventListener() {
+                    @Override
+                    public void onConnectionStateChange(ConnectionStateChange change) {
+                        System.out.println("State changed to " + change.getCurrentState() +
+                                " from " + change.getPreviousState());
+                    }
+
+                    @Override
+                    public void onError(String message, String code, Exception e) {
+                        System.out.println("There was a problem connecting!");
+                        System.out.println("message: " + message);
+                        System.out.println("code: " + code);
+                        //System.out.println("exception: " + e.toString());
+
+
+                    }
+                }, ConnectionState.ALL);
+
+                //PusherService.getInstance().subscribe("test_channel");
+                PusherService.getInstance().subscribe(game.channelName());
+
+
                 Fragment fragment = GameLobbyFragment.newInstance();
                 Bundle bundle = new Bundle();
                 bundle.putLong("gameId", joinedGameId);
-                bundle.putLong("playerId", player.id());
+                bundle.putLong("playerId", 42L); // what is this for?
                 bundle.putBoolean("isOwner", false);
                 fragment.setArguments(bundle);
 
