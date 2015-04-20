@@ -296,7 +296,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
 
 ### Add Player to Game [POST]
 ###### Request object: GamePlayerRequestBean
-###### Response object: GamePlayerResponseBean
+###### Response object: GameAddPlayerResponseBean
 
 
 + Request (application/json)
@@ -322,9 +322,28 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 }
             }
         
-+ Response 201
++ Response 201 (application/json)
 
-    [Game Player][]
+    + Body
+    
+            {
+                "channelName": "9b5eabcc-781b-483a-8eed-30d7eacb1567"
+            }
+            
+    + Schema
+    
+            {
+                "$schema": "http://json-schema.org/draft-04/schema#",
+                "description": "GameAddPlayerResponseBean",
+                "type" : "object",
+                "required" : ["channelName"],
+                "properties" : {
+                    "channelName" : {
+                        "description" : "name of channel for pusher service",
+                        "type" : "string"
+                    }
+                }
+            }
 
 ## Game Player [/games/{gameId}/players/{playerId}]
 
