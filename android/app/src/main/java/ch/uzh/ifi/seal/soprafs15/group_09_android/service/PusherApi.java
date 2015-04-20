@@ -35,7 +35,7 @@ public class PusherApi {
     }
 
     public Channel subscribe(Game game){
-        return subscribe(game.name());
+        return subscribe(game.channelName());
     }
 
     public Channel subscribe(String channelName){
@@ -44,7 +44,7 @@ public class PusherApi {
     }
 
     public void unsubscribe(Game game){
-        unsubscribe(game.name());
+        unsubscribe(game.channelName());
     }
     public void unsubscribe(String channelName){
         pusher.unsubscribe(channelName);
