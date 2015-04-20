@@ -79,15 +79,6 @@ public class GameLobbyFragment extends ListFragment {
 
         startGameButton = (Button) v.findViewById(R.id.startButton);
 
-        PusherService.getInstance().bind("MOVE_EVENT", new SubscriptionEventListener() {
-            @Override
-            public void onEvent(String channel, String event, String data) {
-                System.out.println("Received event with data: " + data);
-                Gson gson = new GsonBuilder().registerTypeAdapterFactory(new AutoValueAdapterFactory()).create();
-                MoveEvent e = gson.fromJson(data, MoveEvent.class);
-            }
-        });
-
         // Hide button if user is not the owner
         if (isOwner) {
             startGameButton.setOnClickListener(new View.OnClickListener() {
@@ -129,6 +120,9 @@ public class GameLobbyFragment extends ListFragment {
     }
 
     private void onClickStartGameButton(View v) {
+
+
+
         Toast.makeText(v.getContext(), "You (your ID = " + playerId + ") started game \"" + gameId + "\"", Toast.LENGTH_LONG).show();
         Intent intent = new Intent();
         intent.setClass(getActivity(), GameActivity.class);

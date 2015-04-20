@@ -26,8 +26,16 @@ public class PusherApi {
         pusher = new Pusher(API_KEY);
     }
 
+    public void reconnect(){
+        pusher.connect();
+    }
+
     public void connect(ConnectionEventListener connectionEventListener, ConnectionState connectionState){
         pusher.connect(connectionEventListener, connectionState);
+    }
+
+    public void disconnect(){
+        pusher.disconnect();
     }
 
     public void bind(String eventName, SubscriptionEventListener subscriptionEventListener){
