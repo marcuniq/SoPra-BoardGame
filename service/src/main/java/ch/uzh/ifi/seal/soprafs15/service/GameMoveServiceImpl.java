@@ -13,6 +13,8 @@ import ch.uzh.ifi.seal.soprafs15.service.exceptions.InvalidMoveException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.PlayerTurnException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
+import ch.uzh.ifi.seal.soprafs15.service.pusher.PusherService;
+import ch.uzh.ifi.seal.soprafs15.service.pusher.events.MoveEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,17 +37,22 @@ public class GameMoveServiceImpl extends GameMoveService {
     protected UserRepository userRepository;
 
     protected GameMapperService gameMapperService;
+
     protected GameLogicService gameLogicService;
+
+    protected PusherService pusherService;
 
     @Autowired
     public GameMoveServiceImpl(MoveRepository moveRepository, GameRepository gameRepository,
                                UserRepository userRepository,
-                               GameMapperService gameMapperService, GameLogicService gameLogicService){
+                               GameMapperService gameMapperService, GameLogicService gameLogicService,
+                               PusherService pusherService){
         this.moveRepository = moveRepository;
         this.gameRepository = gameRepository;
         this.userRepository = userRepository;
         this.gameMapperService = gameMapperService;
         this.gameLogicService = gameLogicService;
+        this.pusherService = pusherService;
     }
 
     @Override
@@ -83,6 +90,10 @@ public class GameMoveServiceImpl extends GameMoveService {
         // save move to repo and add to game
         move = (Move) moveRepository.save(move);
         game.addMove(move);
+
+        // notify all players about move
+        MoveEvent moveEvent = new MoveEvent(move.getId());
+        pusherService.pushToSubscribers(moveEvent, game);
 
         return getMove(move.getId());
     }

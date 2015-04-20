@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.service;
 
 import ch.uzh.ifi.seal.soprafs15.GameConstants;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameAddPlayerResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.User;
@@ -45,7 +46,7 @@ public class GamePlayerServiceImpl extends GamePlayerService {
 
     @Override
     @Transactional
-    public GamePlayerResponseBean addPlayer(Long gameId, GamePlayerRequestBean bean) {
+    public GameAddPlayerResponseBean addPlayer(Long gameId, GamePlayerRequestBean bean) {
         User player = gameMapperService.toUser(bean);
 
         // find game
@@ -59,7 +60,7 @@ public class GamePlayerServiceImpl extends GamePlayerService {
 
             logger.debug("Game: " + game.getName() + " - player added: " + player.getUsername());
 
-            return getPlayer(gameId, player.getId());
+            return gameMapperService.toGameAddPlayerResponseBean(game);
         } else {
             logger.error("Error adding player with token: " + player.getToken());
         }

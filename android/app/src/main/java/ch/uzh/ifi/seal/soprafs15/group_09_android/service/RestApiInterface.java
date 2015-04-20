@@ -115,5 +115,5 @@ public interface RestApiInterface {
      * @param callback
      */
     @POST("/games/{gameId}/players")
-    void joinGame(@Path("gameId") Long gameId, @Body User token, Callback<User> callback);
+    void joinGame(@Path("gameId") Long gameId, @Body User token, Callback<Game> callback);
 }

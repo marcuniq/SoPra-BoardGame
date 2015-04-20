@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 public class Game implements Serializable {
@@ -52,6 +53,9 @@ public class Game implements Serializable {
     @OneToOne(mappedBy = "game", cascade=CascadeType.ALL)
     private DiceArea diceArea = new DiceArea();
 
+    @Column
+    private String pusherChannelName;
+
 
     public Game(){
         init();
@@ -64,6 +68,8 @@ public class Game implements Serializable {
         diceArea.setGame(this);
 
         status = GameStatus.OPEN;
+
+        pusherChannelName = UUID.randomUUID().toString();
     }
 
     public void addMove(Move move) {
@@ -176,4 +182,11 @@ public class Game implements Serializable {
     }
 
 
+    public String getPusherChannelName() {
+        return pusherChannelName;
+    }
+
+    public void setPusherChannelName(String pusherChannelName) {
+        this.pusherChannelName = pusherChannelName;
+    }
 }

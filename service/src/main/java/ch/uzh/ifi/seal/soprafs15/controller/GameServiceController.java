@@ -254,11 +254,11 @@ public class GameServiceController extends GenericService {
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/players")
 	@ResponseStatus(HttpStatus.OK)
     @ResponseBody
-	public GamePlayerResponseBean addPlayer(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
+	public GameAddPlayerResponseBean addPlayer(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
 		logger.debug("addPlayer: " + gamePlayerRequestBean);
 
         try {
-            GamePlayerResponseBean result = gamePlayerService.addPlayer(gameId, gamePlayerRequestBean);
+            GameAddPlayerResponseBean result = gamePlayerService.addPlayer(gameId, gamePlayerRequestBean);
             return result;
         } catch (Exception e) {
             return null;
