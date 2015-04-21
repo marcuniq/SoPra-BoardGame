@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.service;
 
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameCreateResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameResponseBean;
@@ -44,7 +45,7 @@ public class GameServiceImpl extends GameService {
     }
 
     @Override
-    public GameResponseBean addGame(GameRequestBean bean) {
+    public GameCreateResponseBean addGame(GameRequestBean bean) {
         Game game = gameMapperService.toGame(bean);
 
         // add owner to player list
@@ -54,7 +55,7 @@ public class GameServiceImpl extends GameService {
         game.addPlayer(owner);
 
         game = gameRepository.save(game);
-        return gameMapperService.toGameResponseBean(game);
+        return gameMapperService.toGameCreateResponseBean(game);
     }
 
     @Override

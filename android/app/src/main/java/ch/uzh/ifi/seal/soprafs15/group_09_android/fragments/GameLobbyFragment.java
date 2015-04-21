@@ -89,15 +89,6 @@ public class GameLobbyFragment extends ListFragment {
             });
         } else {
             startGameButton.setVisibility(View.INVISIBLE);
-
-            PusherService.getInstance().bind("MOVE_EVENT", new SubscriptionEventListener() {
-                @Override
-                public void onEvent(String channel, String event, String data) {
-                    System.out.println("Received event with data: " + data);
-                    Gson gson = new GsonBuilder().registerTypeAdapterFactory(new AutoValueAdapterFactory()).create();
-                    MoveEvent e = gson.fromJson(data, MoveEvent.class);
-                }
-            });
         }
 
         playerArrayAdapter = new PlayerArrayAdapter(

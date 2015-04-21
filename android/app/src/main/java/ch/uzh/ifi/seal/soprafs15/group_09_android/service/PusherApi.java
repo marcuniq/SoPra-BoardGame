@@ -10,6 +10,8 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 
 /**
  * @author Marco
+ *
+ * Exposing Pusher and Channel methods
  */
 public class PusherApi {
 
@@ -26,8 +28,16 @@ public class PusherApi {
         pusher = new Pusher(API_KEY);
     }
 
+    public void reconnect(){
+        pusher.connect();
+    }
+
     public void connect(ConnectionEventListener connectionEventListener, ConnectionState connectionState){
         pusher.connect(connectionEventListener, connectionState);
+    }
+
+    public void disconnect(){
+        pusher.disconnect();
     }
 
     public void bind(String eventName, SubscriptionEventListener subscriptionEventListener){
@@ -35,7 +45,7 @@ public class PusherApi {
     }
 
     public Channel subscribe(Game game){
-        return subscribe(game.name());
+        return subscribe(game.channelName());
     }
 
     public Channel subscribe(String channelName){
@@ -44,7 +54,7 @@ public class PusherApi {
     }
 
     public void unsubscribe(Game game){
-        unsubscribe(game.name());
+        unsubscribe(game.channelName());
     }
     public void unsubscribe(String channelName){
         pusher.unsubscribe(channelName);

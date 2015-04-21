@@ -60,6 +60,18 @@ public class GameMapperServiceImpl extends GameMapperService {
     }
 
     @Override
+    public GameCreateResponseBean toGameCreateResponseBean(Game game) {
+        GameCreateResponseBean bean = new GameCreateResponseBean();
+        bean.setId(game.getId());
+        bean.setName(game.getName());
+        bean.setOwner(game.getOwner());
+        bean.setNumberOfPlayers(game.getPlayers().size());
+        bean.setChannelName(game.getPusherChannelName());
+
+        return bean;
+    }
+
+    @Override
     public List<GameResponseBean> toGameResponseBean(List<Game> games) {
         List<GameResponseBean> result = new ArrayList<>();
 
