@@ -158,7 +158,6 @@ public class GameListFragment extends ListFragment {
                 Fragment gameLobbyFragment = GameLobbyFragment.newInstance();
                 Bundle bundle = new Bundle();
                 bundle.putLong("gameId", joinedGameId);
-                bundle.putLong("playerId", 42L); // what is this for?
                 bundle.putBoolean("isOwner", false);
                 gameLobbyFragment.setArguments(bundle);
 

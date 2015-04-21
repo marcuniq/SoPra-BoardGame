@@ -45,7 +45,6 @@ public class GameLobbyFragment extends ListFragment {
     private TextView tvLogBox;
     private Long gameId;
     private Long playerId;
-    private Button startGameButton;
     private Boolean isOwner;
     private PlayerArrayAdapter playerArrayAdapter; // adapts the ArrayList of Games to the ListView
     private ImageView ivPlayerCard;
@@ -67,7 +66,6 @@ public class GameLobbyFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         gameId = this.getArguments().getLong("gameId");
-        playerId = this.getArguments().getLong("playerId");
         isOwner = this.getArguments().getBoolean("isOwner");
     }
 
@@ -79,16 +77,7 @@ public class GameLobbyFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_lobby, container, false);
 
-        startGameButton = (Button) v.findViewById(R.id.startButton);
-
-        PusherService.getInstance().bind("MOVE_EVENT", new SubscriptionEventListener() {
-            @Override
-            public void onEvent(String channel, String event, String data) {
-                System.out.println("Received event with data: " + data);
-                Gson gson = new GsonBuilder().registerTypeAdapterFactory(new AutoValueAdapterFactory()).create();
-                MoveEvent e = gson.fromJson(data, MoveEvent.class);
-            }
-        });
+        Button startGameButton = (Button) v.findViewById(R.id.startButton);
 
         // Hide button if user is not the owner
         if (isOwner) {
@@ -100,6 +89,15 @@ public class GameLobbyFragment extends ListFragment {
             });
         } else {
             startGameButton.setVisibility(View.INVISIBLE);
+
+            PusherService.getInstance().bind("MOVE_EVENT", new SubscriptionEventListener() {
+                @Override
+                public void onEvent(String channel, String event, String data) {
+                    System.out.println("Received event with data: " + data);
+                    Gson gson = new GsonBuilder().registerTypeAdapterFactory(new AutoValueAdapterFactory()).create();
+                    MoveEvent e = gson.fromJson(data, MoveEvent.class);
+                }
+            });
         }
 
         playerArrayAdapter = new PlayerArrayAdapter(
@@ -139,20 +137,9 @@ public class GameLobbyFragment extends ListFragment {
         intent.setClass(getActivity(), GameActivity.class);
         Bundle b = new Bundle();
         b.putLong("gameId", gameId);
-        b.putLong("playerId", playerId);
         intent.putExtras(b);
         startActivity(intent);
         getActivity().finish();
-
-    }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        //TODO: what to do when clicking on a user?
-/*
-        User selectedPlayer = (User) getListAdapter().getItem(position);
-        Toast.makeText(v.getContext(), "You selected User \"" + selectedPlayer.username() + "\" with his id (" + selectedPlayer.id() + ")", Toast.LENGTH_LONG).show();
-*/
     }
 }
 
