@@ -6,26 +6,13 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     tools:context=".MainActivity"
-    android:background="@drawable/camelup">
+    android:background="@drawable/background">
 
     <LinearLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/title_menu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/title_list_of_games"
-            android:textSize="32sp"
-            android:textColor="#ffffffff"
-            android:gravity="center_horizontal"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:layout_marginTop="6dp"
-            android:background="#ff175a26"/>
 
     </LinearLayout>
 </FrameLayout>

@@ -1,8 +1,9 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.activities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
-
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.fragments.MainMenuFragment;
 
@@ -12,7 +13,17 @@ public class MenuActivity extends MainActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
         if (savedInstanceState == null) {
+
+            /* get the token string */
+            Bundle b = getIntent().getExtras();
+            String token = b.getString("token");
+
+            /* create shared variable with token --> user identification*/
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            sharedPref.edit().putString("token", token).apply();
+
             setFragment(MainMenuFragment.newInstance());
         }
     }

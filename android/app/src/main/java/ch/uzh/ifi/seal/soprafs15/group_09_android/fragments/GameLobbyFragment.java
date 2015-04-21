@@ -1,30 +1,54 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.UserArrayAdapter;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.pusher.client.channel.SubscriptionEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoValueAdapterFactory;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameArrayAdapter;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.PlayerArrayAdapter;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+//public class GameLobbyFragment extends ListFragment {
 public class GameLobbyFragment extends ListFragment {
 
     private TextView tvLogBox;
-    private ArrayAdapter<String> arrayAdapter; // adapts the ArrayList of Games to the ListView
+    private Long gameId;
+    private Long playerId;
+    private Button startGameButton;
+    private Boolean isOwner;
+    private PlayerArrayAdapter playerArrayAdapter; // adapts the ArrayList of Games to the ListView
+    private ImageView ivPlayerCard;
 
     /* empty constructor */
     public GameLobbyFragment() {}
@@ -38,51 +62,65 @@ public class GameLobbyFragment extends ListFragment {
     }
 
     /**
-     *
-     * @param savedInstanceState
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        gameId = this.getArguments().getLong("gameId");
+        playerId = this.getArguments().getLong("playerId");
+        isOwner = this.getArguments().getBoolean("isOwner");
     }
 
     /**
      * Creates a new view, instantiates a new ArrayAdapter that 'links' the ArrayList<String>
      * to the ListView which is then displayed.
-     *
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_game_lobby, container, false);
+        View v = inflater.inflate(R.layout.fragment_lobby, container, false);
 
-        arrayAdapter = new ArrayAdapter<>(getActivity(),
-                R.layout.player_list,
-                R.id.player_list_item,
-                new ArrayList<String>());
-        setListAdapter(arrayAdapter);
+        startGameButton = (Button) v.findViewById(R.id.startButton);
+
+        PusherService.getInstance().bind("MOVE_EVENT", new SubscriptionEventListener() {
+            @Override
+            public void onEvent(String channel, String event, String data) {
+                System.out.println("Received event with data: " + data);
+                Gson gson = new GsonBuilder().registerTypeAdapterFactory(new AutoValueAdapterFactory()).create();
+                MoveEvent e = gson.fromJson(data, MoveEvent.class);
+            }
+        });
+
+        // Hide button if user is not the owner
+        if (isOwner) {
+            startGameButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickStartGameButton(v);
+                }
+            });
+        } else {
+            startGameButton.setVisibility(View.INVISIBLE);
+        }
+
+        playerArrayAdapter = new PlayerArrayAdapter(
+                getActivity(),
+                R.layout.player_item,
+                R.id.player_item_text,
+                R.id.player_item_icon,
+                new ArrayList<User>());
+        setListAdapter(playerArrayAdapter);
 
         return v;
     }
 
-    /**
-     * Creates a Callback to get the list of all current available games. Adds all games to the
-     * adapter, respectively to the list which is later automatically displayed in the view.
-     */
     @Override
     public void onResume(){
         super.onResume();
-
-        Long gameId = this.getArguments().getLong("gameId");
-
         RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<User>>() {
             @Override
             public void success(List<User> players, Response response) {
                 for (User player : players) {
-                    arrayAdapter.add(player.username());
+                    playerArrayAdapter.add(player);
                 }
             }
 
@@ -93,20 +131,28 @@ public class GameLobbyFragment extends ListFragment {
         });
     }
 
-    /**
-     * Implements some behaviour when clicking on an item.
-     *
-     * @param l         The list view.
-     * @param v         The current view.
-     * @param position  Current position of the item in the view.
-     * @param id        Id of the item from the list.
-     */
+    private void onClickStartGameButton(View v) {
+        /*
+        Toast.makeText(v.getContext(), "You (your ID = " + playerId + ") started game \"" + gameId + "\"", Toast.LENGTH_LONG).show();
+        */
+        Intent intent = new Intent();
+        intent.setClass(getActivity(), GameActivity.class);
+        Bundle b = new Bundle();
+        b.putLong("gameId", gameId);
+        b.putLong("playerId", playerId);
+        intent.putExtras(b);
+        startActivity(intent);
+        getActivity().finish();
+
+    }
+
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-
-        /* For now just display what item has been selected */
-        String item = (String) getListAdapter().getItem(position);
-        Toast.makeText(v.getContext(), "You selected user \"" + item + "\"", Toast.LENGTH_LONG).show();
+        //TODO: what to do when clicking on a user?
+/*
+        User selectedPlayer = (User) getListAdapter().getItem(position);
+        Toast.makeText(v.getContext(), "You selected User \"" + selectedPlayer.username() + "\" with his id (" + selectedPlayer.id() + ")", Toast.LENGTH_LONG).show();
+*/
     }
 }
 

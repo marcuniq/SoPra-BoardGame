@@ -39,16 +39,17 @@ public class User implements Serializable {
     @ManyToOne
     private Game game;
 	
-    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="user", cascade = CascadeType.ALL) //, fetch=FetchType.EAGER)
     private List<Move> moves = new ArrayList<Move>();
 
     @Column
     private Integer money;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<RaceBettingCard> raceBettingCards;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Column(columnDefinition = "BLOB")
     private List<LegBettingTile> legBettingTiles;
 
     public User(){
@@ -61,6 +62,13 @@ public class User implements Serializable {
 
         //
 
+    }
+
+    public void addLegBettingTile(LegBettingTile tile){
+        if(!legBettingTiles.contains(tile)){
+            legBettingTiles.add(tile);
+            tile.setUser(this);
+        }
     }
 
     public List<RaceBettingCard> getRaceBettingCards() {

@@ -423,7 +423,8 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             [{
-                "id" : 72
+                "id" : 72,
+                "gameId" : 4,
                 "userId": 3,
                 "move" : "LEG_BETTING",
                 "legBettingTile" : {
@@ -435,10 +436,11 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 }
             },
             {
-                "id" : 73
-                "userId": 3,
+                "id" : 73,
+                "gameId" : 4,
+                "userId": 4,
                 "move" : "DICE_ROLLING",
-                "dice" : {
+                "die" : {
                     "color" : "WHITE",
                     "faceValue" : 2
                 }
@@ -455,10 +457,14 @@ The backend server with this API implements the 2014 board game of the year "Cam
                     "move": {
                         "description": "GameMoveResponseBean",
                         "type" : "object",
-                        "required" : ["id", "userId", "move"],
+                        "required" : ["id", "gameId", "userId", "move"],
                         "properties" : {
                             "id" : {
                                 "description" : "move id",
+                                "type" : "integer"
+                            },
+                            "gameId" : {
+                                "description" : "game id",
                                 "type" : "integer"
                             },
                             "userId" : {
@@ -467,6 +473,21 @@ The backend server with this API implements the 2014 board game of the year "Cam
                             },
                             "move" : {
                                 "enum": ["DICE_ROLLING", "LEG_BETTING", "RACE_BETTING", "DESERT_TILE_PLACING"]
+                            },
+                            "legBettingTile" : {
+                                "type" : "object"
+                            },
+                            "raceBettingOnWinner" : {
+                                "type" : "boolean"
+                            },
+                            "desertTileAsOasis" : {
+                                "type" : "boolean"
+                            },
+                            "desertTilePosition" : {
+                                "type" : "integer"
+                            },
+                            "die" : {
+                                "type" : "object"
                             }
                         }
                     }
@@ -546,7 +567,8 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             {
-                "id" : 72
+                "id" : 72,
+                "gameId" : 2,
                 "userId": 3,
                 "move" : "LEG_BETTING",
                 "legBettingTile" : {
@@ -564,10 +586,14 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GameMoveResponseBean",
                 "type" : "object",
-                "required" : ["id", "userId", "move"],
+                "required" : ["id", "gameId", "userId", "move"],
                 "properties" : {
                     "id" : {
                         "description" : "move id",
+                        "type" : "integer"
+                    },
+                    "gameId" : {
+                        "description" : "game id",
                         "type" : "integer"
                     },
                     "userId" : {
@@ -576,6 +602,21 @@ The backend server with this API implements the 2014 board game of the year "Cam
                     },
                     "move" : {
                         "enum": ["DICE_ROLLING", "LEG_BETTING", "RACE_BETTING", "DESERT_TILE_PLACING"]
+                    },
+                    "legBettingTile" : {
+                        "type" : "object"
+                    },
+                    "raceBettingOnWinner" : {
+                        "type" : "boolean"
+                    },
+                    "desertTileAsOasis" : {
+                        "type" : "boolean"
+                    },
+                    "desertTilePosition" : {
+                        "type" : "integer"
+                    },
+                    "die" : {
+                        "type" : "object"
                     }
                 }
             }
@@ -871,24 +912,12 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "id" : 3,
                 "username" : "marcuniq",
                 "age" : 78,
-                "token" : "111e6162-3b6f-4ae2-a171-2470b63dff00",
-                "status" : "ACTIVE",
-                "game" : null,
-                "moves" : [ "1", "2" ],
-                "money" : 999,
-                "raceBettingCards" : null,
-                "legBettingTiles" : null
+                "game" : null
             },{   
                 "id": 4,
                 "username": "jofroe",
                 "age": 99,
-                "token" : "000e6162-3b6f-4ae2-a171-2470b63dff00",
-                "status" : "JOINED",
-                "game" : "Camel Run Bern",
-                "moves" : [ "1", "2", "3" ],
-                "money" : 9,
-                "raceBettingCards" : null,
-                "legBettingTiles" : null
+                "game" : "Camel Run Bern"
             }]
             
             
@@ -902,7 +931,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "definitions" : {
                     "user": {
                         "type" : "object",
-                        "required" : [ "id", "username", "age", "token", "status", "game", "moves", "money", "raceBettingCards", "legBettingTiles" ],
+                        "required" : [ "id", "username", "age", "game" ],
                         "properties" : {
                             "id" : {
                                 "description" : "game id",
@@ -916,32 +945,9 @@ The backend server with this API implements the 2014 board game of the year "Cam
                                 "description": "age of user",
                                 "type" : "integer"
                             },
-                            "token" : {
-                                "description": "token",
-                                "type" : "string"
-                            },
-                            "status" : {
-                                "enum" : [ "RUNNING", "PENDING", "BUSY", "FINISHED" ]
-                            },
                             "game": {
-                                "description": "the game the user has joined",
-                                "type": "string"
-                            },
-                            "moves": {
-                                "type": "array",
-                                "item" : ["type": "move"]
-                            },
-                            "money": {
-                                "description": "the amount of money a user has",
-                                "type": "integer"
-                            },
-                            "raceBettingCards": {
-                                "description": "raceBettingCards",
-                                "type": "raceBettingCards"
-                            },
-                            "legBettingTiles": {
-                                "description": "legBettingTiles",
-                                "type": "legBettingTiles"
+                                "description": "name of game",
+                                "type" : "string"
                             }
                         }
                     }
@@ -999,7 +1005,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "id": 3,
                 "username": "marcuniq",
                 "age": 68,
-                "games" : ["Camel Run Zürich"]
+                "game" : "Camel Run Bern"
             }
 
     + Schema
@@ -1022,9 +1028,9 @@ The backend server with this API implements the 2014 board game of the year "Cam
                         "description": "age of user",
                         "type" : "integer"
                     },
-                    "games": {
-                        "type" : "array",
-                        "items": { "type": "string"}
+                    "game": {
+                        "description": "name of game",
+                        "type" : "string"
                     }
                 }
             }

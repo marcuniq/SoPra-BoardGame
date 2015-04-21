@@ -1,25 +1,33 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pusher.client.Pusher;
+import com.pusher.client.channel.SubscriptionEventListener;
+import com.pusher.client.connection.ConnectionEventListener;
+import com.pusher.client.connection.ConnectionState;
+import com.pusher.client.connection.ConnectionStateChange;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameArrayAdapter;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GenericArrayAdapter;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -27,7 +35,10 @@ import retrofit.client.Response;
 public class GameListFragment extends ListFragment {
 
     private TextView tvLogBox;
-    private ArrayAdapter<String> gameArrayAdapter; // adapts the ArrayList of Games to the ListView
+    private GameArrayAdapter gameArrayAdapter; // adapts the ArrayList of Games to the ListView
+    private String token;
+    private Long joinedGameId;
+    private Long playerId;
 
     /* empty constructor */
     public GameListFragment() {}
@@ -60,13 +71,17 @@ public class GameListFragment extends ListFragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        gameArrayAdapter = new ArrayAdapter<>(getActivity(),
-                R.layout.fragment_game_list,
-                R.id.game_list_item,
-                new ArrayList<String>());
+        View v = inflater.inflate(R.layout.fragment_game_list, container, false);
+
+        gameArrayAdapter = new GameArrayAdapter(
+                getActivity(),
+                R.layout.game_item,
+                R.id.game_item_text,
+                R.id.game_item_icon,
+                new ArrayList<Game>());
         setListAdapter(gameArrayAdapter);
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return v;
     }
 
     /**
@@ -80,9 +95,10 @@ public class GameListFragment extends ListFragment {
             @Override
             public void success(List<Game> games, Response response) {
                 for (Game game : games) {
-                    gameArrayAdapter.add(game.name());
+                    gameArrayAdapter.add(game);
                 }
             }
+
             @Override
             public void failure(RetrofitError error) {
                 tvLogBox.setText("ERROR: " + error.getMessage());
@@ -98,25 +114,63 @@ public class GameListFragment extends ListFragment {
      * @param position  Current position of the item in the view.
      * @param id        Id of the item from the list.
      */
-    /* TODO: Implement some behaviour when clicking on an item:
-    *        in future: should open some detailed view of a game
-    *        including: the users that have already joined that game and a "join game" button
-    *        where the user can join that specific game if he wants to */
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        token = sharedPref.getString("token", token);
 
-        /* For now just display what item has been selected */
-        String item = (String) getListAdapter().getItem(position);
-        Toast.makeText(v.getContext(), "You joined the game \"" + item + "\"", Toast.LENGTH_LONG).show();
+        Game selectedGame = (Game) getListAdapter().getItem(position);
+/*
+        Toast.makeText(v.getContext(), "You joined the game \"" + selectedGame.name() + "\" with the id (" + selectedGame.id() + ")", Toast.LENGTH_LONG).show();
+*/
+        Long gameId = selectedGame.id();
+        joinedGameId = gameId;
+        User player = User.setToken(token);
+        playerId = player.id();
 
-        Fragment fragment = GameLobbyFragment.newInstance();
-        Long gameId = 1L; // TODO get correct game ID
-        Bundle bundle = new Bundle();
-        bundle.putLong("gameId", gameId);
-        fragment.setArguments(bundle);
+        RestService.getInstance(getActivity()).joinGame(gameId, player, new Callback<Game>() {
 
-        /* See all already created games (testing) */
-        ((MenuActivity) getActivity()).setFragment(fragment);
+            @Override
+            public void success(Game game, Response response) {
+
+                PusherService.getInstance().connect(new ConnectionEventListener() {
+                    @Override
+                    public void onConnectionStateChange(ConnectionStateChange change) {
+                        System.out.println("State changed to " + change.getCurrentState() +
+                                " from " + change.getPreviousState());
+                    }
+
+                    @Override
+                    public void onError(String message, String code, Exception e) {
+                        System.out.println("There was a problem connecting!");
+                        System.out.println("message: " + message);
+                        System.out.println("code: " + code);
+                        //System.out.println("exception: " + e.toString());
+
+
+                    }
+                }, ConnectionState.ALL);
+
+                //PusherService.getInstance().subscribe("test_channel");
+                PusherService.getInstance().subscribe(game.channelName());
+
+
+                Fragment gameLobbyFragment = GameLobbyFragment.newInstance();
+                Bundle bundle = new Bundle();
+                bundle.putLong("gameId", joinedGameId);
+                bundle.putLong("playerId", 42L); // what is this for?
+                bundle.putBoolean("isOwner", false);
+                gameLobbyFragment.setArguments(bundle);
+
+                /* See all already created games (testing) */
+                ((MenuActivity) getActivity()).setFragment(gameLobbyFragment);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                tvLogBox.setText("ERROR: " + error.getMessage());
+            }
+        });
     }
 }
 

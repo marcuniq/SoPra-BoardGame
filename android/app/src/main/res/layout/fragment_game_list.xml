@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/FrameLayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_marginTop="68dp"
-    android:layout_marginStart="6dp"
-    android:layout_marginEnd="12dp"
-    android:layout_marginBottom="6dp"
     android:orientation="vertical"
-    android:background="#70d35400">
+    tools:context=".MainActivity"
+    android:background="@drawable/background">
 
-        <TextView
-            android:id="@+id/game_list_item"
-            android:text="@string/hello_world"
+    <RelativeLayout
+        android:layout_width="500dp"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:background="#70d35400">
+
+        <ListView
+            android:id="@android:id/list"
             android:layout_width="match_parent"
-            android:layout_height="100dip"
-            android:singleLine="true"
-            android:textSize="24sp"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="6dp"
-            android:textColor="#ffffffff"
-            android:layout_gravity="center_horizontal|top"
-            android:textIsSelectable="false" />
-
-</LinearLayout>
+            android:layout_height="wrap_content" >
+        </ListView>
+    </RelativeLayout>
+</FrameLayout>

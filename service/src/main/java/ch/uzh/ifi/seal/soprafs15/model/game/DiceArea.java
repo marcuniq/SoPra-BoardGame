@@ -2,7 +2,11 @@ package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
+
 
 /**
  * Created by Hakuna on 30.03.2015.
@@ -20,25 +24,60 @@ public class DiceArea implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @ElementCollection(fetch=FetchType.EAGER)
+    @ElementCollection
     @Column
     @Embedded
-    private List<Dice> diceInPyramid;
+    @OrderColumn
+    private List<Die> diceInPyramid;
 
-    @ElementCollection(fetch=FetchType.EAGER)
+    @ElementCollection
     @Column
     @Embedded
-    private List<Dice> rolledDice;
+    @OrderColumn
+    private List<Die> rolledDice;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @PrimaryKeyJoinColumn
+    @OneToOne(cascade = CascadeType.ALL)//(fetch = FetchType.EAGER)
+    @JoinColumn(name="GAME_ID")
     private Game game;
 
-    public DiceArea(){}
+    @Transient
+    private Random r = new Random();
+
+    public DiceArea(){
+        init();
+    }
 
 
-    private void init() {
+    /**
+     * Initialize a list of dice with random face values
+     * and shuffle dice s.t. we have a random order of colors
+     */
+    public void init() {
+        diceInPyramid = new ArrayList<Die>();
+        rolledDice = new ArrayList<Die>();
 
+        for(Color c : Color.values()){
+            Die d = new Die(c, r.nextInt(3) + 1);
+            diceInPyramid.add(d);
+        }
+        
+        Collections.shuffle(diceInPyramid);
+    }
+
+    /**
+     * Get a die from the already shuffled pyramid
+     * @return Die
+     */
+    public Die rollDice() {
+        int size = diceInPyramid.size();
+
+        if(size > 0) {
+            Die die = diceInPyramid.remove(size - 1);
+            rolledDice.add(die);
+
+            return die;
+        }
+        return null;
     }
 
     public Long getId() {
@@ -49,32 +88,20 @@ public class DiceArea implements Serializable {
         this.id = id;
     }
 
-    public List<Dice> getDiceInPyramid() {
+    public List<Die> getDiceInPyramid() {
         return diceInPyramid;
     }
 
-    public void setDiceInPyramid(List<Dice> diceInPyramid) {
+    public void setDiceInPyramid(List<Die> diceInPyramid) {
         this.diceInPyramid = diceInPyramid;
     }
 
-    public List<Dice> getRolledDice() {
+    public List<Die> getRolledDice() {
         return rolledDice;
     }
 
-    public void setRolledDice(List<Dice> rolledDice) {
+    public void setRolledDice(List<Die> rolledDice) {
         this.rolledDice = rolledDice;
-    }
-
-    public Dice rollDice() {
-        int size = diceInPyramid.size();
-
-        if(size > 0) {
-            Dice dice = diceInPyramid.remove(size - 1);
-            rolledDice.add(dice);
-
-            return dice;
-        }
-        return null;
     }
 
     public Game getGame() {

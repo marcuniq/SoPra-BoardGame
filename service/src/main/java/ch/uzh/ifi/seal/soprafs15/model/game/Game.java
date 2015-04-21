@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 public class Game implements Serializable {
@@ -31,39 +32,50 @@ public class Game implements Serializable {
 	private GameStatus status;
 	
 	@Column
-	private Integer currentPlayer;
+	private Integer currentPlayer = 0;
 
-    @OneToMany(mappedBy="game", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="game", cascade = CascadeType.ALL) //, fetch=FetchType.EAGER)
     private List<Move> moves = new ArrayList<Move>();
     
-    @OneToMany(mappedBy="game", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
-    @OrderColumn
+    @OneToMany(mappedBy="game", cascade = CascadeType.ALL) //, fetch=FetchType.EAGER)
+    //@OrderColumn
     private List<User> players = new ArrayList<User>();
 
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "game")
-    private RaceTrack raceTrack;
+    @OneToOne(mappedBy = "game", cascade=CascadeType.ALL)
+    private RaceTrack raceTrack = new RaceTrack();
 
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "game")
-    private LegBettingArea legBettingArea;
+    @OneToOne(mappedBy = "game", cascade=CascadeType.ALL)
+    private LegBettingArea legBettingArea = new LegBettingArea();
 
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "game")
-    private RaceBettingArea raceBettingArea;
+    @OneToOne(mappedBy = "game", cascade=CascadeType.ALL)
+    private RaceBettingArea raceBettingArea = new RaceBettingArea();
 
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "game")
-    private DiceArea diceArea;
+    @OneToOne(mappedBy = "game", cascade=CascadeType.ALL)
+    private DiceArea diceArea = new DiceArea();
+
+    @Column
+    private String pusherChannelName;
 
 
     public Game(){
+        init();
     }
 
     private void init() {
+        raceTrack.setGame(this);
+        legBettingArea.setGame(this);
+        raceBettingArea.setGame(this);
+        diceArea.setGame(this);
 
+        status = GameStatus.OPEN;
+
+        pusherChannelName = UUID.randomUUID().toString();
     }
 
     public void addMove(Move move) {
         if(!moves.contains(move)) {
             moves.add(move);
-            move.setGame(this);
+            //move.setGame(this);
         }
 
     }
@@ -75,37 +87,11 @@ public class Game implements Serializable {
         }
     }
 
-    public RaceTrack getRaceTrack() {
-        return raceTrack;
+    public User getNextPlayer() {
+        return getPlayers().get((getCurrentPlayer() + 1) % getPlayers().size());
     }
 
-    public void setRaceTrack(RaceTrack raceTrack) {
-        this.raceTrack = raceTrack;
-    }
 
-    public LegBettingArea getLegBettingArea() {
-        return legBettingArea;
-    }
-
-    public void setLegBettingArea(LegBettingArea legBettingArea) {
-        this.legBettingArea = legBettingArea;
-    }
-
-    public RaceBettingArea getRaceBettingArea() {
-        return raceBettingArea;
-    }
-
-    public void setRaceBettingArea(RaceBettingArea raceBettingArea) {
-        this.raceBettingArea = raceBettingArea;
-    }
-
-    public DiceArea getDiceArea() {
-        return diceArea;
-    }
-
-    public void setDiceArea(DiceArea diceArea) {
-        this.diceArea = diceArea;
-    }
 
     public Long getId() {
 		return id;
@@ -162,8 +148,45 @@ public class Game implements Serializable {
 	public void setCurrentPlayer(Integer currentPlayer) {
 		this.currentPlayer = currentPlayer;
 	}
-   
-	public User getNextPlayer() {
-		return getPlayers().get((getCurrentPlayer() + 1) % getPlayers().size());
-	}
+
+    public RaceTrack getRaceTrack() {
+        return raceTrack;
+    }
+
+    public void setRaceTrack(RaceTrack raceTrack) {
+        this.raceTrack = raceTrack;
+    }
+
+    public LegBettingArea getLegBettingArea() {
+        return legBettingArea;
+    }
+
+    public void setLegBettingArea(LegBettingArea legBettingArea) {
+        this.legBettingArea = legBettingArea;
+    }
+
+    public RaceBettingArea getRaceBettingArea() {
+        return raceBettingArea;
+    }
+
+    public void setRaceBettingArea(RaceBettingArea raceBettingArea) {
+        this.raceBettingArea = raceBettingArea;
+    }
+
+    public DiceArea getDiceArea() {
+        return diceArea;
+    }
+
+    public void setDiceArea(DiceArea diceArea) {
+        this.diceArea = diceArea;
+    }
+
+
+    public String getPusherChannelName() {
+        return pusherChannelName;
+    }
+
+    public void setPusherChannelName(String pusherChannelName) {
+        this.pusherChannelName = pusherChannelName;
+    }
 }
