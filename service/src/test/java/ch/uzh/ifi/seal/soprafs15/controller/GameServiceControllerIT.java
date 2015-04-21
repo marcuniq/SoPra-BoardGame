@@ -49,6 +49,7 @@ public class GameServiceControllerIT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void test1_createGameSuccess() {
         // Check if number of games is 0 BEFORE creation
         List<GameResponseBean> gamesBefore = template.getForObject(base + "/games", List.class);
@@ -93,6 +94,7 @@ public class GameServiceControllerIT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void test2_addPlayerSuccess() {
         List<GamePlayerResponseBean> playersBefore = template.getForObject(base + "/games/1/players", List.class);
         Assert.assertEquals(1, playersBefore.size());
@@ -104,9 +106,10 @@ public class GameServiceControllerIT {
 
         // Create user
         ResponseEntity<UserResponseBean> userResponse = template.exchange(base + "/users", HttpMethod.POST, userRequestHttpEntity, UserResponseBean.class);
+        Assert.assertEquals((long) userResponse.getBody().getId(), 2);
 
         // Login user
-        ResponseEntity<UserLoginLogoutResponseBean> loginResponse = template.exchange(base + "/users/1/login", HttpMethod.POST, null, UserLoginLogoutResponseBean.class);
+        ResponseEntity<UserLoginLogoutResponseBean> loginResponse = template.exchange(base + "/users/2/login", HttpMethod.POST, null, UserLoginLogoutResponseBean.class);
         String token = loginResponse.getBody().getToken();
 
         // Set up GamePlayerRequestBean Object
@@ -115,15 +118,16 @@ public class GameServiceControllerIT {
 
         HttpEntity<GamePlayerRequestBean> playerRequestHttpEntity = new HttpEntity<GamePlayerRequestBean>(playerRequest);
 
-        ResponseEntity<GamePlayerResponseBean> playerResponse = template.exchange(base + "/game/1/players", HttpMethod.POST, playerRequestHttpEntity, GamePlayerResponseBean.class);
+        ResponseEntity<GamePlayerResponseBean> playerResponse = template.exchange(base + "/games/1/players", HttpMethod.POST, playerRequestHttpEntity, GamePlayerResponseBean.class);
 
         // Oracle values
         Long oracleId = (long) 2;
+        Long numberOfPlayers = (long) 2;
 
-        Assert.assertEquals(playerResponse.getBody().getId(), null);
+        Assert.assertEquals(playerResponse.getBody().getId(), oracleId);
         //Assert.assertEquals((long) playerResponse.getBody().getNumberOfMoves(), 0);
 
         List<GamePlayerResponseBean> playersAfter = template.getForObject(base + "/games/1/players", List.class);
-        Assert.assertEquals(2, playersAfter.size());
+        Assert.assertEquals((long) numberOfPlayers, playersAfter.size());
     }
 }

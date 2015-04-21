@@ -11,8 +11,8 @@ public class TestUtils {
 
         // Set up UserRequestBean Object
         UserRequestBean userRequest = new UserRequestBean();
-        userRequest.setAge(43);
-        userRequest.setUsername("mm");
+        userRequest.setAge(age);
+        userRequest.setUsername(username);
 
         return userRequest;
     }

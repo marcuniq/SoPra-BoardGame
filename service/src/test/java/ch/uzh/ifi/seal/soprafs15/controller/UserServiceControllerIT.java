@@ -60,8 +60,13 @@ public class UserServiceControllerIT {
 		HttpEntity<UserRequestBean> httpEntity = new HttpEntity<UserRequestBean>(request);
 
 		ResponseEntity<UserResponseBean> response = template.exchange(base + "/users", HttpMethod.POST, httpEntity, UserResponseBean.class);
+
+        // Oracle values
+        Long oracleId = (long) 1;
+
 		Assert.assertEquals(request.getAge(), response.getBody().getAge());
         Assert.assertEquals(request.getUsername(), response.getBody().getUsername());
+        Assert.assertEquals(1, (long) response.getBody().getId());
 		
 	    List<UserResponseBean> usersAfter = template.getForObject(base + "/users", List.class);
 		Assert.assertEquals(1, usersAfter.size());
