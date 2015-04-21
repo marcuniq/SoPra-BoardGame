@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.DiceArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.LegBettingArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Move;
@@ -107,6 +109,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         }
         if (R.id.dice == v.getId()){
             message = (String) v.getContentDescription();
+            ((GameActivity)getActivity()).pushFragment(RollDiceFragment.newInstance());
+            return;
         }
 
         AlertDialog dialog = dummyPopup(message);
