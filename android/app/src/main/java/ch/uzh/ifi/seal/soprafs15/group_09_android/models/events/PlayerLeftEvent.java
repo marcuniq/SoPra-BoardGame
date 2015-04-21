@@ -7,17 +7,17 @@ import auto.parcel.AutoParcel;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoGson;
 
 /**
- * @author Marco
+ * @author Marco 
  */
 @AutoGson @AutoParcel
-public abstract class MoveEvent implements Parcelable {
+public abstract class PlayerLeftEvent implements Parcelable {
 
     public abstract PushEventNameEnum pushEventNameEnum();
 
     @Nullable
-    public abstract Long moveId();
+    public abstract Long userId();
 
-    public static MoveEvent create(PushEventNameEnum pushEventNameEnum, Long moveId){
-        return new AutoParcel_MoveEvent(pushEventNameEnum, moveId);
+    public static PlayerLeftEvent create(PushEventNameEnum pushEventNameEnum, Long userId){
+        return new AutoParcel_PlayerLeftEvent(pushEventNameEnum,userId);
     }
 }

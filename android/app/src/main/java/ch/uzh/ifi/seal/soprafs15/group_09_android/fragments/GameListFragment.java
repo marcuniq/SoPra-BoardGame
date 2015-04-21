@@ -12,6 +12,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.pusher.client.Pusher;
 import com.pusher.client.channel.SubscriptionEventListener;
 import com.pusher.client.connection.ConnectionEventListener;
@@ -25,6 +27,11 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerLeftEvent;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoValueAdapterFactory;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventRegistry;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameArrayAdapter;
@@ -133,27 +140,7 @@ public class GameListFragment extends ListFragment {
             @Override
             public void success(Game game, Response response) {
 
-                PusherService.getInstance().connect(new ConnectionEventListener() {
-                    @Override
-                    public void onConnectionStateChange(ConnectionStateChange change) {
-                        System.out.println("State changed to " + change.getCurrentState() +
-                                " from " + change.getPreviousState());
-                    }
-
-                    @Override
-                    public void onError(String message, String code, Exception e) {
-                        System.out.println("There was a problem connecting!");
-                        System.out.println("message: " + message);
-                        System.out.println("code: " + code);
-                        //System.out.println("exception: " + e.toString());
-
-
-                    }
-                }, ConnectionState.ALL);
-
-                //PusherService.getInstance().subscribe("test_channel");
-                PusherService.getInstance().subscribe(game.channelName());
-
+                PusherEventRegistry.register(game);
 
                 Fragment gameLobbyFragment = GameLobbyFragment.newInstance();
                 Bundle bundle = new Bundle();
@@ -171,6 +158,7 @@ public class GameListFragment extends ListFragment {
             }
         });
     }
+
 }
 
 

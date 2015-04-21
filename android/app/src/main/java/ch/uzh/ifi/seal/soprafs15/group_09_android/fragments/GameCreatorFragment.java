@@ -15,6 +15,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventRegistry;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -94,6 +95,8 @@ public class GameCreatorFragment extends Fragment {
             public void success(Game game, Response response) {
                 Long gameId = game.id();
                 joinedGameId = gameId;
+
+                PusherEventRegistry.register(game);
 
                 Fragment fragment = GameLobbyFragment.newInstance();
                 Bundle bundle = new Bundle();

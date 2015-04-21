@@ -68,11 +68,11 @@ public class GameServiceController extends GenericService {
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT)
 	@ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-	public GameResponseBean addGame(@RequestBody @Valid GameRequestBean gameRequestBean) {
+	public GameCreateResponseBean addGame(@RequestBody @Valid GameRequestBean gameRequestBean) {
 		logger.debug("addGame: " + gameRequestBean);
 
         try {
-            GameResponseBean result = gameService.addGame(gameRequestBean);
+            GameCreateResponseBean result = gameService.addGame(gameRequestBean);
             return result;
         } catch (Exception e){
             return null;

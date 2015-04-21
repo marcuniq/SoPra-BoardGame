@@ -43,10 +43,7 @@ public class PusherServiceImpl extends PusherService {
     @Override
     public void pushToSubscribers(AbstractPushEvent event, Game game) {
 
-        // game name as channel name
-
         Result triggerResult = pusher.trigger(game.getPusherChannelName(), event.getPushEventNameEnum().toString(), event);
-        logger.debug("trigger result: " + triggerResult.toString());
 
         if (triggerResult.getStatus() != Result.Status.SUCCESS) {
             if (triggerResult.getStatus().shouldRetry()) {
@@ -55,6 +52,9 @@ public class PusherServiceImpl extends PusherService {
             }
             else {
                 // Something is wrong with our request
+                logger.debug("trigger result message: " + triggerResult.getMessage());
+                logger.debug("trigger result http status: " + triggerResult.getHttpStatus());
+
             }
         }
     }

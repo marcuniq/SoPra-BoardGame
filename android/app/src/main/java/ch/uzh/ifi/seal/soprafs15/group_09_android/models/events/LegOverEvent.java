@@ -7,11 +7,15 @@ import auto.parcel.AutoParcel;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoGson;
 
 /**
- * Created by Marco on 20.04.2015.
+ * @author Marco
  */
-@AutoParcel @AutoGson
-public abstract class AbstractPushEvent implements Parcelable {
+@AutoGson @AutoParcel
+public abstract class LegOverEvent implements Parcelable {
 
-    @Nullable
     public abstract PushEventNameEnum pushEventNameEnum();
+
+
+    public static LegOverEvent create(PushEventNameEnum pushEventNameEnum){
+        return new AutoParcel_LegOverEvent(pushEventNameEnum);
+    }
 }
