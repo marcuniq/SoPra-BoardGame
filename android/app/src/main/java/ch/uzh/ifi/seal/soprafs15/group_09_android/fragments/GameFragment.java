@@ -33,6 +33,8 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Move;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceBettingArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceTrack;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Colors;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Dice;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.RaceTrackField;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -42,6 +44,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
     private ArrayList<RaceTrackField> raceTrack = new ArrayList<>();
     private ArrayList<Integer> legBettingArea = new ArrayList<>();
+    private ArrayList<Dice> dices = new ArrayList<>();
 
     private TextView tvPlayerName;
     private ImageButton ivPlayerIcon;
@@ -134,6 +137,18 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         popupWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL,0,0);
         Button acceptButton = (Button) popupView.findViewById(R.id.accept);
         Button rejectButton = (Button) popupView.findViewById(R.id.reject);
+
+        ImageView blueDice = (ImageView) popupView.findViewById(R.id.dice_blue);
+        ImageView greenDice = (ImageView) popupView.findViewById(R.id.dice_green);
+        ImageView orangeDice = (ImageView) popupView.findViewById(R.id.dice_orange);
+        ImageView yellowDice = (ImageView) popupView.findViewById(R.id.dice_yellow);
+        ImageView whiteDice = (ImageView) popupView.findViewById(R.id.dice_white);
+
+        // TODO: get the dice area
+        // gameDiceArea();
+
+//        blueDice.setBackground(R.drawable.roll_dice_1_blue);
+//        blueDice.setBackground(dices.get(Colors.BLUE.ordinal()).getCurrentDice());
 
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -247,8 +262,46 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
     /**
      * Adds the dice button (pyramid) to the OnClickListener
+     * Adds all dices to the ArrayList dices
      */
     private void initializeDiceArea(){
+        Dice blueDices = new Dice();
+        Dice greenDices = new Dice();
+        Dice orangeDices = new Dice();
+        Dice yellowDices = new Dice();
+        Dice whiteDices = new Dice();
+
+        blueDices.add(R.drawable.roll_dice_0_blue);
+        blueDices.add(R.drawable.roll_dice_1_blue);
+        blueDices.add(R.drawable.roll_dice_2_blue);
+        blueDices.add(R.drawable.roll_dice_3_blue);
+
+        greenDices.add(R.drawable.roll_dice_0_green);
+        greenDices.add(R.drawable.roll_dice_1_green);
+        greenDices.add(R.drawable.roll_dice_2_green);
+        greenDices.add(R.drawable.roll_dice_3_green);
+
+        orangeDices.add(R.drawable.roll_dice_0_orange);
+        orangeDices.add(R.drawable.roll_dice_1_orange);
+        orangeDices.add(R.drawable.roll_dice_2_orange);
+        orangeDices.add(R.drawable.roll_dice_3_orange);
+
+        yellowDices.add(R.drawable.roll_dice_0_yellow);
+        yellowDices.add(R.drawable.roll_dice_1_yellow);
+        yellowDices.add(R.drawable.roll_dice_2_yellow);
+        yellowDices.add(R.drawable.roll_dice_3_yellow);
+
+        whiteDices.add(R.drawable.roll_dice_0_white);
+        whiteDices.add(R.drawable.roll_dice_1_white);
+        whiteDices.add(R.drawable.roll_dice_2_white);
+        whiteDices.add(R.drawable.roll_dice_3_white);
+
+        dices.add(blueDices);
+        dices.add(greenDices);
+        dices.add(orangeDices);
+        dices.add(yellowDices);
+        dices.add(whiteDices);
+
         (getActivity().findViewById(R.id.dice)).setOnClickListener(this);
     }
 
@@ -348,12 +401,19 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void success(List<DiceArea> diceAreas, Response response) {
-
+                // TODO: set the dices ArrayList accoring to the values
+                /* dices.get(COLOR_ID).setDicePointer(position);
+                * where:
+                 * - COLOR_ID = {0 .. 4} (blue - white)
+                *  - position = {0 .. 3} (?, 1, 2, 3)
+                *
+                *  e.g.: dices.get(Colors.BLUE.ordinal()).setDicePointer(2);
+                * */
             }
 
             @Override
             public void failure(RetrofitError error) {
-
+                // TODO: handle failure
             }
         });
     }
