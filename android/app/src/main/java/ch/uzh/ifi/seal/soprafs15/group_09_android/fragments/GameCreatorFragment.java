@@ -96,7 +96,7 @@ public class GameCreatorFragment extends Fragment {
                 Long gameId = game.id();
                 joinedGameId = gameId;
 
-                PusherEventRegistry.register(game);
+                //PusherEventRegistry.register(game);
 
                 Fragment fragment = GameLobbyFragment.newInstance();
                 Bundle bundle = new Bundle();

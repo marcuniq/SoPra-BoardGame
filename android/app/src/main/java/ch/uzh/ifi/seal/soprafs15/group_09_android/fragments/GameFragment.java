@@ -3,8 +3,10 @@ package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,8 +49,11 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private ImageView  ivCurrentPlayerIcon;
     private TextView tvMoney;
 
+    private Bundle savedInstanceState;
     private Long playerId;
     private Long gameId;
+
+    private PopupWindow popupWindow;
 
     public static GameFragment newInstance() {
         return new GameFragment();
@@ -59,7 +65,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_game, container, false);
-
+        this.savedInstanceState = savedInstanceState;
         Bundle b = getActivity().getIntent().getExtras();
         gameId = b.getLong("gameId");
 
@@ -108,14 +114,41 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             }
         }
         if (R.id.dice == v.getId()){
-            message = (String) v.getContentDescription();
-            ((GameActivity)getActivity()).pushFragment(RollDiceFragment.newInstance());
+//            message = (String) v.getContentDescription();
+//            ((GameActivity)getActivity()).pushFragment(RollDiceFragment.newInstance());
+                rollDice(v);
             return;
         }
 
         AlertDialog dialog = dummyPopup(message);
         dialog.show();
     }
+
+    public void rollDice(View anchorView) {
+        View popupView = getLayoutInflater(savedInstanceState).inflate(R.layout.fragment_roll_dice, null);
+        popupWindow = new PopupWindow(
+                popupView,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.setFocusable(true);
+        popupWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL,0,0);
+        Button acceptButton = (Button) popupView.findViewById(R.id.accept);
+        Button rejectButton = (Button) popupView.findViewById(R.id.reject);
+
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+        rejectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+    }
+
 
     /**
      * This is only for testing purposes, an alert popup that displays dynamic messages.
