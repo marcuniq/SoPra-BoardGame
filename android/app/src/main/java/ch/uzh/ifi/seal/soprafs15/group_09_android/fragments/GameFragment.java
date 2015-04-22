@@ -127,6 +127,14 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         dialog.show();
     }
 
+    /**
+     * Displays a Popup with the fragment_roll_dice layout and draws all the dices
+     * Two Options:
+     *  - Accept: Execute a Move and close the Popup
+     *  - Reject: abort, close Popup
+     *
+     * @param anchorView the current view (Bean)
+     */
     public void rollDice(View anchorView) {
         View popupView = getLayoutInflater(savedInstanceState).inflate(R.layout.fragment_roll_dice, null);
         popupWindow = new PopupWindow(
@@ -144,15 +152,16 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         ImageView yellowDice = (ImageView) popupView.findViewById(R.id.dice_yellow);
         ImageView whiteDice = (ImageView) popupView.findViewById(R.id.dice_white);
 
-        // TODO: get the dice area
-        // gameDiceArea();
-
-//        blueDice.setBackground(R.drawable.roll_dice_1_blue);
-//        blueDice.setBackground(dices.get(Colors.BLUE.ordinal()).getCurrentDice());
+        blueDice.setBackgroundResource(dices.get(Colors.BLUE.ordinal()).getCurrentDice());
+        greenDice.setBackgroundResource(dices.get(Colors.GREEN.ordinal()).getCurrentDice());
+        orangeDice.setBackgroundResource(dices.get(Colors.ORANGE.ordinal()).getCurrentDice());
+        yellowDice.setBackgroundResource(dices.get(Colors.YELLOW.ordinal()).getCurrentDice());
+        whiteDice.setBackgroundResource(dices.get(Colors.WHITE.ordinal()).getCurrentDice());
 
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // TODO: send Game Move
                 popupWindow.dismiss();
             }
         });
