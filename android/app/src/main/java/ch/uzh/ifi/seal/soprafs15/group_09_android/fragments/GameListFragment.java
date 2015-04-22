@@ -10,34 +10,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.pusher.client.Pusher;
-import com.pusher.client.channel.SubscriptionEventListener;
-import com.pusher.client.connection.ConnectionEventListener;
-import com.pusher.client.connection.ConnectionState;
-import com.pusher.client.connection.ConnectionStateChange;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerLeftEvent;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoValueAdapterFactory;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventRegistry;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameArrayAdapter;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameListFragment extends ListFragment {
 

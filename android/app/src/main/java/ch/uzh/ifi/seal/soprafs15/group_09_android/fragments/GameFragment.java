@@ -1,37 +1,16 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import android.widget.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.DiceArea;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.LegBettingArea;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Move;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceBettingArea;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceTrack;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Colors;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Dice;
@@ -39,6 +18,9 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.RaceTrackField;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameFragment extends Fragment implements View.OnClickListener {
 
@@ -162,6 +144,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 // TODO: send Game Move
+                popupWindow.update();
                 popupWindow.dismiss();
             }
         });

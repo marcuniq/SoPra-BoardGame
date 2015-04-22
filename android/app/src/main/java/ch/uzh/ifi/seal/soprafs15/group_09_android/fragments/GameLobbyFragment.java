@@ -1,43 +1,25 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.pusher.client.channel.SubscriptionEventListener;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoValueAdapterFactory;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameArrayAdapter;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.PlayerArrayAdapter;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //public class GameLobbyFragment extends ListFragment {
 public class GameLobbyFragment extends ListFragment {

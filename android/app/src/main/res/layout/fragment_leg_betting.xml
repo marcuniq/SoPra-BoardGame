@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="550dp"
+        android:layout_height="400dp"
+        android:layout_centerInParent="true">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:background="#333333">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="Is your camel an olle or trolle camel?"
+                android:textColor="#ffffff"
+                android:gravity="center"
+                android:textSize="24sp" android:id="@+id/olle_or_trolle"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="55dp"
+            android:background="#70d35400"
+            android:orientation="vertical" android:id="@+id/">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="55dp"
+                android:layout_centerHorizontal="true">
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/dice_blue"
+                    android:background="@drawable/roll_dice_0_blue"
+                    android:contentDescription="@string/hello_world"/>
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/dice_green"
+                    android:background="@drawable/roll_dice_0_green"
+                    android:contentDescription="@string/hello_world"/>
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/dice_yellow"
+                    android:background="@drawable/roll_dice_0_yellow"
+                    android:contentDescription="@string/hello_world"/>
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/dice_orange"
+                    android:background="@drawable/roll_dice_0_orange"
+                    android:contentDescription="@string/hello_world"/>
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/dice_white"
+                    android:background="@drawable/roll_dice_0_white"
+                    android:contentDescription="@string/hello_world"/>
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/olle"
+                android:text="Olle"
+                android:background="#ff175a26"
+                android:minHeight="50dp"
+                android:textColor="#ffffff"
+                android:textSize="24sp"
+                android:clickable="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="5dp"/>
+
+            <Button
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/trolle"
+                android:text="Trolle"
+                android:background="#ff175a26"
+                android:minHeight="50dp"
+                android:textColor="#ffffff"
+                android:textSize="24sp"
+                android:clickable="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="5dp"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -2,10 +2,8 @@ package ch.uzh.ifi.seal.soprafs15.group_09_android.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.Window;
 import android.view.WindowManager;
-
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.fragments.GameFragment;
 
