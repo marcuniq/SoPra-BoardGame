@@ -1,5 +1,8 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameCamelResponseBean;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRaceTrackObjectResponseBean;
+
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 
@@ -26,5 +29,14 @@ public class Camel extends RaceTrackObject implements Serializable {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    @Override
+    public GameCamelResponseBean toBean() {
+        GameCamelResponseBean bean = new GameCamelResponseBean();
+        //bean.setId(id);
+        bean.setColor(color);
+
+        return bean;
     }
 }

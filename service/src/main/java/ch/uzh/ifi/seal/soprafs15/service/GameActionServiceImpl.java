@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs15.service;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameResponseBean;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameStatus;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
@@ -35,8 +36,15 @@ public class GameActionServiceImpl extends GameActionService {
         Game game = gameRepository.findOne(gameId);
         User owner = gameMapperService.toUser(bean);
 
+        // check player amount constraint
+
+
         if(owner != null && game != null && game.getOwner().equals(owner.getUsername())) {
             //TODO: Start game
+
+            game.initForGamePlay();
+
+            game.setStatus(GameStatus.RUNNING);
 
         }
 

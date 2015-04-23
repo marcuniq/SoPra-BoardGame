@@ -179,4 +179,34 @@ public class GameMapperServiceImpl extends GameMapperService {
         bean.setChannelName(game.getPusherChannelName());
         return bean;
     }
+
+    @Override
+    public GameRaceTrackResponseBean toRaceTrackResponseBean(RaceTrack raceTrack) {
+        GameRaceTrackResponseBean bean = new GameRaceTrackResponseBean();
+        bean.setId(raceTrack.getId());
+        bean.setGameId(raceTrack.getGame().getId());
+
+        List<GameRaceTrackObjectResponseBean> fields = new ArrayList<>();
+        for(RaceTrackObject rto: raceTrack.getFields())
+            fields.add(rto.toBean());
+
+        bean.setFields(fields);
+
+        return bean;
+    }
+
+    @Override
+    public GameLegBettingAreaResponseBean toGameLegBettingAreaResponseBean(LegBettingArea legBettingArea) {
+        return null;
+    }
+
+    @Override
+    public GameRaceBettingAreaResponseBean toGameRaceBettingAreaResponseBean(RaceBettingArea raceBettingArea) {
+        return null;
+    }
+
+    @Override
+    public GameDiceAreaResponseBean toGameDiceAreaResponseBean(DiceArea diceArea) {
+        return null;
+    }
 }

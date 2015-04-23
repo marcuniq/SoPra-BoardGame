@@ -1,8 +1,13 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameCamelResponseBean;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameCamelStackResponseBean;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRaceTrackObjectResponseBean;
+
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,5 +34,18 @@ public class CamelStack extends RaceTrackObject implements Serializable{
 
     public void setStack(List<Camel> stack) {
         this.stack = stack;
+    }
+
+    @Override
+    public GameRaceTrackObjectResponseBean toBean() {
+        GameCamelStackResponseBean bean = new GameCamelStackResponseBean();
+        //bean.setId(id);
+        List<GameCamelResponseBean> beanStack = new ArrayList<>();
+        for(Camel c : stack)
+            beanStack.add(c.toBean());
+
+        bean.setStack(beanStack);
+
+        return bean;
     }
 }

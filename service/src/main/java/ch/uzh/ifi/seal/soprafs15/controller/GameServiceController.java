@@ -38,6 +38,9 @@ public class GameServiceController extends GenericService {
     @Autowired
     protected GameActionService gameActionService;
 
+    @Autowired
+    protected GameAreaService gameAreaService;
+
 
 	private final String CONTEXT = "/games";
 
@@ -283,4 +286,22 @@ public class GameServiceController extends GenericService {
             return null;
         }
 	}
+
+    /*
+    *	Context: /games/racetrack
+    *  Description: Get
+    */
+    @RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/racetrack")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameRaceTrackResponseBean getRaceTrack(@PathVariable Long gameId) {
+        logger.debug("get racetrack: " + gameId);
+
+        try {
+            GameRaceTrackResponseBean result = gameAreaService.getRaceTrack(gameId);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
+    }
 }

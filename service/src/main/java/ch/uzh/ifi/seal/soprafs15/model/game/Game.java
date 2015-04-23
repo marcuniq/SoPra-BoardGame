@@ -72,6 +72,11 @@ public class Game implements Serializable {
         pusherChannelName = UUID.randomUUID().toString();
     }
 
+    public void initForGamePlay() {
+        raceTrack.initForGamePlay();
+    }
+
+
     public void addMove(Move move) {
         if(!moves.contains(move)) {
             moves.add(move);
@@ -189,4 +194,6 @@ public class Game implements Serializable {
     public void setPusherChannelName(String pusherChannelName) {
         this.pusherChannelName = pusherChannelName;
     }
+
+
 }
