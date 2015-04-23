@@ -131,7 +131,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
         switch (POPUP){
             case ROLL_DICE:
-                // initPopupRollDice()
+                initPopupRollDice(popupView);
                 break;
             case LEGBET:
                 // initPopupLegBet()
@@ -152,6 +152,23 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         Button acceptButton = (Button) popupView.findViewById(R.id.accept);
         Button rejectButton = (Button) popupView.findViewById(R.id.reject);
 
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: send Game Move
+                // popupWindow.update();
+                popupWindow.dismiss();
+            }
+        });
+        rejectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+    }
+
+    private void initPopupRollDice(View popupView){
         ImageView blueDice = (ImageView) popupView.findViewById(R.id.dice_blue);
         ImageView greenDice = (ImageView) popupView.findViewById(R.id.dice_green);
         ImageView orangeDice = (ImageView) popupView.findViewById(R.id.dice_orange);
@@ -163,21 +180,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         orangeDice.setBackgroundResource(dices.get(Colors.ORANGE.ordinal()).getCurrentDice());
         yellowDice.setBackgroundResource(dices.get(Colors.YELLOW.ordinal()).getCurrentDice());
         whiteDice.setBackgroundResource(dices.get(Colors.WHITE.ordinal()).getCurrentDice());
-
-        acceptButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: send Game Move
-                popupWindow.update();
-                popupWindow.dismiss();
-            }
-        });
-        rejectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }
-        });
     }
 
 
