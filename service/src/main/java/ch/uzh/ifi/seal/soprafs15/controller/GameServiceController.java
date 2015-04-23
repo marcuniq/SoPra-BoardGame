@@ -38,6 +38,9 @@ public class GameServiceController extends GenericService {
     @Autowired
     protected GameActionService gameActionService;
 
+    @Autowired
+    protected GameAreaService gameAreaService;
+
 
 	private final String CONTEXT = "/games";
 
@@ -283,4 +286,76 @@ public class GameServiceController extends GenericService {
             return null;
         }
 	}
+
+    /*
+    *	Context: /games/racetrack
+    *  Description: Get race track
+    */
+    @RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/racetrack")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameRaceTrackResponseBean getRaceTrack(@PathVariable Long gameId) {
+        logger.debug("get racetrack: " + gameId);
+
+        try {
+            GameRaceTrackResponseBean result = gameAreaService.getRaceTrack(gameId);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
+    }
+
+    /*
+    *	Context: /games/legbettingarea
+    *  Description: Get leg betting area
+    */
+    @RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/legbettingarea")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameLegBettingAreaResponseBean getLegBettingArea(@PathVariable Long gameId) {
+        logger.debug("get leg betting area: " + gameId);
+
+        try {
+            GameLegBettingAreaResponseBean result = gameAreaService.getLegBettingArea(gameId);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
+    }
+
+    /*
+    *	Context: /games/racebettingarea
+    *  Description: Get race betting area
+    */
+    @RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/racebettingarea")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameRaceBettingAreaResponseBean getRaceBettingArea(@PathVariable Long gameId) {
+        logger.debug("get race betting area: " + gameId);
+
+        try {
+            GameRaceBettingAreaResponseBean result = gameAreaService.getRaceBettingArea(gameId);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
+    }
+
+    /*
+    *	Context: /games/dicearea
+    *  Description: Get dice area
+    */
+    @RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/dicearea")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameDiceAreaResponseBean getDiceArea(@PathVariable Long gameId) {
+        logger.debug("get dice area: " + gameId);
+
+        try {
+            GameDiceAreaResponseBean result = gameAreaService.getDiceArea(gameId);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
+    }
 }

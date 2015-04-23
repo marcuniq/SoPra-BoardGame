@@ -1,5 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRaceTrackObjectResponseBean;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,12 +11,12 @@ import java.io.Serializable;
 /**
  * Created by Hakuna on 30.03.2015.
  */
-@Entity
+//@Entity
 public abstract class RaceTrackObject implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+/*    @Id
     @GeneratedValue
     protected Long id;
 
@@ -24,5 +26,7 @@ public abstract class RaceTrackObject implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
+    }*/
+
+    public abstract GameRaceTrackObjectResponseBean toBean();
 }

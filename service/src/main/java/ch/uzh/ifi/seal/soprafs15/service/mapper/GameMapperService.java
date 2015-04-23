@@ -3,7 +3,7 @@ package ch.uzh.ifi.seal.soprafs15.service.mapper;
 import ch.uzh.ifi.seal.soprafs15.controller.GenericService;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.*;
 import ch.uzh.ifi.seal.soprafs15.model.User;
-import ch.uzh.ifi.seal.soprafs15.model.game.Game;
+import ch.uzh.ifi.seal.soprafs15.model.game.*;
 import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 
 import java.util.List;
@@ -26,4 +26,9 @@ public abstract class GameMapperService extends GenericService {
     public abstract GameMoveResponseBean toGameMoveResponseBean(Move move);
     public abstract List<GameMoveResponseBean> toGameMoveResponseBean(List<Move> moves);
     public abstract GameAddPlayerResponseBean toGameAddPlayerResponseBean(Game game);
+
+    public abstract GameRaceTrackResponseBean toRaceTrackResponseBean(RaceTrack raceTrack);
+    public abstract GameLegBettingAreaResponseBean toGameLegBettingAreaResponseBean(LegBettingArea legBettingArea);
+    public abstract GameRaceBettingAreaResponseBean toGameRaceBettingAreaResponseBean(RaceBettingArea raceBettingArea);
+    public abstract GameDiceAreaResponseBean toGameDiceAreaResponseBean(DiceArea diceArea);
 }

@@ -24,13 +24,13 @@ public class DiceArea implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column
     @Embedded
     @OrderColumn
     private List<Die> diceInPyramid;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column
     @Embedded
     @OrderColumn

@@ -18,6 +18,8 @@ import java.util.List;
 
 /**
  * @author Marco
+ *
+ * Responsible for mapping between Beans and Domain Models of the Game
  */
 
 @Transactional
@@ -55,6 +57,7 @@ public class GameMapperServiceImpl extends GameMapperService {
         bean.setName(game.getName());
         bean.setOwner(game.getOwner());
         bean.setNumberOfPlayers(game.getPlayers().size());
+        bean.setStatus(game.getStatus());
 
         return bean;
     }
@@ -177,6 +180,49 @@ public class GameMapperServiceImpl extends GameMapperService {
     public GameAddPlayerResponseBean toGameAddPlayerResponseBean(Game game) {
         GameAddPlayerResponseBean bean = new GameAddPlayerResponseBean();
         bean.setChannelName(game.getPusherChannelName());
+        return bean;
+    }
+
+    @Override
+    public GameRaceTrackResponseBean toRaceTrackResponseBean(RaceTrack raceTrack) {
+        GameRaceTrackResponseBean bean = new GameRaceTrackResponseBean();
+        bean.setId(raceTrack.getId());
+        bean.setGameId(raceTrack.getGame().getId());
+
+        List<GameRaceTrackObjectResponseBean> fields = new ArrayList<>();
+        for(RaceTrackObject rto: raceTrack.getFields())
+            fields.add(rto.toBean());
+
+        bean.setFields(fields);
+
+        return bean;
+    }
+
+    @Override
+    public GameLegBettingAreaResponseBean toGameLegBettingAreaResponseBean(LegBettingArea legBettingArea) {
+        GameLegBettingAreaResponseBean bean = new GameLegBettingAreaResponseBean();
+        bean.setId(legBettingArea.getId());
+        bean.setTopLegBettingTiles(legBettingArea.topLegBettingTiles());
+
+        return bean;
+    }
+
+    @Override
+    public GameRaceBettingAreaResponseBean toGameRaceBettingAreaResponseBean(RaceBettingArea raceBettingArea) {
+        GameRaceBettingAreaResponseBean bean = new GameRaceBettingAreaResponseBean();
+        bean.setId(raceBettingArea.getId());
+        bean.setNrOfWinnerBetting(raceBettingArea.getNrOfWinnerBetting());
+        bean.setNrOfLoserBetting(raceBettingArea.getNrOfLoserBetting());
+
+        return bean;
+    }
+
+    @Override
+    public GameDiceAreaResponseBean toGameDiceAreaResponseBean(DiceArea diceArea) {
+        GameDiceAreaResponseBean bean = new GameDiceAreaResponseBean();
+        bean.setId(diceArea.getId());
+        bean.setRolledDice(diceArea.getRolledDice());
+
         return bean;
     }
 }

@@ -52,6 +52,9 @@ public class User implements Serializable {
     @Column(columnDefinition = "BLOB")
     private List<LegBettingTile> legBettingTiles;
 
+    @Column
+    private Long playerId;
+
     public User(){
 
     }
@@ -150,4 +153,12 @@ public class User implements Serializable {
 	public void setStatus(UserStatus status) {
 		this.status = status;
 	}
+
+    public Long getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(Long playerId) {
+        this.playerId = playerId;
+    }
 }

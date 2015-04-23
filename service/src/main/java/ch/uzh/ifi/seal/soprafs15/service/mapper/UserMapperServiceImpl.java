@@ -14,6 +14,8 @@ import java.util.UUID;
 
 /**
  * @author Marco
+ *
+ *  Responsible for mapping between Beans and Domain Models of the User
  */
 @Service("userMapperService")
 public class UserMapperServiceImpl extends UserMapperService {
