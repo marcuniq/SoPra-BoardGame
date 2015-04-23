@@ -55,7 +55,7 @@ public class UserServiceControllerIT {
 
 		List<UserResponseBean> usersBefore = template.getForObject(base + "/users", List.class);
 		Assert.assertEquals(0, usersBefore.size());
-		
+
 		UserRequestBean request = TestUtils.toUserRequestBean(43, "TestUser1");
 
         ResponseEntity<UserResponseBean> response = TestUtils.createUser(request, template, base);

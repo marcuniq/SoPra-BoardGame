@@ -63,8 +63,12 @@ public class GameServiceControllerIT {
         String token = loginResponse.getBody().getToken();
 
         GameRequestBean gameRequest = TestUtils.toGameRequestBean("TestGame1", token);
-        ResponseEntity<GameResponseBean> gameResponse = TestUtils.createGame(gameRequest, template, base);
+        ResponseEntity<GameCreateResponseBean> gameResponse = TestUtils.createGame(gameRequest, template, base);
 
+        // Calculate Length of Channel Name
+        Long oracleLength = (long) "9b5eabcc-781b-483a-8eed-30d7eacb1567".length();
+
+        Assert.assertEquals((long) oracleLength, gameResponse.getBody().getChannelName().length());
         Assert.assertEquals(gameRequest.getName(), gameResponse.getBody().getName());
         Assert.assertEquals(userRequest.getUsername(), gameResponse.getBody().getOwner());
         Assert.assertEquals(1, (long) gameResponse.getBody().getId());
