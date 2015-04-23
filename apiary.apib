@@ -620,21 +620,73 @@ The backend server with this API implements the 2014 board game of the year "Cam
     
     + Body
     
-            [{
-            
-            },{
-            
-            }]
+            {
+                "id": 1,
+                "gameId": 1,
+                "fields": [
+                    {
+                        "stack": [
+                            {
+                                "color": "GREEN"
+                            },
+                            {
+                                "color": "ORANGE"
+                            }
+                        ]
+                    },
+                    {
+                        "stack": [
+                            {
+                                "color": "BLUE"
+                            },
+                            {
+                                "color": "WHITE"
+                            }
+                        ]
+                    },
+                    {
+                        "stack": [
+                            {
+                                "color": "YELLOW"
+                            }
+                        ]
+                    },
+                    { },
+                    { },
+                    { },
+                    { },
+                    { },
+                    { },
+                    { },
+                    { },
+                    { },
+                    { },
+                    { },
+                    { },
+                    { }
+                ]
+            }
             
     + Schema
     
             {
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GameRaceTrackResponseBean",
-                "type" : "array",
-                "required" : [],
+                "type" : "object",
+                "required" : ["id", "gameId", "fields"],
                 "properties" : {
-
+                    "id" : {
+                        "description" : "id of race track",
+                        "type" : "integer"
+                    },
+                    "gameId" : {
+                        "description" : "id of game",
+                        "type" : "integer"
+                    },
+                    "fields" : {
+                        "description" : "array of CamelStack or DesertTile, or Placeholder",
+                        "type" : "array"
+                    }
                 }
             }
 
@@ -659,21 +711,63 @@ The backend server with this API implements the 2014 board game of the year "Cam
     
     + Body
     
-            [{
-            
-            },{
-            
-            }]
+            {
+                "id": 1,
+                "topLegBettingTiles": [
+                    {
+                        "id": 3,
+                        "color": "WHITE",
+                        "leadingPositionGain": 5,
+                        "secondPositionGain": 1,
+                        "otherPositionLoss": -1
+                    },
+                    {
+                        "id": 6,
+                        "color": "GREEN",
+                        "leadingPositionGain": 5,
+                        "secondPositionGain": 1,
+                        "otherPositionLoss": -1
+                    },
+                    {
+                        "id": 9,
+                        "color": "BLUE",
+                        "leadingPositionGain": 5,
+                        "secondPositionGain": 1,
+                        "otherPositionLoss": -1
+                    },
+                    {
+                        "id": 12,
+                        "color": "YELLOW",
+                        "leadingPositionGain": 5,
+                        "secondPositionGain": 1,
+                        "otherPositionLoss": -1
+                    },
+                    {
+                        "id": 15,
+                        "color": "ORANGE",
+                        "leadingPositionGain": 5,
+                        "secondPositionGain": 1,
+                        "otherPositionLoss": -1
+                    }
+                ]
+            }
             
     + Schema
     
             {
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GameLegBettingAreaResponseBean",
-                "type" : "array",
-                "required" : [],
+                "type" : "object",
+                "required" : ["id", "topLegBettingTiles"],
                 "properties" : {
-
+                    "id" : {
+                        "description" : "id of leg betting area",
+                        "type" : "integer"
+                    },
+                    "topLegBettingTiles" : {
+                        "description" : "array of leg betting tiles",
+                        "type" : "array"
+                    }
                 }
             }
 
@@ -697,21 +791,32 @@ The backend server with this API implements the 2014 board game of the year "Cam
     
     + Body
     
-            [{
-            
-            },{
-            
-            }]
+            {
+                "id": 1,
+                "nrOfWinnerBetting": 0,
+                "nrOfLoserBetting": 0
+            }
             
     + Schema
     
             {
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GameRaceBettingAreaResponseBean",
-                "type" : "array",
-                "required" : [],
+                "type" : "object",
+                "required" : ["id", "nrOfWinnerBetting", "nrOfLoserBetting"],
                 "properties" : {
-
+                    "id" : {
+                        "description" : "id of race betting area",
+                        "type" : "integer"
+                    },
+                    "nrOfWinnerBetting" : {
+                        "description" : "nr of bets on a winner",
+                        "type" : "integer"
+                    },
+                    "nrOfLoserBetting" : {
+                        "description" : "nr of bets on a loser",
+                        "type" : "integer"
+                    },
                 }
             }
 
@@ -736,21 +841,36 @@ The backend server with this API implements the 2014 board game of the year "Cam
     
     + Body
     
-            [{
-            
-            },{
-            
-            }]
+            {
+                "id": 1,
+                "rolledDice": [
+                    {
+                        "color": "GREEN",
+                        "faceValue": 1
+                    },
+                    {
+                        "color": "BLUE",
+                        "faceValue": 2
+                    }
+                ]
+            }
             
     + Schema
     
             {
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GameDiceAreaResponseBean",
-                "type" : "array",
-                "required" : [],
+                "type" : "object",
+                "required" : ["id", "rolledDice"],
                 "properties" : {
-
+                    "id" : {
+                        "description" : "id of dice area",
+                        "type" : "integer"
+                    },
+                    "rolledDice" : {
+                        "description" : "array of rolled dice",
+                        "type" : "array"
+                    }
                 }
             }
 
