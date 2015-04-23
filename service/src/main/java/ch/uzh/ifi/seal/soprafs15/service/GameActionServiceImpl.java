@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service("gameActionService")
 public class GameActionServiceImpl extends GameActionService {
 
-    Logger logger = LoggerFactory.getLogger(GameActionServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(GameActionServiceImpl.class);
 
     protected GameRepository gameRepository;
     protected GameMapperService gameMapperService;

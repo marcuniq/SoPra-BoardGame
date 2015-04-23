@@ -75,7 +75,7 @@ public class LegBettingArea implements Serializable {
     /**
      * Remove LegBettingTile from stack
      * @param c Color
-     * @return LegBettingTile
+     * @return top LegBettingTile of that particular color
      */
     public LegBettingTile getLegBettingTile(Color c) {
         return legBettingTiles.get(c).pop();

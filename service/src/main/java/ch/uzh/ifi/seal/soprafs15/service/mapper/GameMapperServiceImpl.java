@@ -18,6 +18,8 @@ import java.util.List;
 
 /**
  * @author Marco
+ *
+ * Responsible for mapping between Beans and Domain Models of the Game
  */
 
 @Transactional
@@ -55,6 +57,7 @@ public class GameMapperServiceImpl extends GameMapperService {
         bean.setName(game.getName());
         bean.setOwner(game.getOwner());
         bean.setNumberOfPlayers(game.getPlayers().size());
+        bean.setStatus(game.getStatus());
 
         return bean;
     }
@@ -197,16 +200,29 @@ public class GameMapperServiceImpl extends GameMapperService {
 
     @Override
     public GameLegBettingAreaResponseBean toGameLegBettingAreaResponseBean(LegBettingArea legBettingArea) {
-        return null;
+        GameLegBettingAreaResponseBean bean = new GameLegBettingAreaResponseBean();
+        bean.setId(legBettingArea.getId());
+        bean.setTopLegBettingTiles(legBettingArea.topLegBettingTiles());
+
+        return bean;
     }
 
     @Override
     public GameRaceBettingAreaResponseBean toGameRaceBettingAreaResponseBean(RaceBettingArea raceBettingArea) {
-        return null;
+        GameRaceBettingAreaResponseBean bean = new GameRaceBettingAreaResponseBean();
+        bean.setId(raceBettingArea.getId());
+        bean.setNrOfWinnerBetting(raceBettingArea.getNrOfWinnerBetting());
+        bean.setNrOfLoserBetting(raceBettingArea.getNrOfLoserBetting());
+
+        return bean;
     }
 
     @Override
     public GameDiceAreaResponseBean toGameDiceAreaResponseBean(DiceArea diceArea) {
-        return null;
+        GameDiceAreaResponseBean bean = new GameDiceAreaResponseBean();
+        bean.setId(diceArea.getId());
+        bean.setRolledDice(diceArea.getRolledDice());
+
+        return bean;
     }
 }

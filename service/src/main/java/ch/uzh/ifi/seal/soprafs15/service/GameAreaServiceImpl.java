@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service("gameAreaService")
 public class GameAreaServiceImpl extends GameAreaService {
 
-    Logger logger = LoggerFactory.getLogger(GameAreaServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(GameAreaServiceImpl.class);
 
     protected GameRepository gameRepository;
     protected GameMapperService gameMapperService;
@@ -37,7 +37,8 @@ public class GameAreaServiceImpl extends GameAreaService {
         Game game = gameRepository.findOne(gameId);
 
         if(game != null) {
-            return gameMapperService.toRaceTrackResponseBean(game.getRaceTrack());
+            GameRaceTrackResponseBean bean = gameMapperService.toRaceTrackResponseBean(game.getRaceTrack());
+            return bean;
         }
         return null;
     }
@@ -47,7 +48,8 @@ public class GameAreaServiceImpl extends GameAreaService {
         Game game = gameRepository.findOne(gameId);
 
         if(game != null) {
-            return gameMapperService.toGameLegBettingAreaResponseBean(game.getLegBettingArea());
+            GameLegBettingAreaResponseBean bean = gameMapperService.toGameLegBettingAreaResponseBean(game.getLegBettingArea());
+            return bean;
         }
         return null;
     }
@@ -57,7 +59,8 @@ public class GameAreaServiceImpl extends GameAreaService {
         Game game = gameRepository.findOne(gameId);
 
         if(game != null) {
-            return gameMapperService.toGameRaceBettingAreaResponseBean(game.getRaceBettingArea());
+            GameRaceBettingAreaResponseBean bean = gameMapperService.toGameRaceBettingAreaResponseBean(game.getRaceBettingArea());
+            return bean;
         }
         return null;
     }
@@ -67,7 +70,8 @@ public class GameAreaServiceImpl extends GameAreaService {
         Game game = gameRepository.findOne(gameId);
 
         if(game != null) {
-            return gameMapperService.toGameDiceAreaResponseBean(game.getDiceArea());
+            GameDiceAreaResponseBean bean = gameMapperService.toGameDiceAreaResponseBean(game.getDiceArea());
+            return bean;
         }
         return null;
     }

@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,11 +22,11 @@ public class RaceBettingArea implements Serializable {
 
     @ElementCollection
     @Column
-    private List<RaceBettingCard> winnerBetting;
+    private List<RaceBettingCard> winnerBetting = new ArrayList<>();
 
     @ElementCollection
     @Column
-    private List<RaceBettingCard> loserBetting;
+    private List<RaceBettingCard> loserBetting = new ArrayList<>();
 
     @OneToOne(cascade=CascadeType.ALL)//(fetch = FetchType.EAGER)
     @JoinColumn(name="GAME_ID")
@@ -38,6 +39,13 @@ public class RaceBettingArea implements Serializable {
 
     private void init() {
 
+    }
+
+    public Integer getNrOfWinnerBetting(){
+        return winnerBetting.size();
+    }
+    public Integer getNrOfLoserBetting(){
+        return loserBetting.size();
     }
 
     public Long getId() {
