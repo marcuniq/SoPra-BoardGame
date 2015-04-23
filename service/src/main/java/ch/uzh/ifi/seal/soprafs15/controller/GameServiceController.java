@@ -1,272 +1,361 @@
 package ch.uzh.ifi.seal.soprafs15.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import ch.uzh.ifi.seal.soprafs15.controller.beans.JsonUriWrapper;
-import ch.uzh.ifi.seal.soprafs15.model.Move;
-import ch.uzh.ifi.seal.soprafs15.model.User;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.*;
+import ch.uzh.ifi.seal.soprafs15.service.*;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.InvalidMoveException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.PlayerTurnException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import ch.uzh.ifi.seal.soprafs15.GameConstants;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveRequestBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerRequestBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerResponseBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRequestBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameResponseBean;
-import ch.uzh.ifi.seal.soprafs15.model.Game;
-import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
-import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
+import javax.validation.Valid;
+import java.util.List;
 
+/**
+ * @author Marco
+ */
 @RestController
 public class GameServiceController extends GenericService {
 
 	Logger logger = LoggerFactory.getLogger(GameServiceController.class);
 
-	@Autowired
-	private UserRepository userRepo;
-	@Autowired
-	private GameRepository gameRepo;
+    @Autowired
+    protected GameService gameService;
+
+    @Autowired
+    protected UserService userService;
+
+    @Autowired
+    protected GameMoveService gameMoveService;
+
+    @Autowired
+    protected GamePlayerService gamePlayerService;
+
+    @Autowired
+    protected GameActionService gameActionService;
+
+    @Autowired
+    protected GameAreaService gameAreaService;
+
 
 	private final String CONTEXT = "/games";
 
+
 	/*
-	 *	Context: /game
+	 *	Context: /games
+     *  Description:
 	 */
-	
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT)
 	@ResponseStatus(HttpStatus.OK)
+    @ResponseBody
 	public List<GameResponseBean> listGames() {
 		logger.debug("listGames");
-		List<GameResponseBean> result = new ArrayList<>();
-		
-		GameResponseBean tmpGameResponseBean;
-		for(Game game : gameRepo.findAll()) {
-			tmpGameResponseBean = new GameResponseBean();
-			
-			tmpGameResponseBean.setId(game.getId());
-			tmpGameResponseBean.setName(game.getName());
-			tmpGameResponseBean.setOwner(game.getOwner());
-			//tmpGameResponseBean.setStatus(game.getStatus());
-			//tmpGameResponseBean.setNumberOfMoves(game.getMoves().size());
-			//tmpGameResponseBean.setNumberOfPlayers(game.getPlayers().size());
-			//tmpGameResponseBean.setNextPlayer(game.getNextPlayer().getUsername());
-			
-			result.add(tmpGameResponseBean);
-		}
-		
-		return result;
+
+        try {
+            List<GameResponseBean> result = gameService.listGames();
+            return result;
+        } catch (Exception e){
+            return null;
+        }
 	}
-	
+
+
+    /*
+     *	Context: /games
+     *  Description:
+     */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT)
 	@ResponseStatus(HttpStatus.CREATED)
-	public JsonUriWrapper addGame(@RequestBody GameRequestBean gameRequestBean) {
+    @ResponseBody
+	public GameCreateResponseBean addGame(@RequestBody @Valid GameRequestBean gameRequestBean) {
 		logger.debug("addGame: " + gameRequestBean);
 
-        Game game = new Game();
-        game.setName(gameRequestBean.getName());
-        game.setOwner("test");
-        game = gameRepo.save(game);
-
-
-
-        return getJsonUrl(CONTEXT + "/" + game.getId());
-
-        /*
-		User owner = userRepo.findByToken(gameRequestBean.getUserToken());
-		
-		if(owner != null) {
-			Game game = new Game();
-			
-			game.setName(gameRequestBean.getName());
-			game.setOwner(owner.getUsername());
-			//TODO Mapping into Game
-
-			game = gameRepo.save(game);
-
-            GameResponseBean gameResponseBean = new GameResponseBean();
-
-            gameResponseBean.setId(game.getId());
-            gameResponseBean.setGame(game.getName());
-            gameResponseBean.setOwner(game.getOwner());
-            //gameResponseBean.setStatus(game.getStatus());
-            //gameResponseBean.setNumberOfMoves(game.getMoves().size());
-            //gameResponseBean.setNumberOfPlayers(game.getPlayers().size());
-            //gameResponseBean.setNextPlayer(game.getNextPlayer().getUsername());
-
-			return gameResponseBean;
-		}
-
-			
-		return null;
-		*/
+        try {
+            GameCreateResponseBean result = gameService.addGame(gameRequestBean);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
 	}
 	
 	/*
-	 *	Context: /game/{game-id} 
+	 *	Context: /games/{gameId}
+     *  Description:
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}")
 	@ResponseStatus(HttpStatus.OK)
+    @ResponseBody
 	public GameResponseBean getGame(@PathVariable Long gameId) {
 		logger.debug("getGame: " + gameId);
-		
-		Game game = gameRepo.findOne(gameId);
-		
-		GameResponseBean gameResponseBean = new GameResponseBean();
-		
-		gameResponseBean.setId(game.getId());
-		gameResponseBean.setName(game.getName());
-		gameResponseBean.setOwner(game.getOwner());
-		//gameResponseBean.setStatus(game.getStatus());
-		//gameResponseBean.setNumberOfMoves(game.getMoves().size());
-		//gameResponseBean.setNumberOfPlayers(game.getPlayers().size());
-		//gameResponseBean.setNextPlayer(game.getNextPlayer().getUsername());
-		
-		return gameResponseBean;
+
+        try {
+            GameResponseBean result = gameService.getGame(gameId);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
 	}
-	
+
+
+    /*
+     *	Context: /games/{gameId}/start
+     *  Description:
+     */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/start")
 	@ResponseStatus(HttpStatus.OK)
-	public void startGame(@PathVariable Long gameId, @RequestBody String userToken) {
+    @ResponseBody
+	public GameResponseBean startGame(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
 		logger.debug("startGame: " + gameId);
-		
-		Game game = gameRepo.findOne(gameId);
-		User owner = userRepo.findByToken(userToken);
-		
-		if(owner != null && game != null
-			&& game.getOwner().equals(owner.getUsername())) {
-			//TODO: Start game
-		}
+
+        try {
+            GameResponseBean result = gameActionService.startGame(gameId, gamePlayerRequestBean);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
 	}
-	
+
+
+    /*
+     *	Context: /games/{gameId}/stop
+     *  Description:
+     */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/stop")
 	@ResponseStatus(HttpStatus.OK)
-	public void stopGame(@PathVariable Long gameId, @RequestBody String userToken) {
+    @ResponseBody
+	public GameResponseBean stopGame(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
 		logger.debug("startGame: " + gameId);
-		Game game = gameRepo.findOne(gameId);
-		User owner = userRepo.findByToken(userToken);
-		
-		if(owner != null && game != null
-			&& game.getOwner().equals(owner.getUsername())) {
-			//TODO: Stop game
-		}
+
+        try {
+            GameResponseBean result = gameActionService.stopGame(gameId, gamePlayerRequestBean);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
 	}
-	
+
+
+    /*
+     *	Context: /games/{gameId}/start-fast-mode
+     *  Description:
+     */
+    @RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/start-fast-mode")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameResponseBean startFastMode(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
+        logger.debug("start fast mode: " + gameId);
+
+        try {
+            GameResponseBean result = gameActionService.startFastMode(gameId, gamePlayerRequestBean);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
+    }
+
+
+    /*
+     *	Context: /games/{gameId}/moves
+     *  Description:
+     */
+    @RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/possible-moves")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<GameMoveResponseBean> listPossibleMoves(@PathVariable Long gameId) {
+        logger.debug("listMoves");
+
+        try {
+            List<GameMoveResponseBean> result = gameMoveService.listMoves(gameId);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
+    }
+
+
 	/*
-	 *	Context: /game/{game-id}/move
+	 *	Context: /games/{gameId}/moves
+     *  Description:
 	 */
-	
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/moves")
 	@ResponseStatus(HttpStatus.OK)
+    @ResponseBody
 	public List<GameMoveResponseBean> listMoves(@PathVariable Long gameId) {
 		logger.debug("listMoves");
-		List<GameMoveResponseBean> result = new ArrayList<>();
-		
-//		Game game = gameRepo.findOne(gameId);
-		
-//		GameMoveResponseBean tmpGameMoveResponseBean;
-//		for(Move move : game.getMoves()) {
-//			tmpGameMoveResponseBean = new GameMoveResponseBean();
-//			
-//			TODO: Mapping into GameMoveResponseBean
-//			
-//			result.add(tmpGameMoveResponseBean);
-//		}
-		
-		return result;
+
+        try {
+            List<GameMoveResponseBean> result = gameMoveService.listMoves(gameId);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
 	}
-	
+
+
+    /*
+	 *	Context: /games/{gameId}/moves
+     *  Description:
+     */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/moves")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void addMove(@RequestBody GameMoveRequestBean gameMoveRequestBean) {
+    @ResponseBody
+	public GameMoveResponseBean addMove(@PathVariable Long gameId, @RequestBody @Valid GameMoveRequestBean gameMoveRequestBean)
+            throws PlayerTurnException, GameNotFoundException, UserNotFoundException, InvalidMoveException {
 		logger.debug("addMove: " + gameMoveRequestBean);
-		//TODO Mapping into Move + execution of move
+
+        GameMoveResponseBean result = gameMoveService.addMove(gameId, gameMoveRequestBean);
+        return result;
 	}
-	
+
+
+    /*
+     *	Context: /games/{gameId}/moves/{moveId}
+     *  Description:
+     */
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/moves/{moveId}")
 	@ResponseStatus(HttpStatus.OK)
-	public GameMoveResponseBean getMove(@PathVariable Long gameId, @PathVariable Integer moveId) {
-		logger.debug("getMove: " + gameId);
-		
-//		Move move = gameRepo.findOne(gameId).getMoves().get(moveId);
-		
-		GameMoveResponseBean gameMoveResponseBean = new GameMoveResponseBean();
-		
-//		TODO Mapping into GameMoveResponseBean
-		
-		return gameMoveResponseBean;
+    @ResponseBody
+	public GameMoveResponseBean getMove(@PathVariable Long gameId, @PathVariable Long moveId) {
+		logger.debug("gameId: " + gameId + " , moveId" + moveId);
+
+        try {
+            GameMoveResponseBean result = gameMoveService.getMove(moveId);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
 	}
-	
+
+
 	/*
-	 *	Context: /game/{game-id}/player
+     *	Context: /games/{gameId}/players
+     *  Description: List of all players of the game with gameId
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/players")
 	@ResponseStatus(HttpStatus.OK)
+    @ResponseBody
 	public List<GamePlayerResponseBean> listPlayers(@PathVariable Long gameId) {
 		logger.debug("listPlayers");
-		List<GamePlayerResponseBean> result = new ArrayList<>();
-		
-		Game game = gameRepo.findOne(gameId);
-		
-		GamePlayerResponseBean tmpGamePlayerResponseBean;
-		for(User player : game.getPlayers()) {
-			tmpGamePlayerResponseBean = new GamePlayerResponseBean();
-			
-			tmpGamePlayerResponseBean.setUserId(player.getId());
-			tmpGamePlayerResponseBean.setNumberOfMoves(getNumberOfMoves(player, game.getId()));
-			
-			result.add(tmpGamePlayerResponseBean);
-		}
-		
-		return result;
+
+        try {
+            List<GamePlayerResponseBean> result = gamePlayerService.listPlayer(gameId);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
 	}
-	
+
+
+    /*
+     *	Context: /games/{gameId}/players
+     *  Description: User joins game with gameId
+     */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/players")
 	@ResponseStatus(HttpStatus.OK)
-	public String addPlayer(@PathVariable Long gameId, @RequestBody GamePlayerRequestBean gamePlayerRequestBean) {
+    @ResponseBody
+	public GameAddPlayerResponseBean addPlayer(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
 		logger.debug("addPlayer: " + gamePlayerRequestBean);
-		
-		Game game = gameRepo.findOne(gameId);
-		User player = userRepo.findByToken(gamePlayerRequestBean.getUserToken());
-		
-		if(game != null && player != null
-			&& game.getPlayers().size() < GameConstants.MAX_PLAYERS) {
-			game.getPlayers().add(player);
-			logger.debug("Game: " + game.getName() + " - player added: " + player.getUsername());
-			return CONTEXT + "/" + gameId + "/player/" + (game.getPlayers().size() - 1);
-		} else {
-			logger.error("Error adding player with token: " + gamePlayerRequestBean.getUserToken());
-		}
-		return null;
+
+        try {
+            GameAddPlayerResponseBean result = gamePlayerService.addPlayer(gameId, gamePlayerRequestBean);
+            return result;
+        } catch (Exception e) {
+            return null;
+        }
 	}
-	
+
+
+    /*
+     *	Context: /games/{gameId}/players/{playerId}
+     *  Description: Get player with playerId of game with gameId
+     */
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/players/{playerId}")
 	@ResponseStatus(HttpStatus.OK)
-	public GamePlayerResponseBean getPlayer(@PathVariable Long gameId, @PathVariable Integer playerId) {
+    @ResponseBody
+	public GamePlayerResponseBean getPlayer(@PathVariable Long gameId, @PathVariable Long playerId) {
 		logger.debug("getPlayer: " + gameId);
-		
-		Game game = gameRepo.findOne(gameId);
-		User player = game.getPlayers().get(playerId);
-		
-		GamePlayerResponseBean gamePlayerResponseBean = new GamePlayerResponseBean();
-		gamePlayerResponseBean.setUserId(player.getId());
-		gamePlayerResponseBean.setNumberOfMoves(getNumberOfMoves(player, game.getId()));
-		
-		return gamePlayerResponseBean;
+
+        try {
+            GamePlayerResponseBean result = gamePlayerService.getPlayer(gameId, playerId);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
 	}
-	
-	private Integer getNumberOfMoves(User player, Long gameId) {
-		Integer numberOfMovesInGame = 0;
-		for(Move move : player.getMoves()) {
-			if(move.getGame().getId().equals(gameId)) {
-				numberOfMovesInGame++;
-			}
-		}
-		return numberOfMovesInGame;
-	}
+
+    /*
+    *	Context: /games/racetrack
+    *  Description: Get race track
+    */
+    @RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/racetrack")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameRaceTrackResponseBean getRaceTrack(@PathVariable Long gameId) {
+        logger.debug("get racetrack: " + gameId);
+
+        try {
+            GameRaceTrackResponseBean result = gameAreaService.getRaceTrack(gameId);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
+    }
+
+    /*
+    *	Context: /games/legbettingarea
+    *  Description: Get leg betting area
+    */
+    @RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/legbettingarea")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameLegBettingAreaResponseBean getLegBettingArea(@PathVariable Long gameId) {
+        logger.debug("get leg betting area: " + gameId);
+
+        try {
+            GameLegBettingAreaResponseBean result = gameAreaService.getLegBettingArea(gameId);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
+    }
+
+    /*
+    *	Context: /games/racebettingarea
+    *  Description: Get race betting area
+    */
+    @RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/racebettingarea")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameRaceBettingAreaResponseBean getRaceBettingArea(@PathVariable Long gameId) {
+        logger.debug("get race betting area: " + gameId);
+
+        try {
+            GameRaceBettingAreaResponseBean result = gameAreaService.getRaceBettingArea(gameId);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
+    }
+
+    /*
+    *	Context: /games/dicearea
+    *  Description: Get dice area
+    */
+    @RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/dicearea")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameDiceAreaResponseBean getDiceArea(@PathVariable Long gameId) {
+        logger.debug("get dice area: " + gameId);
+
+        try {
+            GameDiceAreaResponseBean result = gameAreaService.getDiceArea(gameId);
+            return result;
+        } catch (Exception e){
+            return null;
+        }
+    }
 }

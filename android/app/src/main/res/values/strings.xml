@@ -1,7 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- OTHER -->
     <string name="app_name">Miss Dromedary</string>
     <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+
+    <!-- Titles and Texts/Labels -->
+    <string name="title_activity_main">Miss Dromedary</string>
+    <string name="title_activity_menu">Game Menu</string>
+    <string name="title_activity_game">Game</string>
+    <string name="title_list_of_players">List of Players</string>
+    <string name="title_list_of_games">List of Games</string>
+
+    <string name="money">Money</string>
+    <string name="money_default">0</string>
+
+    <!-- BUTTONS -->
+    <string name="start_game">Start Game</string>
+    <string name="create_new_game">Create new Game</string>
+    <string name="join_existing_game">Join Existing</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="dice">the dice button</string>
+
+    <!-- descriptions -->
+    <string name="field1">This is field 1</string>
+    <string name="field2">This is field 2</string>
+    <string name="field3">This is field 3</string>
+    <string name="field4">This is field 4</string>
+    <string name="field5">This is field 5</string>
+    <string name="field6">This is field 6</string>
+    <string name="field7">This is field 7</string>
+    <string name="field8">This is field 8</string>
+    <string name="field9">This is field 9</string>
+    <string name="field10">This is field 10</string>
+    <string name="field11">This is field 11</string>
+    <string name="field12">This is field 12</string>
+    <string name="field13">This is field 13</string>
+    <string name="field14">This is field 14</string>
+    <string name="field15">This is field 15</string>
+    <string name="field16">This is field 16</string>
+
+    <string name="legbetting_blue">You selected a blue Legbetting Card</string>
+    <string name="legbetting_green">You selected a green Legbetting Card</string>
+    <string name="legbetting_orange">You selected a orange Legbetting Card</string>
+    <string name="legbetting_yellow">You selected a yellow Legbetting Card</string>
+    <string name="legbetting_white">You selected a white Legbetting Card</string>
+    <string name="winner_betting">You bet on the overall winner</string>
+    <string name="loser_betting">You bet on the overall loser</string>
+    <string name="pyramid_tile">This is a pyramid tile</string>
 
 </resources>

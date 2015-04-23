@@ -8,7 +8,7 @@ public class GameResponseBean {
 	private GameStatus status;
 	private Integer numberOfMoves;	
 	private Integer numberOfPlayers;
-	private String nextPlayer;
+	private String currentPlayer;
 	
 	public Long getId() {
 		return id;
@@ -46,10 +46,10 @@ public class GameResponseBean {
 	public void setNumberOfPlayers(Integer numberOfPlayers) {
 		this.numberOfPlayers = numberOfPlayers;
 	}
-	public String getNextPlayer() {
-		return nextPlayer;
+	public String getCurrentPlayer() {
+		return currentPlayer;
 	}
-	public void setNextPlayer(String nextPlayer) {
-		this.nextPlayer = nextPlayer;
+	public void setCurrentPlayer(String currentPlayer) {
+		this.currentPlayer = currentPlayer;
 	}
 }
