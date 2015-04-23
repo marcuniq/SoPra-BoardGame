@@ -14,6 +14,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Colors;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Dice;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Popup;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.RaceTrackField;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -35,6 +36,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private TextView tvMoney;
 
     private Bundle savedInstanceState;
+    private ViewGroup container;
     private Long playerId;
     private Long gameId;
 
@@ -51,6 +53,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_game, container, false);
         this.savedInstanceState = savedInstanceState;
+        this.container = container;
         Bundle b = getActivity().getIntent().getExtras();
         gameId = b.getLong("gameId");
 
@@ -101,7 +104,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         if (R.id.dice == v.getId()){
 //            message = (String) v.getContentDescription();
 //            ((GameActivity)getActivity()).pushFragment(RollDiceFragment.newInstance());
-                rollDice(v);
+                displayPopup(v, R.layout.popup_roll_dice, Popup.ROLL_DICE);
             return;
         }
 
@@ -110,21 +113,42 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
-     * Displays a Popup with the fragment_roll_dice layout and draws all the dices
+     * Displays a Popup with the given layout and draws all the dices
      * Two Options:
      *  - Accept: Execute a Move and close the Popup
      *  - Reject: abort, close Popup
      *
      * @param anchorView the current view (Bean)
      */
-    public void rollDice(View anchorView) {
-        View popupView = getLayoutInflater(savedInstanceState).inflate(R.layout.fragment_roll_dice, null);
+    public void displayPopup(View anchorView, int layout, Popup POPUP) {
+        View popupView = getLayoutInflater(savedInstanceState).inflate(layout, container, false);
         popupWindow = new PopupWindow(
                 popupView,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         popupWindow.setFocusable(true);
         popupWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL,0,0);
+
+        switch (POPUP){
+            case ROLL_DICE:
+                // initPopupRollDice()
+                break;
+            case LEGBET:
+                // initPopupLegBet()
+                break;
+            case RACEBET:
+                // initPopupRaceBet()
+                break;
+            case PLACE_TILE:
+                // initPopupPlaceTile()
+                break;
+            case ROUND_EVALUATION:
+                // initPopupRoundEvaluation()
+                break;
+            default:
+                // do something meaningful
+        }
+
         Button acceptButton = (Button) popupView.findViewById(R.id.accept);
         Button rejectButton = (Button) popupView.findViewById(R.id.reject);
 
