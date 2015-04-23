@@ -6,7 +6,18 @@ The backend server with this API implements the 2014 board game of the year "Cam
 
 # Group Games
 
-## Games Collection [/games]
+## Games Collection [/games{?status}]
+
++ Parameters
+    + status (optional, string, `OPEN`)
+    
+        `status` of the Game. 
+
+        + Values
+            + `OPEN`
+            + `FULL`
+            + `RUNNING`
+            + `FINISHED`
 
 + Model (application/json)
 
@@ -16,22 +27,22 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             [{
-                "id": 3,
-                "game": "Camel Run Zurich",
-                "owner": "marcuniq",
-                "status" : "PENDING",
+                "id" : 3,
+                "name" : "Camel Run Zurich",
+                "owner" : "marcuniq",
+                "status" : "OPEN",
                 "numberOfMoves" : 0,
-                "numberOfPlayers" : 1,
-                "nextPlayer" : "marcuniq"
+                "numberOfPlayers" : 1, 
+                "currentPlayer" : ""
             },
             {
                 "id": 4,
-                "game": "Uni Bern",
+                "name": "Uni Bern",
                 "owner": "niels",
                 "status" : "RUNNING",
-                "numberOfMoves" : 5,
-                "numberOfPlayers" : 3,
-                "nextPlayer" : "thomas"
+                "numberOfMoves" : 7,
+                "numberOfPlayers" : 3, 
+                "currentPlayer" : "josua"
             }]
         
         
@@ -45,33 +56,33 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "definitions" : {
                     "game": {
                         "type" : "object",
-                        "required" : ["id", "game", "owner", "status", "numberOfMoves", "numberOfPlayers", "nextPlayer"],
+                        "required" : ["id", "name", "owner", "status", "numberOfMoves", "numberOfPlayers", "currentPlayer"],
                         "properties" : {
                             "id" : {
                                 "description" : "game id",
                                 "type" : "integer"
                             },
-                            "game": {
+                            "name": {
                                 "description": "name of the game",
                                 "type" : "string"
                             },
                             "owner": {
-                                "description": "username of owner",
+                                "description": "token of owner",
                                 "type" : "string"
                             },
                             "status": {
-                                "enum": ["PENDING", "RUNNING", "FINISHED"]
+                                "enum": ["OPEN", "FULL", "RUNNING", "FINISHED"]
                             },
                             "numberOfMoves": {
-                                "description": "name of the game",
+                                "description": "number of moves made by all players",
                                 "type" : "integer"
                             },
                             "numberOfPlayers": {
-                                "description": "name of the game",
+                                "description": "number of players in the game",
                                 "type" : "integer"
                             },
-                            "nextPlayer": {
-                                "description": "username of player whos turn it is next",
+                            "currentPlayer": {
+                                "description": "username of player whos turn it is",
                                 "type" : "string"
                             }
                         }
@@ -82,36 +93,35 @@ The backend server with this API implements the 2014 board game of the year "Cam
 ### List all Games [GET]
 ###### Response object: List[GameResponseBean]
 
-+ Request (application/json)
-
-+ Response 200 (application/json)
++ Response 200
     
     [Games Collection][]
 
 
+## Game Creation [/games]
 
 ### Create a Game [POST]
 ###### Request object: GameRequestBean
 ###### Response object: GameResponseBean
     
-+ Request (application/json)
++ Request (application/json; charset=UTF-8)
 
     + Body
     
             {
                 "name": "Camel Run Zürich",
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
             }
             
     + Schema
     
             {
                 "$schema": "http://json-schema.org/draft-04/schema#",
-                "description": "Game",
+                "description": "GameRequestBean",
                 "type" : "object",
-                "required" : ["userToken", "name"],
+                "required" : ["token", "name"],
                 "properties" : {
-                    "userToken" : {
+                    "token" : {
                         "description" : "user token obtained from server at login",
                         "type" : "string"
                     },
@@ -122,12 +132,11 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 }
             }
 
-+ Response 201 (application/json)
++ Response 201
 
     [Game][]
 
 ## Game [/games/{gameId}]
-A single Game object with all its details
 
 + Parameters
     + gameId (required, number, `1`) ... Numeric `id` of the Game.
@@ -138,47 +147,47 @@ A single Game object with all its details
     
             {   
                 "id": 3,
-                "game": "Camel Run Zürich",
+                "name": "Camel Run Zürich",
                 "owner": "marcuniq",
-                "status" : "PENDING",
+                "status" : "OPEN",
                 "numberOfMoves" : 0,
                 "numberOfPlayers" : 1,
-                "nextPlayer" : "marcuniq"
+                "currentPlayer" : "marcuniq"
             }
 
     + Schema
     
             {
                 "$schema": "http://json-schema.org/draft-04/schema#",
-                "description": "Game",
+                "description": "GameResponseBean",
                 "type" : "object",
-                "required" : ["id", "game", "owner", "status", "numberOfMoves", "numberOfPlayers", "nextPlayer"],
+                "required" : ["id", "name", "owner", "status", "numberOfMoves", "numberOfPlayers", "currentPlayer"],
                 "properties" : {
                     "id" : {
                         "description" : "game id",
                         "type" : "integer"
                     },
-                    "game": {
+                    "name": {
                         "description": "name of the game",
                         "type" : "string"
                     },
                     "owner": {
-                        "description": "username of owner",
+                        "description": "token of owner",
                         "type" : "string"
                     },
                     "status": {
-                        "enum": ["PENDING", "RUNNING", "FINISHED"]
+                        "enum": ["OPEN", "FULL", "RUNNING", "FINISHED"]
                     },
                     "numberOfMoves": {
-                        "description": "name of the game",
+                        "description": "number of moves made by all players",
                         "type" : "integer"
                     },
                     "numberOfPlayers": {
-                        "description": "name of the game",
+                        "description": "number of players in the game",
                         "type" : "integer"
                     },
-                    "nextPlayer": {
-                        "description": "username of player whos turn it is next",
+                    "currentPlayer": {
+                        "description": "username of player whos turn it is",
                         "type" : "string"
                     }
                 }
@@ -187,20 +196,22 @@ A single Game object with all its details
 ### Retrieve a Game [GET]
 ###### Response object: GameResponseBean
 
-+ Response 200 (application/json)
++ Response 200
 
     [Game][]
 
 
 ### Remove a Game [DELETE]
 ###### Request object: GamePlayerRequestBean
+###### Response object: GameResponseBean
+
 
 + Request (application/json)
 
     + Body
     
             {
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
             }
             
     + Schema
@@ -209,16 +220,16 @@ A single Game object with all its details
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GamePlayerRequestBean",
                 "type" : "object",
-                "required" : ["userToken"],
+                "required" : ["token"],
                 "properties" : {
-                    "userToken" : {
+                    "token" : {
                         "description" : "user token obtained from server at login",
                         "type" : "string"
                     }
                 }
             }
         
-+ Response 204
++ Response 204 (application/json)
 
 
 ## Game Players Collection [/games/{gameId}/players]
@@ -231,15 +242,15 @@ A single Game object with all its details
 
             [{   
                 "id": 3,
-                "name": "Marco",
                 "username": "marcuniq",
-                "games" : ["Camel Run Zürich"]
+                "money" : 7,
+                "numberOfMoves" : 5
             },
             {   
                 "id": 4,
-                "name": "Josua",
                 "username": "jofroe",
-                "games" : ["Camel Run Zürich"]
+                "money" : 9,
+                "numberOfMoves" : 5
             }]
             
     + Schema
@@ -252,23 +263,23 @@ A single Game object with all its details
                 "definitions" : {
                     "gameplayer": {
                         "type" : "object",
-                        "required" : ["id", "name", "username", "games"],
+                        "required" : ["id", "username", "money", "numberOfMoves"],
                         "properties" : {
                             "id" : {
-                                "description" : "game id",
+                                "description" : "user id",
                                 "type" : "integer"
-                            },
-                            "name": {
-                                "description": "name of player",
-                                "type" : "string"
                             },
                             "username": {
                                 "description": "username of player",
                                 "type" : "string"
                             },
-                            "games": {
-                                "type" : "array",
-                                "items": { "type": "string"}
+                            "money": {
+                                "description": "amount of money",
+                                "type" : "integer"
+                            },
+                            "numberOfMoves": {
+                                "description": "blubb",
+                                "type" : "integer"
                             }
                         }
                     }
@@ -278,20 +289,22 @@ A single Game object with all its details
 ### List all Players [GET]
 ###### Response object: List[GamePlayerResponseBean]
 
-+ Response 200 (application/json)
++ Response 200
 
     [Game Players Collection][]
 
 
 ### Add Player to Game [POST]
 ###### Request object: GamePlayerRequestBean
+###### Response object: GameAddPlayerResponseBean
+
 
 + Request (application/json)
 
     + Body
     
             {
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
             }
             
     + Schema
@@ -300,19 +313,39 @@ A single Game object with all its details
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GamePlayerRequestBean",
                 "type" : "object",
-                "required" : ["userToken"],
+                "required" : ["token"],
                 "properties" : {
-                    "userToken" : {
+                    "token" : {
                         "description" : "user token obtained from server at login",
                         "type" : "string"
                     }
                 }
             }
         
-+ Response 201
++ Response 201 (application/json)
+
+    + Body
+    
+            {
+                "channelName": "9b5eabcc-781b-483a-8eed-30d7eacb1567"
+            }
+            
+    + Schema
+    
+            {
+                "$schema": "http://json-schema.org/draft-04/schema#",
+                "description": "GameAddPlayerResponseBean",
+                "type" : "object",
+                "required" : ["channelName"],
+                "properties" : {
+                    "channelName" : {
+                        "description" : "name of channel for pusher service",
+                        "type" : "string"
+                    }
+                }
+            }
 
 ## Game Player [/games/{gameId}/players/{playerId}]
-A single Game Player object with all its details
 
 + Parameters
     + gameId (required, number, `1`) ... Numeric `id` of the Game.
@@ -323,8 +356,10 @@ A single Game Player object with all its details
     + Body
     
             {   
-                "userId": 3,
-                "numberOfMoves" : 0
+                "id": 3,
+                "username": "marcuniq",
+                "money" : 7,
+                "numberOfMoves" : 5
             }
 
     + Schema
@@ -333,15 +368,23 @@ A single Game Player object with all its details
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GamePlayerResponseBean",
                 "type" : "object",
-                "required" : ["userId", "numberOfMoves"],
+                "required" : ["id", "username", "money", "numberOfMoves"],
                 "properties" : {
-                    "userId" : {
+                    "id" : {
                         "description" : "user id",
+                        "type" : "integer"
+                    }
+                    "username": {
+                        "description": "username of player",
                         "type" : "string"
                     },
-                    "numberOfMoves" : {
-                        "description" : "number of moves done by this player for this game",
-                        "type" : "integer"
+                    "money": {
+                        "type" : "integer",
+                        "description": "amount of money"
+                    },
+                    "numberOfMoves": {
+                        "type" : "integer",
+                        "description": ""
                     }
                 }
             }
@@ -350,20 +393,22 @@ A single Game Player object with all its details
 ### Retrieve a Game Player [GET]
 ###### Response object: GamePlayerResponseBean
 
-+ Response 200 (application/json)
++ Response 200
 
     [Game Player][]
 
 
 ### Remove a Game Player [DELETE]
 ###### Request object: GamePlayerRequestBean
+###### Response object: GamePlayerResponseBean
+
 
 + Request (application/json)
 
     + Body
     
             {
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
             }
             
     + Schema
@@ -373,19 +418,22 @@ A single Game Player object with all its details
                 "description": "GamePlayerRequestBean",
                 "type" : "object",
                 "required" : [
-                    "userToken"
+                    "token"
                 ],
                 "properties" : {
-                    "userToken" : {
+                    "token" : {
                         "description" : "user token obtained from server at login",
                         "type" : "string"
                     }
                 }
             }
         
-+ Response 204
++ Response 204 (application/json)
+
+
 
 ## Game Moves Collection [/games/{gameId}/moves]
+
 + Parameters
     + gameId (required, number, `1`) ... Numeric `id` of the Game.
 
@@ -393,38 +441,79 @@ A single Game Player object with all its details
     
     + Body
     
-            [{   
-                
+            [{
+                "id" : 72
+                "userId": 3,
+                "move" : "LEG_BETTING",
+                "legBettingTile" : {
+                    "id" : 23,
+                    "camel" : {"color" : "ORANGE"},
+                    "leadingPositionGain" : 5,
+                    "secondPositionGain" : 3,
+                    "otherPositionLoss" : 1
+                }
             },
-            {   
-                
+            {
+                "id" : 73
+                "userId": 3,
+                "move" : "DICE_ROLLING",
+                "dice" : {
+                    "color" : "WHITE",
+                    "faceValue" : 2
+                }
             }]
 
     + Schema
     
             {
                 "$schema": "http://json-schema.org/draft-04/schema#",
-                "description": "GamePlayerRequestBean",
-                "type" : "array"
+                "description": "",
+                "type" : "array",
+                "items": { "$ref": "#/definitions/move" },
+                "definitions" : {
+                    "move": {
+                        "description": "GameMoveResponseBean",
+                        "type" : "object",
+                        "required" : ["id", "userId", "move"],
+                        "properties" : {
+                            "id" : {
+                                "description" : "move id",
+                                "type" : "integer"
+                            },
+                            "userId" : {
+                                "description" : "user id",
+                                "type" : "integer"
+                            },
+                            "move" : {
+                                "enum": ["DICE_ROLLING", "LEG_BETTING", "RACE_BETTING", "DESERT_TILE_PLACING"]
+                            }
+                        }
+                    }
             }
 
 ### List all Moves [GET]
 ###### Response object: List[GameMoveResponseBean]
 
-+ Response 200 (application/json)
++ Response 200
 
     [Game Moves Collection][]
 
 
 ### Add Move to Game [POST]
 ###### Request object: GameMoveRequestBean
+###### Response object: GameMoveResponseBean
 
 + Request (application/json)
 
     + Body
     
             {
-
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00",
+                "move" : "DESERT_TILE_PLACING",
+                "legBettingTileColor" : null,
+                "raceBettingOnWinner" : null,
+                "desertTileAsOasis" : True,
+                "desertTilePosition" : 5
             }
             
     + Schema
@@ -433,17 +522,39 @@ A single Game Player object with all its details
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GameMoveRequestBean",
                 "type" : "object",
-                "required" : [],
+                "required" : ["token", "move"],
                 "properties" : {
-
+                    "token" : {
+                        "description" : "user token obtained from server at login",
+                        "type" : "string"
+                    },
+                    "move" : {
+                        "enum": ["DICE_ROLLING", "LEG_BETTING", "RACE_BETTING", "DESERT_TILE_PLACING"]
+                    },
+                    "legBettingTileColor" : {
+                        "enum": ["BLUE", "YELLOW", "GREEN", "RED", "WHITE"]
+                    },
+                    "raceBettingOnWinner" : {
+                        "description" : "",
+                        "type" : "boolean"
+                    },
+                    "desertTileAsOasis" : {
+                        "description" : "",
+                        "type" : "boolean"
+                    },
+                    "desertTilePosition" : {
+                        "description" : "",
+                        "type" : "integer"
+                    }
                 }
             }
         
 + Response 201
 
+    [Game Move][]
+
 
 ## Game Move [/games/{gameId}/moves/{moveId}]
-A single Game Move object with all its details
 
 + Parameters
     + gameId (required, number, `1`) ... Numeric `id` of the Game.
@@ -453,8 +564,17 @@ A single Game Move object with all its details
     
     + Body
     
-            {   
-
+            {
+                "id" : 72
+                "userId": 3,
+                "move" : "LEG_BETTING",
+                "legBettingTile" : {
+                    "id" : 23,
+                    "camel" : {"color" : "ORANGE"},
+                    "leadingPositionGain" : 5,
+                    "secondPositionGain" : 3,
+                    "otherPositionLoss" : 1
+                }
             }
             
     + Schema
@@ -463,21 +583,32 @@ A single Game Move object with all its details
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GameMoveResponseBean",
                 "type" : "object",
-                "required" : [],
+                "required" : ["id", "userId", "move"],
                 "properties" : {
-
+                    "id" : {
+                        "description" : "move id",
+                        "type" : "integer"
+                    },
+                    "userId" : {
+                        "description" : "user id",
+                        "type" : "integer"
+                    },
+                    "move" : {
+                        "enum": ["DICE_ROLLING", "LEG_BETTING", "RACE_BETTING", "DESERT_TILE_PLACING"]
+                    }
                 }
             }
 
 ### Retrieve a Game Move [GET]
 ###### Response object: GameMoveResponseBean
 
-+ Response 200 (application/json)
++ Response 200
 
     [Game Move][]
 
 
 ## Game Race Track [/games/{gameId}/racetrack]
+
 + Parameters
     + gameId (required, number, `1`) ... Numeric `id` of the Game.
     
@@ -499,7 +630,7 @@ A single Game Move object with all its details
     
             {
                 "$schema": "http://json-schema.org/draft-04/schema#",
-                "description": "Game Race Track Objects",
+                "description": "GameRaceTrackResponseBean",
                 "type" : "array",
                 "required" : [],
                 "properties" : {
@@ -507,10 +638,10 @@ A single Game Move object with all its details
                 }
             }
 
-### Retrieve Race Track Objects [GET]
-###### Response object: List[GameRaceTrackObjectResponseBean]
+### Retrieve Race Track [GET]
+###### Response object: GameRaceTrackResponseBean
 
-+ Response 200 (application/json)
++ Response 200
 
     [Game Race Track][]
     
@@ -538,7 +669,7 @@ A single Game Move object with all its details
     
             {
                 "$schema": "http://json-schema.org/draft-04/schema#",
-                "description": "Game Race Track Objects",
+                "description": "GameLegBettingAreaResponseBean",
                 "type" : "array",
                 "required" : [],
                 "properties" : {
@@ -546,15 +677,15 @@ A single Game Move object with all its details
                 }
             }
 
-### Retrieve Race Track Objects [GET]
-###### Response object: List[GameLegBettingTileResponseBean]
+### Retrieve Leg Betting Area [GET]
+###### Response object:GameLegBettingAreaResponseBean
 
-+ Response 200 (application/json)
++ Response 200
 
     [Game Leg Betting Area][]
 
 
-## Game Rolled Dice [/games/{gameId}/rolleddice]
+## Game Race Betting Area [/games/{gameId}/racebettingarea]
 + Parameters
     + gameId (required, number, `1`) ... Numeric `id` of the Game.
     
@@ -576,7 +707,7 @@ A single Game Move object with all its details
     
             {
                 "$schema": "http://json-schema.org/draft-04/schema#",
-                "description": "Game Race Track Objects",
+                "description": "GameRaceBettingAreaResponseBean",
                 "type" : "array",
                 "required" : [],
                 "properties" : {
@@ -584,15 +715,57 @@ A single Game Move object with all its details
                 }
             }
 
-### Retrieve Race Track Objects [GET]
-###### Response object: List[GameRolledDiceResponseBean]
+### Retrieve Race Betting Area [GET]
+###### Response object:GameRaceBettingAreaResponseBean
 
-+ Response 200 (application/json)
++ Response 200
 
-    [Game Rolled Dice][]
+    [Game Race Betting Area][]
+
+
+## Game Dice Area [/games/{gameId}/dicearea]
+
++ Parameters
+    + gameId (required, number, `1`) ... Numeric `id` of the Game.
     
++ Model (application/json)
+
+    + Header
+            
+            
     
+    + Body
+    
+            [{
+            
+            },{
+            
+            }]
+            
+    + Schema
+    
+            {
+                "$schema": "http://json-schema.org/draft-04/schema#",
+                "description": "GameDiceAreaResponseBean",
+                "type" : "array",
+                "required" : [],
+                "properties" : {
+
+                }
+            }
+
+### Retrieve Dice Area [GET]
+###### Response object: GameDiceAreaResponseBean
+
++ Response 200
+
+    [Game Dice Area][]
+    
+
+# Group Game Actions
+
 ## Start game [/games/{gameId}/start]
+
 + Parameters
     + gameId (required, number, `1`) ... Numeric `id` of the Game.
     
@@ -606,7 +779,7 @@ A single Game Move object with all its details
     + Body
     
             {
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
             }
             
     + Schema
@@ -615,23 +788,22 @@ A single Game Move object with all its details
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "Game Race Track Objects",
                 "type" : "object",
-                "required" : [
-                    "userToken"
-                ],
+                "required" : ["token"],
                 "properties" : {
-                    "userToken" : {
+                    "token" : {
                         "description" : "user token obtained from server at login",
                         "type" : "string"
                     }
                 }
             }
 
-+ Response 200 (application/json)
++ Response 200
 
     [Game][]
     
     
 ## Stop game [/games/{gameId}/stop]
+
 + Parameters
     + gameId (required, number, `1`) ... Numeric `id` of the Game.
     
@@ -645,7 +817,7 @@ A single Game Move object with all its details
     + Body
     
             {
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
             }
             
     + Schema
@@ -655,17 +827,17 @@ A single Game Move object with all its details
                 "description": "GamePlayerRequestBean",
                 "type" : "object",
                 "required" : [
-                    "userToken"
+                    "token"
                 ],
                 "properties" : {
-                    "userToken" : {
+                    "token" : {
                         "description" : "user token obtained from server at login",
                         "type" : "string"
                     }
                 }
             }
         
-+ Response 200 (application/json)
++ Response 200
 
     [Game][]
     
@@ -678,12 +850,12 @@ A single Game Move object with all its details
 ### fast mode [POST]
 ###### Request object: GamePlayerRequestBean
 
-+ Request (application/json)
++ Request (application/json; charset=UTF-8)
 
     + Body
     
             {
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
             }
             
     + Schema
@@ -692,16 +864,16 @@ A single Game Move object with all its details
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GamePlayerRequestBean",
                 "type" : "object",
-                "required" : ["userToken"],
+                "required" : ["token"],
                 "properties" : {
-                    "userToken" : {
+                    "token" : {
                         "description" : "user token obtained from server at login",
                         "type" : "string"
                     }
                 }
             }
         
-+ Response 200
++ Response 200 (application/json)
 
 
 # Group Users
@@ -715,15 +887,19 @@ A single Game Move object with all its details
     + Body
     
             [{   
-                "id": 3,
-                "name": "Marco",
-                "username": "marcuniq",
-                "games" : ["Camel Run Zürich"]
+                "id" : 3,
+                "username" : "marcuniq",
+                "age" : 78,
+                "token" : "111e6162-3b6f-4ae2-a171-2470b63dff00",
+                "status" : "ACTIVE",
+                "game" : null
             },{   
                 "id": 4,
-                "name": "Josua",
                 "username": "jofroe",
-                "games" : ["Camel Run Zürich"]
+                "age": 99,
+                "token" : "000e6162-3b6f-4ae2-a171-2470b63dff00",
+                "status" : "UNKNOWN",
+                "game" : "Camel Run Bern"
             }]
             
             
@@ -737,23 +913,30 @@ A single Game Move object with all its details
                 "definitions" : {
                     "user": {
                         "type" : "object",
-                        "required" : ["id", "name", "username", "games"],
+                        "required" : [ "id", "username", "age", "token", "status", "game"],
                         "properties" : {
                             "id" : {
                                 "description" : "game id",
                                 "type" : "integer"
                             },
-                            "name": {
-                                "description": "name of user",
-                                "type" : "string"
-                            },
                             "username": {
                                 "description": "username",
                                 "type" : "string"
                             },
-                            "games": {
-                                "type" : "array",
-                                "items": { "type": "string"}
+                            "age": {
+                                "description": "age of user",
+                                "type" : "integer"
+                            },
+                            "token" : {
+                                "description": "token",
+                                "type" : "string"
+                            },
+                            "status" : {
+                                "enum" : [ "ACTIVE", "UNKNOWN", "INACTIVE" ]
+                            },
+                            "game": {
+                                "description": "the game the user has joined",
+                                "type": "string"
                             }
                         }
                     }
@@ -764,13 +947,13 @@ A single Game Move object with all its details
 ###### Request object: UserRequestBean
 ###### Response object: UserResponseBean
 
-+ Request (application/json)
++ Request (application/json; charset=UTF-8)
         
     + Body
     
             {
-                "name": "Marco",
-                "username": "marcuniq"
+                "username": "marcuniq",
+                "age": 68
             }
             
     + Schema
@@ -779,27 +962,26 @@ A single Game Move object with all its details
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "UserRequestBean",
                 "type" : "object",
-                "required" : ["name", "username"],
+                "required" : ["username", "age"],
                 "properties" : {
-                    "name" : {
-                        "description" : "real name of user",
-                        "type" : "string"
-                    },
                     "username" : {
                         "description" : "chosen username of user",
                         "type" : "string"
+                    },
+                    "age" : {
+                        "description" : "age of user",
+                        "type" : "integer"
                     }
                 }
             }
         
 
-+ Response 201 (application/json)
++ Response 201
 
     [User][]
 
 
 ## User [/users/{userId}]
-A single User object with all its details
 
 + Parameters
     + userId (required, number, `1`) ... Numeric `id` of the User.
@@ -809,10 +991,11 @@ A single User object with all its details
     + Body
     
             {   
-                "id": 3,
-                "name": "Marco",
-                "username": "marcuniq",
-                "games" : ["Camel Run Zürich"]
+                "id" : 3,
+                "username" : "marcuniq",
+                "age" : 78,
+                "status" : "ACTIVE",
+                "game" : "Camel Run Zurich"
             }
 
     + Schema
@@ -821,23 +1004,26 @@ A single User object with all its details
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "UserRequestBean",
                 "type" : "object",
-                "required" : ["id", "name", "username", "games"],
+                "required" : [ "id", "username", "age", "status", "game" ],
                 "properties" : {
                     "id" : {
                         "description" : "game id",
                         "type" : "integer"
                     },
-                    "name": {
-                        "description": "name of user",
-                        "type" : "string"
-                    },
                     "username": {
                         "description": "username",
                         "type" : "string"
                     },
-                    "games": {
-                        "type" : "array",
-                        "items": { "type": "string"}
+                    "age": {
+                        "description": "age of user",
+                        "type" : "integer"
+                    },
+                    "status" : {
+                        "enum" : [ "ACTIVE", "UNKNOWN", "INACTIVE" ]
+                    },
+                    "game": {
+                        "description": "the game the user has joined",
+                        "type": "string"
                     }
                 }
             }
@@ -845,54 +1031,55 @@ A single User object with all its details
 ### Retrieve a User [GET]
 ###### Response object: UserResponseBean
 
-+ Response 200 (application/json)
++ Response 200
 
     [User][]
 
+### Update a User [PUT]
+###### Request object: UserRequestBean
+###### Response object: UserResponseBean
 
-### Remove a User [DELETE]
-###### Request object: UserLoginLogoutRequestBean
-
-+ Request (application/json)
-
++ Request (application/json; charset=UTF-8)
+    
     + Body
     
             {
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+                "username": "marcuniq",
+                "age": 28
             }
             
     + Schema
     
             {
                 "$schema": "http://json-schema.org/draft-04/schema#",
-                "description": "UserLoginLogoutRequestBean",
+                "description": "UserRequestBean",
                 "type" : "object",
-                "required" : ["userToken"],
+                "required" : ["username", "age"],
                 "properties" : {
-                    "userToken" : {
-                        "description" : "user token obtained from server at login",
+                    "username" : {
+                        "description" : "chosen username of user",
                         "type" : "string"
+                    },
+                    "age" : {
+                        "description" : "age of user",
+                        "type" : "integer"
                     }
                 }
             }
-        
-+ Response 204
 
-## User login [/users/{userId}/login]
-+ Parameters
-    + userId (required, number, `1`) ... Numeric `id` of the User.
-    
++ Response 200
 
-### login [POST]
+    [User][]
+
+### Remove a User [DELETE]
 ###### Request object: UserLoginLogoutRequestBean
-###### Response object: UserLoginLogoutResponseBean
 
-+ Request (application/json)
++ Request (application/json; charset=UTF-8)
 
     + Body
     
             {
-                "token": "hashed_password"
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
             }
             
     + Schema
@@ -904,31 +1091,44 @@ A single User object with all its details
                 "required" : ["token"],
                 "properties" : {
                     "token" : {
-                        "description" : "hashed password of user",
+                        "description" : "user token obtained from server at login",
                         "type" : "string"
                     }
                 }
             }
         
-        
++ Response 204 (application/json)
+
+# Group User Actions
+## User login [/users/{userId}/login]
++ Parameters
+    + userId (required, number, `1`) ... Numeric `id` of the User.
+    
+
+### login [POST]
+###### Response object: UserLoginLogoutResponseBean
+
++ Request (application/x-www-form-urlencoded)
+
+
 + Response 200 (application/json)
 
     + Body
     
             {
-                "userToken": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
             }
             
     + Schema
     
             {
                 "$schema": "http://json-schema.org/draft-04/schema#",
-                "description": "UserLoginLogoutResponseBean",
+                "description": "UserLoginLogoutRequestBean",
                 "type" : "object",
-                "required" : ["userToken"],
+                "required" : ["token"],
                 "properties" : {
-                    "userToken" : {
-                        "description" : "user token for further communicatio with server",
+                    "token" : {
+                        "description" : "user token obtained from server at login",
                         "type" : "string"
                     }
                 }
@@ -936,6 +1136,7 @@ A single User object with all its details
 
 
 ## User logout [/users/{userId}/logout]
+
 + Parameters
     + userId (required, number, `1`) ... Numeric `id` of the User.
     
@@ -943,7 +1144,7 @@ A single User object with all its details
 ### logout [POST]
 ###### Request object: UserLoginLogoutRequestBean
 
-+ Request (application/json)
++ Request (application/json; charset=UTF-8)
 
     + Body
     
@@ -967,4 +1168,4 @@ A single User object with all its details
             }
         
         
-+ Response 200
++ Response 200 (application/json)
