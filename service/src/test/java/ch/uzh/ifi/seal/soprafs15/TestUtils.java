@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.*;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
@@ -93,6 +94,18 @@ public class TestUtils {
     public static ResponseEntity<Boolean> clearRepositories(RestTemplate template, URL base) {
 
         return template.exchange(base + "/backend/reset", HttpMethod.POST, null, Boolean.class);
+    }
+
+    public static UserLoginLogoutResponseBean toUserLLResponseBean(String token){
+        UserLoginLogoutResponseBean result = new UserLoginLogoutResponseBean();
+        result.setToken(token);
+        return result;
+    }
+
+    public static UserLoginLogoutRequestBean toUserLLRequestBean(String token){
+        UserLoginLogoutRequestBean result = new UserLoginLogoutRequestBean();
+        result.setToken(token);
+        return result;
     }
 
 }

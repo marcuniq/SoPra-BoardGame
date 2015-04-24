@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs15.service;
 
 import ch.uzh.ifi.seal.soprafs15.Application;
 import ch.uzh.ifi.seal.soprafs15.TestUtils;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.User;
@@ -81,7 +82,7 @@ public class UserServiceUT {
         UserRequestBean requestBean = TestUtils.toUserRequestBean(15, "peter");
 
         //oracle values
-        UserResponseBean oracleResponse = TestUtils.toUserResponseBean(15,"peter");
+        UserResponseBean oracleResponse = TestUtils.toUserResponseBean(15, "peter");
 
         User testUser = new User();
         when(mockUserRepo.save(any(User.class))).thenReturn(testUser);
@@ -118,13 +119,27 @@ public class UserServiceUT {
 
     }
 
-    @Test
+    /*@Test
+    //method not yet implemented
     public void testDeleteUser() throws Exception {
 
-    }
+        //create new User and and add it
+        UserRequestBean request = TestUtils.toUserRequestBean(67,"karl");
+        UserResponseBean response = testService.addUser(request);
 
+        //Assert testService has been initialized and call method to be tested
+        assertNotNull(testService);
+        testService.deleteUser(response.getId(), request);
+
+        //Assertions
+        assertNull(testService.getUser(response.getId()));
+
+
+    }
+*/
     @Test
     public void testLogin() throws Exception {
+
 
     }
 
