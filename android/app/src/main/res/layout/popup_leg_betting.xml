@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:layout_width="550dp"
+        android:layout_width="600dp"
         android:layout_height="400dp"
         android:layout_centerInParent="true">
 
@@ -18,7 +18,7 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:text="Is your camel an olle or tolle camel?"
+                android:text="@string/title_legBet"
                 android:textColor="#ffffff"
                 android:gravity="center"
                 android:textSize="24sp" android:id="@+id/popupTitle"/>
@@ -35,24 +35,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="55dp"
+                android:layout_marginTop="25dp"
                 android:layout_centerHorizontal="true">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/dice_blue"
-                    android:background="@drawable/c1_racebettingcard_blue"
-                    android:contentDescription="@string/hello_world"
-                    android:layout_margin="5dp"/>
+                    android:layout_width="200dp"
+                    android:layout_height="250dp"
+                    android:id="@+id/card"
+                    android:src="@drawable/c1_racebettingcard_blue"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="@string/hello_world"/>
 
             </LinearLayout>
 
             <Button
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/olle"
-                android:text="Olle"
+                android:id="@+id/reject"
+                android:text="@string/reject"
                 android:background="#ff175a26"
                 android:minHeight="50dp"
                 android:textColor="#ffffff"
@@ -66,8 +66,8 @@
             <Button
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/trolle"
-                android:text="Trolle"
+                android:id="@+id/accept"
+                android:text="@string/accept"
                 android:background="#ff175a26"
                 android:minHeight="50dp"
                 android:textColor="#ffffff"
