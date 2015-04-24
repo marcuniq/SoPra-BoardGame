@@ -25,6 +25,15 @@ public class TestUtils {
         return userRequest;
     }
 
+    public static UserResponseBean toUserResponseBean(Integer age, String username) {
+
+        UserResponseBean userResponse = new UserResponseBean();
+        userResponse.setAge(age);
+        userResponse.setUsername(username);
+
+        return userResponse;
+    }
+
     public static GameRequestBean toGameRequestBean(String name, String token) {
 
         GameRequestBean gameRequest = new GameRequestBean();
