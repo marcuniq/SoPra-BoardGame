@@ -51,10 +51,15 @@
 
     <!-- Popups -->
     <string name="title_legBet">Do you want to take this card?</string>
-    <string name="title_raceBet_olle">Do you want to bet on the olle camel?</string>
-    <string name="title_raceBet_tolle">Do you want to bet on the tolle camel?</string>
+    <string name="title_raceBet_olle">Do you want to bet on the Olle camel?</string>
+    <string name="title_raceBet_tolle">Do you want to bet on the Tolle camel?</string>
     <string name="title_placeTile_oasis">Do you want to place an oasis tile?</string>
     <string name="title_placeTile_desert">Do you want to place a desert tile?</string>
+    <string name="button_text_blue">Blue card</string>
+    <string name="button_text_green">Green card</string>
+    <string name="button_text_orange">Orange card</string>
+    <string name="button_text_yellow">Yellow card</string>
+    <string name="button_text_white">White card</string>
     <string name="round">Up to the next round</string>
     <string name="title_round">Round</string>
     <string name="accept">Apply</string>
