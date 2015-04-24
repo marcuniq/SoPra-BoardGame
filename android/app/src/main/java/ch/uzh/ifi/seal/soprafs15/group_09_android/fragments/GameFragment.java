@@ -10,12 +10,7 @@ import android.widget.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameColors;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Dice;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.InteractionTile;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.LegBet;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Popup;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.RaceTrackField;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.*;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -31,6 +26,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private ArrayList<InteractionTile> interactionTiles = new ArrayList<>();
     private ArrayList<Dice> dices = new ArrayList<>();
     private ArrayList<LegBet> legBets = new ArrayList<>();
+    private ArrayList<RaceBet> raceBets = new ArrayList<>();
 
     private TextView tvPlayerName;
     private ImageButton ivPlayerIcon;
@@ -108,6 +104,12 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         for (Integer legBet: legBettingArea) {
             if (legBet == v.getId()) {
                 displayPopup(v, R.layout.popup_leg_betting, Popup.LEGBET, legBettingArea.indexOf(legBet));
+                return;
+            }
+        }
+        for (Integer raceBet : raceBettingArea) {
+            if (raceBet == v.getId()) {
+                displayPopup(v, R.layout.popup_race_betting, Popup.RACEBET, raceBettingArea.indexOf(raceBet));
                 return;
             }
         }
@@ -388,10 +390,34 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initializeRaceBettingArea(){
+        RaceBet c1RaceBet = new RaceBet();
+        RaceBet c2RaceBet = new RaceBet();
+        RaceBet c3RaceBet = new RaceBet();
+        RaceBet c4RaceBet = new RaceBet();
+        RaceBet c5RaceBet = new RaceBet();
+        RaceBet c6RaceBet = new RaceBet();
+        RaceBet c7RaceBet = new RaceBet();
+
         raceBettingArea.add(R.id.winner_betting);
         raceBettingArea.add(R.id.loser_betting);
 
-        for (Integer raceBet: raceBettingArea) {
+        c1RaceBet.add(R.drawable.c1, R.drawable.c1_button);
+        c2RaceBet.add(R.drawable.c2, R.drawable.c2_button);
+        c3RaceBet.add(R.drawable.c3, R.drawable.c3_button);
+        c4RaceBet.add(R.drawable.c4, R.drawable.c4_button);
+        c5RaceBet.add(R.drawable.c5, R.drawable.c5_button);
+        c6RaceBet.add(R.drawable.c6, R.drawable.c6_button);
+        c7RaceBet.add(R.drawable.c7, R.drawable.c7_button);
+
+        raceBets.add(c1RaceBet);
+        raceBets.add(c2RaceBet);
+        raceBets.add(c3RaceBet);
+        raceBets.add(c4RaceBet);
+        raceBets.add(c5RaceBet);
+        raceBets.add(c6RaceBet);
+        raceBets.add(c7RaceBet);
+
+        for (Integer raceBet : raceBettingArea) {
             (getActivity().findViewById(raceBet)).setOnClickListener(this);
         }
     }
