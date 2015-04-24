@@ -2,12 +2,10 @@ package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
@@ -37,6 +35,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private ImageButton ivPlayerIcon;
     private TextView tvCurrentPlayerName;
     private ImageView  ivCurrentPlayerIcon;
+    private ImageButton  ivHelpButton;
     private TextView tvMoney;
 
     private Bundle savedInstanceState;
@@ -62,6 +61,14 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         gameId = b.getLong("gameId");
 
         Toast.makeText(v.getContext(), "GameId = " + gameId, Toast.LENGTH_LONG).show();
+
+        ivHelpButton = (ImageButton) v.findViewById(R.id.help);
+        ivHelpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                instructionsPopup(v, R.layout.popup_instructions);
+            }
+        });
 
         return v;
     }
@@ -170,6 +177,19 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 popupWindow.dismiss();
             }
         });
+    }
+
+    public void instructionsPopup(View anchorView, int layout) {
+        View popupView = getLayoutInflater(savedInstanceState).inflate(layout, container, false);
+        popupWindow = new PopupWindow(
+            popupView,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setFocusable(true);
+        popupWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL, 0, 0);
     }
 
     private void initPopupRollDice(View popupView){
