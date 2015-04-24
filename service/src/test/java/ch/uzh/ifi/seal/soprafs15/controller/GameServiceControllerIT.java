@@ -84,6 +84,45 @@ public class GameServiceControllerIT {
         //TestUtils.clearRepositories(template, base);
     }
 
+//    @Test
+//    @SuppressWarnings("unchecked")
+//    public void testCreateGameFail() {
+//
+//        // Server Reset: Clean Repos
+//        //TestUtils.clearRepositories(template, base);
+//
+//        // Set up
+//
+//        List<GameResponseBean> gamesBefore = template.getForObject(base + "/games", List.class);
+//        Assert.assertEquals(0, gamesBefore.size());
+//
+//        UserRequestBean userRequest = TestUtils.toUserRequestBean(27, "TestUser");
+//
+//        TestUtils.createUser(userRequest, template, base);
+//
+//        ResponseEntity<UserLoginLogoutResponseBean> loginResponse = TestUtils.loginUser(1, template, base);
+//        String token = loginResponse.getBody().getToken();
+//
+//        GameRequestBean gameRequest = TestUtils.toGameRequestBean("TestGame1", token);
+//        ResponseEntity<GameCreateResponseBean> gameResponse = TestUtils.createGame(gameRequest, template, base);
+//
+//        List<GameResponseBean> gamesAfter = template.getForObject(base + "/games", List.class);
+//        Assert.assertEquals(1, gamesAfter.size());
+//
+//        UserRequestBean userRequest2 = TestUtils.toUserRequestBean(57, "Hanfred");
+//
+//        TestUtils.createUser(userRequest2, template, base);
+//
+//        ResponseEntity<UserLoginLogoutResponseBean> loginResponse2 = TestUtils.loginUser(1, template, base);
+//        String token2 = loginResponse2.getBody().getToken();
+//
+//        GameRequestBean gameRequest2 = TestUtils.toGameRequestBean("TestGame1", token);
+//        ResponseEntity<GameCreateResponseBean> gameResponse2 = TestUtils.createGame(gameRequest2, template, base);
+//
+//        // Server Reset: Clean Repos
+//        //TestUtils.clearRepositories(template, base);
+//    }
+
     @Test
     @SuppressWarnings("unchecked")
     public void testAddPlayerSuccess() {
