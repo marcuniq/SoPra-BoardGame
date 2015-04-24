@@ -1,9 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -19,6 +16,7 @@ public abstract class Card implements Serializable{
     protected Long id;
 
     @Column
+    @Enumerated(EnumType.STRING)
     protected Color color;
 
 
