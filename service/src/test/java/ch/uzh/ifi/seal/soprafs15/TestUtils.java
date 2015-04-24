@@ -17,6 +17,22 @@ import java.net.URL;
  */
 public class TestUtils {
 
+    public static UserLoginLogoutRequestBean toUserLLRequestBean(String token){
+
+        UserLoginLogoutRequestBean result = new UserLoginLogoutRequestBean();
+        result.setToken(token);
+
+        return result;
+    }
+
+    public static UserLoginLogoutResponseBean toUserLLResponseBean(String token){
+
+        UserLoginLogoutResponseBean result = new UserLoginLogoutResponseBean();
+        result.setToken(token);
+
+        return result;
+    }
+
     public static UserRequestBean toUserRequestBean(Integer age, String username) {
 
         UserRequestBean userRequest = new UserRequestBean();
@@ -35,6 +51,14 @@ public class TestUtils {
         return userResponse;
     }
 
+    public static GameCreateResponseBean toGameCreateRequestBean(String name) {
+
+        GameCreateResponseBean gameResponse = new GameCreateResponseBean();
+        gameResponse.setName(name);
+
+        return gameResponse;
+    }
+
     public static GameRequestBean toGameRequestBean(String name, String token) {
 
         GameRequestBean gameRequest = new GameRequestBean();
@@ -42,6 +66,16 @@ public class TestUtils {
         gameRequest.setToken(token);
 
         return gameRequest;
+    }
+
+    public static GameResponseBean toGameResponseBean(Long id, String name, String owner) {
+
+        GameResponseBean response = new GameResponseBean();
+        response.setId(id);
+        response.setName(name);
+        response.setOwner(owner);
+
+        return response;
     }
 
     public static GamePlayerRequestBean toGamePlayerRequestBean(String token) {
@@ -95,17 +129,4 @@ public class TestUtils {
 
         return template.exchange(base + "/backend/reset", HttpMethod.POST, null, Boolean.class);
     }
-
-    public static UserLoginLogoutResponseBean toUserLLResponseBean(String token){
-        UserLoginLogoutResponseBean result = new UserLoginLogoutResponseBean();
-        result.setToken(token);
-        return result;
-    }
-
-    public static UserLoginLogoutRequestBean toUserLLRequestBean(String token){
-        UserLoginLogoutRequestBean result = new UserLoginLogoutRequestBean();
-        result.setToken(token);
-        return result;
-    }
-
 }
