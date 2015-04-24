@@ -10,12 +10,7 @@ import android.widget.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameColors;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Dice;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.InteractionTile;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.LegBet;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Popup;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.RaceTrackField;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.*;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -31,20 +26,15 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private ArrayList<InteractionTile> interactionTiles = new ArrayList<>();
     private ArrayList<Dice> dices = new ArrayList<>();
     private ArrayList<LegBet> legBets = new ArrayList<>();
-
-    private TextView tvPlayerName;
-    private ImageButton ivPlayerIcon;
-    private TextView tvCurrentPlayerName;
-    private ImageView  ivCurrentPlayerIcon;
-    private ImageButton  ivHelpButton;
-    private TextView tvMoney;
+    private ArrayList<RaceBet> raceBets = new ArrayList<>();
 
     private Bundle savedInstanceState;
     private ViewGroup container;
-    private Long playerId;
+    private Long playerId = 0L;
     private Long gameId;
-
+    private GameColors cardColor;
     private PopupWindow popupWindow;
+    private Button acceptButton;
 
     public static GameFragment newInstance() {
         return new GameFragment();
@@ -63,7 +53,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
         Toast.makeText(v.getContext(), "GameId = " + gameId, Toast.LENGTH_LONG).show();
 
-        ivHelpButton = (ImageButton) v.findViewById(R.id.help);
+        ImageButton ivHelpButton = (ImageButton) v.findViewById(R.id.help);
         ivHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,10 +70,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         initializeRaceTrack();
         initializeLegBettingArea();
         initializeDiceArea();
-
+        initializeRaceBettingArea();
         play();
     }
-
 
     /**
      * Adds possible interaction with the game.
@@ -107,12 +96,18 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         }
         for (Integer legBet: legBettingArea) {
             if (legBet == v.getId()) {
-                displayPopup(v, R.layout.popup_leg_betting, Popup.LEGBET, GameColors.BLUE);
+                displayPopup(v, R.layout.popup_leg_betting, Popup.LEGBET, legBettingArea.indexOf(legBet));
+                return;
+            }
+        }
+        for (Integer raceBet : raceBettingArea) {
+            if (raceBet == v.getId()) {
+                displayPopup(v, R.layout.popup_race_betting, Popup.RACEBET, raceBettingArea.indexOf(raceBet));
                 return;
             }
         }
         if (R.id.dice == v.getId()){
-                displayPopup(v, R.layout.popup_roll_dice, Popup.ROLL_DICE, null);
+                displayPopup(v, R.layout.popup_roll_dice, Popup.ROLL_DICE, 0);
             return;
         }
 
@@ -127,7 +122,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      *  - Reject: abort, close Popup
      * @param anchorView the current view (Bean)
      */
-    public void displayPopup(View anchorView, int layout, Popup POPUPTYPE, GameColors COLOR) {
+    public void displayPopup(View anchorView, int layout, Popup POPUPTYPE, int index) {
         View popupView = getLayoutInflater(savedInstanceState).inflate(layout, container, false);
         popupWindow = new PopupWindow(
                 popupView,
@@ -141,10 +136,10 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 initPopupRollDice(popupView);
                 break;
             case LEGBET:
-                initPopupLegBet(popupView, anchorView, COLOR);
+                initPopupLegBet(popupView, anchorView, index);
                 break;
             case RACEBET:
-                // initPopupRaceBet()
+                initPopupRaceBet(popupView, index);
                 break;
             case PLACE_TILE:
                 // initPopupPlaceTile()
@@ -156,14 +151,13 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 // do something meaningful
         }
 
-        Button acceptButton = (Button) popupView.findViewById(R.id.accept);
+        acceptButton = (Button) popupView.findViewById(R.id.accept);
         Button rejectButton = (Button) popupView.findViewById(R.id.reject);
 
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO: send Game Move
-                // popupWindow.update();
                 popupWindow.dismiss();
             }
         });
@@ -175,8 +169,66 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void initPopupLegBet(View popupView, View legBettingCard, GameColors COLOR) {
-        LegBet legBet = legBets.get(COLOR.ordinal());
+    private void initPopupRaceBet(View popupView, int type) {
+        ImageButton cardBlue = (ImageButton) popupView.findViewById(R.id.card_blue);
+        ImageButton cardGreen = (ImageButton) popupView.findViewById(R.id.card_green);
+        ImageButton cardOrange = (ImageButton) popupView.findViewById(R.id.card_orange);
+        ImageButton cardYellow = (ImageButton) popupView.findViewById(R.id.card_yellow);
+        ImageButton cardWhite = (ImageButton) popupView.findViewById(R.id.card_white);
+
+        ArrayList<Integer> playersCards = raceBets.get(playerId.intValue()).getAllRaceBetCards();
+
+        cardBlue.setImageResource(playersCards.get(GameColors.BLUE.ordinal()));
+        cardGreen.setImageResource(playersCards.get(GameColors.GREEN.ordinal()));
+        cardOrange.setImageResource(playersCards.get(GameColors.ORANGE.ordinal()));
+        cardYellow.setImageResource(playersCards.get(GameColors.YELLOW.ordinal()));
+        cardWhite.setImageResource(playersCards.get(GameColors.WHITE.ordinal()));
+
+        cardColor = null;
+
+        cardBlue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cardColor = GameColors.BLUE;
+                acceptButton.setText(R.string.button_text_blue);
+            }
+        });
+        cardGreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cardColor = GameColors.GREEN;
+                acceptButton.setText(R.string.button_text_green);
+            }
+        });
+        cardOrange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cardColor = GameColors.ORANGE;
+                acceptButton.setText(R.string.button_text_orange);
+            }
+        });
+        cardYellow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cardColor = GameColors.YELLOW;
+                acceptButton.setText(R.string.button_text_yellow);
+            }
+        });
+        cardWhite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cardColor = GameColors.WHITE;
+                acceptButton.setText(R.string.button_text_white);
+            }
+        });
+
+        TextView title = (TextView) popupView.findViewById(R.id.popupTitle);
+        if (type == 0) title.setText(R.string.title_raceBet_tolle);
+        else if (type == 1) title.setText(R.string.title_raceBet_olle);
+    }
+
+    private void initPopupLegBet(View popupView, View legBettingCard, int color) {
+        LegBet legBet = legBets.get(color);
         int pointer = 0;
 
         ImageView card = (ImageView) popupView.findViewById(R.id.card);
@@ -212,7 +264,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         yellowDice.setImageResource(dices.get(GameColors.YELLOW.ordinal()).getCurrentDice());
         whiteDice.setImageResource(dices.get(GameColors.WHITE.ordinal()).getCurrentDice());
     }
-
 
     /**
      * This is only for testing purposes, an alert popup that displays dynamic messages.
@@ -387,10 +438,75 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initializeRaceBettingArea(){
+        RaceBet c1RaceBet = new RaceBet(R.drawable.c1, R.drawable.c1_button);
+        RaceBet c2RaceBet = new RaceBet(R.drawable.c2, R.drawable.c2_button);
+        RaceBet c3RaceBet = new RaceBet(R.drawable.c3, R.drawable.c3_button);
+        RaceBet c4RaceBet = new RaceBet(R.drawable.c4, R.drawable.c4_button);
+        RaceBet c5RaceBet = new RaceBet(R.drawable.c5, R.drawable.c5_button);
+        RaceBet c6RaceBet = new RaceBet(R.drawable.c6, R.drawable.c6_button);
+        RaceBet c7RaceBet = new RaceBet(R.drawable.c7, R.drawable.c7_button);
+        RaceBet c8RaceBet = new RaceBet(R.drawable.c8, R.drawable.c8_button);
+
+        c1RaceBet.add(R.drawable.c1_racebettingcard_blue);
+        c1RaceBet.add(R.drawable.c1_racebettingcard_green);
+        c1RaceBet.add(R.drawable.c1_racebettingcard_orange);
+        c1RaceBet.add(R.drawable.c1_racebettingcard_yellow);
+        c1RaceBet.add(R.drawable.c1_racebettingcard_white);
+
+        c2RaceBet.add(R.drawable.c2_racebettingcard_blue);
+        c2RaceBet.add(R.drawable.c2_racebettingcard_green);
+        c2RaceBet.add(R.drawable.c2_racebettingcard_orange);
+        c2RaceBet.add(R.drawable.c2_racebettingcard_yellow);
+        c2RaceBet.add(R.drawable.c2_racebettingcard_white);
+
+        c3RaceBet.add(R.drawable.c3_racebettingcard_blue);
+        c3RaceBet.add(R.drawable.c3_racebettingcard_green);
+        c3RaceBet.add(R.drawable.c3_racebettingcard_orange);
+        c3RaceBet.add(R.drawable.c3_racebettingcard_yellow);
+        c3RaceBet.add(R.drawable.c3_racebettingcard_white);
+
+        c4RaceBet.add(R.drawable.c4_racebettingcard_blue);
+        c4RaceBet.add(R.drawable.c4_racebettingcard_green);
+        c4RaceBet.add(R.drawable.c4_racebettingcard_orange);
+        c4RaceBet.add(R.drawable.c4_racebettingcard_yellow);
+        c4RaceBet.add(R.drawable.c4_racebettingcard_white);
+
+        c5RaceBet.add(R.drawable.c5_racebettingcard_blue);
+        c5RaceBet.add(R.drawable.c5_racebettingcard_green);
+        c5RaceBet.add(R.drawable.c5_racebettingcard_orange);
+        c5RaceBet.add(R.drawable.c5_racebettingcard_yellow);
+        c5RaceBet.add(R.drawable.c5_racebettingcard_white);
+
+        c6RaceBet.add(R.drawable.c6_racebettingcard_blue);
+        c6RaceBet.add(R.drawable.c6_racebettingcard_green);
+        c6RaceBet.add(R.drawable.c6_racebettingcard_orange);
+        c6RaceBet.add(R.drawable.c6_racebettingcard_yellow);
+        c6RaceBet.add(R.drawable.c6_racebettingcard_white);
+
+        c7RaceBet.add(R.drawable.c7_racebettingcard_blue);
+        c7RaceBet.add(R.drawable.c7_racebettingcard_green);
+        c7RaceBet.add(R.drawable.c7_racebettingcard_orange);
+        c7RaceBet.add(R.drawable.c7_racebettingcard_yellow);
+        c7RaceBet.add(R.drawable.c7_racebettingcard_white);
+
+        c8RaceBet.add(R.drawable.c8_racebettingcard_blue);
+        c8RaceBet.add(R.drawable.c8_racebettingcard_green);
+        c8RaceBet.add(R.drawable.c8_racebettingcard_orange);
+        c8RaceBet.add(R.drawable.c8_racebettingcard_yellow);
+        c8RaceBet.add(R.drawable.c8_racebettingcard_white);
+
+        raceBets.add(c1RaceBet);
+        raceBets.add(c2RaceBet);
+        raceBets.add(c3RaceBet);
+        raceBets.add(c4RaceBet);
+        raceBets.add(c5RaceBet);
+        raceBets.add(c6RaceBet);
+        raceBets.add(c7RaceBet);
+
         raceBettingArea.add(R.id.winner_betting);
         raceBettingArea.add(R.id.loser_betting);
 
-        for (Integer raceBet: raceBettingArea) {
+        for (Integer raceBet : raceBettingArea) {
             (getActivity().findViewById(raceBet)).setOnClickListener(this);
         }
     }
