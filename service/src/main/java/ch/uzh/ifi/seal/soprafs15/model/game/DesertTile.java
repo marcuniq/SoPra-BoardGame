@@ -15,6 +15,11 @@ public class DesertTile extends RaceTrackObject implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue
+    private Long id;
+
+
     @OneToOne(cascade= CascadeType.ALL)
     @JoinColumn(name="USER_ID")
     private User owner;
@@ -59,5 +64,13 @@ public class DesertTile extends RaceTrackObject implements Serializable {
         bean.setIsOasis(isOasis);
 
         return bean;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
