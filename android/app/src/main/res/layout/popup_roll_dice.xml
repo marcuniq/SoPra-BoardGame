@@ -21,7 +21,8 @@
                 android:text="Roll a Dice"
                 android:textColor="#ffffff"
                 android:gravity="center"
-                android:textSize="24sp"/>
+                android:textSize="24sp"
+                android:id="@+id/popupTitle"/>
         </LinearLayout>
 
         <RelativeLayout

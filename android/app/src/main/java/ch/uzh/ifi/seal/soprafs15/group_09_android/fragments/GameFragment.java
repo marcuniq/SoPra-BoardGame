@@ -14,6 +14,8 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Colors;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Dice;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.InteractionTile;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.LegBet;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Popup;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.RaceTrackField;
 import retrofit.Callback;
@@ -27,7 +29,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
     private ArrayList<RaceTrackField> raceTrack = new ArrayList<>();
     private ArrayList<Integer> legBettingArea = new ArrayList<>();
+    private ArrayList<InteractionTile> interactionTiles = new ArrayList<>();
     private ArrayList<Dice> dices = new ArrayList<>();
+    private ArrayList<LegBet> legBets = new ArrayList<>();
 
     private TextView tvPlayerName;
     private ImageButton ivPlayerIcon;
@@ -131,7 +135,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
         switch (POPUP){
             case ROLL_DICE:
-                // initPopupRollDice()
+                initPopupRollDice(popupView);
                 break;
             case LEGBET:
                 // initPopupLegBet()
@@ -152,6 +156,23 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         Button acceptButton = (Button) popupView.findViewById(R.id.accept);
         Button rejectButton = (Button) popupView.findViewById(R.id.reject);
 
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: send Game Move
+                // popupWindow.update();
+                popupWindow.dismiss();
+            }
+        });
+        rejectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+    }
+
+    private void initPopupRollDice(View popupView){
         ImageView blueDice = (ImageView) popupView.findViewById(R.id.dice_blue);
         ImageView greenDice = (ImageView) popupView.findViewById(R.id.dice_green);
         ImageView orangeDice = (ImageView) popupView.findViewById(R.id.dice_orange);
@@ -163,21 +184,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         orangeDice.setBackgroundResource(dices.get(Colors.ORANGE.ordinal()).getCurrentDice());
         yellowDice.setBackgroundResource(dices.get(Colors.YELLOW.ordinal()).getCurrentDice());
         whiteDice.setBackgroundResource(dices.get(Colors.WHITE.ordinal()).getCurrentDice());
-
-        acceptButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: send Game Move
-                popupWindow.update();
-                popupWindow.dismiss();
-            }
-        });
-        rejectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }
-        });
     }
 
 
@@ -236,6 +242,48 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * Adds all field to the OnClickListener
      */
     private void initializeRaceTrack(){
+        InteractionTile c1Tiles = new InteractionTile();
+        InteractionTile c2Tiles = new InteractionTile();
+        InteractionTile c3Tiles = new InteractionTile();
+        InteractionTile c4Tiles = new InteractionTile();
+        InteractionTile c5Tiles = new InteractionTile();
+        InteractionTile c6Tiles = new InteractionTile();
+        InteractionTile c7Tiles = new InteractionTile();
+        InteractionTile c8Tiles = new InteractionTile();
+
+        c1Tiles.add(R.drawable.c1_desert);
+        c1Tiles.add(R.drawable.c1_oasis);
+
+        c2Tiles.add(R.drawable.c2_desert);
+        c2Tiles.add(R.drawable.c2_oasis);
+
+        c3Tiles.add(R.drawable.c3_desert);
+        c3Tiles.add(R.drawable.c3_oasis);
+
+        c4Tiles.add(R.drawable.c4_desert);
+        c4Tiles.add(R.drawable.c4_oasis);
+
+        c5Tiles.add(R.drawable.c5_desert);
+        c5Tiles.add(R.drawable.c5_oasis);
+
+        c6Tiles.add(R.drawable.c6_desert);
+        c6Tiles.add(R.drawable.c6_oasis);
+
+        c7Tiles.add(R.drawable.c7_desert);
+        c7Tiles.add(R.drawable.c7_oasis);
+
+        c8Tiles.add(R.drawable.c8_desert);
+        c8Tiles.add(R.drawable.c8_oasis);
+
+        interactionTiles.add(c1Tiles);
+        interactionTiles.add(c2Tiles);
+        interactionTiles.add(c3Tiles);
+        interactionTiles.add(c4Tiles);
+        interactionTiles.add(c5Tiles);
+        interactionTiles.add(c6Tiles);
+        interactionTiles.add(c7Tiles);
+        interactionTiles.add(c8Tiles);
+
         raceTrack.add(new RaceTrackField(R.id.field1));
         raceTrack.add(new RaceTrackField(R.id.field2));
         raceTrack.add(new RaceTrackField(R.id.field3));
@@ -263,6 +311,38 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * Adds all legBettingAreas to the OnClickListener
      */
     private void initializeLegBettingArea(){
+        LegBet blueLegBets = new LegBet();
+        LegBet greenLegBets = new LegBet();
+        LegBet orangeLegBets = new LegBet();
+        LegBet yellowLegBets = new LegBet();
+        LegBet whiteLegBets = new LegBet();
+
+        blueLegBets.add(R.drawable.legbettingtile_blue_2);
+        blueLegBets.add(R.drawable.legbettingtile_blue_3);
+        blueLegBets.add(R.drawable.legbettingtile_blue_5);
+
+        greenLegBets.add(R.drawable.legbettingtile_green_2);
+        greenLegBets.add(R.drawable.legbettingtile_green_3);
+        greenLegBets.add(R.drawable.legbettingtile_green_5);
+
+        orangeLegBets.add(R.drawable.legbettingtile_orange_2);
+        orangeLegBets.add(R.drawable.legbettingtile_orange_3);
+        orangeLegBets.add(R.drawable.legbettingtile_orange_5);
+
+        yellowLegBets.add(R.drawable.legbettingtile_yellow_2);
+        yellowLegBets.add(R.drawable.legbettingtile_yellow_3);
+        yellowLegBets.add(R.drawable.legbettingtile_yellow_5);
+
+        whiteLegBets.add(R.drawable.legbettingtile_white_2);
+        whiteLegBets.add(R.drawable.legbettingtile_white_3);
+        whiteLegBets.add(R.drawable.legbettingtile_white_5);
+
+        legBets.add(blueLegBets);
+        legBets.add(greenLegBets);
+        legBets.add(orangeLegBets);
+        legBets.add(yellowLegBets);
+        legBets.add(whiteLegBets);
+
         legBettingArea.add(R.id.legbetting_blue);
         legBettingArea.add(R.id.legbetting_green);
         legBettingArea.add(R.id.legbetting_orange);

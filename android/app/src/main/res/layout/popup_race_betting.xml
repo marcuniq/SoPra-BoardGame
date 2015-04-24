@@ -43,37 +43,37 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/dice_blue"
+                    android:layout_margin="5dp"
                     android:background="@drawable/c1_racebettingcard_blue"
-                    android:contentDescription="@string/hello_world"
-                    android:layout_margin="5dp"/>
+                    android:contentDescription="@string/hello_world"/>
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/dice_green"
+                    android:layout_margin="5dp"
                     android:background="@drawable/c1_racebettingcard_green"
-                    android:contentDescription="@string/hello_world"
-                    android:layout_margin="5dp"/>
+                    android:contentDescription="@string/hello_world"/>
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/dice_yellow"
+                    android:layout_margin="5dp"
                     android:background="@drawable/c1_racebettingcard_orange"
-                    android:contentDescription="@string/hello_world"
-                    android:layout_margin="5dp"/>
+                    android:contentDescription="@string/hello_world"/>
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/dice_orange"
+                    android:layout_margin="5dp"
                     android:background="@drawable/c1_racebettingcard_yellow"
-                    android:contentDescription="@string/hello_world"
-                    android:layout_margin="5dp"/>
+                    android:contentDescription="@string/hello_world"/>
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/dice_white"
+                    android:layout_margin="5dp"
                     android:background="@drawable/c1_racebettingcard_white"
-                    android:contentDescription="@string/hello_world"
-                    android:layout_margin="5dp"/>
+                    android:contentDescription="@string/hello_world"/>
 
             </LinearLayout>
 
