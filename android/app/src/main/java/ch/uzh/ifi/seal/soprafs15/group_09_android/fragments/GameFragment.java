@@ -5,7 +5,10 @@ import android.content.DialogInterface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.*;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
@@ -54,6 +57,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
         Toast.makeText(v.getContext(), "GameId = " + gameId, Toast.LENGTH_LONG).show();
 
+        // Playing rules
         ImageButton ivHelpButton = (ImageButton) v.findViewById(R.id.help);
         ivHelpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,8 +149,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             case PLACE_TILE:
                 initPopupPlaceTile(popupView);
                 break;
-            case ROUND_EVALUATION:
-                // initPopupRoundEvaluation()
+            case ROUND:
+                // roundFinished()
                 break;
             default:
                 // do something meaningful
@@ -259,6 +263,19 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         pointer = legBet.getLegBetPointer();
         legBet.setLegBetPointer(pointer + 1);
         legBettingCard.setBackgroundResource(legBet.getCurrentLegBetButton());
+    }
+
+    public void roundPopup(View anchorView, int layout) {
+        View popupView = getLayoutInflater(savedInstanceState).inflate(layout, container, false);
+        popupWindow = new PopupWindow(
+            popupView,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setFocusable(true);
+        popupWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL, 0, 0);
     }
 
     public void instructionsPopup(View anchorView, int layout) {
