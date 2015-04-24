@@ -55,7 +55,7 @@ public class GamePlayerServiceImpl extends GamePlayerService {
         if(game != null && game.getPlayers().size() < GameConstants.MAX_PLAYERS) {
 
             // initialize player for game play & save
-            player.init();
+            player.initForGamePlay();
             game.addPlayer(player);
 
             logger.debug("Game: " + game.getName() + " - player added: " + player.getUsername());

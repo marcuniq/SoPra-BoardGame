@@ -67,11 +67,11 @@ public class TestUtils {
         return template.exchange(base + "/users/" + id + "/login", HttpMethod.POST, null, UserLoginLogoutResponseBean.class);
     }
 
-    public static ResponseEntity<GameResponseBean> createGame(GameRequestBean request, RestTemplate template, URL base) {
+    public static ResponseEntity<GameCreateResponseBean> createGame(GameRequestBean request, RestTemplate template, URL base) {
 
         HttpEntity<GameRequestBean> httpEntity = new HttpEntity<GameRequestBean>(request);
 
-        return template.exchange(base + "/games", HttpMethod.POST, httpEntity, GameResponseBean.class);
+        return template.exchange(base + "/games", HttpMethod.POST, httpEntity, GameCreateResponseBean.class);
     }
 
     public static ResponseEntity<GameAddPlayerResponseBean> addPlayer(GamePlayerRequestBean request, Integer id, RestTemplate template, URL base) {
