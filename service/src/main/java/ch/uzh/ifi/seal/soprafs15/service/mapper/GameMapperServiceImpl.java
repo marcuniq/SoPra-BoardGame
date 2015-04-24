@@ -102,7 +102,7 @@ public class GameMapperServiceImpl extends GameMapperService {
             DesertTilePlacing desertTilePlacing = new DesertTilePlacing();
             desertTilePlacing.setUser(player);
             desertTilePlacing.setGame(game);
-            desertTilePlacing.setAsOasis(bean.getDesertTileAsOasis());
+            desertTilePlacing.setIsOasis(bean.getDesertTileAsOasis());
             desertTilePlacing.setPosition(bean.getDesertTilePosition());
 
 

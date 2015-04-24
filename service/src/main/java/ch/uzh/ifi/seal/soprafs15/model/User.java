@@ -1,10 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.model;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserStatus;
-import ch.uzh.ifi.seal.soprafs15.model.game.Color;
-import ch.uzh.ifi.seal.soprafs15.model.game.Game;
-import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingTile;
-import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingCard;
+import ch.uzh.ifi.seal.soprafs15.model.game.*;
 import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 
 import javax.persistence.*;
@@ -57,8 +54,10 @@ public class User implements Serializable {
     @Column(columnDefinition = "BLOB")
     private List<LegBettingTile> legBettingTiles;
 
-    public User(){
-    }
+    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
+    private DesertTile desertTile;
+
+    public User(){}
 
     /**
      * Initialization of user
@@ -73,7 +72,8 @@ public class User implements Serializable {
         }
 
         // desert tile
-
+        desertTile = new DesertTile();
+        desertTile.setOwner(this);
     }
 
     /**
@@ -175,4 +175,12 @@ public class User implements Serializable {
 	public void setStatus(UserStatus status) {
 		this.status = status;
 	}
+
+    public DesertTile getDesertTile() {
+        return desertTile;
+    }
+
+    public void setDesertTile(DesertTile desertTile) {
+        this.desertTile = desertTile;
+    }
 }

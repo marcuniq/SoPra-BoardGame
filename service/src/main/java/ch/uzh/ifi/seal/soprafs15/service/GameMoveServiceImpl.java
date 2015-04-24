@@ -77,6 +77,9 @@ public class GameMoveServiceImpl extends GameMoveService {
         if(move == null)
             throw new InvalidMoveException(move);
 
+        // quick hack to initialize player, only temporary for testing
+        //player.initForGamePlay();
+
         // execute game logic with move
         move = gameLogicService.processMove(game, player, move);
 
