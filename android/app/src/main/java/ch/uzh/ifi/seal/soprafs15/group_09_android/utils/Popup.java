@@ -5,5 +5,5 @@ public enum Popup {
     RACEBET,
     LEGBET,
     PLACE_TILE,
-    ROUND_EVALUATION
+    ROUND
 }
