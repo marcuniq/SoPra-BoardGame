@@ -16,7 +16,10 @@ import java.util.List;
 public abstract class GameService extends GenericService {
 
     public abstract List<GameResponseBean> listGames();
+
     public abstract GameCreateResponseBean addGame(GameRequestBean bean);
+
     public abstract GameResponseBean getGame(Long gameId);
+
     public abstract void deleteGame(Long gameId, GamePlayerRequestBean bean);
 }
