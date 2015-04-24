@@ -107,12 +107,12 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         }
         for (Integer legBet: legBettingArea) {
             if (legBet == v.getId()) {
-                displayPopup(v, R.layout.popup_leg_betting, Popup.LEGBET, GameColors.BLUE);
+                displayPopup(v, R.layout.popup_leg_betting, Popup.LEGBET, legBettingArea.indexOf(legBet));
                 return;
             }
         }
         if (R.id.dice == v.getId()){
-                displayPopup(v, R.layout.popup_roll_dice, Popup.ROLL_DICE, null);
+                displayPopup(v, R.layout.popup_roll_dice, Popup.ROLL_DICE, 0);
             return;
         }
 
@@ -127,7 +127,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      *  - Reject: abort, close Popup
      * @param anchorView the current view (Bean)
      */
-    public void displayPopup(View anchorView, int layout, Popup POPUPTYPE, GameColors COLOR) {
+    public void displayPopup(View anchorView, int layout, Popup POPUPTYPE, int color) {
         View popupView = getLayoutInflater(savedInstanceState).inflate(layout, container, false);
         popupWindow = new PopupWindow(
                 popupView,
@@ -141,7 +141,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 initPopupRollDice(popupView);
                 break;
             case LEGBET:
-                initPopupLegBet(popupView, anchorView, COLOR);
+                initPopupLegBet(popupView, anchorView, color);
                 break;
             case RACEBET:
                 // initPopupRaceBet()
@@ -175,9 +175,11 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void initPopupLegBet(View popupView, View legBettingCard, GameColors COLOR) {
-        LegBet legBet = legBets.get(COLOR.ordinal());
+    private void initPopupLegBet(View popupView, View legBettingCard, int color) {
+        LegBet legBet = legBets.get(color);
         int pointer = 0;
+
+        Toast.makeText(popupView.getContext(), "color = " + color, Toast.LENGTH_SHORT).show();
 
         ImageView card = (ImageView) popupView.findViewById(R.id.card);
         card.setImageResource(legBet.getCurrentLegBet());
@@ -212,7 +214,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         yellowDice.setImageResource(dices.get(GameColors.YELLOW.ordinal()).getCurrentDice());
         whiteDice.setImageResource(dices.get(GameColors.WHITE.ordinal()).getCurrentDice());
     }
-
 
     /**
      * This is only for testing purposes, an alert popup that displays dynamic messages.
