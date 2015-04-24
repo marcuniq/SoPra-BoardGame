@@ -11,6 +11,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.*;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Dice;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -107,7 +108,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             }
         }
         if (R.id.dice == v.getId()){
-                displayPopup(v, R.layout.popup_roll_dice, Popup.ROLL_DICE, 0);
+            displayPopup(v, R.layout.popup_roll_dice, Popup.ROLL_DICE, 0);
             return;
         }
 
@@ -142,7 +143,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 initPopupRaceBet(popupView, index);
                 break;
             case PLACE_TILE:
-                // initPopupPlaceTile()
+                initPopupPlaceTile(popupView);
                 break;
             case ROUND_EVALUATION:
                 // initPopupRoundEvaluation()
@@ -165,6 +166,28 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
+            }
+        });
+    }
+
+    private void initPopupPlaceTile(View popupView){
+        ImageButton desertButton = (ImageButton) popupView.findViewById(R.id.desert_tile);
+        ImageButton oasisButton = (ImageButton) popupView.findViewById(R.id.oasis_tile);
+
+        desertButton.setImageResource(interactionTiles.get(playerId.intValue()).getDesert());
+        oasisButton.setImageResource(interactionTiles.get(playerId.intValue()).getOasis());
+
+        desertButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                acceptButton.setText(R.string.button_text_desert);
+            }
+        });
+        oasisButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cardColor = GameColors.GREEN;
+                acceptButton.setText(R.string.button_text_oasis);
             }
         });
     }
@@ -329,29 +352,29 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         InteractionTile c7Tiles = new InteractionTile();
         InteractionTile c8Tiles = new InteractionTile();
 
-        c1Tiles.add(R.drawable.c1_desert);
-        c1Tiles.add(R.drawable.c1_oasis);
+        c1Tiles.setDesert(R.drawable.c1_desert);
+        c1Tiles.setOasis(R.drawable.c1_oasis);
 
-        c2Tiles.add(R.drawable.c2_desert);
-        c2Tiles.add(R.drawable.c2_oasis);
+        c2Tiles.setDesert(R.drawable.c2_desert);
+        c2Tiles.setOasis(R.drawable.c2_oasis);
 
-        c3Tiles.add(R.drawable.c3_desert);
-        c3Tiles.add(R.drawable.c3_oasis);
+        c3Tiles.setDesert(R.drawable.c3_desert);
+        c3Tiles.setOasis(R.drawable.c3_oasis);
 
-        c4Tiles.add(R.drawable.c4_desert);
-        c4Tiles.add(R.drawable.c4_oasis);
+        c4Tiles.setDesert(R.drawable.c4_desert);
+        c4Tiles.setOasis(R.drawable.c4_oasis);
 
-        c5Tiles.add(R.drawable.c5_desert);
-        c5Tiles.add(R.drawable.c5_oasis);
+        c5Tiles.setDesert(R.drawable.c5_desert);
+        c5Tiles.setOasis(R.drawable.c5_oasis);
 
-        c6Tiles.add(R.drawable.c6_desert);
-        c6Tiles.add(R.drawable.c6_oasis);
+        c6Tiles.setDesert(R.drawable.c6_desert);
+        c6Tiles.setOasis(R.drawable.c6_oasis);
 
-        c7Tiles.add(R.drawable.c7_desert);
-        c7Tiles.add(R.drawable.c7_oasis);
+        c7Tiles.setDesert(R.drawable.c7_desert);
+        c7Tiles.setOasis(R.drawable.c7_oasis);
 
-        c8Tiles.add(R.drawable.c8_desert);
-        c8Tiles.add(R.drawable.c8_oasis);
+        c8Tiles.setDesert(R.drawable.c8_desert);
+        c8Tiles.setOasis(R.drawable.c8_oasis);
 
         interactionTiles.add(c1Tiles);
         interactionTiles.add(c2Tiles);

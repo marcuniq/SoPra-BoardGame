@@ -60,6 +60,8 @@
     <string name="button_text_orange">Orange card</string>
     <string name="button_text_yellow">Yellow card</string>
     <string name="button_text_white">White card</string>
+    <string name="button_text_desert">Desert tile</string>
+    <string name="button_text_oasis">Oasis tile</string>
     <string name="accept">Apply</string>
     <string name="reject">Cancel</string>
 
