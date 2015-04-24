@@ -2,7 +2,10 @@ package ch.uzh.ifi.seal.soprafs15.model.move;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
+import ch.uzh.ifi.seal.soprafs15.model.game.Color;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
+import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingArea;
+import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingCard;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,13 +19,9 @@ public class RaceBetting extends Move {
     @Column
     private Boolean betOnWinner;
 
-    public Boolean getBetOnWinner() {
-        return betOnWinner;
-    }
+    @Column
+    private Color color;
 
-    public void setBetOnWinner(Boolean betOnWinner) {
-        this.betOnWinner = betOnWinner;
-    }
 
     /**
      * Mapping from Move to Bean
@@ -44,8 +43,31 @@ public class RaceBetting extends Move {
      */
     @Override
     public Move execute() {
+        RaceBettingArea raceBettingArea = game.getRaceBettingArea();
 
+        RaceBettingCard raceBettingCard = user.getRaceBettingCard(color);
+
+        if(betOnWinner)
+            raceBettingArea.betOnWinner(raceBettingCard);
+        else
+            raceBettingArea.betOnLoser(raceBettingCard);
 
         return this;
+    }
+
+    public Boolean getBetOnWinner() {
+        return betOnWinner;
+    }
+
+    public void setBetOnWinner(Boolean betOnWinner) {
+        this.betOnWinner = betOnWinner;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }

@@ -74,6 +74,9 @@ public class Game implements Serializable {
 
     public void initForGamePlay() {
         raceTrack.initForGamePlay();
+
+        for(User p : players)
+            p.initForGamePlay();
     }
 
 

@@ -1,15 +1,15 @@
 package ch.uzh.ifi.seal.soprafs15.model;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserStatus;
-import ch.uzh.ifi.seal.soprafs15.model.game.Game;
-import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingTile;
-import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingCard;
+import ch.uzh.ifi.seal.soprafs15.model.game.*;
 import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 public class User implements Serializable {
@@ -46,7 +46,9 @@ public class User implements Serializable {
     private Integer money;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<RaceBettingCard> raceBettingCards;
+    @MapKeyColumn(name = "color", length = 50, nullable = false)
+    @MapKeyEnumerated(EnumType.STRING)
+    private Map<Color, RaceBettingCard> raceBettingCards = new HashMap<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Column(columnDefinition = "BLOB")
@@ -55,18 +57,32 @@ public class User implements Serializable {
     @Column
     private Long playerId;
 
-    public User(){
+    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
+    private DesertTile desertTile;
 
-    }
+    public User(){}
 
-    public void init() {
+    /**
+     * Initialization of user
+     */
+    public void initForGamePlay() {
         // money
         money = 3;
 
-        //
+        // race betting cards
+        for(Color c : Color.values()){
+            raceBettingCards.put(c, new RaceBettingCard(this, c));
+        }
 
+        // desert tile
+        desertTile = new DesertTile();
+        desertTile.setOwner(this);
     }
 
+    /**
+     * User decides to make a leg bet and takes a tile from the stack
+     * @param tile
+     */
     public void addLegBettingTile(LegBettingTile tile){
         if(!legBettingTiles.contains(tile)){
             legBettingTiles.add(tile);
@@ -74,11 +90,20 @@ public class User implements Serializable {
         }
     }
 
-    public List<RaceBettingCard> getRaceBettingCards() {
+    /**
+     * Remove RaceBettingCard from User to place it on race betting stack
+     * @return RaceBettingCard
+     */
+    public RaceBettingCard getRaceBettingCard(Color color){
+        return raceBettingCards.remove(color);
+    }
+
+
+    public Map<Color, RaceBettingCard> getRaceBettingCards() {
         return raceBettingCards;
     }
 
-    public void setRaceBettingCards(List<RaceBettingCard> raceBettingCards) {
+    public void setRaceBettingCards( Map<Color, RaceBettingCard> raceBettingCards) {
         this.raceBettingCards = raceBettingCards;
     }
 
@@ -160,5 +185,13 @@ public class User implements Serializable {
 
     public void setPlayerId(Long playerId) {
         this.playerId = playerId;
+    }
+
+    public DesertTile getDesertTile() {
+        return desertTile;
+    }
+
+    public void setDesertTile(DesertTile desertTile) {
+        this.desertTile = desertTile;
     }
 }

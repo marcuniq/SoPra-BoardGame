@@ -4,8 +4,7 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameCamelResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameCamelStackResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRaceTrackObjectResponseBean;
 
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +12,14 @@ import java.util.List;
 /**
  * Created by Hakuna on 30.03.2015.
  */
+@Entity
 public class CamelStack extends RaceTrackObject implements Serializable{
 
     private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue
+    private Long id;
 
     @ElementCollection
     @Column
@@ -47,5 +51,13 @@ public class CamelStack extends RaceTrackObject implements Serializable{
         bean.setStack(beanStack);
 
         return bean;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
