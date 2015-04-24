@@ -16,11 +16,11 @@ import java.util.List;
 /**
  * Created by Hakuna on 14.04.2015.
  */
-public class UserMapperServiceImplUT {
+public class UserMapperServiceUT {
 
     protected UserRepository userRepository;
 
-    protected UserMapperService userMapperServiceImpl = new UserMapperServiceImpl(userRepository);
+    protected UserMapperService userMapperService = new UserMapperServiceImpl(userRepository);
 
     @Test
     public void testToUser() {
@@ -33,7 +33,7 @@ public class UserMapperServiceImplUT {
         oracleUser.setAge(20);
         oracleUser.setStatus(UserStatus.OFFLINE);
 
-        User result = userMapperServiceImpl.toUser(testBean);
+        User result = userMapperService.toUser(testBean);
 
         Assert.assertEquals(result.getAge(), oracleUser.getAge());
         Assert.assertEquals(result.getUsername(), oracleUser.getUsername());
@@ -59,7 +59,7 @@ public class UserMapperServiceImplUT {
         oracleUserResponseBean.setGame("TestGame");
         oracleUserResponseBean.setId((long) 0);
 
-        UserResponseBean result = userMapperServiceImpl.toUserResponseBean(testUser);
+        UserResponseBean result = userMapperService.toUserResponseBean(testUser);
 
         Assert.assertEquals(result.getUsername(), oracleUserResponseBean.getUsername());
         Assert.assertEquals(result.getAge(), oracleUserResponseBean.getAge());
@@ -112,7 +112,7 @@ public class UserMapperServiceImplUT {
             count++;
         }
 
-        List<UserResponseBean> result = userMapperServiceImpl.toUserResponseBean(testList);
+        List<UserResponseBean> result = userMapperService.toUserResponseBean(testList);
 
         count = 0;
 
@@ -134,7 +134,7 @@ public class UserMapperServiceImplUT {
         UserLoginLogoutResponseBean oracleBean = new UserLoginLogoutResponseBean();
         oracleBean.setToken("TestToken");
 
-        UserLoginLogoutResponseBean result = userMapperServiceImpl.toLLResponseBean(testUser);
+        UserLoginLogoutResponseBean result = userMapperService.toLLResponseBean(testUser);
 
         Assert.assertEquals(result.getToken(), oracleBean.getToken());
     }

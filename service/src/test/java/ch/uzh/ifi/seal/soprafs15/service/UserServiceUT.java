@@ -140,11 +140,26 @@ public class UserServiceUT {
     @Test
     public void testLogin() throws Exception {
 
+        //oracle values
+        int oracleLength = "111e6162-3b6f-4ae2-a171-2470b63dff00".length();
+
+        //create new User and add it
+        UserRequestBean request = TestUtils.toUserRequestBean(55,"paul");
+        UserResponseBean response = testService.addUser(request);
+
+        //Assert testService has been initialized and call method to be tested
+        assertNotNull(testService);
+        UserLoginLogoutResponseBean result = testService.login(response.getId());
+
+        //Assertions
+        assertEquals(oracleLength, result.getToken().length());
 
     }
 
     @Test
     public void testLogout() throws Exception {
+
+        //void method, difficult to test, omitted for time being
 
     }
 }
