@@ -16,6 +16,7 @@ import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
@@ -30,7 +31,7 @@ import java.util.List;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @IntegrationTest({"server.port=0"})
 public class UserServiceControllerIT {
 
@@ -48,7 +49,7 @@ public class UserServiceControllerIT {
 	
 	@Test
 	@SuppressWarnings("unchecked")
-	public void test1_createUserSuccess() {
+	public void testCreateUserSuccess() {
 
         // Server Reset: Clean Repos
         //TestUtils.clearRepositories(template, base);
@@ -73,10 +74,18 @@ public class UserServiceControllerIT {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void test2_loginUserSuccess() {
+    public void testLoginUserSuccess() {
 
         // Server Reset: Clean Repos
         //TestUtils.clearRepositories(template, base);
+
+        // Set up
+
+        UserRequestBean request = TestUtils.toUserRequestBean(43, "TestUser1");
+
+        ResponseEntity<UserResponseBean> response = TestUtils.createUser(request, template, base);
+
+        // Test Login
 
         ResponseEntity<UserLoginLogoutResponseBean> loginResponse = TestUtils.loginUser(1, template, base);
 
