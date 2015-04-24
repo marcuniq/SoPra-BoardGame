@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs15.service;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.*;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.UserMapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,10 @@ public class UserServiceImpl extends UserService {
     @Override
     public UserResponseBean getUser(Long userId) {
         User user = userRepository.findOne(userId);
+
+        if(user == null)
+            throw new UserNotFoundException(userId, UserServiceImpl.class);
+
         return userMapperService.toUserResponseBean(user);
     }
 

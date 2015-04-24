@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs15.controller;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.*;
 import ch.uzh.ifi.seal.soprafs15.service.*;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.PlayerTurnException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,12 +49,8 @@ public class GameServiceController extends GenericService {
 	public List<GameResponseBean> listGames() {
 		logger.debug("listGames");
 
-        try {
-            List<GameResponseBean> result = gameService.listGames();
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        List<GameResponseBean> result = gameService.listGames();
+        return result;
 	}
 
 
@@ -67,12 +64,8 @@ public class GameServiceController extends GenericService {
 	public GameResponseBean addGame(@RequestBody @Valid GameRequestBean gameRequestBean) {
 		logger.debug("addGame: " + gameRequestBean);
 
-        try {
-            GameResponseBean result = gameService.addGame(gameRequestBean);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameResponseBean result = gameService.addGame(gameRequestBean);
+        return result;
 	}
 	
 	/*
@@ -85,12 +78,8 @@ public class GameServiceController extends GenericService {
 	public GameResponseBean getGame(@PathVariable Long gameId) {
 		logger.debug("getGame: " + gameId);
 
-        try {
-            GameResponseBean result = gameService.getGame(gameId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameResponseBean result = gameService.getGame(gameId);
+        return result;
 	}
 
 
@@ -104,12 +93,8 @@ public class GameServiceController extends GenericService {
 	public GameResponseBean startGame(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
 		logger.debug("startGame: " + gameId);
 
-        try {
-            GameResponseBean result = gameActionService.startGame(gameId, gamePlayerRequestBean);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameResponseBean result = gameActionService.startGame(gameId, gamePlayerRequestBean);
+        return result;
 	}
 
 
@@ -123,12 +108,8 @@ public class GameServiceController extends GenericService {
 	public GameResponseBean stopGame(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
 		logger.debug("startGame: " + gameId);
 
-        try {
-            GameResponseBean result = gameActionService.stopGame(gameId, gamePlayerRequestBean);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameResponseBean result = gameActionService.stopGame(gameId, gamePlayerRequestBean);
+        return result;
 	}
 
 
@@ -142,12 +123,8 @@ public class GameServiceController extends GenericService {
     public GameResponseBean startFastMode(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
         logger.debug("start fast mode: " + gameId);
 
-        try {
-            GameResponseBean result = gameActionService.startFastMode(gameId, gamePlayerRequestBean);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameResponseBean result = gameActionService.startFastMode(gameId, gamePlayerRequestBean);
+        return result;
     }
 
 
@@ -161,12 +138,8 @@ public class GameServiceController extends GenericService {
     public List<GameMoveResponseBean> listPossibleMoves(@PathVariable Long gameId) {
         logger.debug("listMoves");
 
-        try {
-            List<GameMoveResponseBean> result = gameMoveService.listMoves(gameId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        List<GameMoveResponseBean> result = gameMoveService.listMoves(gameId);
+        return result;
     }
 
 
@@ -180,12 +153,8 @@ public class GameServiceController extends GenericService {
 	public List<GameMoveResponseBean> listMoves(@PathVariable Long gameId) {
 		logger.debug("listMoves");
 
-        try {
-            List<GameMoveResponseBean> result = gameMoveService.listMoves(gameId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        List<GameMoveResponseBean> result = gameMoveService.listMoves(gameId);
+        return result;
 	}
 
 
@@ -196,15 +165,11 @@ public class GameServiceController extends GenericService {
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/moves")
 	@ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-	public GameMoveResponseBean addMove(@PathVariable Long gameId, @RequestBody @Valid GameMoveRequestBean gameMoveRequestBean) {
+	public GameMoveResponseBean addMove(@PathVariable Long gameId, @RequestBody @Valid GameMoveRequestBean gameMoveRequestBean){
 		logger.debug("addMove: " + gameMoveRequestBean);
 
-        try {
-            GameMoveResponseBean result = gameMoveService.addMove(gameId, gameMoveRequestBean);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameMoveResponseBean result = gameMoveService.addMove(gameId, gameMoveRequestBean);
+        return result;
 	}
 
 
@@ -218,12 +183,8 @@ public class GameServiceController extends GenericService {
 	public GameMoveResponseBean getMove(@PathVariable Long gameId, @PathVariable Long moveId) {
 		logger.debug("getMove: " + gameId);
 
-        try {
-            GameMoveResponseBean result = gameMoveService.getMove(gameId, moveId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameMoveResponseBean result = gameMoveService.getMove(gameId, moveId);
+        return result;
 	}
 
 
@@ -237,12 +198,8 @@ public class GameServiceController extends GenericService {
 	public List<GamePlayerResponseBean> listPlayers(@PathVariable Long gameId) {
 		logger.debug("listPlayers");
 
-        try {
-            List<GamePlayerResponseBean> result = gamePlayerService.listPlayer(gameId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        List<GamePlayerResponseBean> result = gamePlayerService.listPlayer(gameId);
+        return result;
 	}
 
 
@@ -256,12 +213,8 @@ public class GameServiceController extends GenericService {
 	public GamePlayerResponseBean addPlayer(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
 		logger.debug("addPlayer: " + gamePlayerRequestBean);
 
-        try {
-            GamePlayerResponseBean result = gamePlayerService.addPlayer(gameId, gamePlayerRequestBean);
-            return result;
-        } catch (Exception e) {
-            return null;
-        }
+        GamePlayerResponseBean result = gamePlayerService.addPlayer(gameId, gamePlayerRequestBean);
+        return result;
 	}
 
 
@@ -275,11 +228,7 @@ public class GameServiceController extends GenericService {
 	public GamePlayerResponseBean getPlayer(@PathVariable Long gameId, @PathVariable Long playerId) {
 		logger.debug("getPlayer: " + gameId);
 
-        try {
-            GamePlayerResponseBean result = gamePlayerService.getPlayer(gameId, playerId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GamePlayerResponseBean result = gamePlayerService.getPlayer(gameId, playerId);
+        return result;
 	}
 }

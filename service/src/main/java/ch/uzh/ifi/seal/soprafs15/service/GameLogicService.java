@@ -10,6 +10,6 @@ import ch.uzh.ifi.seal.soprafs15.service.exceptions.PlayerTurnException;
  * @author Marco
  */
 public abstract class GameLogicService extends GenericService {
-    public abstract Move processMove(Game game, User player, Move move) throws PlayerTurnException;
+    public abstract Move processMove(Game game, User player, Move move);
 
 }

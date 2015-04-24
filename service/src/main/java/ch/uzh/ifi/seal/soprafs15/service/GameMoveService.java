@@ -14,6 +14,6 @@ import java.util.List;
 public abstract class GameMoveService extends GenericService {
 
     public abstract List<GameMoveResponseBean> listMoves(Long gameId);
-    public abstract GameMoveResponseBean addMove(Long gameId, GameMoveRequestBean bean) throws PlayerTurnException;
+    public abstract GameMoveResponseBean addMove(Long gameId, GameMoveRequestBean bean);
     public abstract GameMoveResponseBean getMove(Long gameId, Long moveId);
 }

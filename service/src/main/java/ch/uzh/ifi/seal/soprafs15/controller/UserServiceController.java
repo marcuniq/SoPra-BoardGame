@@ -37,12 +37,8 @@ public class UserServiceController extends GenericService {
 	public List<UserResponseBean> listUsers() {
 		logger.debug("listUsers");
 
-        try {
-            List<UserResponseBean> result = userService.listUsers();
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        List<UserResponseBean> result = userService.listUsers();
+        return result;
 	}
 
 
@@ -56,12 +52,8 @@ public class UserServiceController extends GenericService {
 	public UserResponseBean addUser(@RequestBody @Valid UserRequestBean userRequestBean) {
 		logger.debug("addUser: " + userRequestBean);
 
-        try {
-            UserResponseBean result = userService.addUser(userRequestBean);
-            return result;
-        } catch(Exception e){
-            return null;
-        }
+        UserResponseBean result = userService.addUser(userRequestBean);
+        return result;
 	}
 
 
@@ -75,12 +67,8 @@ public class UserServiceController extends GenericService {
 	public UserResponseBean getUser(@PathVariable Long userId) {
 		logger.debug("getUser: " + userId);
 
-        try {
-            UserResponseBean result = userService.getUser(userId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        UserResponseBean result = userService.getUser(userId);
+        return result;
 	}
 
 
@@ -94,12 +82,8 @@ public class UserServiceController extends GenericService {
 	public UserLoginLogoutResponseBean login(@PathVariable Long userId) {
 		logger.debug("login: " + userId);
 
-        try {
-            UserLoginLogoutResponseBean result = userService.login(userId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        UserLoginLogoutResponseBean result = userService.login(userId);
+        return result;
 	}
 
 
@@ -112,11 +96,6 @@ public class UserServiceController extends GenericService {
 	public void logout(@PathVariable Long userId, @RequestBody @Valid UserLoginLogoutRequestBean userLoginLogoutRequestBean) {
 		logger.debug("getUser: " + userId);
 
-        try{
-            userService.logout(userId, userLoginLogoutRequestBean);
-
-        } catch (Exception e){
-
-        }
+        userService.logout(userId, userLoginLogoutRequestBean);
 	}
 }

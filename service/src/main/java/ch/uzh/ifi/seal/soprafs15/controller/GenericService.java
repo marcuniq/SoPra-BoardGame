@@ -1,9 +1,14 @@
 package ch.uzh.ifi.seal.soprafs15.controller;
 
+import ch.uzh.ifi.seal.soprafs15.controller.beans.ExceptionBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.JsonUriWrapper;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.AbstractException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.CheckedException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.UncheckedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -31,11 +36,11 @@ public abstract class GenericService {
 		logger.error("", exception);
 	}
 	
-	@ExceptionHandler(Exception.class)
+/*	@ExceptionHandler(Exception.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public void handleException(Exception exception, HttpServletRequest request) {
 		logger.error("", exception);
-	}
+	}*/
 
 
     /*
@@ -45,11 +50,25 @@ public abstract class GenericService {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public String handleValidationException(MethodArgumentNotValidException e, HttpServletRequest request) {
-        logger.debug("got invalid bean, request:  " + request.toString());
+        logger.error("got invalid bean, request:  " + request.toString());
 
         List<ObjectError> errors = e.getBindingResult().getAllErrors();
-        logger.debug("got invalid bean, errors: " + errors.toString());
+        logger.error("got invalid bean, errors: " + errors.toString());
 
         return "invalid bean";
     }
+
+    /*
+     *  Handles our exceptions
+     */
+    @ExceptionHandler(AbstractException.class)
+    @ResponseBody
+    public ResponseEntity<ExceptionBean> handleAbstractException(AbstractException e, HttpServletRequest request) {
+        logger.error("got exception");
+
+        ResponseEntity<ExceptionBean> result = new ResponseEntity<ExceptionBean>(e.toExceptionBean(), e.getStatus());
+
+        return result;
+    }
+
 }

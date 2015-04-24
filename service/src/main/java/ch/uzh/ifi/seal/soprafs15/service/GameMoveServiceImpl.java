@@ -57,7 +57,7 @@ public class GameMoveServiceImpl extends GameMoveService {
     }
 
     @Override
-    public GameMoveResponseBean addMove(Long gameId, GameMoveRequestBean bean) throws PlayerTurnException {
+    public GameMoveResponseBean addMove(Long gameId, GameMoveRequestBean bean) {
         logger.debug("add move, gameId: " + gameId);
 
         Game game = gameRepository.findOne(gameId);
