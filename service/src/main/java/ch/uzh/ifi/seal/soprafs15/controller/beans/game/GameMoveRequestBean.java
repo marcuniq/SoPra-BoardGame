@@ -15,6 +15,7 @@ public class GameMoveRequestBean {
 
     private Color legBettingTileColor;
     private Boolean raceBettingOnWinner;
+    private Color raceBettingColor;
     private Boolean desertTileAsOasis;
     private Integer desertTilePosition;
 
@@ -64,5 +65,13 @@ public class GameMoveRequestBean {
 
     public void setDesertTilePosition(Integer desertTilePosition) {
         this.desertTilePosition = desertTilePosition;
+    }
+
+    public Color getRaceBettingColor() {
+        return raceBettingColor;
+    }
+
+    public void setRaceBettingColor(Color raceBettingColor) {
+        this.raceBettingColor = raceBettingColor;
     }
 }

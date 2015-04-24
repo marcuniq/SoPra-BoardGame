@@ -16,13 +16,13 @@ public class LegBettingTile extends Card implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
-    @Column(nullable = false)
+    @Column
     private Integer leadingPositionGain;
 
-    @Column(nullable = false)
+    @Column
     private Integer secondPositionGain;
 
-    @Column(nullable = false)
+    @Column
     private Integer otherPositionLoss;
 
     @ManyToOne(cascade = CascadeType.ALL)
