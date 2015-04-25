@@ -10,9 +10,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
-
 /**
  * This adapter is set to replace the custom ArrayAdapter. So we are able to display whatever we want
  * like not only Strings bur using whole objects and their methods (like Game.name or User.username

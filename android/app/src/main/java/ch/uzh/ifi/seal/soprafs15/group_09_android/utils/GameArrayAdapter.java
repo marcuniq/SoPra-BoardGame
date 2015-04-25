@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 
 /**
  *  Uses the GenericArrayAdapter to be able to add any Object to our custom ArrayAdapter. Now we

@@ -11,17 +11,27 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 /**
  * @author Marco
  *
- * Exposing Pusher and Channel methods
+ * Pattern: Singleton
+ * Responsible for Pusher related tasks
  */
-public class PusherApi {
+public class PusherAPIService {
 
     private static final String API_KEY = "0f12b4dc1fd1743e1c87";
+
+    private static PusherAPIService instance;
 
     private Pusher pusher;
     private Channel channel;
 
-    public PusherApi() {
+    private PusherAPIService(){
         createPusher();
+    }
+
+    public static PusherAPIService getInstance(){
+        if(instance == null)
+            instance = new PusherAPIService();
+
+        return instance;
     }
 
     private void createPusher() {

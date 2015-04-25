@@ -10,19 +10,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventRegistry;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameArrayAdapter;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GameListFragment extends ListFragment {
 
@@ -114,18 +115,19 @@ public class GameListFragment extends ListFragment {
         Game selectedGame = (Game) getListAdapter().getItem(position);
 /*
         Toast.makeText(v.getContext(), "You joined the game \"" + selectedGame.name() + "\" with the id (" + selectedGame.id() + ")", Toast.LENGTH_LONG).show();
+
 */
-        Long gameId = selectedGame.id();
+        final Long gameId = selectedGame.id();
         joinedGameId = gameId;
         User player = User.setToken(token);
         playerId = player.id();
 
-        RestService.getInstance(getActivity()).joinGame(gameId, player, new Callback<Game>() {
+        RestService.getInstance(getActivity()).joinGame(gameId, player, new Callback<User>() {
 
             @Override
-            public void success(Game game, Response response) {
+            public void success(User user, Response response) {
 
-                PusherEventRegistry.register(game);
+                PusherService.getInstance(getActivity()).register(gameId, user.channelName());
 
                 Fragment gameLobbyFragment = GameLobbyFragment.newInstance();
                 Bundle bundle = new Bundle();

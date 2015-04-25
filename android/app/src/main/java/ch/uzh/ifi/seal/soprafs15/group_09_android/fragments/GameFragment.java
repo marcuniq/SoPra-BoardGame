@@ -5,18 +5,38 @@ import android.content.DialogInterface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.*;
-import android.widget.*;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.*;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.DiceArea;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.LegBettingArea;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Move;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceBettingArea;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceTrack;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Dice;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameColors;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.InteractionTile;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.LegBet;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Popup;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.RaceBet;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.RaceTrackField;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class GameFragment extends Fragment implements View.OnClickListener {
 
