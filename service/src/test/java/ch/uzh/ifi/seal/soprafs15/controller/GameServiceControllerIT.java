@@ -50,9 +50,6 @@ public class GameServiceControllerIT {
     @SuppressWarnings("unchecked")
     public void testCreateGameSuccess() {
 
-        // Server Reset: Clean Repos
-        //TestUtils.clearRepositories(template, base);
-
         List<GameResponseBean> gamesBefore = template.getForObject(base + "/games", List.class);
         Assert.assertEquals(0, gamesBefore.size());
 
@@ -79,17 +76,11 @@ public class GameServiceControllerIT {
 
         List<GameResponseBean> gamesAfter = template.getForObject(base + "/games", List.class);
         Assert.assertEquals(1, gamesAfter.size());
-
-        // Server Reset: Clean Repos
-        //TestUtils.clearRepositories(template, base);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testCreateGameFail() {
-
-        // Server Reset: Clean Repos
-        //TestUtils.clearRepositories(template, base);
 
         // Set up
 
@@ -124,17 +115,11 @@ public class GameServiceControllerIT {
 
         List<GameResponseBean> gamesAfterSecond = template.getForObject(base + "/games", List.class);
         Assert.assertEquals(1, gamesAfterSecond.size());
-
-        // Server Reset: Clean Repos
-        //TestUtils.clearRepositories(template, base);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testAddPlayerSuccess() {
-
-        // Server Reset: Clean Repos
-        //TestUtils.clearRepositories(template, base);
 
         // Set up
 
@@ -169,17 +154,11 @@ public class GameServiceControllerIT {
 
         List<GamePlayerResponseBean> playersAfter = template.getForObject(base + "/games/1/players", List.class);
         Assert.assertEquals(2, playersAfter.size());
-
-        // Server Reset: Clean Repos
-        //TestUtils.clearRepositories(template, base);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testAddPlayerFail() {
-
-        // Server Reset: Clean Repos
-        //TestUtils.clearRepositories(template, base);
 
         // Set up
 
@@ -214,15 +193,9 @@ public class GameServiceControllerIT {
 
         // TODO Exception Testing GameNotFoundException instead of GamePlayerResponseBean
 
-        // Calculate Length of Channel Name
-        //Long oracleLength = (long) "9b5eabcc-781b-483a-8eed-30d7eacb1567".length();
-
         //Assert.assertEquals((long) oracleLength, playerResponse.getBody().getChannelName().length());
 
         List<GamePlayerResponseBean> playersAfter = template.getForObject(base + "/games/1/players", List.class);
         Assert.assertEquals(1, playersAfter.size());
-
-        // Server Reset: Clean Repos
-        //TestUtils.clearRepositories(template, base);
     }
 }

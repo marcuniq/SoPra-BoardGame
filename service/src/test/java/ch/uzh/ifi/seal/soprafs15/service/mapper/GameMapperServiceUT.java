@@ -6,7 +6,8 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.game.*;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.User;
-import ch.uzh.ifi.seal.soprafs15.model.game.Game;
+import ch.uzh.ifi.seal.soprafs15.model.game.*;
+import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.MoveRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
@@ -23,6 +24,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -200,13 +202,24 @@ public class GameMapperServiceUT {
     @Test
     public void testToGamePlayerResponseBean() throws Exception {
 
+        assertNotNull(testMapperService);
+
+        List moves = new ArrayList<Move>();
+
         //oracle values
-        Long oracleId = (long) 0;
-        Integer oracleNumberOfMoves = 0;
+        Long oracleId = (long) 1;
+        //Integer oracleNumberOfMoves = 0;
+        Integer oracleNumberOfMoves = moves.size();
 
+        User player = new User();
+        player.setId((long) 1);
+        player.setAge(86);
+        player.setMoves(moves);
 
+        GamePlayerResponseBean result = testMapperService.toGamePlayerResponseBean(player);
 
-
+        assertEquals(player.getId(), result.getId());
+        assertEquals(oracleNumberOfMoves, result.getNumberOfMoves());
     }
 
     @Test
@@ -242,15 +255,59 @@ public class GameMapperServiceUT {
     @Test
     public void testToGameLegBettingAreaResponseBean() throws Exception {
 
+        assertNotNull(testMapperService);
+
+        //Map<Color, LegBettingTileStack> map = new Map<Color, LegBettingTileStack>();
+
+        LegBettingArea legBettingArea = new LegBettingArea();
+        legBettingArea.setId((long) 1);
+        //legBettingArea.setLegBettingTiles();
+
+        GameLegBettingAreaResponseBean result = testMapperService.toGameLegBettingAreaResponseBean(legBettingArea);
+
+        assertEquals(legBettingArea.getId(), result.getId());
+        assertEquals(legBettingArea.topLegBettingTiles(), result.getTopLegBettingTiles());
     }
 
     @Test
     public void testToGameRaceBettingAreaResponseBean() throws Exception {
 
+        assertNotNull(testMapperService);
+
+        List<RaceBettingCard> loserBets = new ArrayList<RaceBettingCard>();
+        List<RaceBettingCard> winnerBets = new ArrayList<RaceBettingCard>();
+
+        Integer oracleLoserSize = loserBets.size();
+        Integer oracleWinnerSize = winnerBets.size();
+
+        RaceBettingArea raceBettingArea = new RaceBettingArea();
+        raceBettingArea.setId((long) 1);
+        raceBettingArea.setLoserBetting(loserBets);
+        raceBettingArea.setWinnerBetting(winnerBets);
+
+        GameRaceBettingAreaResponseBean result = testMapperService.toGameRaceBettingAreaResponseBean(raceBettingArea);
+
+        assertEquals(raceBettingArea.getId(), result.getId());
+        assertEquals(raceBettingArea.getNrOfLoserBetting(), result.getNrOfLoserBetting());
+        assertEquals(raceBettingArea.getNrOfWinnerBetting(), result.getNrOfWinnerBetting());
+        assertEquals(oracleLoserSize, result.getNrOfLoserBetting());
+        assertEquals(oracleWinnerSize, result.getNrOfWinnerBetting());
     }
 
     @Test
     public void testToGameDiceAreaResponseBean() throws Exception {
 
+        assertNotNull(testMapperService);
+
+        List<Die> dice = new ArrayList<Die>();
+
+        DiceArea diceArea = new DiceArea();
+        diceArea.setId((long) 1);
+        diceArea.setRolledDice(dice);
+
+        GameDiceAreaResponseBean result = testMapperService.toGameDiceAreaResponseBean(diceArea);
+
+        assertEquals(diceArea.getId(), result.getId());
+        assertEquals(diceArea.getRolledDice(), result.getRolledDice());
     }
 }

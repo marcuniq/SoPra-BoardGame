@@ -58,24 +58,26 @@ public class UserServiceUT {
     @Test
     public void testListUsers() throws Exception {
 
+        assertEquals(0, testService.listUsers().size());
+
         //oracle values
         List<UserResponseBean> oracleList = new ArrayList<>();
-        oracleList.add(TestUtils.toUserResponseBean(12,"jakob"));
+        oracleList.add(TestUtils.toUserResponseBean(12, "jakob"));
 
         //Assert testService has been initialized and call method to be tested
         assertNotNull(testService);
-        testService.addUser(TestUtils.toUserRequestBean(12,"jakob"));
+        testService.addUser(TestUtils.toUserRequestBean(12, "jakob"));
         List<UserResponseBean> result = testService.listUsers();
 
-        //Assertions
         assertEquals(oracleList.get(0).getAge(), result.get(0).getAge());
         assertEquals(oracleList.get(0).getUsername(), result.get(0).getUsername());
-
-
+        assertEquals(oracleList.size(), testService.listUsers().size());
     }
 
     @Test
     public void testAddUser() throws Exception {
+
+        assertEquals(0, testService.listUsers().size());
         //when(mockUserRepo.save(any(User.class))).thenReturn(Long.valueOf(1));
 
         //create new UserRequestBean to test with
@@ -91,13 +93,15 @@ public class UserServiceUT {
         assertNotNull(testService);
         UserResponseBean responseBean = testService.addUser(requestBean);
 
-        //Assertions
-        assertEquals( oracleResponse.getAge(), responseBean.getAge());
+        assertEquals(oracleResponse.getAge(), responseBean.getAge());
         assertEquals(oracleResponse.getUsername(), responseBean.getUsername());
+        assertEquals(1, testService.listUsers().size());
     }
 
     @Test
     public void testGetUser() throws Exception {
+
+        assertEquals(0, testService.listUsers().size());
 
         //oracle values
         UserResponseBean oracleResponse = TestUtils.toUserResponseBean(21, "hans");
@@ -107,16 +111,14 @@ public class UserServiceUT {
         UserResponseBean response = testService.addUser(TestUtils.toUserRequestBean(21, "hans"));
         UserResponseBean result = testService.getUser(response.getId());
 
-        //Assertions
         assertEquals(oracleResponse.getAge(), result.getAge());
         assertEquals(oracleResponse.getUsername(), result.getUsername());
-
+        assertEquals(1, testService.listUsers().size());
     }
 
     @Test
     public void testUpdateUser() throws Exception {
-
-
+        // not implemented yet
     }
 
     /*@Test
@@ -140,6 +142,8 @@ public class UserServiceUT {
     @Test
     public void testLogin() throws Exception {
 
+        assertEquals(0, testService.listUsers().size());
+
         //oracle values
         int oracleLength = "111e6162-3b6f-4ae2-a171-2470b63dff00".length();
 
@@ -153,13 +157,11 @@ public class UserServiceUT {
 
         //Assertions
         assertEquals(oracleLength, result.getToken().length());
-
+        assertEquals(1, testService.listUsers().size());
     }
 
     @Test
     public void testLogout() throws Exception {
-
         //void method, difficult to test, omitted for time being
-
     }
 }

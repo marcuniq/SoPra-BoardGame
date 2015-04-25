@@ -51,9 +51,6 @@ public class UserServiceControllerIT {
 	@SuppressWarnings("unchecked")
 	public void testCreateUserSuccess() {
 
-        // Server Reset: Clean Repos
-        //TestUtils.clearRepositories(template, base);
-
 		List<UserResponseBean> usersBefore = template.getForObject(base + "/users", List.class);
 		Assert.assertEquals(0, usersBefore.size());
 
@@ -67,17 +64,11 @@ public class UserServiceControllerIT {
 		
 	    List<UserResponseBean> usersAfter = template.getForObject(base + "/users", List.class);
 		Assert.assertEquals(1, usersAfter.size());
-
-        // Server Reset: Clean Repos
-        //TestUtils.clearRepositories(template, base);
 	}
 
     @Test
     @SuppressWarnings("unchecked")
     public void testCreateUserFail() {
-
-        // Server Reset: Clean Repos
-        //TestUtils.clearRepositories(template, base);
 
         List<UserResponseBean> usersBefore = template.getForObject(base + "/users", List.class);
         Assert.assertEquals(0, usersBefore.size());
@@ -103,17 +94,11 @@ public class UserServiceControllerIT {
 
         List<UserResponseBean> usersAfterSecond = template.getForObject(base + "/users", List.class);
         Assert.assertEquals(1, usersAfterSecond.size());
-
-        // Server Reset: Clean Repos
-        //TestUtils.clearRepositories(template, base);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testLoginUserSuccess() {
-
-        // Server Reset: Clean Repos
-        //TestUtils.clearRepositories(template, base);
 
         // Set up
 
@@ -128,11 +113,5 @@ public class UserServiceControllerIT {
         Long oracleTokenLength = (long) "067e6162-3b6f-4ae2-a171-2470b63dff00".length();
 
         Assert.assertEquals((long) oracleTokenLength, loginResponse.getBody().getToken().length());
-
-        // Server Reset: Clean Repos
-        //TestUtils.clearRepositories(template, base);
     }
-
-
-
 }
