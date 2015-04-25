@@ -14,7 +14,7 @@ public class GameNotFoundException extends UncheckedException {
         super(message, invoker, HttpStatus.NOT_FOUND);
     }
 
-    public GameNotFoundException(Integer gameId, Class invoker) {
+    public GameNotFoundException(Long gameId, Class invoker) {
         this("Game with id " + gameId + " could not be found!", invoker);
     }
 }

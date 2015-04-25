@@ -7,6 +7,8 @@ import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameFullException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +53,14 @@ public class GamePlayerServiceImpl extends GamePlayerService {
         // find game
         Game game = gameRepository.findOne(gameId);
 
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GamePlayerServiceImpl.class);
+        }
+
+        if(game.getPlayers().size() >= GameConstants.MAX_PLAYERS) {
+            throw new GameFullException(game, GamePlayerServiceImpl.class);
+        }
+
         if(game != null && game.getPlayers().size() < GameConstants.MAX_PLAYERS) {
 
             // initialize player for game play & save
@@ -70,6 +80,10 @@ public class GamePlayerServiceImpl extends GamePlayerService {
     public GamePlayerResponseBean getPlayer(Long gameId, Long playerId) {
         Game game = gameRepository.findOne(gameId);
         User player = game.getPlayers().stream().filter(p -> p.getId() == playerId).findFirst().get();
+
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GamePlayerServiceImpl.class);
+        }
 
         return gameMapperService.toGamePlayerResponseBean(player);
     }

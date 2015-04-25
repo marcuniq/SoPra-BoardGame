@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs15.service;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.move.Move;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.InvalidMoveException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.NotYourTurnException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.PlayerTurnException;
 import org.slf4j.Logger;
@@ -24,11 +25,15 @@ public class GameLogicServiceImpl extends GameLogicService {
     public Move processMove(Game game, User player, Move move) {
         // is it player's turn?
         User currentPlayer = game.getPlayers().get(game.getCurrentPlayer());
-        if(!currentPlayer.getUsername().equals(player.getUsername()))
+
+        if(!currentPlayer.getUsername().equals(player.getUsername())) {
             throw new NotYourTurnException(GameLogicServiceImpl.class);
+        }
 
         // valid move? else throw exception
-
+        if(false) {
+            throw new InvalidMoveException("Invalid Move", GameLogicServiceImpl.class);
+        }
 
         // execute move
         move.execute();

@@ -8,6 +8,8 @@ import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.MoveRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.MoveNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.PlayerTurnException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import org.slf4j.Logger;
@@ -50,6 +52,10 @@ public class GameMoveServiceImpl extends GameMoveService {
         logger.debug("list moves");
         Game game = gameRepository.findOne(gameId);
 
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GameMoveServiceImpl.class);
+        }
+
         if(game != null) {
             return gameMapperService.toGameMoveResponseBean(game.getMoves());
         }
@@ -63,6 +69,10 @@ public class GameMoveServiceImpl extends GameMoveService {
         Game game = gameRepository.findOne(gameId);
         User player = userRepository.findByToken(bean.getToken());
         Move move = gameMapperService.toMove(game, player, bean);
+
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GameMoveServiceImpl.class);
+        }
 
         if(game != null && move != null) {
 
@@ -82,6 +92,10 @@ public class GameMoveServiceImpl extends GameMoveService {
     @Override
     public GameMoveResponseBean getMove(Long gameId, Long moveId) {
         Move move = (Move) moveRepository.findOne(moveId);
+
+        if(move == null) {
+            throw new MoveNotFoundException(moveId, GameMoveServiceImpl.class);
+        }
 
         if(move != null) {
             return gameMapperService.toGameMoveResponseBean(move);

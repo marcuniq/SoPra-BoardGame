@@ -61,6 +61,10 @@ public class UserServiceImpl extends UserService {
         User user = userMapperService.toUser(bean);
         User user_1 = userRepository.findOne(userId);
 
+        if(user_1 == null) {
+            throw new UserNotFoundException(userId, UserServiceImpl.class);
+        }
+
         if(user_1 != null && user_1.getToken().equals(user.getToken())) {
 
             user_1.setId(user.getId());
@@ -86,6 +90,10 @@ public class UserServiceImpl extends UserService {
         User user = userMapperService.toUser(bean);
         User user_1 = userRepository.findOne(userId);
 
+        if(user_1 == null) {
+            throw new UserNotFoundException(userId, UserServiceImpl.class);
+        }
+
         if(user_1 != null && user_1.getToken().equals(user.getToken())) {
             userRepository.delete(userId);
         }
@@ -94,6 +102,10 @@ public class UserServiceImpl extends UserService {
     @Override
     public UserLoginLogoutResponseBean login(Long userId) {
         User user = userRepository.findOne(userId);
+
+        if(user == null) {
+            throw new UserNotFoundException(userId, UserServiceImpl.class);
+        }
 
         if(user != null) {
             user.setToken(UUID.randomUUID().toString());
@@ -109,6 +121,10 @@ public class UserServiceImpl extends UserService {
     public void logout(Long userId, UserLoginLogoutRequestBean bean) {
         User user = userMapperService.toUser(bean);
         User user_1 = userRepository.findOne(userId);
+
+        if(user_1 == null) {
+            throw new UserNotFoundException(userId, UserServiceImpl.class);
+        }
 
         if(user_1 != null && user_1.getToken().equals(user.getToken())) {
             user_1.setStatus(UserStatus.OFFLINE);

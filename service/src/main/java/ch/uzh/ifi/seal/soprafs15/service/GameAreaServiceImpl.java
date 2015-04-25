@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs15.service;
 
 import ch.uzh.ifi.seal.soprafs15.model.game.*;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,10 @@ public class GameAreaServiceImpl extends GameAreaService {
     public RaceTrack getRaceTrack(Long gameId) {
         Game game = gameRepository.findOne(gameId);
 
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GameAreaServiceImpl.class);
+        }
+
         if(game != null) {
             return game.getRaceTrack();
         }
@@ -37,6 +42,10 @@ public class GameAreaServiceImpl extends GameAreaService {
     @Override
     public LegBettingArea getLegBettingArea(Long gameId) {
         Game game = gameRepository.findOne(gameId);
+
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GameAreaServiceImpl.class);
+        }
 
         if(game != null) {
             return game.getLegBettingArea();
@@ -48,6 +57,10 @@ public class GameAreaServiceImpl extends GameAreaService {
     public RaceBettingArea getRaceBettingArea(Long gameId) {
         Game game = gameRepository.findOne(gameId);
 
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GameAreaServiceImpl.class);
+        }
+
         if(game != null) {
             return game.getRaceBettingArea();
         }
@@ -57,6 +70,10 @@ public class GameAreaServiceImpl extends GameAreaService {
     @Override
     public DiceArea getDiceArea(Long gameId) {
         Game game = gameRepository.findOne(gameId);
+
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GameAreaServiceImpl.class);
+        }
 
         if(game != null) {
             return game.getDiceArea();
