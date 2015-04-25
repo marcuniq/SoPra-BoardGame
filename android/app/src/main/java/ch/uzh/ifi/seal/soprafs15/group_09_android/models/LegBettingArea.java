@@ -1,16 +1,13 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.models;
 
-import android.os.Parcelable;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.LegBettingAreaBean;
 
-import auto.parcel.AutoParcel;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoGson;
+/**
+ * @author Marco
+ */
+public class LegBettingArea extends AbstractArea {
 
-@AutoParcel @AutoGson
-public abstract class LegBettingArea implements Parcelable {
-    public abstract String name();
+    public LegBettingArea(LegBettingAreaBean bean){
 
-    public static LegBettingArea create(String name) {
-        return new AutoParcel_LegBettingArea(name);
     }
 }
-

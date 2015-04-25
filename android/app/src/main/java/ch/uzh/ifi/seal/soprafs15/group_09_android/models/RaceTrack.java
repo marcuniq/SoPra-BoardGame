@@ -1,16 +1,13 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.models;
 
-import android.os.Parcelable;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackBean;
 
-import auto.parcel.AutoParcel;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoGson;
+/**
+ * @author Marco
+ */
+public class RaceTrack extends AbstractArea {
 
-@AutoParcel @AutoGson
-public abstract class RaceTrack implements Parcelable {
-    public abstract String name();
+    public RaceTrack(RaceTrackBean bean){
 
-    public static RaceTrack create(String name) {
-        return new AutoParcel_RaceTrack(name);
     }
 }
-

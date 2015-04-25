@@ -1,23 +1,24 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.models.events;
 
-import android.os.Parcelable;
-import android.support.annotation.Nullable;
-
-import auto.parcel.AutoParcel;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoGson;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.beans.MoveEventBean;
 
 /**
  * @author Marco
  */
-@AutoGson @AutoParcel
-public abstract class MoveEvent implements Parcelable {
+public class MoveEvent extends AbstractPusherEvent {
 
-    public abstract PushEventNameEnum pushEventNameEnum();
+    private Long moveId;
 
-    @Nullable
-    public abstract Long moveId();
+    public MoveEvent(MoveEventBean bean){
+        this.pushEventNameEnum = bean.pushEventNameEnum();
+        this.moveId = bean.moveId();
+    }
 
-    public static MoveEvent create(PushEventNameEnum pushEventNameEnum, Long moveId){
-        return new AutoParcel_MoveEvent(pushEventNameEnum, moveId);
+    public Long getMoveId() {
+        return moveId;
+    }
+
+    public void setMoveId(Long moveId) {
+        this.moveId = moveId;
     }
 }

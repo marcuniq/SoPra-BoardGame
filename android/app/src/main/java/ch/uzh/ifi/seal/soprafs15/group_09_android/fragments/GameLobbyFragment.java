@@ -1,45 +1,40 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.pusher.client.channel.SubscriptionEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.AbstractArea;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.AreaName;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.DiceArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoValueAdapterFactory;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.AreaService;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.AreaUpdateSubscriber;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventSubscriber;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameArrayAdapter;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.PlayerArrayAdapter;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 //public class GameLobbyFragment extends ListFragment {
-public class GameLobbyFragment extends ListFragment {
+public class GameLobbyFragment extends ListFragment{
 
     private TextView tvLogBox;
     private Long gameId;
@@ -67,6 +62,38 @@ public class GameLobbyFragment extends ListFragment {
         gameId = this.getArguments().getLong("gameId");
         playerId = this.getArguments().getLong("playerId");
         isOwner = this.getArguments().getBoolean("isOwner");
+
+        // for demonstration purposes
+        // subscribe to move event and display id
+        PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.MOVE_EVENT,
+                new PusherEventSubscriber() {
+            @Override
+            public void onNewEvent(final AbstractPusherEvent moveEvent) {
+                System.out.println("got new event");
+
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(getActivity(), "new move event: " +
+                                ((MoveEvent) moveEvent).getMoveId(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        AreaService.getInstance(getActivity()).addSubscriber(AreaName.DICE_AREA, new AreaUpdateSubscriber() {
+            @Override
+            public void onUpdate(AbstractArea area) {
+                DiceArea diceArea = (DiceArea) area;
+
+                System.out.println("got dice area, " + diceArea.getId());
+                System.out.println(diceArea.getRolledDice().size());
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                System.out.println(errorMessage);
+            }
+        });
     }
 
     /**
@@ -78,6 +105,8 @@ public class GameLobbyFragment extends ListFragment {
         View v = inflater.inflate(R.layout.fragment_lobby, container, false);
 
         startGameButton = (Button) v.findViewById(R.id.startButton);
+
+
 
         // Hide button if user is not the owner
         if (isOwner) {
