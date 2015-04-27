@@ -122,6 +122,61 @@ public class GameServiceControllerIT {
     }
 
     @Test
+    public void testGetGameSuccess() throws Exception {
+
+        // Check if no game exists before test
+        List<GameResponseBean> gamesBefore = template.getForObject(base + "/games", List.class);
+        Assert.assertEquals(0, gamesBefore.size());
+
+        // Create user (owner) to create new game
+        UserRequestBean userRequest = TestUtils.toUserRequestBean(65, "TestOwner");
+        ResponseEntity<UserResponseBean> userResponse = TestUtils.createUser(userRequest, template, base);
+
+        // Login user to get token for game creation
+        ResponseEntity<UserLoginLogoutResponseBean> loginResponse = TestUtils.loginUser(1, template, base);
+        String token = loginResponse.getBody().getToken();
+
+        // Create New Game
+        GameRequestBean gameRequest = TestUtils.toGameRequestBean("TestGame", token);
+        ResponseEntity<GameCreateResponseBean> gameResponse = TestUtils.createGame(gameRequest, template, base);
+
+        List<GameResponseBean> gamesAfter = template.getForObject(base + "/games", List.class);
+        Assert.assertEquals(1, gamesAfter.size());
+    }
+
+    @Test
+    public void testStartGameSuccess() throws Exception {
+
+        // Check if no game exists before test
+        List<GameResponseBean> gamesBefore = template.getForObject(base + "/games", List.class);
+        Assert.assertEquals(0, gamesBefore.size());
+
+        // Create user (owner) to create new game
+        UserRequestBean userRequest = TestUtils.toUserRequestBean(65, "TestOwner");
+        ResponseEntity<UserResponseBean> userResponse = TestUtils.createUser(userRequest, template, base);
+
+        // Login user to get token for game creation
+        ResponseEntity<UserLoginLogoutResponseBean> loginResponse = TestUtils.loginUser(1, template, base);
+        String token = loginResponse.getBody().getToken();
+
+        // Create New Game
+        GameRequestBean gameRequest = TestUtils.toGameRequestBean("TestGame", token);
+        ResponseEntity<GameCreateResponseBean> gameResponse = TestUtils.createGame(gameRequest, template, base);
+
+        List<GameResponseBean> gamesAfter = template.getForObject(base + "/games", List.class);
+        Assert.assertEquals(1, gamesAfter.size());
+
+        // Create GamePlayerRequestBean for Starting the Game
+        GamePlayerRequestBean playerRequest = new GamePlayerRequestBean();
+        playerRequest.setToken(token);
+
+        HttpEntity<GamePlayerRequestBean> httpEntity = new HttpEntity<GamePlayerRequestBean>(playerRequest);
+        //GameResponseBean result = template.exchange(base + "/games/1/start", HttpMethod.POST, httpEntity, GameResponseBean.class);
+
+        // TODO
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void testAddPlayerSuccess() throws Exception {
 
@@ -202,7 +257,7 @@ public class GameServiceControllerIT {
     }
 
     @Test
-    public void testAddLegBettingMove() {
+    public void testLegBettingSuccess() throws Exception {
 
         // Create new user (needed for creating new game)
         UserRequestBean ownerRequest = TestUtils.toUserRequestBean(44, "TestOwner");
@@ -242,7 +297,7 @@ public class GameServiceControllerIT {
     }
 
     @Test
-    public void testAddDesertTilePlacingMove() {
+    public void testDesertTilePlacingSuccess() throws Exception {
 
         // Create new user (needed for creating new game)
         UserRequestBean ownerRequest = TestUtils.toUserRequestBean(44, "TestOwner");
@@ -283,7 +338,7 @@ public class GameServiceControllerIT {
     }
 
     @Test
-    public void testAddRaceBettingMove() {
+    public void testRaceBettingSuccess() throws Exception {
 
         // Create new user (needed for creating new game)
         UserRequestBean ownerRequest = TestUtils.toUserRequestBean(44, "TestOwner");
@@ -323,7 +378,7 @@ public class GameServiceControllerIT {
     }
 
     @Test
-    public void testAddRollDiceMove() {
+    public void testRollDiceSuccess() throws Exception {
 
         // Create new user (needed for creating new game)
         UserRequestBean ownerRequest = TestUtils.toUserRequestBean(44, "TestOwner");
