@@ -1,7 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.utils;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 import android.widget.TextView;
 

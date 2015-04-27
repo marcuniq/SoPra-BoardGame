@@ -36,19 +36,21 @@ public abstract class User implements Parcelable {
     public abstract List<RaceBettingCard> raceBettingCards();
     @Nullable
     public abstract List<LegBettingTile> legBettingTiles();
+    @Nullable
+    public abstract String channelName();
 
 
     public static User create( String username,
                                Integer age) {
         return new AutoParcel_User( null, username, age, null,
                                     null, null, null, null,
-                                    null, null, null);
+                                    null, null, null, null);
     }
 
     public static User setToken( String token ) {
         return new AutoParcel_User( null, null, null, token,
                 null, null, null, null,
-                null, null, null);
+                null, null, null, null);
     }
 }
 

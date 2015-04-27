@@ -1,23 +1,24 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.models.events;
 
-import android.os.Parcelable;
-import android.support.annotation.Nullable;
-
-import auto.parcel.AutoParcel;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoGson;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.beans.PlayerLeftEventBean;
 
 /**
- * @author Marco 
+ * @author Marco
  */
-@AutoGson @AutoParcel
-public abstract class PlayerLeftEvent implements Parcelable {
+public class PlayerLeftEvent extends AbstractPusherEvent {
 
-    public abstract PushEventNameEnum pushEventNameEnum();
+    private Long userId;
 
-    @Nullable
-    public abstract Long userId();
+    public PlayerLeftEvent(PlayerLeftEventBean bean){
+        this.pushEventNameEnum = bean.pushEventNameEnum();
+        this.userId = bean.userId();
+    }
 
-    public static PlayerLeftEvent create(PushEventNameEnum pushEventNameEnum, Long userId){
-        return new AutoParcel_PlayerLeftEvent(pushEventNameEnum,userId);
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

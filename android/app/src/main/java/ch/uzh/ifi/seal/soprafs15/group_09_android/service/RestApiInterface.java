@@ -2,7 +2,17 @@ package ch.uzh.ifi.seal.soprafs15.group_09_android.service;
 
 import java.util.List;
 
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.DiceArea;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.LegBettingArea;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Move;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceBettingArea;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceTrack;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DiceAreaBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.LegBettingAreaBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceBettingAreaBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackBean;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
@@ -115,5 +125,37 @@ public interface RestApiInterface {
      * @param callback
      */
     @POST("/games/{gameId}/players")
-    void joinGame(@Path("gameId") Long gameId, @Body User token, Callback<Game> callback);
+    void joinGame(@Path("gameId") Long gameId, @Body User token, Callback<User> callback);
+
+    /**
+     *
+     * @param gameId
+     * @param callback
+     */
+    @GET("/games/{gameId}/racetrack")
+    void getRacetrack(@Path("gameId") Long gameId, Callback<RaceTrackBean> callback);
+
+    /**
+     *
+     * @param gameId
+     * @param callback
+     */
+    @GET("/games/{gameId}/legbettingarea")
+    void getLegBettingArea(@Path("gameId") Long gameId, Callback<LegBettingAreaBean> callback);
+
+    /**
+     *
+     * @param gameId
+     * @param callback
+     */
+    @GET("/games/{gameId}/racebettingarea")
+    void getRaceBettingArea(@Path("gameId") Long gameId, Callback<RaceBettingAreaBean> callback);
+
+    /**
+     *
+     * @param gameId
+     * @param callback
+     */
+    @GET("/games/{gameId}/dicearea")
+    void getDiceArea(@Path("gameId") Long gameId, Callback<DiceAreaBean> callback);
 }

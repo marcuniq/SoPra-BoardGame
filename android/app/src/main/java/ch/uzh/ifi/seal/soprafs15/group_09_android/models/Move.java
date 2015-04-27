@@ -1,8 +1,8 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.models;
 
 import android.os.Parcelable;
-
 import android.support.annotation.Nullable;
+
 import auto.parcel.AutoParcel;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoGson;
 

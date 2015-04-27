@@ -1,7 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.controller.beans.game;
 
 
-public class GameAddPlayerResponseBean {
+public class GameAddPlayerResponseBean extends GamePlayerResponseBean {
 
     private String channelName;
 
