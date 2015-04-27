@@ -312,87 +312,103 @@
             android:layout_height="fill_parent">
 
             <!-- legbetting cards blue -->
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:id="@+id/legbetting_blue"
-                android:layout_marginTop="15dp"
-                android:layout_marginLeft="-2dp"
-                android:layout_marginStart="-2dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="-6dp"
+                android:layout_marginStart="-6dp"
                 android:contentDescription="@string/legbetting_blue"
-                android:background="@drawable/legbettingtile_blue_5_button"/>
+                android:scaleType="fitCenter"
+                android:src="@drawable/legbettingtile_blue_5_button"
+                android:clickable="true"/>
 
             <!-- legbetting cards green -->
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:id="@+id/legbetting_green"
-                android:layout_marginTop="77dp"
-                android:layout_marginLeft="82dp"
-                android:layout_marginStart="82dp"
+                android:layout_marginTop="73dp"
+                android:layout_marginLeft="78dp"
+                android:layout_marginStart="78dp"
                 android:contentDescription="@string/legbetting_green"
-                android:background="@drawable/legbettingtile_green_5_button"/>
+                android:scaleType="fitCenter"
+                android:src="@drawable/legbettingtile_green_5_button"
+                android:clickable="true"/>
 
             <!-- legbetting cards orange -->
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="80dp"
                 android:id="@+id/legbetting_orange"
-                android:layout_marginTop="183dp"
-                android:layout_marginLeft="122dp"
-                android:layout_marginStart="122dp"
+                android:layout_marginTop="208dp"
+                android:layout_marginLeft="118dp"
+                android:layout_marginStart="118dp"
                 android:contentDescription="@string/legbetting_orange"
-                android:background="@drawable/legbettingtile_orange_5_button"/>
+                android:scaleType="fitCenter"
+                android:src="@drawable/legbettingtile_orange_5_button"
+                android:clickable="true"/>
 
             <!-- legbetting cards yellow -->
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:id="@+id/legbetting_yellow"
-                android:layout_marginTop="288dp"
-                android:layout_marginLeft="82dp"
-                android:layout_marginStart="82dp"
+                android:layout_marginTop="285dp"
+                android:layout_marginLeft="78dp"
+                android:layout_marginStart="78dp"
                 android:contentDescription="@string/legbetting_yellow"
-                android:background="@drawable/legbettingtile_yellow_5_button"/>
+                android:scaleType="fitCenter"
+                android:src="@drawable/legbettingtile_yellow_5_button"
+                android:clickable="true"/>
 
             <!-- legbetting cards white -->
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:id="@+id/legbetting_white"
-                android:layout_marginTop="355dp"
+                android:layout_marginTop="351dp"
+                android:layout_marginLeft="-5dp"
+                android:layout_marginStart="-10dp"
                 android:contentDescription="@string/legbetting_white"
-                android:background="@drawable/legbettingtile_white_5_button"/>
+                android:scaleType="fitCenter"
+                android:src="@drawable/legbettingtile_white_5_button"
+                android:clickable="true"/>
 
             <!-- winner betting -->
-            <ImageButton
+            <ImageView
                 android:layout_width="110dp"
                 android:layout_height="75dp"
                 android:id="@+id/winner_betting"
                 android:layout_marginTop="13dp"
                 android:layout_marginLeft="280dp"
                 android:layout_marginStart="280dp"
-                android:contentDescription="@string/winner_betting"/>
+                android:contentDescription="@string/winner_betting"
+                android:clickable="true"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="140dp"
+                android:layout_height="80dp"
                 android:id="@+id/pyramid_tile"
-                android:layout_marginTop="183dp"
+                android:layout_marginTop="208dp"
                 android:layout_marginLeft="260dp"
                 android:layout_marginStart="260dp"
                 android:contentDescription="@string/pyramid_tile"
-                android:background="@drawable/pyramid_tile_1_button"/>
+                android:scaleType="fitCenter"
+                android:src="@drawable/pyramid_tile_1_button"
+                android:clickable="true"/>
 
             <!-- loser betting -->
-            <ImageButton
+            <ImageView
                 android:layout_width="110dp"
                 android:layout_height="75dp"
                 android:id="@+id/loser_betting"
                 android:layout_marginTop="414dp"
                 android:layout_marginLeft="280dp"
                 android:layout_marginStart="280dp"
-                android:contentDescription="@string/loser_betting"/>
+                android:contentDescription="@string/loser_betting"
+                android:clickable="true"/>
 
         </RelativeLayout>
     </LinearLayout>
