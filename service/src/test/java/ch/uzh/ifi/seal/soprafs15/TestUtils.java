@@ -86,7 +86,7 @@ public class TestUtils {
         return gamePlayerRequest;
     }
 
-    public static GameMoveRequestBean toGameMoveBean(String token, MoveEnum move, Boolean desertTileAsOasis, Integer position, Color color, Boolean raceBettingOnWinner) {
+    public static GameMoveRequestBean toGameMoveRequestBean(String token, MoveEnum move, Boolean desertTileAsOasis, Integer position, Color color, Boolean raceBettingOnWinner) {
 
         GameMoveRequestBean gameMoveRequest = new GameMoveRequestBean();
         gameMoveRequest.setToken(token);
@@ -123,6 +123,13 @@ public class TestUtils {
         HttpEntity<GamePlayerRequestBean> playerRequestHttpEntity = new HttpEntity<GamePlayerRequestBean>(request);
 
         return template.exchange(base + "/games/" + id + "/players", HttpMethod.POST, playerRequestHttpEntity, GameAddPlayerResponseBean.class);
+    }
+
+    public static ResponseEntity<GameMoveResponseBean> addMove(GameMoveRequestBean request, Integer gameId, RestTemplate template, URL base) {
+
+        HttpEntity<GameMoveRequestBean> httpEntity = new HttpEntity<GameMoveRequestBean>(request);
+
+        return template.exchange(base + "/games/" + gameId + "/moves", HttpMethod.POST, httpEntity, GameMoveResponseBean.class);
     }
 
     public static ResponseEntity<Boolean> clearRepositories(RestTemplate template, URL base) {
