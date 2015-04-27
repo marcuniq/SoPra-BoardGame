@@ -55,6 +55,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private GameColors cardColor;
     private PopupWindow popupWindow;
     private Button acceptButton;
+    private View anchorView;
     private ArrayList<Integer> playerCharacterCards = new ArrayList<>();
 
     public static GameFragment newInstance() {
@@ -161,7 +162,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 initPopupLegBet(popupView, anchorView, index);
                 break;
             case RACEBET:
-                initPopupRaceBet(popupView, index);
+                initPopupRaceBet(popupView, anchorView, index);
                 break;
             case PLACE_TILE:
                 // initPopupPlaceTile()
@@ -191,7 +192,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void initPopupRaceBet(View popupView, int type) {
+    private void initPopupRaceBet(View popupView, View cardButton, int type) {
         ImageButton cardBlue = (ImageButton) popupView.findViewById(R.id.card_blue);
         ImageButton cardGreen = (ImageButton) popupView.findViewById(R.id.card_green);
         ImageButton cardOrange = (ImageButton) popupView.findViewById(R.id.card_orange);
@@ -206,6 +207,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         cardYellow.setImageResource(playersCards.get(GameColors.YELLOW.ordinal()));
         cardWhite.setImageResource(playersCards.get(GameColors.WHITE.ordinal()));
 
+        anchorView = cardButton;
         cardColor = null; // because card color is outside function accessible we need to set it to null every time
 
         TextView title = (TextView) popupView.findViewById(R.id.popupTitle);
@@ -217,7 +219,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 cardColor = GameColors.BLUE;
                 acceptButton.setText(R.string.button_text_blue);
-                v.setBackgroundResource(playerCharacterCards.get(1));
+                anchorView.setBackgroundResource(playerCharacterCards.get(1));
             }
         });
         cardGreen.setOnClickListener(new View.OnClickListener() {
@@ -225,7 +227,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 cardColor = GameColors.GREEN;
                 acceptButton.setText(R.string.button_text_green);
-                v.setBackgroundResource(playerCharacterCards.get(1));
+                anchorView.setBackgroundResource(playerCharacterCards.get(1));
             }
         });
         cardOrange.setOnClickListener(new View.OnClickListener() {
@@ -233,7 +235,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 cardColor = GameColors.ORANGE;
                 acceptButton.setText(R.string.button_text_orange);
-                v.setBackgroundResource(playerCharacterCards.get(1));
+                anchorView.setBackgroundResource(playerCharacterCards.get(1));
             }
         });
         cardYellow.setOnClickListener(new View.OnClickListener() {
@@ -241,7 +243,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 cardColor = GameColors.YELLOW;
                 acceptButton.setText(R.string.button_text_yellow);
-                v.setBackgroundResource(playerCharacterCards.get(1));
+                anchorView.setBackgroundResource(playerCharacterCards.get(1));
             }
         });
         cardWhite.setOnClickListener(new View.OnClickListener() {
@@ -249,7 +251,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 cardColor = GameColors.WHITE;
                 acceptButton.setText(R.string.button_text_white);
-                v.setBackgroundResource(playerCharacterCards.get(1));
+                anchorView.setBackgroundResource(playerCharacterCards.get(1));
             }
         });
     }
