@@ -142,6 +142,10 @@ public class GameServiceControllerIT {
 
         List<GameResponseBean> gamesAfter = template.getForObject(base + "/games", List.class);
         Assert.assertEquals(1, gamesAfter.size());
+
+        //ResponseEntity<List<GameResponseBean>> result = template.exchange(base + "/games", HttpMethod.GET, null, List.class);
+
+        //Assert.assertEquals(gameRequest.getName(), result.getBody().get(0).getName());
     }
 
     @Test
@@ -171,9 +175,12 @@ public class GameServiceControllerIT {
         playerRequest.setToken(token);
 
         HttpEntity<GamePlayerRequestBean> httpEntity = new HttpEntity<GamePlayerRequestBean>(playerRequest);
-        //GameResponseBean result = template.exchange(base + "/games/1/start", HttpMethod.POST, httpEntity, GameResponseBean.class);
+        ResponseEntity<GameResponseBean> result = template.exchange(base + "/games/1/start", HttpMethod.POST, httpEntity, GameResponseBean.class);
 
-        // TODO
+        Assert.assertEquals(GameStatus.RUNNING, result.getBody().getStatus());
+        Assert.assertEquals(gameResponse.getBody().getId(), result.getBody().getId());
+        Assert.assertEquals(gameResponse.getBody().getOwner(), result.getBody().getOwner());
+        Assert.assertEquals(gameRequest.getName(), result.getBody().getName());
     }
 
     @Test
