@@ -114,7 +114,7 @@ public class GameAreaServiceUT {
         GameLegBettingAreaResponseBean result = testService.getLegBettingArea(testGameId);
 
         //Assertions
-        //TODO: assert that TopLegBettingTiles match
+        //TODO: assert that TopLegBettingTiles and ID's match
 
     }
 
