@@ -7,6 +7,8 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutResponseBe
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.*;
+import ch.uzh.ifi.seal.soprafs15.model.move.DesertTilePlacing;
+import ch.uzh.ifi.seal.soprafs15.model.move.DiceRolling;
 import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.MoveRepository;
@@ -228,7 +230,74 @@ public class GameMapperServiceUT {
     }
 
     @Test
-    public void testToMove() throws Exception {
+    public void testToMoveDesertTilePlacing() throws Exception {
+
+        //set up testing objects (arguments in the method to be tested)
+        Game testGame = new Game();
+        testGame.setName("testGame");
+        testGame.setOwner("testOwner");
+
+        User testUser = new User();
+        testUser.setId((long) 1);
+        testUser.setUsername("testUser");
+        testUser.setAge(15);
+        testUser.setToken("testToken");
+
+        GameMoveRequestBean testRequest = new GameMoveRequestBean();
+        testRequest.setToken("testToken");
+        testRequest.setMove(MoveEnum.DESERT_TILE_PLACING);
+        testRequest.setDesertTileAsOasis(true);
+        testRequest.setDesertTilePosition(5);
+
+        //Assert testMapperService has been initialized and call method to test
+        assertNotNull(testMapperService);
+        DesertTilePlacing result = (DesertTilePlacing) testMapperService.toMove(testGame, testUser, testRequest);
+
+
+        //Assertions
+        assertEquals(testGame.getName(), result.getGame().getName());
+        assertEquals(testGame.getOwner(), result.getGame().getOwner());
+        assertEquals(testUser.getAge(), result.getUser().getAge());
+        assertEquals(testUser.getId(), result.getUser().getId());
+        assertEquals(testUser.getToken(), result.getUser().getToken());
+        assertEquals(testRequest.getDesertTileAsOasis(), result.getAsOasis());
+        assertEquals(testRequest.getDesertTilePosition(), result.getPosition());
+        assertEquals(DesertTilePlacing.class, result.getClass());
+
+    }
+
+    @Test
+    public void testToMoveDiceRolling () throws Exception{
+
+        //set up testing objects (arguments in the method to be tested)
+        Game testGame = new Game();
+        testGame.setName("testGame");
+        testGame.setOwner("testOwner");
+
+        User testUser = new User();
+        testUser.setId((long) 1);
+        testUser.setUsername("testUser");
+        testUser.setAge(15);
+        testUser.setToken("testToken");
+
+        GameMoveRequestBean testRequest = new GameMoveRequestBean();
+        testRequest.setToken("testToken");
+        testRequest.setMove(MoveEnum.DICE_ROLLING);
+
+        //Assert testMapperService has been initialized and call method to test
+        assertNotNull(testMapperService);
+        DiceRolling result = (DiceRolling) testMapperService.toMove(testGame, testUser, testRequest);
+
+
+        //Assertions
+        assertEquals(testGame.getName(), result.getGame().getName());
+        assertEquals(testGame.getOwner(), result.getGame().getOwner());
+        assertEquals(testUser.getAge(), result.getUser().getAge());
+        assertEquals(testUser.getId(), result.getUser().getId());
+        assertEquals(testUser.getToken(), result.getUser().getToken());
+        assertEquals(DiceRolling.class, result.getClass());
+
+
 
     }
 
