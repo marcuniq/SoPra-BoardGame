@@ -50,11 +50,15 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
     private Bundle savedInstanceState;
     private ViewGroup container;
-    private Long playerId = 0L;
+    private Long playerId = 0L; // TODO: set correct player id
     private Long gameId;
     private GameColors cardColor;
     private PopupWindow popupWindow;
     private Button acceptButton;
+    private Boolean isOlle;
+    private ArrayList<Integer> playerCharacterCards = new ArrayList<Integer>();
+    private Integer currentCharacterId = 0;
+    private View popupView;
 
     public static GameFragment newInstance() {
         return new GameFragment();
@@ -91,6 +95,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         initializeLegBettingArea();
         initializeDiceArea();
         initializeRaceBettingArea();
+        initializePlayerCharacterCards();
         play();
     }
 
@@ -143,13 +148,13 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * @param anchorView the current view (Bean)
      */
     public void displayPopup(View anchorView, int layout, Popup POPUPTYPE, int index) {
-        View popupView = getLayoutInflater(savedInstanceState).inflate(layout, container, false);
+        popupView = getLayoutInflater(savedInstanceState).inflate(layout, container, false);
         popupWindow = new PopupWindow(
                 popupView,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         popupWindow.setFocusable(true);
-        popupWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL,0,0);
+        popupWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL, 0, 0);
 
         switch (POPUPTYPE){
             case ROLL_DICE:
@@ -189,7 +194,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void initPopupRaceBet(View popupView, int type) {
+    private void initPopupRaceBet(final View popupView, int type) {
         ImageButton cardBlue = (ImageButton) popupView.findViewById(R.id.card_blue);
         ImageButton cardGreen = (ImageButton) popupView.findViewById(R.id.card_green);
         ImageButton cardOrange = (ImageButton) popupView.findViewById(R.id.card_orange);
@@ -206,11 +211,30 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
         cardColor = null;
 
+        TextView title = (TextView) popupView.findViewById(R.id.popupTitle);
+        if (type == 0) {
+            isOlle = false;
+            title.setText(R.string.title_raceBet_tolle);
+        }
+        else if (type == 1) {
+            isOlle = true;
+            title.setText(R.string.title_raceBet_olle);
+        }
+
         cardBlue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cardColor = GameColors.BLUE;
                 acceptButton.setText(R.string.button_text_blue);
+
+                if (isOlle) {
+                    ImageView loserBetting = (ImageView) popupView.findViewById(R.id.loser_betting);
+                    loserBetting.setBackgroundResource(playerCharacterCards.get(1));
+                }
+                else {
+                    ImageView winnerBetting = (ImageView) popupView.findViewById(R.id.winner_betting);
+                    winnerBetting.setBackgroundResource(playerCharacterCards.get(1));
+                }
             }
         });
         cardGreen.setOnClickListener(new View.OnClickListener() {
@@ -218,6 +242,15 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 cardColor = GameColors.GREEN;
                 acceptButton.setText(R.string.button_text_green);
+
+                if (isOlle) {
+                    ImageView loserBetting = (ImageView) popupView.findViewById(R.id.loser_betting);
+                    loserBetting.setBackgroundResource(playerCharacterCards.get(1));
+                }
+                else {
+                    ImageView winnerBetting = (ImageView) popupView.findViewById(R.id.winner_betting);
+                    winnerBetting.setBackgroundResource(playerCharacterCards.get(1));
+                }
             }
         });
         cardOrange.setOnClickListener(new View.OnClickListener() {
@@ -225,6 +258,15 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 cardColor = GameColors.ORANGE;
                 acceptButton.setText(R.string.button_text_orange);
+
+                if (isOlle) {
+                    ImageView loserBetting = (ImageView) popupView.findViewById(R.id.loser_betting);
+                    loserBetting.setBackgroundResource(playerCharacterCards.get(1));
+                }
+                else {
+                    ImageView winnerBetting = (ImageView) popupView.findViewById(R.id.winner_betting);
+                    winnerBetting.setBackgroundResource(playerCharacterCards.get(1));
+                }
             }
         });
         cardYellow.setOnClickListener(new View.OnClickListener() {
@@ -232,6 +274,15 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 cardColor = GameColors.YELLOW;
                 acceptButton.setText(R.string.button_text_yellow);
+
+                if (isOlle) {
+                    ImageView loserBetting = (ImageView) popupView.findViewById(R.id.loser_betting);
+                    loserBetting.setBackgroundResource(playerCharacterCards.get(1));
+                }
+                else {
+                    ImageView winnerBetting = (ImageView) popupView.findViewById(R.id.winner_betting);
+                    winnerBetting.setBackgroundResource(playerCharacterCards.get(1));
+                }
             }
         });
         cardWhite.setOnClickListener(new View.OnClickListener() {
@@ -239,12 +290,17 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 cardColor = GameColors.WHITE;
                 acceptButton.setText(R.string.button_text_white);
+
+                if (isOlle) {
+                    ImageView loserBetting = (ImageView) popupView.findViewById(R.id.loser_betting);
+                    loserBetting.setBackgroundResource(playerCharacterCards.get(1));
+                }
+                else {
+                    ImageView winnerBetting = (ImageView) popupView.findViewById(R.id.winner_betting);
+                    winnerBetting.setBackgroundResource(playerCharacterCards.get(1));
+                }
             }
         });
-
-        TextView title = (TextView) popupView.findViewById(R.id.popupTitle);
-        if (type == 0) title.setText(R.string.title_raceBet_tolle);
-        else if (type == 1) title.setText(R.string.title_raceBet_olle);
     }
 
     private void initPopupLegBet(View popupView, View legBettingCard, int color) {
@@ -258,6 +314,12 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         legBettingCard.setBackgroundResource(legBet.getCurrentLegBetButton());
     }
 
+    /**
+     * Displays a popup for the playing rules.
+     *
+     * @param anchorView
+     * @param layout
+     */
     public void instructionsPopup(View anchorView, int layout) {
         View popupView = getLayoutInflater(savedInstanceState).inflate(layout, container, false);
         popupWindow = new PopupWindow(
@@ -574,6 +636,21 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         dices.add(whiteDices);
 
         (getActivity().findViewById(R.id.dice)).setOnClickListener(this);
+    }
+
+    /**
+     * Loads the player character cards in an array list
+     */
+    private void initializePlayerCharacterCards() {
+        playerCharacterCards.add(0, 0);
+        playerCharacterCards.add(1, R.drawable.c1_button);
+        playerCharacterCards.add(2, R.drawable.c2_button);
+        playerCharacterCards.add(3, R.drawable.c3_button);
+        playerCharacterCards.add(4, R.drawable.c4_button);
+        playerCharacterCards.add(5, R.drawable.c5_button);
+        playerCharacterCards.add(6, R.drawable.c6_button);
+        playerCharacterCards.add(7, R.drawable.c7_button);
+        playerCharacterCards.add(8, R.drawable.c8_button);
     }
 
     /**
