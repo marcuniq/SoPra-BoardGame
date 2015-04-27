@@ -48,7 +48,7 @@ public class GameServiceControllerIT {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testCreateGameSuccess() {
+    public void testCreateGameSuccess() throws Exception {
 
         List<GameResponseBean> gamesBefore = template.getForObject(base + "/games", List.class);
         Assert.assertEquals(0, gamesBefore.size());
@@ -80,7 +80,7 @@ public class GameServiceControllerIT {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testCreateGameFail() {
+    public void testCreateGameFail() throws Exception {
 
         // Set up
 
@@ -119,7 +119,7 @@ public class GameServiceControllerIT {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testAddPlayerSuccess() {
+    public void testAddPlayerSuccess() throws Exception {
 
         // Set up
 
@@ -158,7 +158,7 @@ public class GameServiceControllerIT {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testAddPlayerFail() {
+    public void testAddPlayerFail() throws Exception {
 
         // Set up
 

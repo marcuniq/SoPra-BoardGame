@@ -49,7 +49,7 @@ public class UserServiceControllerIT {
 	
 	@Test
 	@SuppressWarnings("unchecked")
-	public void testCreateUserSuccess() {
+	public void testCreateUserSuccess() throws Exception {
 
 		List<UserResponseBean> usersBefore = template.getForObject(base + "/users", List.class);
 		Assert.assertEquals(0, usersBefore.size());
@@ -68,7 +68,7 @@ public class UserServiceControllerIT {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testCreateUserFail() {
+    public void testCreateUserFail() throws Exception {
 
         List<UserResponseBean> usersBefore = template.getForObject(base + "/users", List.class);
         Assert.assertEquals(0, usersBefore.size());
@@ -98,7 +98,7 @@ public class UserServiceControllerIT {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testLoginUserSuccess() {
+    public void testLoginUserSuccess() throws Exception {
 
         // Set up
 
