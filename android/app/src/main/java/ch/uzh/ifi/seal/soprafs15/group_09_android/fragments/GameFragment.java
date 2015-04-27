@@ -55,10 +55,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private GameColors cardColor;
     private PopupWindow popupWindow;
     private Button acceptButton;
-    private Boolean isOlle;
-    private ArrayList<Integer> playerCharacterCards = new ArrayList<Integer>();
-    private Integer currentCharacterId = 0;
-    private View popupView;
+    private ArrayList<Integer> playerCharacterCards = new ArrayList<>();
 
     public static GameFragment newInstance() {
         return new GameFragment();
@@ -148,7 +145,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * @param anchorView the current view (Bean)
      */
     public void displayPopup(View anchorView, int layout, Popup POPUPTYPE, int index) {
-        popupView = getLayoutInflater(savedInstanceState).inflate(layout, container, false);
+        View popupView = getLayoutInflater(savedInstanceState).inflate(layout, container, false);
         popupWindow = new PopupWindow(
                 popupView,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -194,7 +191,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void initPopupRaceBet(final View popupView, int type) {
+    private void initPopupRaceBet(View popupView, int type) {
         ImageButton cardBlue = (ImageButton) popupView.findViewById(R.id.card_blue);
         ImageButton cardGreen = (ImageButton) popupView.findViewById(R.id.card_green);
         ImageButton cardOrange = (ImageButton) popupView.findViewById(R.id.card_orange);
@@ -209,32 +206,18 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         cardYellow.setImageResource(playersCards.get(GameColors.YELLOW.ordinal()));
         cardWhite.setImageResource(playersCards.get(GameColors.WHITE.ordinal()));
 
-        cardColor = null;
+        cardColor = null; // because card color is outside function accessible we need to set it to null every time
 
         TextView title = (TextView) popupView.findViewById(R.id.popupTitle);
-        if (type == 0) {
-            isOlle = false;
-            title.setText(R.string.title_raceBet_tolle);
-        }
-        else if (type == 1) {
-            isOlle = true;
-            title.setText(R.string.title_raceBet_olle);
-        }
+        if (type == 0) title.setText(R.string.title_raceBet_tolle);
+        else if (type == 1) title.setText(R.string.title_raceBet_olle);
 
         cardBlue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cardColor = GameColors.BLUE;
                 acceptButton.setText(R.string.button_text_blue);
-
-                if (isOlle) {
-                    ImageView loserBetting = (ImageView) popupView.findViewById(R.id.loser_betting);
-                    loserBetting.setBackgroundResource(playerCharacterCards.get(1));
-                }
-                else {
-                    ImageView winnerBetting = (ImageView) popupView.findViewById(R.id.winner_betting);
-                    winnerBetting.setBackgroundResource(playerCharacterCards.get(1));
-                }
+                v.setBackgroundResource(playerCharacterCards.get(1));
             }
         });
         cardGreen.setOnClickListener(new View.OnClickListener() {
@@ -242,15 +225,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 cardColor = GameColors.GREEN;
                 acceptButton.setText(R.string.button_text_green);
-
-                if (isOlle) {
-                    ImageView loserBetting = (ImageView) popupView.findViewById(R.id.loser_betting);
-                    loserBetting.setBackgroundResource(playerCharacterCards.get(1));
-                }
-                else {
-                    ImageView winnerBetting = (ImageView) popupView.findViewById(R.id.winner_betting);
-                    winnerBetting.setBackgroundResource(playerCharacterCards.get(1));
-                }
+                v.setBackgroundResource(playerCharacterCards.get(1));
             }
         });
         cardOrange.setOnClickListener(new View.OnClickListener() {
@@ -258,15 +233,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 cardColor = GameColors.ORANGE;
                 acceptButton.setText(R.string.button_text_orange);
-
-                if (isOlle) {
-                    ImageView loserBetting = (ImageView) popupView.findViewById(R.id.loser_betting);
-                    loserBetting.setBackgroundResource(playerCharacterCards.get(1));
-                }
-                else {
-                    ImageView winnerBetting = (ImageView) popupView.findViewById(R.id.winner_betting);
-                    winnerBetting.setBackgroundResource(playerCharacterCards.get(1));
-                }
+                v.setBackgroundResource(playerCharacterCards.get(1));
             }
         });
         cardYellow.setOnClickListener(new View.OnClickListener() {
@@ -274,15 +241,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 cardColor = GameColors.YELLOW;
                 acceptButton.setText(R.string.button_text_yellow);
-
-                if (isOlle) {
-                    ImageView loserBetting = (ImageView) popupView.findViewById(R.id.loser_betting);
-                    loserBetting.setBackgroundResource(playerCharacterCards.get(1));
-                }
-                else {
-                    ImageView winnerBetting = (ImageView) popupView.findViewById(R.id.winner_betting);
-                    winnerBetting.setBackgroundResource(playerCharacterCards.get(1));
-                }
+                v.setBackgroundResource(playerCharacterCards.get(1));
             }
         });
         cardWhite.setOnClickListener(new View.OnClickListener() {
@@ -290,15 +249,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 cardColor = GameColors.WHITE;
                 acceptButton.setText(R.string.button_text_white);
-
-                if (isOlle) {
-                    ImageView loserBetting = (ImageView) popupView.findViewById(R.id.loser_betting);
-                    loserBetting.setBackgroundResource(playerCharacterCards.get(1));
-                }
-                else {
-                    ImageView winnerBetting = (ImageView) popupView.findViewById(R.id.winner_betting);
-                    winnerBetting.setBackgroundResource(playerCharacterCards.get(1));
-                }
+                v.setBackgroundResource(playerCharacterCards.get(1));
             }
         });
     }
@@ -642,7 +593,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * Loads the player character cards in an array list
      */
     private void initializePlayerCharacterCards() {
-        playerCharacterCards.add(0, 0);
+        playerCharacterCards.add(0, R.drawable.empty_image);
         playerCharacterCards.add(1, R.drawable.c1_button);
         playerCharacterCards.add(2, R.drawable.c2_button);
         playerCharacterCards.add(3, R.drawable.c3_button);
