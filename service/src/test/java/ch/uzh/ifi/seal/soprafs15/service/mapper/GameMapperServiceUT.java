@@ -297,22 +297,61 @@ public class GameMapperServiceUT {
         assertEquals(testUser.getToken(), result.getUser().getToken());
         assertEquals(DiceRolling.class, result.getClass());
 
+    }
 
+    @Test
+    public void testToGameMoveResponseBeanDiceRolling() throws Exception {
+
+        //set up testing objects (arguments in the method to be tested)
+
+        Game testGame = new Game();
+        testGame.setId((long)1);
+        testGame.setName("testName");
+
+        User testUser = new User();
+        testUser.setId((long) 1);
+        testUser.setToken("testToken");
+        testUser.setAge(10);
+
+        Die testDie = new Die();
+        testDie.setColor(Color.BLUE);
+
+        DiceRolling testMove = new DiceRolling();
+        testMove.setDie(testDie);
+        testMove.setGame(testGame);
+        testMove.setUser(testUser);
+
+        //Assert testMapperService has been initialized and call method to test
+        assertNotNull(testMapperService);
+        GameMoveResponseBean result = testMapperService.toGameMoveResponseBean(testMove);
+
+        //Assertions
+        assertEquals(MoveEnum.DICE_ROLLING, result.getMove());
+        assertEquals(testDie.getColor(), result.getDie().getColor());
 
     }
 
     @Test
-    public void testToGameMoveResponseBean() throws Exception {
-
-    }
-
-    @Test
-    public void testToGameMoveResponseBean1() throws Exception {
+    public void testToGameMoveResponseBeanList() throws Exception {
 
     }
 
     @Test
     public void testToGameAddPlayerResponseBean() throws Exception {
+
+        //set up testing objects (arguments in the method to be tested)
+        Game testGame = new Game();
+        testGame.setOwner("testOwner");
+        testGame.setName("testName");
+        testGame.setPusherChannelName("pusherChannelName");
+        testGame.setId((long)1);
+
+        //Assert testMapperService has been initialized and call method to test
+        assertNotNull(testMapperService);
+        GameAddPlayerResponseBean result = testMapperService.toGameAddPlayerResponseBean(testGame);
+
+        //Assertions
+        assertEquals(testGame.getPusherChannelName(), result.getChannelName());
 
     }
 
