@@ -166,7 +166,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 initPopupRaceBet(popupView, anchorView, index);
                 break;
             case PLACE_TILE:
-                initPopupPlaceTile(popupView);
+                // initPopupPlaceTile(popupView);
                 break;
             case ROUND:
                 // roundFinished()
