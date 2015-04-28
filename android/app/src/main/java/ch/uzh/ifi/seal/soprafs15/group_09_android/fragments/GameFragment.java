@@ -2,7 +2,9 @@ package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
@@ -58,6 +60,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
     private View anchorView;
     private ImageView modifiedButton;
+    private Drawable lastResource;
+    private Popup POPUPTYPE;
 
     private ArrayList<Integer> playerCharacterCards = new ArrayList<>();
 
@@ -115,13 +119,16 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
         for (RaceTrackField field: raceTrack) {
             if (field.getPosition() == v.getId()) {
-                displayPopup(v, R.layout.popup_desert_tile, Popup.PLACE_TILE, 0);
+                displayPopup(v, R.layout.popup_interaction_tile, Popup.PLACE_TILE, 0);
                 return;
             }
         }
         for (Integer legBet: legBettingArea) {
             if (legBet == v.getId()) {
-                displayPopup(v, R.layout.popup_leg_betting, Popup.LEGBET, legBettingArea.indexOf(legBet));
+                LegBet legBetObject = legBets.get(legBettingArea.indexOf(legBet));
+                if (legBetObject.getCurrentLegBet() != R.drawable.empty_image) {
+                    displayPopup(v, R.layout.popup_leg_betting, Popup.LEGBET, legBettingArea.indexOf(legBet));
+                }
                 return;
             }
         }
@@ -145,9 +152,10 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * Two Options:
      *  - Accept: Execute a Move and close the Popup
      *  - Reject: abort, close Popup
-     * @param anchorView the current view (Bean)
      */
-    public void displayPopup(View anchorView, int layout, Popup POPUPTYPE, int index) {
+    public void displayPopup(View button, int layout, Popup enumPopup, int index) {
+        anchorView = button;
+        POPUPTYPE = enumPopup;
         View popupView = getLayoutInflater(savedInstanceState).inflate(layout, container, false);
         popupWindow = new PopupWindow(
                 popupView,
@@ -161,13 +169,13 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 initPopupRollDice(popupView);
                 break;
             case LEGBET:
-                initPopupLegBet(popupView, anchorView, index);
+                initPopupLegBet(popupView, index);
                 break;
             case RACEBET:
-                initPopupRaceBet(popupView, anchorView, index);
+                initPopupRaceBet(popupView, index);
                 break;
             case PLACE_TILE:
-                initPopupPlaceTile(popupView, anchorView);
+                initPopupPlaceTile(popupView);
                 break;
             case ROUND:
                 // roundFinished()
@@ -189,13 +197,30 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         rejectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                switch (POPUPTYPE){
+                    case ROLL_DICE:
+                        break;
+                    case LEGBET:
+                        LegBet legBet = legBets.get(cardColor.ordinal());
+                        int pointer = legBet.getLegBetPointer();
+                        legBet.setLegBetPointer(pointer - 1);
+                        modifiedButton.setImageDrawable(lastResource);
+                        break;
+                    case RACEBET:
+                        modifiedButton.setImageDrawable(lastResource);
+                        break;
+                    case PLACE_TILE:
+                        if (modifiedButton != null) ((RelativeLayout)modifiedButton.getParent()).removeView(modifiedButton);
+                        break;
+                    default:
+                        // do something meaningful
+                }
                 popupWindow.dismiss();
             }
         });
     }
 
-    private void initPopupPlaceTile(View popupView, View field){
-        anchorView = field;
+    private void initPopupPlaceTile(View popupView){
         ImageButton desertTile = (ImageButton) popupView.findViewById(R.id.desert_tile);
         ImageButton oasisTile = (ImageButton) popupView.findViewById(R.id.oasis_tile);
 
@@ -206,38 +231,42 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 RelativeLayout fieldLayout = (RelativeLayout) anchorView;
-                fieldLayout.removeAllViews();
                 acceptButton.setText(R.string.button_text_desert);
-                ImageView tile = createDynamicImage(0,
-                        interactionTiles.get(playerId.intValue()).getOasis(),
+                modifiedButton = createDynamicImage(0,
+                        interactionTiles.get(playerId.intValue()).getDesert(),
                         RelativeLayout.CENTER_HORIZONTAL,
                         RelativeLayout.CENTER_VERTICAL);
-                ViewGroup.LayoutParams params = tile.getLayoutParams();
+                ViewGroup.LayoutParams params = modifiedButton.getLayoutParams();
                 params.width = 75;
                 params.height = 75;
-                fieldLayout.addView(tile);
+                fieldLayout.addView(modifiedButton);
             }
         });
         oasisTile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RelativeLayout fieldLayout = (RelativeLayout) anchorView;
-
-                fieldLayout.removeAllViews();
                 acceptButton.setText(R.string.button_text_oasis);
-                ImageView tile = createDynamicImage(0,
+                modifiedButton = createDynamicImage(0,
                         interactionTiles.get(playerId.intValue()).getOasis(),
                         RelativeLayout.CENTER_HORIZONTAL,
                         RelativeLayout.CENTER_VERTICAL);
-                ViewGroup.LayoutParams params = tile.getLayoutParams();
+                ViewGroup.LayoutParams params = modifiedButton.getLayoutParams();
                 params.width = 75;
                 params.height = 75;
-                fieldLayout.addView(tile);
+                fieldLayout.addView(modifiedButton);
             }
         });
     }
 
-    private void initPopupRaceBet(View popupView, View cardButton, int type) {
+    private void initPopupRaceBet(View popupView, int type) {
+        TextView title = (TextView) popupView.findViewById(R.id.popupTitle);
+        if (type == 0) title.setText(R.string.title_raceBet_tolle);
+        else if (type == 1) title.setText(R.string.title_raceBet_olle);
+
+        modifiedButton = (ImageView) anchorView.findViewById(anchorView.getId());
+        lastResource = modifiedButton.getDrawable();
+
         ImageButton cardBlue = (ImageButton) popupView.findViewById(R.id.card_blue);
         ImageButton cardGreen = (ImageButton) popupView.findViewById(R.id.card_green);
         ImageButton cardOrange = (ImageButton) popupView.findViewById(R.id.card_orange);
@@ -252,17 +281,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         cardYellow.setImageResource(playersCards.get(GameColors.YELLOW.ordinal()));
         cardWhite.setImageResource(playersCards.get(GameColors.WHITE.ordinal()));
 
-        anchorView = cardButton;
         cardColor = null; // because card color is outside function accessible we need to set it to null every time
-
-        TextView title = (TextView) popupView.findViewById(R.id.popupTitle);
-        if (type == 0) {
-            title.setText(R.string.title_raceBet_tolle);
-            modifiedButton = (ImageView) anchorView.findViewById(R.id.winner_betting);
-        } else if (type == 1) {
-            title.setText(R.string.title_raceBet_olle);
-            modifiedButton = (ImageView) anchorView.findViewById(R.id.loser_betting);
-        }
 
         cardBlue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -277,7 +296,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 cardColor = GameColors.GREEN;
                 acceptButton.setText(R.string.button_text_green);
-                modifiedButton.setBackgroundResource(playerCharacterCards.get(playerId.intValue()));
+                modifiedButton.setImageResource(playerCharacterCards.get(playerId.intValue()));
             }
         });
         cardOrange.setOnClickListener(new View.OnClickListener() {
@@ -285,7 +304,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 cardColor = GameColors.ORANGE;
                 acceptButton.setText(R.string.button_text_orange);
-                modifiedButton.setBackgroundResource(playerCharacterCards.get(playerId.intValue()));
+                modifiedButton.setImageResource(playerCharacterCards.get(playerId.intValue()));
             }
         });
         cardYellow.setOnClickListener(new View.OnClickListener() {
@@ -293,7 +312,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 cardColor = GameColors.YELLOW;
                 acceptButton.setText(R.string.button_text_yellow);
-                modifiedButton.setBackgroundResource(playerCharacterCards.get(playerId.intValue()));
+                modifiedButton.setImageResource(playerCharacterCards.get(playerId.intValue()));
             }
         });
         cardWhite.setOnClickListener(new View.OnClickListener() {
@@ -301,31 +320,31 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 cardColor = GameColors.WHITE;
                 acceptButton.setText(R.string.button_text_white);
-                modifiedButton.setBackgroundResource(playerCharacterCards.get(playerId.intValue()));
+                modifiedButton.setImageResource(playerCharacterCards.get(playerId.intValue()));
             }
         });
     }
 
-    private void initPopupLegBet(View popupView, View legBettingCard, int color) {
+    private void initPopupLegBet(View popupView, int color) {
+        cardColor = GameColors.values()[color];
         LegBet legBet = legBets.get(color);
-        int pointer = 0;
 
-        ImageView legBettingButton = (ImageView) legBettingCard.findViewById(legBettingCard.getId());
+        modifiedButton = (ImageView) anchorView.findViewById(anchorView.getId());
+        lastResource = modifiedButton.getDrawable();
 
         ImageView card = (ImageView) popupView.findViewById(R.id.card);
         card.setImageResource(legBet.getCurrentLegBet());
-        pointer = legBet.getLegBetPointer();
+        int pointer = legBet.getLegBetPointer();
         legBet.setLegBetPointer(pointer + 1);
-        legBettingButton.setImageResource(legBet.getCurrentLegBetButton());
+        modifiedButton.setImageResource(legBet.getCurrentLegBetButton());
     }
 
     /**
      * Displays a popup for the playing rules.
      *
-     * @param anchorView
      * @param layout
      */
-    public void instructionsPopup(View anchorView, int layout) {
+    public void instructionsPopup(View v, int layout) {
         View popupView = getLayoutInflater(savedInstanceState).inflate(layout, container, false);
         popupWindow = new PopupWindow(
             popupView,
@@ -335,7 +354,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
         popupWindow.setOutsideTouchable(true);
         popupWindow.setFocusable(true);
-        popupWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL, 0, 0);
+        popupWindow.showAtLocation(v, Gravity.CENTER_HORIZONTAL, 0, 0);
     }
 
     private void initPopupRollDice(View popupView){

@@ -39,8 +39,8 @@
                 android:layout_centerHorizontal="true">
 
                 <ImageButton
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
                     android:id="@+id/desert_tile"
                     android:src="@drawable/c7_desert"
                     android:scaleType="fitCenter"
@@ -49,8 +49,8 @@
                     android:layout_marginLeft="20dp"/>
 
                 <ImageButton
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
                     android:id="@+id/oasis_tile"
                     android:src="@drawable/c7_oasis"
                     android:scaleType="fitCenter"

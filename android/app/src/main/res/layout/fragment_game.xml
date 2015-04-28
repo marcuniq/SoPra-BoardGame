@@ -370,7 +370,7 @@
                 android:id="@+id/legbetting_white"
                 android:layout_marginTop="351dp"
                 android:layout_marginLeft="-5dp"
-                android:layout_marginStart="-10dp"
+                android:layout_marginStart="-5dp"
                 android:contentDescription="@string/legbetting_white"
                 android:scaleType="fitCenter"
                 android:src="@drawable/legbettingtile_white_5_button"
@@ -385,7 +385,8 @@
                 android:layout_marginLeft="280dp"
                 android:layout_marginStart="280dp"
                 android:contentDescription="@string/winner_betting"
-                android:clickable="true"/>
+                android:clickable="true"
+                android:src="@drawable/empty_image"/>
 
             <ImageView
                 android:layout_width="140dp"
@@ -408,7 +409,8 @@
                 android:layout_marginLeft="280dp"
                 android:layout_marginStart="280dp"
                 android:contentDescription="@string/loser_betting"
-                android:clickable="true"/>
+                android:clickable="true"
+                android:src="@drawable/empty_image"/>
 
         </RelativeLayout>
     </LinearLayout>
