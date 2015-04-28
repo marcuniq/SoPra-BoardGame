@@ -14,6 +14,7 @@ import ch.uzh.ifi.seal.soprafs15.service.exceptions.MoveNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import ch.uzh.ifi.seal.soprafs15.service.pusher.PusherService;
+import ch.uzh.ifi.seal.soprafs15.service.pusher.events.MoveEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,6 +94,10 @@ public class GameMoveServiceImpl extends GameMoveService {
         // save move to repo and add to game
         move = (Move) moveRepository.save(move);
         game.addMove(move);
+
+        // notify all players about move
+        MoveEvent moveEvent = new MoveEvent(move.getId());
+        pusherService.pushToSubscribers(moveEvent, game);
 
         return getMove(move.getId());
     }
