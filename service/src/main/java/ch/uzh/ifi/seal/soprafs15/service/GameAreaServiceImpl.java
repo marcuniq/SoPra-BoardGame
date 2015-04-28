@@ -4,8 +4,9 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameDiceAreaResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameLegBettingAreaResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRaceBettingAreaResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRaceTrackResponseBean;
-import ch.uzh.ifi.seal.soprafs15.model.game.*;
+import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,43 +37,46 @@ public class GameAreaServiceImpl extends GameAreaService {
     public GameRaceTrackResponseBean getRaceTrack(Long gameId) {
         Game game = gameRepository.findOne(gameId);
 
-        if(game != null) {
-            GameRaceTrackResponseBean bean = gameMapperService.toRaceTrackResponseBean(game.getRaceTrack());
-            return bean;
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GameAreaServiceImpl.class);
         }
-        return null;
+        GameRaceTrackResponseBean bean = gameMapperService.toRaceTrackResponseBean(game.getRaceTrack());
+        return bean;
     }
 
     @Override
     public GameLegBettingAreaResponseBean getLegBettingArea(Long gameId) {
         Game game = gameRepository.findOne(gameId);
 
-        if(game != null) {
-            GameLegBettingAreaResponseBean bean = gameMapperService.toGameLegBettingAreaResponseBean(game.getLegBettingArea());
-            return bean;
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GameAreaServiceImpl.class);
         }
-        return null;
+
+        GameLegBettingAreaResponseBean bean = gameMapperService.toGameLegBettingAreaResponseBean(game.getLegBettingArea());
+        return bean;
     }
 
     @Override
     public GameRaceBettingAreaResponseBean getRaceBettingArea(Long gameId) {
         Game game = gameRepository.findOne(gameId);
 
-        if(game != null) {
-            GameRaceBettingAreaResponseBean bean = gameMapperService.toGameRaceBettingAreaResponseBean(game.getRaceBettingArea());
-            return bean;
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GameAreaServiceImpl.class);
         }
-        return null;
+
+        GameRaceBettingAreaResponseBean bean = gameMapperService.toGameRaceBettingAreaResponseBean(game.getRaceBettingArea());
+        return bean;
     }
 
     @Override
     public GameDiceAreaResponseBean getDiceArea(Long gameId) {
         Game game = gameRepository.findOne(gameId);
 
-        if(game != null) {
-            GameDiceAreaResponseBean bean = gameMapperService.toGameDiceAreaResponseBean(game.getDiceArea());
-            return bean;
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GameAreaServiceImpl.class);
         }
-        return null;
+
+        GameDiceAreaResponseBean bean = gameMapperService.toGameDiceAreaResponseBean(game.getDiceArea());
+        return bean;
     }
 }

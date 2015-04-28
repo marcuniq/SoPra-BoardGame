@@ -1,7 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import ch.uzh.ifi.seal.soprafs15.model.User;
-import ch.uzh.ifi.seal.soprafs15.model.move.LegBetting;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;

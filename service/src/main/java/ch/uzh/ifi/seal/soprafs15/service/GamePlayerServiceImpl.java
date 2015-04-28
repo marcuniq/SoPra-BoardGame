@@ -8,6 +8,9 @@ import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameFullException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,19 +55,22 @@ public class GamePlayerServiceImpl extends GamePlayerService {
         // find game
         Game game = gameRepository.findOne(gameId);
 
-        if(game != null && game.getPlayers().size() < GameConstants.MAX_PLAYERS) {
-
-            // initialize player for game play & save
-            player.initForGamePlay();
-            game.addPlayer(player);
-
-            logger.debug("Game: " + game.getName() + " - player added: " + player.getUsername());
-
-            return gameMapperService.toGameAddPlayerResponseBean(game);
-        } else {
-            logger.error("Error adding player with token: " + player.getToken());
+        if (player == null){
+            throw new UserNotFoundException(bean.getToken(), true, UserServiceImpl.class);
         }
-        return null;
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GamePlayerServiceImpl.class);
+        }
+
+        if(game.getPlayers().size() >= GameConstants.MAX_PLAYERS) {
+            throw new GameFullException(game, GamePlayerServiceImpl.class);
+        }
+
+        // initialize player for game play & save
+        player.initForGamePlay();
+        game.addPlayer(player);
+
+        return gameMapperService.toGameAddPlayerResponseBean(game);
     }
 
     @Override
@@ -72,14 +78,10 @@ public class GamePlayerServiceImpl extends GamePlayerService {
         Game game = gameRepository.findOne(gameId);
         User player = game.getPlayers().stream().filter(p -> p.getId() == playerId).findFirst().get();
 
-        return gameMapperService.toGamePlayerResponseBean(player);
-    }
-
-    private static int safeLongToInt(long l) {
-        if (l < Integer.MIN_VALUE || l > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException
-                    (l + " cannot be cast to int without changing its value.");
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GamePlayerServiceImpl.class);
         }
-        return (int) l;
+
+        return gameMapperService.toGamePlayerResponseBean(player);
     }
 }

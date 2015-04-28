@@ -1,7 +1,5 @@
 package ch.uzh.ifi.seal.soprafs15.controller.beans.game;
 
-import ch.uzh.ifi.seal.soprafs15.model.game.RaceTrackObject;
-
 import java.util.List;
 
 /**

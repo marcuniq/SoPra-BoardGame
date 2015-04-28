@@ -1,7 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameDesertTileResponseBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRaceTrackObjectResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 
 import javax.persistence.*;

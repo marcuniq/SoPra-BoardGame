@@ -2,7 +2,6 @@ package ch.uzh.ifi.seal.soprafs15.model.move;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
-import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingArea;
 import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingTile;
 

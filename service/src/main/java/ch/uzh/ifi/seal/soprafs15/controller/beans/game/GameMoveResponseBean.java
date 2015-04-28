@@ -1,6 +1,5 @@
 package ch.uzh.ifi.seal.soprafs15.controller.beans.game;
 
-import ch.uzh.ifi.seal.soprafs15.model.game.Color;
 import ch.uzh.ifi.seal.soprafs15.model.game.Die;
 import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingTile;
 

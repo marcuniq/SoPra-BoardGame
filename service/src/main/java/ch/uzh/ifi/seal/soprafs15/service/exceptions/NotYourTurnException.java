@@ -1,8 +1,5 @@
 package ch.uzh.ifi.seal.soprafs15.service.exceptions;
 
-import ch.uzh.ifi.seal.soprafs15.model.User;
-import ch.uzh.ifi.seal.soprafs15.model.game.Game;
-
 /**
  * Created by Hakuna on 13.04.2015.
  */

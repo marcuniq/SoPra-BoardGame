@@ -7,8 +7,9 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
-import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
+import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,11 @@ public class GameServiceImpl extends GameService {
     @Override
     public GameResponseBean getGame(Long gameId) {
         Game game = gameRepository.findOne(gameId);
+
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GameServiceImpl.class);
+        }
+
         return gameMapperService.toGameResponseBean(game);
     }
 
@@ -69,7 +75,11 @@ public class GameServiceImpl extends GameService {
         User owner = gameMapperService.toUser(bean);
         Game game = gameRepository.findOne(gameId);
 
-        if(game.getOwner().equals(owner.getUsername()))
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GameServiceImpl.class);
+        }
+
+        if(game != null && game.getOwner().equals(owner.getUsername()))
             gameRepository.delete(gameId);
     }
 }

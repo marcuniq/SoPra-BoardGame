@@ -7,10 +7,8 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutResponseBe
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;

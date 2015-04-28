@@ -1,11 +1,11 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
-import ch.uzh.ifi.seal.soprafs15.model.move.LegBetting;
-import org.hibernate.annotations.Cascade;
-
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Hakuna on 30.03.2015.

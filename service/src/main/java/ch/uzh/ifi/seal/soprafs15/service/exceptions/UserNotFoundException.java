@@ -14,7 +14,11 @@ public class UserNotFoundException extends UncheckedException {
         super(message, invoker, HttpStatus.NOT_FOUND);
     }
 
-    public UserNotFoundException(Integer id, Class invoker) {
+    public UserNotFoundException(Long id, Class invoker) {
         this("The user with id " + id + " couldn't be found.", invoker);
+    }
+
+    public UserNotFoundException(String token, Boolean dummy, Class invoker) {
+        this("The user with token " + token + " couldn't be found.", invoker);
     }
 }

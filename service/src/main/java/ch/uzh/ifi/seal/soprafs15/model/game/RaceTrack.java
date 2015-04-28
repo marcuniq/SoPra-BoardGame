@@ -1,7 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

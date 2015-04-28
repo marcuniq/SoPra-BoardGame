@@ -1,7 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameCamelResponseBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRaceTrackObjectResponseBean;
 
 import javax.persistence.Embeddable;
 import java.io.Serializable;

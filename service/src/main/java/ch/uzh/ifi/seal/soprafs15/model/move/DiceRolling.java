@@ -4,7 +4,6 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
 import ch.uzh.ifi.seal.soprafs15.model.game.DiceArea;
 import ch.uzh.ifi.seal.soprafs15.model.game.Die;
-import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

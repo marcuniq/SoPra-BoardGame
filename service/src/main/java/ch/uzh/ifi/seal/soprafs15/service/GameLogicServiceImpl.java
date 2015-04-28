@@ -3,20 +3,12 @@ package ch.uzh.ifi.seal.soprafs15.service;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.move.Move;
-import ch.uzh.ifi.seal.soprafs15.service.exceptions.PlayerTurnException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.InvalidMoveException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.NotYourTurnException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * @author Marco
@@ -29,14 +21,18 @@ public class GameLogicServiceImpl extends GameLogicService {
 
 
     @Override
-    public Move processMove(Game game, User player, Move move) throws PlayerTurnException {
+    public Move processMove(Game game, User player, Move move) {
         // is it player's turn?
         User currentPlayer = game.getPlayers().get(game.getCurrentPlayer());
-        //if(!currentPlayer.getUsername().equals(player.getUsername()))
-          //  throw new PlayerTurnException(game, player);
+
+        if(!currentPlayer.getUsername().equals(player.getUsername())) {
+            throw new NotYourTurnException(GameLogicServiceImpl.class);
+        }
 
         // valid move? else throw exception
-
+        if(false) {
+            throw new InvalidMoveException("Invalid Move", GameLogicServiceImpl.class);
+        }
 
         // execute move
         move.execute();
