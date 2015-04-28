@@ -33,10 +33,7 @@ public class GameAreaServiceImpl extends GameAreaService {
             throw new GameNotFoundException(gameId, GameAreaServiceImpl.class);
         }
 
-        if(game != null) {
-            return game.getRaceTrack();
-        }
-        return null;
+        return game.getRaceTrack();
     }
 
     @Override
@@ -47,10 +44,7 @@ public class GameAreaServiceImpl extends GameAreaService {
             throw new GameNotFoundException(gameId, GameAreaServiceImpl.class);
         }
 
-        if(game != null) {
-            return game.getLegBettingArea();
-        }
-        return null;
+        return game.getLegBettingArea();
     }
 
     @Override
@@ -61,10 +55,7 @@ public class GameAreaServiceImpl extends GameAreaService {
             throw new GameNotFoundException(gameId, GameAreaServiceImpl.class);
         }
 
-        if(game != null) {
-            return game.getRaceBettingArea();
-        }
-        return null;
+        return game.getRaceBettingArea();
     }
 
     @Override
@@ -75,9 +66,6 @@ public class GameAreaServiceImpl extends GameAreaService {
             throw new GameNotFoundException(gameId, GameAreaServiceImpl.class);
         }
 
-        if(game != null) {
-            return game.getDiceArea();
-        }
-        return null;
+        return game.getDiceArea();
     }
 }

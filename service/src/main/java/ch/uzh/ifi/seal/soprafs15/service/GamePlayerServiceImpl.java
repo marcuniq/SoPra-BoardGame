@@ -9,6 +9,7 @@ import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameFullException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +54,9 @@ public class GamePlayerServiceImpl extends GamePlayerService {
         // find game
         Game game = gameRepository.findOne(gameId);
 
+        if (player == null){
+            throw new UserNotFoundException(bean.getToken(), true, UserServiceImpl.class);
+        }
         if(game == null) {
             throw new GameNotFoundException(gameId, GamePlayerServiceImpl.class);
         }
@@ -61,19 +65,13 @@ public class GamePlayerServiceImpl extends GamePlayerService {
             throw new GameFullException(game, GamePlayerServiceImpl.class);
         }
 
-        if(game != null && game.getPlayers().size() < GameConstants.MAX_PLAYERS) {
+        // initialize player for game play & save
+        player.init();
+        game.addPlayer(player);
 
-            // initialize player for game play & save
-            player.init();
-            game.addPlayer(player);
+        logger.debug("Game: " + game.getName() + " - player added: " + player.getUsername());
 
-            logger.debug("Game: " + game.getName() + " - player added: " + player.getUsername());
-
-            return getPlayer(gameId, player.getId());
-        } else {
-            logger.error("Error adding player with token: " + player.getToken());
-        }
-        return null;
+        return getPlayer(gameId, player.getId());
     }
 
     @Override
@@ -86,13 +84,5 @@ public class GamePlayerServiceImpl extends GamePlayerService {
         }
 
         return gameMapperService.toGamePlayerResponseBean(player);
-    }
-
-    private static int safeLongToInt(long l) {
-        if (l < Integer.MIN_VALUE || l > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException
-                    (l + " cannot be cast to int without changing its value.");
-        }
-        return (int) l;
     }
 }

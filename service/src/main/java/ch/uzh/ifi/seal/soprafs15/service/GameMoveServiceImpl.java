@@ -9,7 +9,9 @@ import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.MoveRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.MoveMappingException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.MoveNotFoundException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,10 +57,7 @@ public class GameMoveServiceImpl extends GameMoveService {
             throw new GameNotFoundException(gameId, GameMoveServiceImpl.class);
         }
 
-        if(game != null) {
-            return gameMapperService.toGameMoveResponseBean(game.getMoves());
-        }
-        return null;
+        return gameMapperService.toGameMoveResponseBean(game.getMoves());
     }
 
     @Override
@@ -72,20 +71,23 @@ public class GameMoveServiceImpl extends GameMoveService {
         if(game == null) {
             throw new GameNotFoundException(gameId, GameMoveServiceImpl.class);
         }
-
-        if(game != null && move != null) {
-
-            // execute game logic with move
-            move = gameLogicService.processMove(game, player, move);
-            //move = move.execute(game);
-
-            // save move to repo and add to game
-            move = (Move) moveRepository.save(move);
-            game.addMove(move);
-
-            return getMove(gameId, move.getId());
+        if(player == null) {
+            throw new UserNotFoundException(bean.getToken(), true, GameMoveServiceImpl.class);
         }
-        return null;
+        if(move == null) {
+            throw new MoveMappingException(GameMoveServiceImpl.class);
+        }
+
+        // execute game logic with move
+        move = gameLogicService.processMove(game, player, move);
+        //move = move.execute(game);
+
+        // save move to repo and add to game
+        move = (Move) moveRepository.save(move);
+        game.addMove(move);
+
+        return getMove(gameId, move.getId());
+
     }
 
     @Override
@@ -96,9 +98,6 @@ public class GameMoveServiceImpl extends GameMoveService {
             throw new MoveNotFoundException(moveId, GameMoveServiceImpl.class);
         }
 
-        if(move != null) {
-            return gameMapperService.toGameMoveResponseBean(move);
-        }
-        return null;
+        return gameMapperService.toGameMoveResponseBean(move);
     }
 }
