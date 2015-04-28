@@ -10,7 +10,6 @@ import ch.uzh.ifi.seal.soprafs15.model.repositories.MoveRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.MoveNotFoundException;
-import ch.uzh.ifi.seal.soprafs15.service.exceptions.PlayerTurnException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
