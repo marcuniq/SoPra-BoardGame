@@ -70,6 +70,10 @@ public interface RestApiInterface {
     @GET("/games/{gameId}/moves/{moveId}")
     void getGameMove(@Path("gameId") Long gameId, @Path("moveId") Long moveId, Callback<List<Move>> callback);
 
+
+    @POST("/games/{gameId}/moves")
+    void initiateGameMove(@Path("gameId") Long gameId, @Body Move move, Callback<Move> callback);
+
     /**
      * Returns all race tracks
      * @param gameId

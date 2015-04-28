@@ -1,6 +1,8 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
@@ -41,6 +43,7 @@ public class GameLobbyFragment extends ListFragment{
     private ImageView ivPlayerCard;
     private Boolean fastMode = false;
     private CheckBox checkBox;
+    private String token;
 
     /* empty constructor */
     public GameLobbyFragment() {}
@@ -149,14 +152,15 @@ public class GameLobbyFragment extends ListFragment{
     }
 
     private void onClickStartGameButton(View v) {
-        /*
-        Toast.makeText(v.getContext(), "You (your ID = " + playerId + ") started game \"" + gameId + "\"", Toast.LENGTH_LONG).show();
-        */
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        token = sharedPref.getString("token", token);
+
         Intent intent = new Intent();
         intent.setClass(getActivity(), GameActivity.class);
         Bundle b = new Bundle();
         b.putLong("gameId", gameId);
         b.putBoolean("fastMode", fastMode);
+        b.putString("token", token);
         intent.putExtras(b);
         startActivity(intent);
         getActivity().finish();
