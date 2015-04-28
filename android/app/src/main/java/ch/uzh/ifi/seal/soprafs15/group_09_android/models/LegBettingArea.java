@@ -1,5 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.models;
 
+import java.util.List;
+
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.LegBettingAreaBean;
 
 /**
@@ -7,7 +9,27 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.LegBettingAreaBea
  */
 public class LegBettingArea extends AbstractArea {
 
-    public LegBettingArea(LegBettingAreaBean bean){
+    private Long id;
+    private List<LegBettingTile> topLegBettingTiles;
 
+    public LegBettingArea(LegBettingAreaBean bean){
+        this.id = bean.id();
+        this.topLegBettingTiles = bean.topLegBettingTiles();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<LegBettingTile> getTopLegBettingTiles() {
+        return topLegBettingTiles;
+    }
+
+    public void setTopLegBettingTiles(List<LegBettingTile> topLegBettingTiles) {
+        this.topLegBettingTiles = topLegBettingTiles;
     }
 }

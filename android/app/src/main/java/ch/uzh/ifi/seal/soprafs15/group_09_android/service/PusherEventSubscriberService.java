@@ -28,7 +28,8 @@ public class PusherEventSubscriberService {
 
 
     public void addSubscriber(PushEventNameEnum event, PusherEventSubscriber eventSubscriber){
-        subscriber.get(event).add(eventSubscriber);
+        if(!subscriber.get(event).contains(eventSubscriber))
+            subscriber.get(event).add(eventSubscriber);
     }
 
     public void removeSubscriber(PushEventNameEnum event, PusherEventSubscriber eventSubscriber){

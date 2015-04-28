@@ -74,37 +74,6 @@ public interface RestApiInterface {
     @POST("/games/{gameId}/moves")
     void initiateGameMove(@Path("gameId") Long gameId, @Body Move move, Callback<Move> callback);
 
-    /**
-     * Returns all race tracks
-     * @param gameId
-     * @param callback
-     */
-    @GET("/games/{gameId}/racetrack")
-    void getGameRaceTrack(@Path("gameId") Long gameId, Callback<List<RaceTrack>> callback);
-
-    /**
-     * Returns all leg betting areas
-     * @param gameId
-     * @param callback
-     */
-    @GET("/games/{gameId}/legbettingarea")
-    void getGameLegBettingArea(@Path("gameId") Long gameId, Callback<List<LegBettingArea>> callback);
-
-    /**
-     * Returns all race betting areas
-     * @param gameId
-     * @param callback
-     */
-    @GET("/games/{gameId}/racebettingarea")
-    void getGameRaceBettingArea(@Path("gameId") Long gameId, Callback<List<RaceBettingArea>> callback);
-
-    /**
-     * Returns all dice areas
-     * @param gameId
-     * @param callback
-     */
-    @GET("/games/{gameId}/dicearea")
-    void getGameDiceArea(@Path("gameId") Long gameId, Callback<List<DiceArea>> callback);
 
     /**
      * Creates a new game

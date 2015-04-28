@@ -63,38 +63,6 @@ public class GameLobbyFragment extends ListFragment{
         super.onCreate(savedInstanceState);
         gameId = this.getArguments().getLong("gameId");
         isOwner = this.getArguments().getBoolean("isOwner");
-
-        // for demonstration purposes
-        // subscribe to move event and display id
-        PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.MOVE_EVENT,
-                new PusherEventSubscriber() {
-                    @Override
-                    public void onNewEvent(final AbstractPusherEvent moveEvent) {
-                        System.out.println("got new event");
-
-                        getActivity().runOnUiThread(new Runnable() {
-                            public void run() {
-                                Toast.makeText(getActivity(), "new move event: " +
-                                        ((MoveEvent) moveEvent).getMoveId(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                });
-
-        AreaService.getInstance(getActivity()).addSubscriber(AreaName.DICE_AREA, new AreaUpdateSubscriber() {
-            @Override
-            public void onUpdate(AbstractArea area) {
-                DiceArea diceArea = (DiceArea) area;
-
-                System.out.println("got dice area, " + diceArea.getId());
-                System.out.println(diceArea.getRolledDice().size());
-            }
-
-            @Override
-            public void onError(String errorMessage) {
-                System.out.println(errorMessage);
-            }
-        });
     }
 
     /**

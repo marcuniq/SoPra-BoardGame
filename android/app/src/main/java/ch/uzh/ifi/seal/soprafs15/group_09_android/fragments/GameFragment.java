@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.AbstractArea;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.AreaName;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.DiceArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.LegBettingArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Move;
@@ -32,6 +34,13 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceBettingArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceTrack;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DiceAreaBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DieBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEvent;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.AreaService;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.AreaUpdateSubscriber;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventSubscriber;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Dice;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameColors;
@@ -110,6 +119,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         initializeDiceArea();
         initializeRaceBettingArea();
         initializePlayerCharacterCards();
+
+        subscribeToAreaUpdates();
+        subscribeToEvents();
 
         if (fastMode) {
             playFastMode();
@@ -708,6 +720,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      */
     private void play(){
         // TODO: on PUSH from SERVER; get all new information.
+        // -> see subscribeToAreaUpdates() and put code there for what to do on an update of areas
+
 //        gameMoves();
 //        gameRaceTrack();
 //        gameLegBettingArea();
@@ -753,59 +767,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    /**
-     * @api  http://docs.sopra.apiary.io/#reference/games/game-race-track/retrieve-race-track
-     */
-    private void gameRaceTrack() {
-        RestService.getInstance(getActivity()).getGameRaceTrack(gameId, new Callback<List<RaceTrack>>() {
-
-            @Override
-            public void success(List<RaceTrack> raceTrackField, Response response) {
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-    }
-
-    /**
-     * @api  http://docs.sopra.apiary.io/#reference/games/game-leg-betting-area/retrieve-leg-betting-area
-     */
-    private void gameLegBettingArea() {
-        RestService.getInstance(getActivity()).getGameLegBettingArea(gameId, new Callback<List<LegBettingArea>>() {
-
-            @Override
-            public void success(List<LegBettingArea> legBettingAreas, Response response) {
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-    }
-
-    /**
-     * @api  http://docs.sopra.apiary.io/#reference/games/game-race-betting-area/retrieve-race-betting-area
-     */
-    private void gameRaceBettingArea() {
-        RestService.getInstance(getActivity()).getGameRaceBettingArea(gameId, new Callback<List<RaceBettingArea>>() {
-
-            @Override
-            public void success(List<RaceBettingArea> raceBettingAreas, Response response) {
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-    }
 
     /**
      * @api  http://docs.sopra.apiary.io/#reference/games/game-dice-area/retrieve-dice-area
@@ -877,6 +838,98 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 fieldLayout.removeAllViews();
             }
         }
+    }
+
+    /**
+     * Called when creating this fragment
+     *
+     * Server pushes event to players -> PusherService gets it and notifies all subscribers to that
+     * event -> AreaService is per default registered to all events and notifies all AreaUpdateSubscriber
+     * (see PusherService.registerAreaServiceAsSubscriber())
+     */
+    private void subscribeToAreaUpdates(){
+        AreaService.getInstance(getActivity()).addSubscriber(AreaName.DICE_AREA, new AreaUpdateSubscriber() {
+            @Override
+            public void onUpdate(AbstractArea area) {
+                DiceArea diceArea1 = (DiceArea) area;
+
+                // TODO update view
+
+
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                // TODO show error message?
+            }
+        });
+
+        AreaService.getInstance(getActivity()).addSubscriber(AreaName.LEG_BETTING_AREA, new AreaUpdateSubscriber() {
+            @Override
+            public void onUpdate(AbstractArea area) {
+                LegBettingArea legBettingArea1 = (LegBettingArea) area;
+
+                // TODO update view
+
+
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                // TODO show error message?
+            }
+        });
+
+        AreaService.getInstance(getActivity()).addSubscriber(AreaName.RACE_BETTING_AREA, new AreaUpdateSubscriber() {
+            @Override
+            public void onUpdate(AbstractArea area) {
+                RaceBettingArea raceBettingArea1 = (RaceBettingArea) area;
+
+                // TODO update view
+
+
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                // TODO show error message?
+            }
+        });
+
+        AreaService.getInstance(getActivity()).addSubscriber(AreaName.RACE_TRACK, new AreaUpdateSubscriber() {
+            @Override
+            public void onUpdate(AbstractArea area) {
+                RaceTrack raceTrack1 = (RaceTrack) area;
+
+                // TODO update view
+
+
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                // TODO show error message?
+            }
+        });
+    }
+
+    private void subscribeToEvents(){
+        // for demonstration purposes
+        // subscribe to move event and display id
+        PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.MOVE_EVENT,
+                new PusherEventSubscriber() {
+                    @Override
+                    public void onNewEvent(final AbstractPusherEvent moveEvent) {
+                        System.out.println("got new event");
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getActivity(), "new move event: " +
+                                        ((MoveEvent) moveEvent).getMoveId(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
     }
 
 }
