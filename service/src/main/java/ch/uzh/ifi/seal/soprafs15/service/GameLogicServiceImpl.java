@@ -5,7 +5,6 @@ import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.InvalidMoveException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.NotYourTurnException;
-import ch.uzh.ifi.seal.soprafs15.service.exceptions.PlayerTurnException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
