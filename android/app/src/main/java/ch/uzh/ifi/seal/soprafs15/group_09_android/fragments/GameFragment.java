@@ -1,8 +1,10 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -28,11 +30,14 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.LegBettingArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Move;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceBettingArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceTrack;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DiceAreaBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DieBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Dice;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameColors;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.InteractionTile;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.LegBet;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Moves;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Popup;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.RaceBet;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.RaceTrackField;
@@ -54,12 +59,14 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private ViewGroup container;
     private Long playerId = 0L; // TODO: set correct player id
     private Long gameId;
+    private String token;
     private GameColors cardColor;
     private PopupWindow popupWindow;
     private Button acceptButton;
     private Boolean fastMode = false;
 
     private View anchorView;
+    private View popupView;
     private ImageView modifiedButton;
     private Drawable lastResource;
     private Popup POPUPTYPE;
@@ -81,8 +88,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         Bundle b = getActivity().getIntent().getExtras();
         gameId = b.getLong("gameId");
         fastMode = b.getBoolean("fastMode");
-
-        Toast.makeText(v.getContext(), "GameId = " + gameId, Toast.LENGTH_LONG).show();
+        token = b.getString("token");
 
         // Playing rules
         ImageButton ivHelpButton = (ImageButton) v.findViewById(R.id.help);
@@ -164,7 +170,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     public void displayPopup(View button, int layout, Popup enumPopup, int index) {
         anchorView = button;
         POPUPTYPE = enumPopup;
-        View popupView = getLayoutInflater(savedInstanceState).inflate(layout, container, false);
+        popupView = getLayoutInflater(savedInstanceState).inflate(layout, container, false);
         popupWindow = new PopupWindow(
                 popupView,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -198,14 +204,26 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: send Game Move
+                switch (POPUPTYPE){
+                    case ROLL_DICE:
+                        initiateGameMove(Moves.DICE_ROLLING, null, null, false, 0);
+                        break;
+                    case LEGBET:
+                        break;
+                    case RACEBET:
+                        break;
+                    case PLACE_TILE:
+                        break;
+                    default:
+                        // do something meaningful
+                }
                 popupWindow.dismiss();
             }
         });
         rejectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (POPUPTYPE){
+                switch (POPUPTYPE) {
                     case ROLL_DICE:
                         break;
                     case LEGBET:
@@ -218,7 +236,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                         modifiedButton.setImageDrawable(lastResource);
                         break;
                     case PLACE_TILE:
-                        if (modifiedButton != null) ((RelativeLayout)modifiedButton.getParent()).removeView(modifiedButton);
+                        if (modifiedButton != null)
+                            ((RelativeLayout) modifiedButton.getParent()).removeView(modifiedButton);
                         break;
                     default:
                         // do something meaningful
@@ -388,17 +407,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private AlertDialog dummyPopup(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(message)
-                .setTitle("Congratulations");
-        // Add the buttons
+                .setTitle("We have a message for you:");
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog
-            }
+            public void onClick(DialogInterface dialog, int id) { }
         });
         return builder.create();
     }
@@ -707,6 +718,23 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         // TODO: check if player is on his turn; then enable interaction
     }
 
+    private void initiateGameMove(Moves moveType, String legBettingTileColor, String raceBettingOnWinner, Boolean desertTileAsOasis, Integer desertTilePosition) {
+        Move move = Move.create(token, moveType, legBettingTileColor, raceBettingOnWinner, desertTileAsOasis, desertTilePosition);
+
+        RestService.getInstance(getActivity()).initiateGameMove(gameId, move, new Callback<Move>() {
+            @Override
+            public void success(Move move, Response response) {
+                gameDiceArea();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                AlertDialog dialog = dummyPopup("failure: " + error.toString());
+                dialog.show();
+            }
+        });
+    }
+
     /**
      * @api  http://docs.sopra.apiary.io/#reference/games/game-move/retrieve-a-game-move
      */
@@ -783,23 +811,25 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * @api  http://docs.sopra.apiary.io/#reference/games/game-dice-area/retrieve-dice-area
      */
     private void gameDiceArea() {
-        RestService.getInstance(getActivity()).getGameDiceArea(gameId, new Callback<List<DiceArea>>() {
+        RestService.getInstance(getActivity()).getDiceArea(gameId, new Callback<DiceAreaBean>() {
 
             @Override
-            public void success(List<DiceArea> diceAreas, Response response) {
-                // TODO: set the dices ArrayList accoring to the values
-                /* dices.get(COLOR_ID).setDicePointer(position);
-                * where:
-                 * - COLOR_ID = {0 .. 4} (blue - white)
-                *  - position = {0 .. 3} (?, 1, 2, 3)
-                *
-                *  e.g.: dices.get(Colors.BLUE.ordinal()).setDicePointer(2);
-                * */
+            public void success(DiceAreaBean diceArea, Response response) {
+                String message = "";
+
+                for (DieBean dice: diceArea.rolledDice()){
+                    message += "Dice " + dice.color() + ": " + dice.faceValue() + "\n";
+                    dices.get(dice.color().ordinal()).setDicePointer(dice.faceValue());
+                }
+
+                AlertDialog dialog = dummyPopup(message);
+                dialog.show();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                // TODO: handle failure
+                AlertDialog dialog = dummyPopup("success: " + error.toString());
+                dialog.show();
             }
         });
     }

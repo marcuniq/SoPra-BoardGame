@@ -5,9 +5,6 @@ import java.util.List;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DiceAreaBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DieBean;
 
-/**
- * @author Marco
- */
 public class DiceArea extends AbstractArea {
 
     private Long id;
