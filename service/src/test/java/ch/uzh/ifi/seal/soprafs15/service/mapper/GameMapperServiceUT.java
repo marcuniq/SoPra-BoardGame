@@ -260,7 +260,7 @@ public class GameMapperServiceUT {
         assertEquals(testUser.getAge(), result.getUser().getAge());
         assertEquals(testUser.getId(), result.getUser().getId());
         assertEquals(testUser.getToken(), result.getUser().getToken());
-        assertEquals(testRequest.getDesertTileAsOasis(), result.getAsOasis());
+        assertEquals(testRequest.getDesertTileAsOasis(), result.getIsOasis());
         assertEquals(testRequest.getDesertTilePosition(), result.getPosition());
         assertEquals(DesertTilePlacing.class, result.getClass());
 
