@@ -55,6 +55,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private GameColors cardColor;
     private PopupWindow popupWindow;
     private Button acceptButton;
+    private Boolean fastMode = false;
 
     private View anchorView;
     private ImageView modifiedButton;
@@ -75,6 +76,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         this.container = container;
         Bundle b = getActivity().getIntent().getExtras();
         gameId = b.getLong("gameId");
+        fastMode = b.getBoolean("fastMode");
 
         Toast.makeText(v.getContext(), "GameId = " + gameId, Toast.LENGTH_LONG).show();
 
@@ -98,7 +100,13 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         initializeDiceArea();
         initializeRaceBettingArea();
         initializePlayerCharacterCards();
-        play();
+
+        if (fastMode) {
+            playFastMode();
+        }
+        else {
+            play();
+        }
     }
 
     /**
@@ -659,11 +667,17 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
+     * This is the main method for the fast mode.
+     */
+    private void playFastMode(){
+        // TODO: implement fast mode
+    }
+
+    /**
      * This is the main method. After each player has finished his turn, the whole board is redraw.
      */
     private void play(){
         // TODO: on PUSH from SERVER; get all new information.
-        // TODO: create some "round" system
 //        gameMoves();
 //        gameRaceTrack();
 //        gameLegBettingArea();
