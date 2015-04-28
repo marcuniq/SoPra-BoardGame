@@ -26,7 +26,8 @@ public class AreaUpdateSubscriberService {
     }
 
     public void addSubscriber(AreaName areaName, AreaUpdateSubscriber areaSubscriber){
-        subscriber.get(areaName).add(areaSubscriber);
+        if(!subscriber.get(areaName).contains(areaSubscriber))
+            subscriber.get(areaName).add(areaSubscriber);
     }
 
     public void removeSubscriber(AreaName areaName, AreaUpdateSubscriber areaSubscriber){
