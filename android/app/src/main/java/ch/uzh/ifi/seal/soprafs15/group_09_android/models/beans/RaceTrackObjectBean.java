@@ -6,6 +6,7 @@ import java.util.List;
 
 import auto.parcel.AutoParcel;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoGson;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameColors;
 
 /**
  * @author Marco
@@ -19,7 +20,7 @@ public abstract class RaceTrackObjectBean implements Parcelable{
     public abstract Long id();
 
     // CamelStack
-    public abstract List<Color> stack();
+    public abstract List<GameColors> stack();
 
     // DeserTile
     public abstract Boolean isOasis();

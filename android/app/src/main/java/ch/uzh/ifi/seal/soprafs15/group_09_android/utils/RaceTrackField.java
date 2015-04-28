@@ -23,6 +23,8 @@ public class RaceTrackField {
 
     public void setCamels(ArrayList<Integer> camelStack) {
         this.camels = camelStack;
+        this.oasis = null;
+        this.desert = null;
     }
 
     public void setPosition(int position) {
@@ -31,6 +33,8 @@ public class RaceTrackField {
 
     public void setOasis(Integer oasis) {
         this.oasis = oasis;
+        this.desert = null;
+        this.camels = null;
     }
 
     public Integer getOasis() {
@@ -43,6 +47,8 @@ public class RaceTrackField {
 
     public void setDesert(Integer desert) {
         this.desert = desert;
+        this.oasis = null;
+        this.camels = null;
     }
 
     public boolean hasDesert(){
