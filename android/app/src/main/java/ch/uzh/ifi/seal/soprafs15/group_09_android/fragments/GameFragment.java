@@ -28,6 +28,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.DiceArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.LegBettingArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Move;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceBettingArea;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceTrack;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DiceAreaBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DieBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackBean;
@@ -54,7 +55,7 @@ import retrofit.client.Response;
 
 public class GameFragment extends Fragment implements View.OnClickListener {
 
-    private ArrayList<RaceTrackField> raceTrack = new ArrayList<>();
+    private ArrayList<Integer> raceTrack = new ArrayList<>();
     private ArrayList<Integer> legBettingArea = new ArrayList<>();
     private ArrayList<Integer> raceBettingArea = new ArrayList<>();
     private ArrayList<Integer> camels = new ArrayList<>();
@@ -116,12 +117,10 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     public void onResume(){
         super.onResume();
 
-        initializeCamels();
         initializeRaceTrack();
         initializeLegBettingArea();
         initializeDiceArea();
         initializeRaceBettingArea();
-        initializePlayerCharacterCards();
 
         subscribeToAreaUpdates();
         subscribeToEvents();
@@ -481,67 +480,10 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * Adds all field to the OnClickListener
      */
     private void initializeRaceTrack(){
-        InteractionTile c1Tiles = new InteractionTile();
-        InteractionTile c2Tiles = new InteractionTile();
-        InteractionTile c3Tiles = new InteractionTile();
-        InteractionTile c4Tiles = new InteractionTile();
-        InteractionTile c5Tiles = new InteractionTile();
-        InteractionTile c6Tiles = new InteractionTile();
-        InteractionTile c7Tiles = new InteractionTile();
-        InteractionTile c8Tiles = new InteractionTile();
-
-        c1Tiles.setDesert(R.drawable.c1_desert);
-        c1Tiles.setOasis(R.drawable.c1_oasis);
-
-        c2Tiles.setDesert(R.drawable.c2_desert);
-        c2Tiles.setOasis(R.drawable.c2_oasis);
-
-        c3Tiles.setDesert(R.drawable.c3_desert);
-        c3Tiles.setOasis(R.drawable.c3_oasis);
-
-        c4Tiles.setDesert(R.drawable.c4_desert);
-        c4Tiles.setOasis(R.drawable.c4_oasis);
-
-        c5Tiles.setDesert(R.drawable.c5_desert);
-        c5Tiles.setOasis(R.drawable.c5_oasis);
-
-        c6Tiles.setDesert(R.drawable.c6_desert);
-        c6Tiles.setOasis(R.drawable.c6_oasis);
-
-        c7Tiles.setDesert(R.drawable.c7_desert);
-        c7Tiles.setOasis(R.drawable.c7_oasis);
-
-        c8Tiles.setDesert(R.drawable.c8_desert);
-        c8Tiles.setOasis(R.drawable.c8_oasis);
-
-        interactionTiles.add(c1Tiles);
-        interactionTiles.add(c2Tiles);
-        interactionTiles.add(c3Tiles);
-        interactionTiles.add(c4Tiles);
-        interactionTiles.add(c5Tiles);
-        interactionTiles.add(c6Tiles);
-        interactionTiles.add(c7Tiles);
-        interactionTiles.add(c8Tiles);
-
-        raceTrack.add(new RaceTrackField(R.id.field1));
-        raceTrack.add(new RaceTrackField(R.id.field2));
-        raceTrack.add(new RaceTrackField(R.id.field3));
-        raceTrack.add(new RaceTrackField(R.id.field4));
-        raceTrack.add(new RaceTrackField(R.id.field5));
-        raceTrack.add(new RaceTrackField(R.id.field6));
-        raceTrack.add(new RaceTrackField(R.id.field7));
-        raceTrack.add(new RaceTrackField(R.id.field8));
-        raceTrack.add(new RaceTrackField(R.id.field9));
-        raceTrack.add(new RaceTrackField(R.id.field10));
-        raceTrack.add(new RaceTrackField(R.id.field11));
-        raceTrack.add(new RaceTrackField(R.id.field12));
-        raceTrack.add(new RaceTrackField(R.id.field13));
-        raceTrack.add(new RaceTrackField(R.id.field14));
-        raceTrack.add(new RaceTrackField(R.id.field15));
-        raceTrack.add(new RaceTrackField(R.id.field16));
-
-        for (RaceTrackField field: raceTrack) {
-            (getActivity().findViewById(field.getPosition())).setOnClickListener(this);
+        int fieldRID;
+        for (int i = 1; i<=16; i++){
+            fieldRID = getActivity().getResources().getIdentifier("field" + i, "id", getActivity().getPackageName());
+            (getActivity().findViewById(fieldRID)).setOnClickListener(this);
         }
     }
 
@@ -550,126 +492,16 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * Adds all legBettingAreas to the OnClickListener
      */
     private void initializeLegBettingArea(){
-        LegBet blueLegBets = new LegBet();
-        LegBet greenLegBets = new LegBet();
-        LegBet orangeLegBets = new LegBet();
-        LegBet yellowLegBets = new LegBet();
-        LegBet whiteLegBets = new LegBet();
-
-        blueLegBets.add(R.drawable.legbettingtile_blue_5, R.drawable.legbettingtile_blue_5_button);
-        blueLegBets.add(R.drawable.legbettingtile_blue_3, R.drawable.legbettingtile_blue_3_button);
-        blueLegBets.add(R.drawable.legbettingtile_blue_2, R.drawable.legbettingtile_blue_2_button);
-        blueLegBets.add(R.drawable.empty_image, R.drawable.empty_image);
-
-        greenLegBets.add(R.drawable.legbettingtile_green_5, R.drawable.legbettingtile_green_5_button);
-        greenLegBets.add(R.drawable.legbettingtile_green_3, R.drawable.legbettingtile_green_3_button);
-        greenLegBets.add(R.drawable.legbettingtile_green_2, R.drawable.legbettingtile_green_2_button);
-        greenLegBets.add(R.drawable.empty_image, R.drawable.empty_image);
-
-        orangeLegBets.add(R.drawable.legbettingtile_orange_5, R.drawable.legbettingtile_orange_5_button);
-        orangeLegBets.add(R.drawable.legbettingtile_orange_3, R.drawable.legbettingtile_orange_3_button);
-        orangeLegBets.add(R.drawable.legbettingtile_orange_2, R.drawable.legbettingtile_orange_2_button);
-        orangeLegBets.add(R.drawable.empty_image, R.drawable.empty_image);
-
-        yellowLegBets.add(R.drawable.legbettingtile_yellow_5, R.drawable.legbettingtile_yellow_5_button);
-        yellowLegBets.add(R.drawable.legbettingtile_yellow_3, R.drawable.legbettingtile_yellow_3_button);
-        yellowLegBets.add(R.drawable.legbettingtile_yellow_2, R.drawable.legbettingtile_yellow_2_button);
-        yellowLegBets.add(R.drawable.empty_image, R.drawable.empty_image);
-
-        whiteLegBets.add(R.drawable.legbettingtile_white_5, R.drawable.legbettingtile_white_5_button);
-        whiteLegBets.add(R.drawable.legbettingtile_white_3, R.drawable.legbettingtile_white_3_button);
-        whiteLegBets.add(R.drawable.legbettingtile_white_2, R.drawable.legbettingtile_white_2_button);
-        whiteLegBets.add(R.drawable.empty_image, R.drawable.empty_image);
-
-        legBets.add(blueLegBets);
-        legBets.add(greenLegBets);
-        legBets.add(orangeLegBets);
-        legBets.add(yellowLegBets);
-        legBets.add(whiteLegBets);
-
-        legBettingArea.add(R.id.legbetting_blue);
-        legBettingArea.add(R.id.legbetting_green);
-        legBettingArea.add(R.id.legbetting_orange);
-        legBettingArea.add(R.id.legbetting_yellow);
-        legBettingArea.add(R.id.legbetting_white);
-
-        for (Integer raceBet: legBettingArea) {
-            (getActivity().findViewById(raceBet)).setOnClickListener(this);
+        int fieldRID;
+        for (GameColors color: GameColors.values()) {
+            fieldRID = getActivity().getResources().getIdentifier("legbetting_" + color.name().toLowerCase(), "id", getActivity().getPackageName());
+            (getActivity().findViewById(fieldRID)).setOnClickListener(this);
         }
     }
 
     private void initializeRaceBettingArea(){
-        RaceBet c1RaceBet = new RaceBet(R.drawable.c1, R.drawable.c1_button);
-        RaceBet c2RaceBet = new RaceBet(R.drawable.c2, R.drawable.c2_button);
-        RaceBet c3RaceBet = new RaceBet(R.drawable.c3, R.drawable.c3_button);
-        RaceBet c4RaceBet = new RaceBet(R.drawable.c4, R.drawable.c4_button);
-        RaceBet c5RaceBet = new RaceBet(R.drawable.c5, R.drawable.c5_button);
-        RaceBet c6RaceBet = new RaceBet(R.drawable.c6, R.drawable.c6_button);
-        RaceBet c7RaceBet = new RaceBet(R.drawable.c7, R.drawable.c7_button);
-        RaceBet c8RaceBet = new RaceBet(R.drawable.c8, R.drawable.c8_button);
-
-        c1RaceBet.add(R.drawable.c1_racebettingcard_blue);
-        c1RaceBet.add(R.drawable.c1_racebettingcard_green);
-        c1RaceBet.add(R.drawable.c1_racebettingcard_orange);
-        c1RaceBet.add(R.drawable.c1_racebettingcard_yellow);
-        c1RaceBet.add(R.drawable.c1_racebettingcard_white);
-
-        c2RaceBet.add(R.drawable.c2_racebettingcard_blue);
-        c2RaceBet.add(R.drawable.c2_racebettingcard_green);
-        c2RaceBet.add(R.drawable.c2_racebettingcard_orange);
-        c2RaceBet.add(R.drawable.c2_racebettingcard_yellow);
-        c2RaceBet.add(R.drawable.c2_racebettingcard_white);
-
-        c3RaceBet.add(R.drawable.c3_racebettingcard_blue);
-        c3RaceBet.add(R.drawable.c3_racebettingcard_green);
-        c3RaceBet.add(R.drawable.c3_racebettingcard_orange);
-        c3RaceBet.add(R.drawable.c3_racebettingcard_yellow);
-        c3RaceBet.add(R.drawable.c3_racebettingcard_white);
-
-        c4RaceBet.add(R.drawable.c4_racebettingcard_blue);
-        c4RaceBet.add(R.drawable.c4_racebettingcard_green);
-        c4RaceBet.add(R.drawable.c4_racebettingcard_orange);
-        c4RaceBet.add(R.drawable.c4_racebettingcard_yellow);
-        c4RaceBet.add(R.drawable.c4_racebettingcard_white);
-
-        c5RaceBet.add(R.drawable.c5_racebettingcard_blue);
-        c5RaceBet.add(R.drawable.c5_racebettingcard_green);
-        c5RaceBet.add(R.drawable.c5_racebettingcard_orange);
-        c5RaceBet.add(R.drawable.c5_racebettingcard_yellow);
-        c5RaceBet.add(R.drawable.c5_racebettingcard_white);
-
-        c6RaceBet.add(R.drawable.c6_racebettingcard_blue);
-        c6RaceBet.add(R.drawable.c6_racebettingcard_green);
-        c6RaceBet.add(R.drawable.c6_racebettingcard_orange);
-        c6RaceBet.add(R.drawable.c6_racebettingcard_yellow);
-        c6RaceBet.add(R.drawable.c6_racebettingcard_white);
-
-        c7RaceBet.add(R.drawable.c7_racebettingcard_blue);
-        c7RaceBet.add(R.drawable.c7_racebettingcard_green);
-        c7RaceBet.add(R.drawable.c7_racebettingcard_orange);
-        c7RaceBet.add(R.drawable.c7_racebettingcard_yellow);
-        c7RaceBet.add(R.drawable.c7_racebettingcard_white);
-
-        c8RaceBet.add(R.drawable.c8_racebettingcard_blue);
-        c8RaceBet.add(R.drawable.c8_racebettingcard_green);
-        c8RaceBet.add(R.drawable.c8_racebettingcard_orange);
-        c8RaceBet.add(R.drawable.c8_racebettingcard_yellow);
-        c8RaceBet.add(R.drawable.c8_racebettingcard_white);
-
-        raceBets.add(c1RaceBet);
-        raceBets.add(c2RaceBet);
-        raceBets.add(c3RaceBet);
-        raceBets.add(c4RaceBet);
-        raceBets.add(c5RaceBet);
-        raceBets.add(c6RaceBet);
-        raceBets.add(c7RaceBet);
-
-        raceBettingArea.add(R.id.winner_betting);
-        raceBettingArea.add(R.id.loser_betting);
-
-        for (Integer raceBet : raceBettingArea) {
-            (getActivity().findViewById(raceBet)).setOnClickListener(this);
-        }
+        (getActivity().findViewById(R.id.winner_betting)).setOnClickListener(this);
+        (getActivity().findViewById(R.id.loser_betting)).setOnClickListener(this);
     }
 
     /**
@@ -677,74 +509,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * Adds all dices to the ArrayList dices
      */
     private void initializeDiceArea(){
-        Dice blueDices = new Dice();
-        Dice greenDices = new Dice();
-        Dice orangeDices = new Dice();
-        Dice yellowDices = new Dice();
-        Dice whiteDices = new Dice();
-
-        blueDices.add(R.drawable.roll_dice_0_blue);
-        blueDices.add(R.drawable.roll_dice_1_blue);
-        blueDices.add(R.drawable.roll_dice_2_blue);
-        blueDices.add(R.drawable.roll_dice_3_blue);
-
-        greenDices.add(R.drawable.roll_dice_0_green);
-        greenDices.add(R.drawable.roll_dice_1_green);
-        greenDices.add(R.drawable.roll_dice_2_green);
-        greenDices.add(R.drawable.roll_dice_3_green);
-
-        orangeDices.add(R.drawable.roll_dice_0_orange);
-        orangeDices.add(R.drawable.roll_dice_1_orange);
-        orangeDices.add(R.drawable.roll_dice_2_orange);
-        orangeDices.add(R.drawable.roll_dice_3_orange);
-
-        yellowDices.add(R.drawable.roll_dice_0_yellow);
-        yellowDices.add(R.drawable.roll_dice_1_yellow);
-        yellowDices.add(R.drawable.roll_dice_2_yellow);
-        yellowDices.add(R.drawable.roll_dice_3_yellow);
-
-        whiteDices.add(R.drawable.roll_dice_0_white);
-        whiteDices.add(R.drawable.roll_dice_1_white);
-        whiteDices.add(R.drawable.roll_dice_2_white);
-        whiteDices.add(R.drawable.roll_dice_3_white);
-
-        dices.add(blueDices);
-        dices.add(greenDices);
-        dices.add(orangeDices);
-        dices.add(yellowDices);
-        dices.add(whiteDices);
-
         (getActivity().findViewById(R.id.dice)).setOnClickListener(this);
-    }
-
-    /**
-     * Loads the player character cards in an array list
-     */
-    private void initializePlayerCharacterCards() {
-        playerCharacterCards.add(R.drawable.c1_button);
-        playerCharacterCards.add(R.drawable.c2_button);
-        playerCharacterCards.add(R.drawable.c3_button);
-        playerCharacterCards.add(R.drawable.c4_button);
-        playerCharacterCards.add(R.drawable.c5_button);
-        playerCharacterCards.add(R.drawable.c6_button);
-        playerCharacterCards.add(R.drawable.c7_button);
-        playerCharacterCards.add(R.drawable.c8_button);
-        playerCharacterCards.add(R.drawable.empty_image);
-    }
-
-    private void initializeCamels() {
-        camels.add(R.drawable.camel_blue);
-        camels.add(R.drawable.camel_green);
-        camels.add(R.drawable.camel_orange);
-        camels.add(R.drawable.camel_yellow);
-        camels.add(R.drawable.camel_white);
-    }
-
-    /**
-     * This is the main method for the fast mode.
-     */
-    private void playFastMode(){
-        // TODO: implement fast mode
     }
 
     /**
