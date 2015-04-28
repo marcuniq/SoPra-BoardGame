@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.service.mapper;
 
+import ch.uzh.ifi.seal.soprafs15.Application;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
@@ -9,6 +10,11 @@ import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,32 +22,39 @@ import java.util.List;
 /**
  * Created by Hakuna on 14.04.2015.
  */
-public class UserMapperServiceImplUT {
+@SpringApplicationConfiguration(classes = Application.class)
+@WebAppConfiguration
+@RunWith(SpringJUnit4ClassRunner.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+public class UserMapperServiceUT {
 
     protected UserRepository userRepository;
 
-    protected UserMapperService userMapperServiceImpl = new UserMapperServiceImpl(userRepository);
+    protected UserMapperService userMapperService = new UserMapperServiceImpl(userRepository);
 
     @Test
-    public void testToUser() {
+    public void testToUser() throws Exception {
         UserRequestBean testBean = new UserRequestBean();
         testBean.setAge(20);
         testBean.setUsername("TestUsername");
+
 
         User oracleUser = new User();
         oracleUser.setUsername("TestUsername");
         oracleUser.setAge(20);
         oracleUser.setStatus(UserStatus.OFFLINE);
+        String oracleToken = "067e6162-3b6f-4ae2-a171-2470b63dff00";
 
-        User result = userMapperServiceImpl.toUser(testBean);
+        User result = userMapperService.toUser(testBean);
 
         Assert.assertEquals(result.getAge(), oracleUser.getAge());
         Assert.assertEquals(result.getUsername(), oracleUser.getUsername());
         Assert.assertEquals(result.getStatus(), oracleUser.getStatus());
+        Assert.assertEquals(result.getToken().length(), oracleToken.length());
     }
 
     @Test
-    public void testToUserResponseBean() {
+    public void testToUserResponseBean() throws Exception {
         Game testGame = new Game();
         testGame.setName("TestGame");
         testGame.setOwner("TestOwner");
@@ -59,7 +72,7 @@ public class UserMapperServiceImplUT {
         oracleUserResponseBean.setGame("TestGame");
         oracleUserResponseBean.setId((long) 0);
 
-        UserResponseBean result = userMapperServiceImpl.toUserResponseBean(testUser);
+        UserResponseBean result = userMapperService.toUserResponseBean(testUser);
 
         Assert.assertEquals(result.getUsername(), oracleUserResponseBean.getUsername());
         Assert.assertEquals(result.getAge(), oracleUserResponseBean.getAge());
@@ -68,7 +81,7 @@ public class UserMapperServiceImplUT {
     }
 
     @Test
-    public void testToUserResponseBeanList() {
+    public void testToUserResponseBeanList() throws Exception {
         Game testGame = new Game();
         testGame.setName("TestGame");
         testGame.setOwner("TestOwner");
@@ -112,7 +125,7 @@ public class UserMapperServiceImplUT {
             count++;
         }
 
-        List<UserResponseBean> result = userMapperServiceImpl.toUserResponseBean(testList);
+        List<UserResponseBean> result = userMapperService.toUserResponseBean(testList);
 
         count = 0;
 
@@ -127,14 +140,14 @@ public class UserMapperServiceImplUT {
     }
 
     @Test
-    public void testToLLResponseBean() {
+    public void testToLLResponseBean() throws Exception {
         User testUser = new User();
         testUser.setToken("TestToken");
 
         UserLoginLogoutResponseBean oracleBean = new UserLoginLogoutResponseBean();
         oracleBean.setToken("TestToken");
 
-        UserLoginLogoutResponseBean result = userMapperServiceImpl.toLLResponseBean(testUser);
+        UserLoginLogoutResponseBean result = userMapperService.toLLResponseBean(testUser);
 
         Assert.assertEquals(result.getToken(), oracleBean.getToken());
     }
