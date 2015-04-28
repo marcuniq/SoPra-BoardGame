@@ -30,10 +30,12 @@ public class GameActivity extends MainActivity  {
 
             Bundle b = getIntent().getExtras();
             Long gameId = b.getLong("gameId");
+            Boolean fastMode = b.getBoolean("fastMode");
 
             Fragment fragment = GameFragment.newInstance();
             Bundle bundle = new Bundle();
             bundle.putLong("gameId", gameId);
+            bundle.putBoolean("fastMode", fastMode);
             fragment.setArguments(bundle);
 
             setFragment(fragment);

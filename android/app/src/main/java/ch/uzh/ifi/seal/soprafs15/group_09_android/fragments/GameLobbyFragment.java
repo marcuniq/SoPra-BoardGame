@@ -6,10 +6,7 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +39,8 @@ public class GameLobbyFragment extends ListFragment{
     private Boolean isOwner;
     private PlayerArrayAdapter playerArrayAdapter; // adapts the ArrayList of Games to the ListView
     private ImageView ivPlayerCard;
+    private Boolean fastMode = false;
+    private CheckBox checkBox;
 
     /* empty constructor */
     public GameLobbyFragment() {}
@@ -104,18 +103,19 @@ public class GameLobbyFragment extends ListFragment{
         View v = inflater.inflate(R.layout.fragment_lobby, container, false);
 
         Button startGameButton = (Button) v.findViewById(R.id.startButton);
+        checkBox = (CheckBox) v.findViewById(R.id.checkBox);
 
-
-
-        // Hide button if user is not the owner
+        // Hide button and fast mode if user is not the owner
         if (isOwner) {
             startGameButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    fastMode = checkBox.isChecked();
                     onClickStartGameButton(v);
                 }
             });
         } else {
+            checkBox.setVisibility(View.INVISIBLE);
             startGameButton.setVisibility(View.INVISIBLE);
         }
 
@@ -156,6 +156,7 @@ public class GameLobbyFragment extends ListFragment{
         intent.setClass(getActivity(), GameActivity.class);
         Bundle b = new Bundle();
         b.putLong("gameId", gameId);
+        b.putBoolean("fastMode", fastMode);
         intent.putExtras(b);
         startActivity(intent);
         getActivity().finish();
