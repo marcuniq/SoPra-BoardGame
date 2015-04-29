@@ -24,6 +24,7 @@ import java.util.List;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.AbstractArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.AreaName;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.LegBettingTile;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Move;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DiceAreaBean;
@@ -67,6 +68,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private Long playerId = 1L; // TODO: set correct player id
     private Long gameId;
     private String token;
+    private Boolean fastMode = false;
 
     private PopupWindow popupWindow;
     private View anchorView;
@@ -90,6 +92,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         this.container = container;
         Bundle b = getActivity().getIntent().getExtras();
         gameId = b.getLong("gameId");
+        fastMode = b.getBoolean("fastMode");
         token = b.getString("token");
         return v;
     }
@@ -102,7 +105,12 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         subscribeToAreaUpdates();
         subscribeToEvents();
 
-        play();
+        if (fastMode) {
+            playFastMode();
+        }
+        else {
+            play();
+        }
     }
 
     /**
@@ -451,7 +459,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private AlertDialog dummyPopup(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(message)
-                .setTitle("We have a message for you:");
+            .setTitle("We have a message for you:");
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) { }
         });
@@ -532,20 +540,27 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         gameDiceArea();
     }
 
-    private void initiateGameMove( Moves moveType,
-                                   GameColors legBettingTileColor,
-                                   Boolean raceBettingOnWinner,
-                                   Boolean desertTileAsOasis,
-                                   Integer desertTilePosition ) {
+    /**
+     * This is the method for the fast mode.
+     */
+    private void playFastMode() {
+        RestService.getInstance(getActivity()).startFastMode(gameId, new Callback<Game>() {
+            @Override
+            public void success(Game game, Response response) {
+                AlertDialog dialog = dummyPopup("success: " + response.toString());
+                dialog.show();
+            }
 
-        Move move = Move.create(
-                token,
-                moveType,
-                legBettingTileColor,
-                raceBettingOnWinner,
-                desertTileAsOasis,
-                desertTilePosition );
+            @Override
+            public void failure(RetrofitError error) {
+                AlertDialog dialog = dummyPopup("failure: " + error.toString());
+                dialog.show();
+            }
+        });
+    }
 
+    private void initiateGameMove(Moves moveType, GameColors legBettingTileColor, Boolean raceBettingOnWinner, Boolean desertTileAsOasis, Integer desertTilePosition) {
+        Move move = Move.create(token, moveType, legBettingTileColor, raceBettingOnWinner, desertTileAsOasis, desertTilePosition);
         RestService.getInstance(getActivity()).initiateGameMove(gameId, move, new Callback<Move>() {
             @Override
             public void success(Move move, Response response) {
@@ -682,7 +697,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                     fieldLayout.addView(createDynamicImage(margins[pos],
                             drawableId,
                             RelativeLayout.ALIGN_PARENT_BOTTOM,
-                            RelativeLayout.ALIGN_PARENT_LEFT));
+                        RelativeLayout.ALIGN_PARENT_LEFT));
                 }
             } else if (field.isOasis()) {
                 imageName = "c" + field.playerId() + "_oasis";
@@ -754,56 +769,52 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         AreaService.getInstance(getActivity()).addSubscriber(AreaName.DICE_AREA, new AreaUpdateSubscriber() {
             @Override
             public void onUpdate(AbstractArea area) {
-                // TODO update view
-
-
+                gameDiceArea();
             }
 
             @Override
             public void onError(String errorMessage) {
-                // TODO show error message?
+                AlertDialog dialog = dummyPopup("DICE_AREA subscribe error: " + errorMessage);
+                dialog.show();
             }
         });
 
         AreaService.getInstance(getActivity()).addSubscriber(AreaName.LEG_BETTING_AREA, new AreaUpdateSubscriber() {
             @Override
             public void onUpdate(AbstractArea area) {
-                // TODO update view
-
-
+                gameLegBettingArea();
             }
 
             @Override
             public void onError(String errorMessage) {
-                // TODO show error message?
+                AlertDialog dialog = dummyPopup("LEG_BETTING_AREA subscribe error: " + errorMessage);
+                dialog.show();
             }
         });
 
         AreaService.getInstance(getActivity()).addSubscriber(AreaName.RACE_BETTING_AREA, new AreaUpdateSubscriber() {
             @Override
             public void onUpdate(AbstractArea area) {
-                // TODO update view
-
-
+                gameRaceBettingArea();
             }
 
             @Override
             public void onError(String errorMessage) {
-                // TODO show error message?
+                AlertDialog dialog = dummyPopup("RACE_BETTING_AREA subscribe error: " + errorMessage);
+                dialog.show();
             }
         });
 
         AreaService.getInstance(getActivity()).addSubscriber(AreaName.RACE_TRACK, new AreaUpdateSubscriber() {
             @Override
             public void onUpdate(AbstractArea area) {
-                // TODO update view
-
-
+                gameRaceTrack();
             }
 
             @Override
             public void onError(String errorMessage) {
-                // TODO show error message?
+                AlertDialog dialog = dummyPopup("RACE_TRACK subscribe error: " + errorMessage);
+                dialog.show();
             }
         });
     }

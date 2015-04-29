@@ -131,4 +131,11 @@ public interface RestApiInterface {
      */
     @GET("/games/{gameId}/dicearea")
     void getDiceArea(@Path("gameId") Long gameId, Callback<DiceAreaBean> callback);
+
+    /**
+     *
+     * @param gameId
+     */
+    @GET("/games/{gameId}/start-fast-mode")
+    void startFastMode(@Path("gameId") Long gameId, Callback<Game> callback);
 }
