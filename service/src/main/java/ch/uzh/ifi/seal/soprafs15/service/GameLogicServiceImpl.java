@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,11 +22,18 @@ public class GameLogicServiceImpl extends GameLogicService {
 
     Logger logger = LoggerFactory.getLogger(GameLogicServiceImpl.class);
 
-    // Define sequence of players (should be a circular list) and distribute playerId accordingly
-    public void playerSequence(Game game) {
+    @Override
+    public List<User> playerSequence(Game game) {
+        List<User> players = game.getPlayers();
+        List<User> sequence = new ArrayList<User>();
+        Integer index;
 
-        // TODO
-
+        for(int i = 0; i < players.size(); i++) {
+            index = (int) Math.random() % players.size();
+            sequence.add(players.get(index));
+            players.remove(index);
+        }
+        return sequence;
     }
 
     @Override
