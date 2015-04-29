@@ -430,7 +430,80 @@ The backend server with this API implements the 2014 board game of the year "Cam
         
 + Response 204 (application/json)
 
+## Game Player Race Betting Cards [/games/{gameId}/players/{playerId}/racebettingcards]
 
++ Parameters
+    + gameId (required, number, `1`) ... Numeric `id` of the Game.
+    + playerId (required, number, `1`) ... Numeric `id` of the Player.
+
++ Model (application/json)
+    
+    + Body
+    
+            [{   
+                "color": "WHITE"
+            },{   
+                "color": "YELLOW"
+            },{   
+                "color": "ORANGE"
+            },{   
+                "color": "GREEN"
+            },{   
+                "color": "BLUE"
+            }]
+
+    + Schema
+    
+            {
+                "$schema": "http://json-schema.org/draft-04/schema#",
+                "description": "GamePlayerResponseBean",
+                "type" : "array",
+                "items": { "$ref": "#/definitions/racebettingcard" },
+                "definitions" : {
+                    "racebettingcard": {
+                        "properties" : {
+                            "color": {
+                                "enum": ["BLUE", "YELLOW", "GREEN", "RED", "WHITE"]
+                            }
+                        }
+                    }
+                }
+            }
+            
+            
+### Retrieve a Game Player's Race Betting Cards [POST]
+###### Request object: GamePlayerRequestBean
+###### Response object: List[RaceBettingCard]
+
++ Request (application/json)
+
+    + Body
+    
+            {
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+            }
+            
+    + Schema
+    
+            {
+                "$schema": "http://json-schema.org/draft-04/schema#",
+                "description": "GamePlayerRequestBean",
+                "type" : "object",
+                "required" : [
+                    "token"
+                ],
+                "properties" : {
+                    "token" : {
+                        "description" : "user token obtained from server at login",
+                        "type" : "string"
+                    }
+                }
+            }
+            
+            
++ Response 200
+
+    [Game Player Race Betting Cards][]
 
 ## Game Moves Collection [/games/{gameId}/moves]
 
