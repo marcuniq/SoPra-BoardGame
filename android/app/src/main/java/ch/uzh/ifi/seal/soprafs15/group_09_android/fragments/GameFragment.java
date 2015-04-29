@@ -28,6 +28,8 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.DiceArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.LegBettingArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Move;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceBettingArea;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceTrack;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.CamelBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DiceAreaBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DieBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackBean;
@@ -259,7 +261,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                         modifiedButton.setImageDrawable(lastResource);
                         break;
                     case PLACE_TILE:
-                        if (modifiedButton != null) ((RelativeLayout) modifiedButton.getParent()).removeView(modifiedButton);
+                        if (modifiedButton != null)
+                            ((RelativeLayout) modifiedButton.getParent()).removeView(modifiedButton);
                         break;
                     default:
                         // do something meaningful
@@ -790,18 +793,17 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void success(RaceTrackBean newRaceTrack, Response response) {
-                for (RaceTrackObjectBean newField : newRaceTrack.fields()){
+                for (RaceTrackObjectBean newField : newRaceTrack.fields()) {
                     RaceTrackField field = raceTrack.get(newRaceTrack.fields().indexOf(newField));
                     if (newField.isOasis() == null) {
                         ArrayList<Integer> camelStack = new ArrayList<>();
-                        for (GameColors camelColor : newField.stack()){
-                            camelStack.add(camels.get(camelColor.ordinal()));
+                        for (CamelBean b : newField.stack()) {
+                            camelStack.add(camels.get(b.color().ordinal()));
                         }
                         field.setCamels(camelStack);
-                    }
-                    else if (newField.isOasis()){
+                    } else if (newField.isOasis()) {
                         field.setOasis(interactionTiles.get(newField.playerId().intValue()).getOasis());
-                    } else if (!newField.isOasis()){
+                    } else if (!newField.isOasis()) {
                         field.setDesert(interactionTiles.get(newField.playerId().intValue()).getDesert());
                     }
                 }

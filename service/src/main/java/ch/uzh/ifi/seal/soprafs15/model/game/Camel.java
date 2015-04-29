@@ -33,7 +33,7 @@ public class Camel extends RaceTrackObject implements Serializable {
     @Override
     public GameCamelResponseBean toBean() {
         GameCamelResponseBean bean = new GameCamelResponseBean();
-        //bean.setId(id);
+        //bean.setPosition(id);
         bean.setColor(color);
 
         return bean;

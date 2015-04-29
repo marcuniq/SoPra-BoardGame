@@ -131,10 +131,10 @@ public class UserServiceUT {
 
         //Assert testService has been initialized and call method to be tested
         assertNotNull(testService);
-        testService.deleteUser(response.getId(), request);
+        testService.deleteUser(response.getPosition(), request);
 
         //Assertions
-        assertNull(testService.getUser(response.getId()));
+        assertNull(testService.getUser(response.getPosition()));
 
 
     }

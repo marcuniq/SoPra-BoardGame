@@ -5,13 +5,13 @@ package ch.uzh.ifi.seal.soprafs15.controller.beans.game;
  */
 public class GameRaceTrackObjectResponseBean {
 
-    private Long id;
+    private Integer position;
 
-    public Long getId() {
-        return id;
+    public Integer getPosition() {
+        return position;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setPosition(Integer position) {
+        this.position = position;
     }
 }

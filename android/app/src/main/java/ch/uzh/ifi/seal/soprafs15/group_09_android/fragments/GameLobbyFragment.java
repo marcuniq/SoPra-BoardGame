@@ -15,15 +15,10 @@ import java.util.List;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.AbstractArea;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.AreaName;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.DiceArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.service.AreaService;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.service.AreaUpdateSubscriber;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventSubscriber;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
@@ -82,12 +77,13 @@ public class GameLobbyFragment extends ListFragment{
                 @Override
                 public void onClick(View v) {
                     fastMode = checkBox.isChecked();
-                    onClickStartGameButton(v);
+                    onStartGame();
                 }
             });
         } else {
             checkBox.setVisibility(View.INVISIBLE);
             startGameButton.setVisibility(View.INVISIBLE);
+            subscribeToGameStart();
         }
 
         playerArrayAdapter = new PlayerArrayAdapter(
@@ -119,7 +115,7 @@ public class GameLobbyFragment extends ListFragment{
         });
     }
 
-    private void onClickStartGameButton(View v) {
+    private void onStartGame() {
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
 
@@ -132,6 +128,19 @@ public class GameLobbyFragment extends ListFragment{
         intent.putExtras(b);
         startActivity(intent);
         getActivity().finish();
+    }
+
+    private void subscribeToGameStart(){
+        System.out.println("subscribe to game start");
+        PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.GAME_START_EVENT,
+            new PusherEventSubscriber() {
+                @Override
+                public void onNewEvent(final AbstractPusherEvent moveEvent) {
+                    System.out.println("got game start event");
+
+                    onStartGame();
+                }
+        });
     }
 }
 

@@ -100,7 +100,7 @@ public class AreaService {
             @Override
             public void failure(RetrofitError retrofitError) {
                 AreaUpdateSubscriberService.getInstance()
-                        .notifySubscriberOnError(AreaName.LEG_BETTING_AREA, "retrofit failure");
+                        .notifySubscriberOnError(AreaName.LEG_BETTING_AREA, "retrofit failure: " + retrofitError.getMessage());
             }
         });
 
@@ -120,7 +120,7 @@ public class AreaService {
             @Override
             public void failure(RetrofitError retrofitError) {
                 AreaUpdateSubscriberService.getInstance()
-                        .notifySubscriberOnError(AreaName.RACE_BETTING_AREA, "retrofit failure");
+                        .notifySubscriberOnError(AreaName.RACE_BETTING_AREA, "retrofit failure: " + retrofitError.getMessage());
             }
         });
     }

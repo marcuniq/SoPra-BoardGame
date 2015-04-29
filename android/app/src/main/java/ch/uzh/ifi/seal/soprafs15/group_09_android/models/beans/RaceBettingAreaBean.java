@@ -10,5 +10,9 @@ public abstract class RaceBettingAreaBean implements Parcelable {
     public abstract Long id();
     public abstract Integer nrOfWinnerBetting();
     public abstract Integer nrOfLoserBetting();
+
+    public static RaceBettingAreaBean create(Long id, Integer nrOfWinnerBetting, Integer nrOfLoserBetting){
+        return new AutoParcel_RaceBettingAreaBean(id, nrOfWinnerBetting, nrOfLoserBetting);
+    }
 }
 

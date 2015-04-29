@@ -55,7 +55,7 @@ public class User implements Serializable {
     private List<LegBettingTile> legBettingTiles;
 
     @Column
-    private Long playerId;
+    private Integer playerId;
 
     @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
     private DesertTile desertTile;
@@ -179,11 +179,11 @@ public class User implements Serializable {
 		this.status = status;
 	}
 
-    public Long getPlayerId() {
+    public Integer getPlayerId() {
         return playerId;
     }
 
-    public void setPlayerId(Long playerId) {
+    public void setPlayerId(Integer playerId) {
         this.playerId = playerId;
     }
 

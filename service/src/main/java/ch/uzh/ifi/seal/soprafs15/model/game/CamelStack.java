@@ -26,9 +26,12 @@ public class CamelStack extends RaceTrackObject implements Serializable{
     private List<Camel> stack;
 
     public CamelStack(){
-
     }
-    public CamelStack(List<Camel> camels) {
+    public CamelStack(List<Camel> camels){
+        this.stack = camels;
+    }
+    public CamelStack(Integer position, List<Camel> camels) {
+        this.position = position;
         this.stack = camels;
     }
 
@@ -43,7 +46,7 @@ public class CamelStack extends RaceTrackObject implements Serializable{
     @Override
     public GameRaceTrackObjectResponseBean toBean() {
         GameCamelStackResponseBean bean = new GameCamelStackResponseBean();
-        //bean.setId(id);
+        //bean.setPosition(id);
         List<GameCamelResponseBean> beanStack = new ArrayList<>();
         for(Camel c : stack)
             beanStack.add(c.toBean());

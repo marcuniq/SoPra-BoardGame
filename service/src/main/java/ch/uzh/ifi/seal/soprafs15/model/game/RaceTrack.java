@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs15.model.game;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,8 +40,8 @@ public class RaceTrack implements Serializable {
      */
     public void initForGamePlay() {
         // set 16 placeholders
-        for(int i = 0; i < 16; i++)
-            fields.add(new RaceTrackFieldPlaceholder());
+        //for(int i = 0; i < 16; i++)
+        //    fields.add(new RaceTrackFieldPlaceholder());
 
         // put camels on race trace
         // reuse dice area for random placing
@@ -49,15 +50,15 @@ public class RaceTrack implements Serializable {
         // group dice by face value
         Map<Integer, List<Die>> map = diceInPyramid.stream().collect(Collectors.groupingBy(v -> v.getFaceValue()));
 
-        for(Integer i : map.keySet()){
+        for(Integer position : map.keySet()){
             List<Camel> stack = new ArrayList<>();
 
-            for (Die d: map.get(i)){
+            for (Die d: map.get(position)){
                 stack.add(new Camel(d.getColor()));
             }
 
             if(!stack.isEmpty())
-                placeRaceTrackObject(new CamelStack(stack), i);
+                addRaceTrackObject(new CamelStack(position, stack));
         }
 
         // put dice back
@@ -66,12 +67,11 @@ public class RaceTrack implements Serializable {
 
     /**
      *
-     * @param raceTrackObject CamelStack, DesertTile or RaceTrackFieldPlaceholder
-     * @param position between 1 - 16
+     * @param raceTrackObject CamelStack or DesertTile
      */
-
-    public void placeRaceTrackObject(RaceTrackObject raceTrackObject, Integer position) {
-        fields.set(position - 1, raceTrackObject);
+    public void addRaceTrackObject(RaceTrackObject raceTrackObject) {
+        fields.add(raceTrackObject);
+        fields.stream().sorted((rto1, rto2) -> Integer.compare(rto1.position, rto2.position));
     }
 
     /**
@@ -80,7 +80,7 @@ public class RaceTrack implements Serializable {
      * @return RaceTrackObject at requested position
      */
     public RaceTrackObject getRaceTrackObject(Integer position) {
-        return fields.get(position - 1);
+        return fields.stream().filter(rto -> rto.position == position).findFirst().get();
     }
 
 

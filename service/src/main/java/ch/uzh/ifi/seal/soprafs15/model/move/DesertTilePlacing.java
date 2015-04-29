@@ -58,8 +58,9 @@ public class DesertTilePlacing extends Move {
     public Move execute() {
         DesertTile desertTile = user.getDesertTile();
         desertTile.setIsOasis(isOasis);
+        desertTile.setPosition(position);
 
-        game.getRaceTrack().placeRaceTrackObject(desertTile, position);
+        game.getRaceTrack().addRaceTrackObject(desertTile);
 
         return this;
     }

@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans;
 
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import java.util.List;
 
@@ -17,13 +18,23 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameColors;
 @AutoGson @AutoParcel
 public abstract class RaceTrackObjectBean implements Parcelable{
 
-    public abstract Long id();
+    @Nullable
+    public abstract Integer position();
 
     // CamelStack
-    public abstract List<GameColors> stack();
+    @Nullable
+    public abstract List<CamelBean> stack();
 
     // DeserTile
+    @Nullable
     public abstract Boolean isOasis();
-    public abstract Long playerId();
+    @Nullable
+    public abstract Integer playerId();
 
+    public static RaceTrackObjectBean create(Integer position, List<CamelBean> stack){
+        return new AutoParcel_RaceTrackObjectBean(position, stack, null, null);
+    }
+    public static RaceTrackObjectBean create(Integer position, Boolean isOasis, Integer playerId){
+        return new AutoParcel_RaceTrackObjectBean(position, null, isOasis, playerId);
+    }
 }
