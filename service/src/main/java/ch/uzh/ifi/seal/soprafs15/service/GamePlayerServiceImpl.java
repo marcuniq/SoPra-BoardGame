@@ -41,6 +41,7 @@ public class GamePlayerServiceImpl extends GamePlayerService {
     }
 
     @Override
+    @Transactional
     public List<GamePlayerResponseBean> listPlayer(Long gameId) {
         List<User> players = gameRepository.findOne(gameId).getPlayers();
 
@@ -67,16 +68,17 @@ public class GamePlayerServiceImpl extends GamePlayerService {
         }
 
         // initialize player for game play & save
-        player.initForGamePlay();
+        //player.initForGamePlay();
         game.addPlayer(player);
 
-        return gameMapperService.toGameAddPlayerResponseBean(game);
+        return gameMapperService.toGameAddPlayerResponseBean(player, game);
     }
 
     @Override
-    public GamePlayerResponseBean getPlayer(Long gameId, Long playerId) {
+    @Transactional
+    public GamePlayerResponseBean getPlayer(Long gameId, Integer playerId) {
         Game game = gameRepository.findOne(gameId);
-        User player = game.getPlayers().stream().filter(p -> p.getId() == playerId).findFirst().get();
+        User player = game.getPlayers().stream().filter(p -> p.getPlayerId() == playerId).findFirst().get();
 
         if(game == null) {
             throw new GameNotFoundException(gameId, GamePlayerServiceImpl.class);

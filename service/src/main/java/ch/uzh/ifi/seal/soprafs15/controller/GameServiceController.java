@@ -227,7 +227,7 @@ public class GameServiceController extends GenericService {
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/players/{playerId}")
 	@ResponseStatus(HttpStatus.OK)
     @ResponseBody
-	public GamePlayerResponseBean getPlayer(@PathVariable Long gameId, @PathVariable Long playerId) {
+	public GamePlayerResponseBean getPlayer(@PathVariable Long gameId, @PathVariable Integer playerId) {
 		logger.debug("getPlayer: " + gameId);
 
         GamePlayerResponseBean result = gamePlayerService.getPlayer(gameId, playerId);

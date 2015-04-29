@@ -25,7 +25,7 @@ public class LegBettingTileStack implements Serializable {
     private LegBettingArea legBettingArea;
 
     @OneToMany(mappedBy="stack", cascade = CascadeType.ALL)
-    private List<LegBettingTile> tiles = new ArrayList<>();
+    private List<LegBettingTile> tiles;
 
     public LegBettingTileStack(){}
 

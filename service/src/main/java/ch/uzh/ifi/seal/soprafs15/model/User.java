@@ -50,9 +50,11 @@ public class User implements Serializable {
     @MapKeyEnumerated(EnumType.STRING)
     private Map<Color, RaceBettingCard> raceBettingCards = new HashMap<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany( mappedBy = "user",
+                cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
+                fetch = FetchType.EAGER)
     @Column(columnDefinition = "BLOB")
-    private List<LegBettingTile> legBettingTiles;
+    private List<LegBettingTile> legBettingTiles = new ArrayList<>();
 
     @Column
     private Integer playerId;
@@ -63,7 +65,7 @@ public class User implements Serializable {
     public User(){}
 
     /**
-     * Initialization of user
+     * Initialization of user with
      */
     public void initForGamePlay() {
         // money

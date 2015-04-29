@@ -340,15 +340,18 @@ public class GameMapperServiceUT {
     public void testToGameAddPlayerResponseBean() throws Exception {
 
         //set up testing objects (arguments in the method to be tested)
+        User player = new User();
+        player.setUsername("testOwner");
+
         Game testGame = new Game();
-        testGame.setOwner("testOwner");
+        testGame.setOwner(player.getUsername());
         testGame.setName("testName");
         testGame.setPusherChannelName("pusherChannelName");
         testGame.setId((long)1);
 
         //Assert testMapperService has been initialized and call method to test
         assertNotNull(testMapperService);
-        GameAddPlayerResponseBean result = testMapperService.toGameAddPlayerResponseBean(testGame);
+        GameAddPlayerResponseBean result = testMapperService.toGameAddPlayerResponseBean(player, testGame);
 
         //Assertions
         assertEquals(testGame.getPusherChannelName(), result.getChannelName());

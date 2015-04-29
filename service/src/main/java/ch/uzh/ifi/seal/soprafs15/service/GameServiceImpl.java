@@ -52,7 +52,7 @@ public class GameServiceImpl extends GameService {
         // add owner to player list
         String username = game.getOwner();
         User owner = userRepository.findByUsername(username);
-        owner.initForGamePlay();
+        //owner.initForGamePlay();
         game.addPlayer(owner);
 
         game = gameRepository.save(game);
