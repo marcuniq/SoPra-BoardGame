@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * @author Marco
  */
@@ -19,6 +21,12 @@ public class GameLogicServiceImpl extends GameLogicService {
 
     Logger logger = LoggerFactory.getLogger(GameLogicServiceImpl.class);
 
+    // Define sequence of players (should be a circular list) and distribute playerId accordingly
+    public void playerSequence(Game game) {
+
+        // TODO
+
+    }
 
     @Override
     public Move processMove(Game game, User player, Move move) {
