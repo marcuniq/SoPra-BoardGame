@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +24,6 @@ import java.util.Map;
 public class GameLogicServiceImpl extends GameLogicService {
 
     Logger logger = LoggerFactory.getLogger(GameLogicServiceImpl.class);
-
 
     /**
      * Define sequence of players (should be a circular list) and distribute playerId accordingly
