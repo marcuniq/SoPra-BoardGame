@@ -24,9 +24,13 @@ import java.util.List;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.AbstractArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.AreaName;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.DiceArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.LegBettingArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.LegBettingTile;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Move;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceBettingArea;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceTrack;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.CamelBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DiceAreaBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.LegBettingAreaBean;
@@ -50,10 +54,10 @@ import retrofit.client.Response;
 public class GameFragment extends Fragment implements View.OnClickListener {
 
     // the areas
-    private DiceAreaBean diceArea;
-    private RaceTrackBean raceTrack;
-    private LegBettingAreaBean legBettingArea;
-    private RaceBettingAreaBean raceBettingArea;
+    private DiceArea diceArea;
+    private RaceTrack raceTrack;
+    private LegBettingArea legBettingArea;
+    private RaceBettingArea raceBettingArea;
 
     // all buttons in game
     private ArrayList<Integer> raceTrackFields = new ArrayList<>();
@@ -163,9 +167,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         String diceImageName = "roll_dice_";
 
         for (int i = 0; i < 5; i++){
-            if (diceArea.rolledDice().isEmpty() || diceArea.rolledDice().size() < i + 1) diceNames.add("0");
+            if (diceArea.getRolledDice().isEmpty() || diceArea.getRolledDice().size() < i + 1) diceNames.add("0");
             else {
-                diceNames.add(diceArea.rolledDice().get(i).color().ordinal(), i+"");
+                diceNames.add(diceArea.getRolledDice().get(i).color().ordinal(), i+"");
             }
         }
 
@@ -298,7 +302,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
         View popupView = defaultPopup(v, popup_leg_betting);
         ImageView card = (ImageView) popupView.findViewById(R.id.card);
-        Integer cardValue = legBettingArea.topLegBettingTiles().get(GameColors.values()[color].ordinal()).leadingPositionGain();
+        Integer cardValue = legBettingArea.getTopLegBettingTiles().get(GameColors.values()[color].ordinal()).leadingPositionGain();
 
         String cardImageName = "legbettingtile_" + pickedCardColor.name().toLowerCase() + "_" + cardValue;
         final int cardDrawableId = getActivity().getResources().getIdentifier(cardImageName, "drawable", getActivity().getPackageName());
@@ -462,7 +466,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         builder.setMessage(message)
             .setTitle("We have a message for you:");
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) { }
+            public void onClick(DialogInterface dialog, int id) {
+            }
         });
         return builder.create();
     }
@@ -533,12 +538,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * This is the main method. After each player has finished his turn, the whole board is redraw.
      */
     private void play(){
-        // TODO: on PUSH from SERVER; get all new information.
-        // -> see subscribeToAreaUpdates() and put code there for what to do on an update of areas
-        gameRaceTrack();
-        gameLegBettingArea();
-        gameRaceBettingArea();
-        gameDiceArea();
+        AreaService.getInstance(getActivity()).getAreasAndNotifySubscriber(gameId);
     }
 
     /**
@@ -585,91 +585,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void gameRaceTrack() {
-        RestService.getInstance(getActivity()).getRacetrack(gameId, new Callback<RaceTrackBean>() {
-            @Override
-            public void success(RaceTrackBean newRaceTrack, Response response) {
-                raceTrack = newRaceTrack;
-                AlertDialog dialog = dummyPopup("RaceTrack success: " + response.toString() + "\n" + newRaceTrack.toString());
-                dialog.show();
-                updateRaceTrackFields();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                AlertDialog dialog = dummyPopup("RaceTrack failure: " + error.toString());
-                dialog.show();
-                updateRaceTrackFields();
-            }
-        });
-    }
-
-    /**
-     * @api  http://docs.sopra.apiary.io/#reference/games/game-dice-area/retrieve-dice-area
-     */
-    private void gameDiceArea() {
-        RestService.getInstance(getActivity()).getDiceArea(gameId, new Callback<DiceAreaBean>() {
-
-            @Override
-            public void success(DiceAreaBean newDiceArea, Response response) {
-                diceArea = newDiceArea;
-                AlertDialog dialog = dummyPopup("DiceArea success: " + response.toString() + "\n" + newDiceArea.toString());
-                dialog.show();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                AlertDialog dialog = dummyPopup("DiceArea failure: " + error.toString());
-                dialog.show();
-            }
-        });
-    }
-
-    /**
-     * @api  http://docs.sopra.apiary.io/#reference/games/game-dice-area/retrieve-dice-area
-     */
-    private void gameLegBettingArea() {
-        RestService.getInstance(getActivity()).getLegBettingArea(gameId, new Callback<LegBettingAreaBean>() {
-
-            @Override
-            public void success(LegBettingAreaBean newLegBettingArea, Response response) {
-                legBettingArea = newLegBettingArea;
-                AlertDialog dialog = dummyPopup("LegBettingArea success: " + response.toString() + "\n" + newLegBettingArea.toString());
-                dialog.show();
-                updateLegBettingFields();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                AlertDialog dialog = dummyPopup("LegBettingArea failure: " + error.toString());
-                dialog.show();
-                updateLegBettingFields();
-            }
-        });
-    }
-
-    /**
-     * @api  http://docs.sopra.apiary.io/#reference/games/game-dice-area/retrieve-dice-area
-     */
-    private void gameRaceBettingArea() {
-        RestService.getInstance(getActivity()).getRaceBettingArea(gameId, new Callback<RaceBettingAreaBean>() {
-
-            @Override
-            public void success(RaceBettingAreaBean newRaceBettingArea, Response response) {
-                raceBettingArea = newRaceBettingArea;
-                AlertDialog dialog = dummyPopup("RaceBettingArea success: " + response.toString()+ "\n" + newRaceBettingArea.toString());
-                dialog.show();
-                updateRaceBettingFields();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                AlertDialog dialog = dummyPopup("RaceBettingArea failure: " + error.toString());
-                dialog.show();
-                updateRaceBettingFields();
-            }
-        });
-    }
 
     /**
      * Draw the raceTrack according to the game status: all camels, all desert/oasis tiles etc.
@@ -682,9 +597,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         clearRaceTrack();
 
         if (raceTrack == null) return;
-        for (RaceTrackObjectBean field: raceTrack.fields()) {
+        for (RaceTrackObjectBean field: raceTrack.getFields()) {
             List<CamelBean> camels = field.stack();
-            fieldId = raceTrackFields.get(raceTrack.fields().indexOf(field));
+            fieldId = raceTrackFields.get(raceTrack.getFields().indexOf(field));
             RelativeLayout fieldLayout = (RelativeLayout) getActivity().findViewById(fieldId);
 
             if (camels != null && field.isOasis() == null) {
@@ -717,8 +632,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private void updateLegBettingFields(){
         Integer legBetFieldID;
         int color;
-        for(LegBettingTile topTile : legBettingArea.topLegBettingTiles()){
-            color = legBettingArea.topLegBettingTiles().indexOf(topTile);
+        for(LegBettingTile topTile : legBettingArea.getTopLegBettingTiles()){
+            color = legBettingArea.getTopLegBettingTiles().indexOf(topTile);
             legBetFieldID = legBettingFields.get(color);
             ImageView legBetButton = (ImageView) getActivity().findViewById(legBetFieldID);
 
@@ -733,8 +648,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         ImageView tolleCamelButton = (ImageView) getActivity().findViewById(raceBettingFields.get(0));
         ImageView olleCamelButton = (ImageView) getActivity().findViewById(raceBettingFields.get(1));
 
-        String tolleCamelImageName = "c_" + raceBettingArea.nrOfWinnerBetting() + "_button";
-        String olleCamelImageName = "c_" + raceBettingArea.nrOfLoserBetting() + "_button";
+        String tolleCamelImageName = "c_" + raceBettingArea.getNrOfWinnerBetting() + "_button";
+        String olleCamelImageName = "c_" + raceBettingArea.getNrOfLoserBetting() + "_button";
         final int tolleCamelDrawableId = getActivity().getResources().getIdentifier(tolleCamelImageName, "drawable", getActivity().getPackageName());
         final int olleCamelDrawableId = getActivity().getResources().getIdentifier(olleCamelImageName, "drawable", getActivity().getPackageName());
 
@@ -766,7 +681,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         AreaService.getInstance(getActivity()).addSubscriber(AreaName.DICE_AREA, new AreaUpdateSubscriber() {
             @Override
             public void onUpdate(AbstractArea area) {
-                gameDiceArea();
+                diceArea = (DiceArea) area;
             }
 
             @Override
@@ -779,7 +694,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         AreaService.getInstance(getActivity()).addSubscriber(AreaName.LEG_BETTING_AREA, new AreaUpdateSubscriber() {
             @Override
             public void onUpdate(AbstractArea area) {
-                gameLegBettingArea();
+                legBettingArea = (LegBettingArea) area;
+                updateLegBettingFields();
             }
 
             @Override
@@ -792,7 +708,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         AreaService.getInstance(getActivity()).addSubscriber(AreaName.RACE_BETTING_AREA, new AreaUpdateSubscriber() {
             @Override
             public void onUpdate(AbstractArea area) {
-                gameRaceBettingArea();
+                raceBettingArea = (RaceBettingArea) area;
+                updateRaceBettingFields();
             }
 
             @Override
@@ -805,7 +722,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         AreaService.getInstance(getActivity()).addSubscriber(AreaName.RACE_TRACK, new AreaUpdateSubscriber() {
             @Override
             public void onUpdate(AbstractArea area) {
-                gameRaceTrack();
+                raceTrack = (RaceTrack) area;
+                updateRaceTrackFields();
             }
 
             @Override
