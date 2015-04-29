@@ -7,6 +7,7 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameStatus;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameAlreadyStartedException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.NotEnoughPlayerException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.OwnerNotFoundException;
@@ -52,6 +53,11 @@ public class GameActionServiceImpl extends GameActionService {
         if(game.getPlayers().size() >= GameConstants.MIN_PLAYERS) {
             throw new NotEnoughPlayerException(game, GameActionServiceImpl.class);
         }
+
+        if(game.getStatus() != GameStatus.OPEN){
+            throw new GameAlreadyStartedException(game.getId(), GameActionServiceImpl.class);
+        }
+
 
         //TODO: Start game
 
