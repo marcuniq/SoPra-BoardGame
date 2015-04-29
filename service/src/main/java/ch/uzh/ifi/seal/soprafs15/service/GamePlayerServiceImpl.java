@@ -6,6 +6,7 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
+import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingCard;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameFullException;
@@ -18,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -78,12 +81,26 @@ public class GamePlayerServiceImpl extends GamePlayerService {
     @Transactional
     public GamePlayerResponseBean getPlayer(Long gameId, Integer playerId) {
         Game game = gameRepository.findOne(gameId);
-        User player = game.getPlayers().stream().filter(p -> p.getPlayerId() == playerId).findFirst().get();
 
         if(game == null) {
             throw new GameNotFoundException(gameId, GamePlayerServiceImpl.class);
         }
 
+        User player = game.getPlayers().stream().filter(p -> p.getPlayerId() == playerId).findFirst().get();
+
         return gameMapperService.toGamePlayerResponseBean(player);
+    }
+
+    @Override
+    public List<RaceBettingCard> getRaceBettingCards(Long gameId, Integer playerId) {
+        Game game = gameRepository.findOne(gameId);
+
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GamePlayerServiceImpl.class);
+        }
+
+        User player = game.getPlayers().stream().filter(p -> p.getPlayerId() == playerId).findFirst().get();
+
+        return new ArrayList<>(player.getRaceBettingCards().values());
     }
 }

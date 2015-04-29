@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import ch.uzh.ifi.seal.soprafs15.model.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,6 +16,7 @@ public class RaceBettingCard implements Serializable {
 
     @Id
     @GeneratedValue
+    @JsonIgnore
     private Long id;
 
     @Column
@@ -22,6 +24,7 @@ public class RaceBettingCard implements Serializable {
     private Color color;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
     private User user;
 
 

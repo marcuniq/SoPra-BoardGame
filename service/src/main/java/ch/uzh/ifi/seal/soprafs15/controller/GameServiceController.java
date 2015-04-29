@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.controller;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.*;
+import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingCard;
 import ch.uzh.ifi.seal.soprafs15.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -233,6 +234,21 @@ public class GameServiceController extends GenericService {
         GamePlayerResponseBean result = gamePlayerService.getPlayer(gameId, playerId);
         return result;
 	}
+
+    /*
+ *	Context: /games/{gameId}/players/{playerId}/racebettingcards
+ *  Description: Get player's race betting cards
+ */
+    @RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/players/{playerId}/racebettingcards")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<RaceBettingCard> getRaceBettingCards(@PathVariable Long gameId, @PathVariable Integer playerId,
+                                            @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
+        logger.debug("getRaceBettingCards: " + playerId);
+
+        List<RaceBettingCard> result = gamePlayerService.getRaceBettingCards(gameId, playerId);
+        return result;
+    }
 
     /*
     *	Context: /games/racetrack
