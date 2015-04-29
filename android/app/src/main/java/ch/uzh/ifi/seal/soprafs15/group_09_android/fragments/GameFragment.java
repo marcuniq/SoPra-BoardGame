@@ -23,11 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.AbstractArea;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.AreaName;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.LegBettingArea;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.LegBettingTile;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Move;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DiceAreaBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DieBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.LegBettingAreaBean;
@@ -70,6 +66,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private PopupWindow popupWindow;
     private Button acceptButton;
     private Button rejectButton;
+    private Boolean fastMode = false;
 
     private View anchorView;
     private ImageView modifiedButton;
@@ -94,6 +91,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         this.container = container;
         Bundle b = getActivity().getIntent().getExtras();
         gameId = b.getLong("gameId");
+        fastMode = b.getBoolean("fastMode");
         token = b.getString("token");
         return v;
     }
@@ -106,7 +104,12 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         subscribeToAreaUpdates();
         subscribeToEvents();
 
-        play();
+        if (fastMode) {
+            playFastMode();
+        }
+        else {
+            play();
+        }
     }
 
     /**
@@ -447,7 +450,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private AlertDialog dummyPopup(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(message)
-                .setTitle("We have a message for you:");
+            .setTitle("We have a message for you:");
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) { }
         });
@@ -529,6 +532,25 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 //        gameRaceBettingArea();
         gameDiceArea();
         addItemsToRaceTrack();
+    }
+
+    /**
+     * This is the method for the fast mode.
+     */
+    private void playFastMode() {
+        RestService.getInstance(getActivity()).startFastMode(gameId, new Callback<Game>() {
+            @Override
+            public void success(Game game, Response response) {
+                AlertDialog dialog = dummyPopup("success: " + response.toString());
+                dialog.show();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                AlertDialog dialog = dummyPopup("failure: " + error.toString());
+                dialog.show();
+            }
+        });
     }
 
     private void initiateGameMove(Moves moveType, GameColors legBettingTileColor, Boolean raceBettingOnWinner, Boolean desertTileAsOasis, Integer desertTilePosition) {
@@ -614,7 +636,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                     fieldLayout.addView(createDynamicImage(margins[pos],
                             drawableId,
                             RelativeLayout.ALIGN_PARENT_BOTTOM,
-                            RelativeLayout.ALIGN_PARENT_LEFT));
+                        RelativeLayout.ALIGN_PARENT_LEFT));
                 }
             } else if (field.isOasis()) {
                 imageName = "c" + field.playerId() + "_oasis";
