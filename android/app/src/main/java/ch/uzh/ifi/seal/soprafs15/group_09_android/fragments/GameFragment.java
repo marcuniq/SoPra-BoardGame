@@ -218,8 +218,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         TextView title = (TextView) popupView.findViewById(R.id.popupTitle);
 
         // check if it is olle or tolle betting
-        if ((type != 0)) title.setText(R.string.title_raceBet_tolle); // cast the type {0 or 1} to boolean
-        else title.setText(R.string.title_raceBet_olle);
+        if ((type != 0)) title.setText(R.string.title_raceBet_olle); // cast the type {0 or 1} to boolean
+        else title.setText(R.string.title_raceBet_tolle);
 
         ImageButton cardBlue = (ImageButton) popupView.findViewById(R.id.card_blue);
         ImageButton cardGreen = (ImageButton) popupView.findViewById(R.id.card_green);
