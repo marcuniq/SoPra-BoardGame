@@ -47,6 +47,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private ArrayList<Integer> raceBettingFields = new ArrayList<>();
     private Integer pyramidField;
     private Integer helpButton;
+    private Integer playerInfoButton;
     private Button acceptButton;
     private Button rejectButton;
     private ImageView modifiedButton;
@@ -141,6 +142,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         }
         if (helpButton == v.getId()){
             instructionsPopup(v, R.layout.popup_instructions);
+        }
+        if (playerInfoButton == v.getId()){
+            playerInfoPopup(v, R.layout.popup_player_info);
         }
     }
 
@@ -427,6 +431,28 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         return popupView;
     }
 
+    public void playerInfoPopup(View v, int layout) {
+        View popupView = defaultPopup(v, layout);
+
+        GridLayout grid = (GridLayout) popupView.findViewById(R.id.grid);
+        ImageView image;
+        String cardImageName = "c" + playerId + "_racebettingcard_";
+        for (int i = 0; i < 5; i++){
+            image = new ImageView(getActivity());
+            image.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            Toast.makeText(getActivity(), cardImageName + GameColors.values()[i].name().toLowerCase(), Toast.LENGTH_SHORT).show();
+            image.setImageResource(getActivity().getResources().getIdentifier(cardImageName + GameColors.values()[i].name().toLowerCase(), "drawable", getActivity().getPackageName()));
+            grid.addView(image);
+        }
+
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+    }
+
     /**
      * Displays a popup for the playing rules.
      *
@@ -522,6 +548,10 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         // for the help; displays game rules
         helpButton = R.id.help;
         (getActivity().findViewById(helpButton)).setOnClickListener(this);
+
+        // button to display the players rack
+        playerInfoButton = R.id.playerIcon;
+        (getActivity().findViewById(playerInfoButton)).setOnClickListener(this);
     }
 
     /**
