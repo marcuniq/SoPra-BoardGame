@@ -51,6 +51,8 @@ public class GameListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        playerId = this.getArguments().getLong("playerId");
     }
 
     /**
@@ -120,7 +122,6 @@ public class GameListFragment extends ListFragment {
         final Long gameId = selectedGame.id();
         joinedGameId = gameId;
         User player = User.setToken(token);
-        playerId = player.id();
 
         RestService.getInstance(getActivity()).joinGame(gameId, player, new Callback<User>() {
 
@@ -132,6 +133,7 @@ public class GameListFragment extends ListFragment {
                 Fragment gameLobbyFragment = GameLobbyFragment.newInstance();
                 Bundle bundle = new Bundle();
                 bundle.putLong("gameId", joinedGameId);
+                bundle.putLong("playerId", playerId);
                 bundle.putBoolean("isOwner", false);
                 gameLobbyFragment.setArguments(bundle);
 

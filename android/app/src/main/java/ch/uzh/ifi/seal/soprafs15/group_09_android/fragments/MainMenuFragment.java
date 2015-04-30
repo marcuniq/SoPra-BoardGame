@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ public class MainMenuFragment extends Fragment {
 
     private Button createGameMenuButton;
     private Button listGameMenuButton;
+    private Long playerId;
     private String token;
 
     public MainMenuFragment() {}
@@ -39,6 +41,9 @@ public class MainMenuFragment extends Fragment {
 
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
+
+        Bundle b = getActivity().getIntent().getExtras();
+        playerId = b.getLong("playerId");
 
         createGameMenuButton = (Button) v.findViewById(R.id.createGameMenuButton);
         createGameMenuButton.setOnClickListener(new View.OnClickListener() {
@@ -64,7 +69,12 @@ public class MainMenuFragment extends Fragment {
      * @param v the current View
      */
     private void onClickCreateGameMenuButton(View v) {
-        ((MenuActivity)getActivity()).pushFragment(GameCreatorFragment.newInstance());
+        Bundle b = new Bundle();
+        b.putLong("playerId", playerId);
+        Fragment fragment = new GameCreatorFragment();
+        fragment.setArguments(b);
+
+        ((MenuActivity) getActivity()).pushFragment(fragment);
     }
 
     /**
@@ -73,6 +83,11 @@ public class MainMenuFragment extends Fragment {
      * @param v the current View
      */
     private void onClickListGameMenuButton(View v) {
-        ((MenuActivity)getActivity()).pushFragment(GameListFragment.newInstance());
+        Bundle b = new Bundle();
+        b.putLong("playerId", playerId);
+        Fragment fragment = new GameListFragment();
+        fragment.setArguments(b);
+
+        ((MenuActivity) getActivity()).pushFragment(fragment);
     }
 }

@@ -70,7 +70,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private ImageView modifiedButton;
 
     // class variables
-    private Long playerId = 1L; // TODO: set correct player id
+    private Long playerId;
     private Long gameId;
     private String token;
     private Boolean fastMode = false;
@@ -97,6 +97,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         this.container = container;
         Bundle b = getActivity().getIntent().getExtras();
         gameId = b.getLong("gameId");
+        playerId = b.getLong("playerId");
         fastMode = b.getBoolean("fastMode");
         token = b.getString("token");
         return v;

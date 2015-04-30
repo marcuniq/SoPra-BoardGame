@@ -135,6 +135,15 @@ public interface RestApiInterface {
     /**
      *
      * @param gameId
+     * @param playerId
+     * @param callback
+     */
+    @GET("/games/{gameId}/players/{playerId}")
+    void getGamePlayer(@Path("gameId") Long gameId, @Path("playerId") Long playerId, Callback<User> callback);
+
+    /**
+     *
+     * @param gameId
      */
     @GET("/games/{gameId}/start-fast-mode")
     void startFastMode(@Path("gameId") Long gameId, Callback<Game> callback);

@@ -57,6 +57,7 @@ public class GameLobbyFragment extends ListFragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         gameId = this.getArguments().getLong("gameId");
+        playerId = this.getArguments().getLong("playerId");
         isOwner = this.getArguments().getBoolean("isOwner");
     }
 
@@ -123,6 +124,7 @@ public class GameLobbyFragment extends ListFragment{
         intent.setClass(getActivity(), GameActivity.class);
         Bundle b = new Bundle();
         b.putLong("gameId", gameId);
+        b.putLong("playerId", playerId);
         b.putBoolean("fastMode", fastMode);
         b.putString("token", token);
         intent.putExtras(b);

@@ -25,6 +25,7 @@ public class LoginFragment extends Fragment {
     private EditText etUsername;
     private TextView tvLogBox;
     private Button loginButton;
+    private Long playerId;
     private String token = "you fool";
 
     /**
@@ -70,7 +71,9 @@ public class LoginFragment extends Fragment {
     }
 
     private void loginUser(User user, final View v){
-        RestService.getInstance(getActivity()).loginUser(user.id(), new Callback<User>() {
+        playerId = user.id();
+
+        RestService.getInstance(getActivity()).loginUser(playerId, new Callback<User>() {
             @Override
             public void success(User user, Response response) {
                 if (user == null) {
@@ -87,6 +90,7 @@ public class LoginFragment extends Fragment {
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), MenuActivity.class);
                 Bundle b = new Bundle();
+                b.putLong("playerId", playerId);
                 b.putString("token", token);
                 intent.putExtras(b);
                 startActivity(intent);
