@@ -106,7 +106,7 @@ public class UserServiceControllerIT {
 
         // Test Login
 
-        ResponseEntity<UserLoginLogoutResponseBean> loginResponse = TestUtils.loginUser(1, template, base);
+        ResponseEntity<UserLoginLogoutResponseBean> loginResponse = TestUtils.loginUser(response.getBody().getId(), template, base);
 
         Long oracleTokenLength = (long) "067e6162-3b6f-4ae2-a171-2470b63dff00".length();
 

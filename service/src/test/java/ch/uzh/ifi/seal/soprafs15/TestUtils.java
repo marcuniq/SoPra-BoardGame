@@ -107,9 +107,9 @@ public class TestUtils {
         return template.exchange(base + "/users", HttpMethod.POST, httpEntity, UserResponseBean.class);
     }
 
-    public static ResponseEntity<UserLoginLogoutResponseBean> loginUser(Integer id, RestTemplate template, URL base) {
+    public static ResponseEntity<UserLoginLogoutResponseBean> loginUser(Long userId, RestTemplate template, URL base) {
 
-        return template.exchange(base + "/users/" + id + "/login", HttpMethod.POST, null, UserLoginLogoutResponseBean.class);
+        return template.exchange(base + "/users/" + userId + "/login", HttpMethod.POST, null, UserLoginLogoutResponseBean.class);
     }
 
     public static ResponseEntity<GameCreateResponseBean> createGame(GameRequestBean request, RestTemplate template, URL base) {
@@ -119,14 +119,14 @@ public class TestUtils {
         return template.exchange(base + "/games", HttpMethod.POST, httpEntity, GameCreateResponseBean.class);
     }
 
-    public static ResponseEntity<GameAddPlayerResponseBean> addPlayer(GamePlayerRequestBean request, Integer id, RestTemplate template, URL base) {
+    public static ResponseEntity<GameAddPlayerResponseBean> addPlayer(GamePlayerRequestBean request, Long gameId, RestTemplate template, URL base) {
 
         HttpEntity<GamePlayerRequestBean> playerRequestHttpEntity = new HttpEntity<GamePlayerRequestBean>(request);
 
-        return template.exchange(base + "/games/" + id + "/players", HttpMethod.POST, playerRequestHttpEntity, GameAddPlayerResponseBean.class);
+        return template.exchange(base + "/games/" + gameId + "/players", HttpMethod.POST, playerRequestHttpEntity, GameAddPlayerResponseBean.class);
     }
 
-    public static ResponseEntity<GameMoveResponseBean> addMove(GameMoveRequestBean request, Integer gameId, RestTemplate template, URL base) {
+    public static ResponseEntity<GameMoveResponseBean> addMove(GameMoveRequestBean request, Long gameId, RestTemplate template, URL base) {
 
         HttpEntity<GameMoveRequestBean> httpEntity = new HttpEntity<GameMoveRequestBean>(request);
 

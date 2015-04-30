@@ -5,6 +5,8 @@ public class GameAddPlayerResponseBean extends GamePlayerResponseBean {
 
     private String channelName;
 
+    public GameAddPlayerResponseBean(){    }
+
     public GameAddPlayerResponseBean(GamePlayerResponseBean bean){
         this.id = bean.getId();
         this.playerId = bean.getPlayerId();
