@@ -1,1 +1,1 @@
-  web: java -jar -Dserver.port=$PORT build/libs/*.jar
+  web: java -jar -Dserver.port=$PORT build/libs/*.jar -javaagent:build/libs/newrelic.jar -noverify
