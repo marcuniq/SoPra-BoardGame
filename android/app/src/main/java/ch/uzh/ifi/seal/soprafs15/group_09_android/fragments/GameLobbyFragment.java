@@ -17,7 +17,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEvent;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.GameStartEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventSubscriber;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
@@ -32,7 +32,8 @@ public class GameLobbyFragment extends ListFragment{
 
     private TextView tvLogBox;
     private Long gameId;
-    private Long playerId;
+    private Long userId;
+    private Integer playerId;
     private Boolean isOwner;
     private PlayerArrayAdapter playerArrayAdapter; // adapts the ArrayList of Games to the ListView
     private ImageView ivPlayerCard;
@@ -57,7 +58,7 @@ public class GameLobbyFragment extends ListFragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         gameId = this.getArguments().getLong("gameId");
-        playerId = this.getArguments().getLong("playerId");
+        userId = this.getArguments().getLong("userId");
         isOwner = this.getArguments().getBoolean("isOwner");
     }
 
@@ -124,7 +125,7 @@ public class GameLobbyFragment extends ListFragment{
         intent.setClass(getActivity(), GameActivity.class);
         Bundle b = new Bundle();
         b.putLong("gameId", gameId);
-        b.putLong("playerId", playerId);
+        b.putLong("userId", userId);
         b.putBoolean("fastMode", fastMode);
         b.putString("token", token);
         intent.putExtras(b);

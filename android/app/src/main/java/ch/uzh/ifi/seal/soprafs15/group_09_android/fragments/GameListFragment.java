@@ -31,7 +31,7 @@ public class GameListFragment extends ListFragment {
     private GameArrayAdapter gameArrayAdapter; // adapts the ArrayList of Games to the ListView
     private String token;
     private Long joinedGameId;
-    private Long playerId;
+    private Long userId;
 
     /* empty constructor */
     public GameListFragment() {}
@@ -52,7 +52,7 @@ public class GameListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        playerId = this.getArguments().getLong("playerId");
+        userId = this.getArguments().getLong("userId");
     }
 
     /**
@@ -133,7 +133,7 @@ public class GameListFragment extends ListFragment {
                 Fragment gameLobbyFragment = GameLobbyFragment.newInstance();
                 Bundle bundle = new Bundle();
                 bundle.putLong("gameId", joinedGameId);
-                bundle.putLong("playerId", playerId);
+                bundle.putLong("userId", userId);
                 bundle.putBoolean("isOwner", false);
                 gameLobbyFragment.setArguments(bundle);
 

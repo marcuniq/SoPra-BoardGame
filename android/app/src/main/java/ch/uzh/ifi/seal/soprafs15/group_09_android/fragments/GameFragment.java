@@ -32,10 +32,6 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Move;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceBettingArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceTrack;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.CamelBean;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DiceAreaBean;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.LegBettingAreaBean;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceBettingAreaBean;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackObjectBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
@@ -70,7 +66,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private ImageView modifiedButton;
 
     // class variables
-    private Long playerId;
+    private Long userId;
     private Long gameId;
     private String token;
     private Boolean fastMode = false;
@@ -97,7 +93,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         this.container = container;
         Bundle b = getActivity().getIntent().getExtras();
         gameId = b.getLong("gameId");
-        playerId = b.getLong("playerId");
+        userId = b.getLong("userId");
         fastMode = b.getBoolean("fastMode");
         token = b.getString("token");
         return v;
@@ -220,8 +216,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         ImageButton cardYellow = (ImageButton) popupView.findViewById(R.id.card_yellow);
         ImageButton cardWhite = (ImageButton) popupView.findViewById(R.id.card_white);
 
-        String cardImageName = "c" + playerId + "_racebettingcard_";
-        String characterCardImageName = "c" + playerId + "_button";
+        String cardImageName = "c" + userId + "_racebettingcard_";
+        String characterCardImageName = "c" + userId + "_button";
         final int cardBlueDrawableId = getActivity().getResources().getIdentifier(cardImageName + "blue", "drawable", getActivity().getPackageName());
         final int cardGreenDrawableId = getActivity().getResources().getIdentifier(cardImageName + "green", "drawable", getActivity().getPackageName());
         final int cardOrangeDrawableId = getActivity().getResources().getIdentifier(cardImageName + "orange", "drawable", getActivity().getPackageName());
@@ -350,8 +346,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         ImageButton desertTile = (ImageButton) popupView.findViewById(R.id.desert_tile);
         ImageButton oasisTile = (ImageButton) popupView.findViewById(R.id.oasis_tile);
 
-        String desertImageName = "c" + playerId.toString() + "_desert";
-        String oasisImageName = "c" + playerId.toString() + "_oasis";
+        String desertImageName = "c" + userId.toString() + "_desert";
+        String oasisImageName = "c" + userId.toString() + "_oasis";
         final int desertDrawableId = getActivity().getResources().getIdentifier(desertImageName, "drawable", getActivity().getPackageName());
         final int oasisDrawableId = getActivity().getResources().getIdentifier(oasisImageName, "drawable", getActivity().getPackageName());
         desertTile.setImageResource(desertDrawableId);

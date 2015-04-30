@@ -1,7 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,7 +20,7 @@ public class MainMenuFragment extends Fragment {
 
     private Button createGameMenuButton;
     private Button listGameMenuButton;
-    private Long playerId;
+    private Long userId;
     private String token;
 
     public MainMenuFragment() {}
@@ -43,7 +42,7 @@ public class MainMenuFragment extends Fragment {
         token = sharedPref.getString("token", token);
 
         Bundle b = getActivity().getIntent().getExtras();
-        playerId = b.getLong("playerId");
+        userId = b.getLong("userId");
 
         createGameMenuButton = (Button) v.findViewById(R.id.createGameMenuButton);
         createGameMenuButton.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +69,7 @@ public class MainMenuFragment extends Fragment {
      */
     private void onClickCreateGameMenuButton(View v) {
         Bundle b = new Bundle();
-        b.putLong("playerId", playerId);
+        b.putLong("userId", userId);
         Fragment fragment = new GameCreatorFragment();
         fragment.setArguments(b);
 
@@ -84,7 +83,7 @@ public class MainMenuFragment extends Fragment {
      */
     private void onClickListGameMenuButton(View v) {
         Bundle b = new Bundle();
-        b.putLong("playerId", playerId);
+        b.putLong("userId", userId);
         Fragment fragment = new GameListFragment();
         fragment.setArguments(b);
 

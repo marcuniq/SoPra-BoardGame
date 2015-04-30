@@ -27,7 +27,7 @@ public class GameCreatorFragment extends Fragment {
     private Button createGameButton;
     private String token;
     private User player;
-    private Long playerId;
+    private Long userId;
     private Long joinedGameId;
 
     /**
@@ -46,7 +46,7 @@ public class GameCreatorFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        playerId = this.getArguments().getLong("playerId");
+        userId = this.getArguments().getLong("userId");
     }
 
     /**
@@ -103,7 +103,7 @@ public class GameCreatorFragment extends Fragment {
                 Fragment fragment = GameLobbyFragment.newInstance();
                 Bundle bundle = new Bundle();
                 bundle.putLong("gameId", joinedGameId);
-                bundle.putLong("playerId", playerId);
+                bundle.putLong("userId", userId);
                 bundle.putBoolean("isOwner", true);
                 fragment.setArguments(bundle);
 

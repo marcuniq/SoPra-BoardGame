@@ -139,7 +139,7 @@ public interface RestApiInterface {
      * @param callback
      */
     @GET("/games/{gameId}/players/{playerId}")
-    void getGamePlayer(@Path("gameId") Long gameId, @Path("playerId") Long playerId, Callback<User> callback);
+    void getGamePlayer(@Path("gameId") Long gameId, @Path("playerId") Integer playerId, Callback<User> callback);
 
     /**
      *
