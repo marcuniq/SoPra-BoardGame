@@ -1,6 +1,8 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -87,7 +89,13 @@ public class GameLobbyFragment extends ListFragment{
                 @Override
                 public void onClick(View v) {
                     fastMode = checkBox.isChecked();
-                    startGame();
+
+                    if (fastMode) {
+                        startGameInFastMode();
+                    }
+                    else {
+                        startGame();
+                    }
                 }
             });
         } else {
@@ -145,20 +153,20 @@ public class GameLobbyFragment extends ListFragment{
 
                     onStartGame();
                 }
-        });
+            });
 
         System.out.println("subscribe to player joined events");
         PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.PLAYER_JOINED_EVENT,
-                new PusherEventSubscriber() {
-                    @Override
-                    public void onNewEvent(final AbstractPusherEvent event) {
-                        System.out.println("got player joined event");
+            new PusherEventSubscriber() {
+                @Override
+                public void onNewEvent(final AbstractPusherEvent event) {
+                    System.out.println("got player joined event");
 
-                        PlayerJoinedEvent playerJoinedEvent = (PlayerJoinedEvent) event;
+                    PlayerJoinedEvent playerJoinedEvent = (PlayerJoinedEvent) event;
 
-                        getPlayers();
-                    }
-                });
+                    getPlayers();
+                }
+            });
     }
 
     private void startGame(){
@@ -172,6 +180,33 @@ public class GameLobbyFragment extends ListFragment{
             @Override
             public void failure(RetrofitError error) {
 
+            }
+        });
+    }
+
+    private void startGameInFastMode(){
+        User user = User.setToken(token);
+        RestService.getInstance(getActivity()).startFastMode(gameId, user, new Callback<Game>() {
+            @Override
+            public void success(Game game, Response response) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("success: " + response.toString()).setTitle("We have a message for you:");
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+                builder.create().show();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("failure: " + error.toString());
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+                builder.create().show();
             }
         });
     }

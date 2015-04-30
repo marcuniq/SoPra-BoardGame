@@ -118,12 +118,12 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         subscribeToAreaUpdates();
         subscribeToEvents();
 
-        if (fastMode) {
-            playFastMode();
-        }
-        else {
-            play();
-        }
+//        if (fastMode) {
+//            playFastMode();
+//        }
+//        else {
+        play();
+//        }
     }
 
     /**
@@ -552,22 +552,22 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     /**
      * This is the method for the fast mode.
      */
-    private void playFastMode() {
-        User user = User.setToken(token);
-        RestService.getInstance(getActivity()).startFastMode(gameId, user, new Callback<Game>() {
-            @Override
-            public void success(Game game, Response response) {
-                AlertDialog dialog = dummyPopup("success: " + response.toString());
-                dialog.show();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                AlertDialog dialog = dummyPopup("failure: " + error.toString());
-                dialog.show();
-            }
-        });
-    }
+//    private void playFastMode() {
+//        User user = User.setToken(token);
+//        RestService.getInstance(getActivity()).startFastMode(gameId, user, new Callback<Game>() {
+//            @Override
+//            public void success(Game game, Response response) {
+//                AlertDialog dialog = dummyPopup("success: " + response.toString());
+//                dialog.show();
+//            }
+//
+//            @Override
+//            public void failure(RetrofitError error) {
+//                AlertDialog dialog = dummyPopup("failure: " + error.toString());
+//                dialog.show();
+//            }
+//        });
+//    }
 
     private void initiateGameMove(Moves moveType, GameColors legBettingTileColor, Boolean raceBettingOnWinner, Boolean desertTileAsOasis, Integer desertTilePosition) {
         Move move = Move.create(token, moveType, legBettingTileColor, raceBettingOnWinner, desertTileAsOasis, desertTilePosition);
