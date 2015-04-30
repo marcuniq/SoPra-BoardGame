@@ -174,7 +174,7 @@ public class GameLobbyFragment extends ListFragment{
         RestService.getInstance(getActivity()).start(gameId, user, new Callback<Game>() {
             @Override
             public void success(Game game, Response response) {
-                onStartGame();
+
             }
 
             @Override
