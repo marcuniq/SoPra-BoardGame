@@ -64,8 +64,8 @@
     <string name="button_text_desert">Desert tile</string>
     <string name="button_text_oasis">Oasis tile</string>
 
-    <string name="round">Up to the next round</string>
-    <string name="title_round">Round</string>
+    <string name="description">Description</string>
+    <string name="title_round_evaluation">Round evaluation</string>
     <string name="accept">Apply</string>
     <string name="reject">Cancel</string>
 

@@ -12,45 +12,26 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import android.widget.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.AbstractArea;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.AreaName;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.DiceArea;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.LegBettingArea;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.LegBettingTile;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Move;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceBettingArea;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceTrack;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.CamelBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackObjectBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerTurnEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.beans.PlayerTurnEventBean;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.service.AreaService;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.service.AreaUpdateSubscriber;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventSubscriber;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameColors;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Moves;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class GameFragment extends Fragment implements View.OnClickListener {
 
@@ -82,6 +63,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private Bundle savedInstanceState;
     private ViewGroup container;
 
+    private List<User> usersOrderedByMoney;
     private Drawable lastResource;
     private Boolean isDesertTileAsOasis = null;
     private GameColors pickedCardColor;
@@ -372,9 +354,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 RelativeLayout fieldLayout = (RelativeLayout) anchorView;
                 acceptButton.setText(R.string.button_text_desert);
                 modifiedButton = createDynamicImage(0,
-                        desertDrawableId,
-                        RelativeLayout.CENTER_HORIZONTAL,
-                        RelativeLayout.CENTER_VERTICAL);
+                    desertDrawableId,
+                    RelativeLayout.CENTER_HORIZONTAL,
+                    RelativeLayout.CENTER_VERTICAL);
                 ViewGroup.LayoutParams params = modifiedButton.getLayoutParams();
                 params.width = 75;
                 params.height = 75;
@@ -389,9 +371,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 RelativeLayout fieldLayout = (RelativeLayout) anchorView;
                 acceptButton.setText(R.string.button_text_oasis);
                 modifiedButton = createDynamicImage(0,
-                        oasisDrawableId,
-                        RelativeLayout.CENTER_HORIZONTAL,
-                        RelativeLayout.CENTER_VERTICAL);
+                    oasisDrawableId,
+                    RelativeLayout.CENTER_HORIZONTAL,
+                    RelativeLayout.CENTER_VERTICAL);
                 ViewGroup.LayoutParams params = modifiedButton.getLayoutParams();
                 params.width = 75;
                 params.height = 75;
@@ -653,6 +635,57 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    private void roundEvaluation() {
+        RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<User>>() {
+            @Override
+            public void success(List<User> users, Response response) {
+                Collections.sort(users, new Comparator<User>() {
+                    @Override
+                    public int compare(User user1, User user2) {
+
+                        return user1.money().compareTo(user2.money());
+                    }
+                });
+
+                usersOrderedByMoney = users;
+
+                roundEvaluationPopup();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                AlertDialog dialog = dummyPopup("failure: " + error.toString());
+                dialog.show();
+            }
+        });
+    }
+
+    private void roundEvaluationPopup() {
+        View popupView = defaultPopup(getView(), R.layout.popup_round_evaluation);
+
+        TextView description = (TextView) popupView.findViewById(R.id.description);
+
+        String message = "";
+        Integer counter = 1;
+
+        for (User user : usersOrderedByMoney) {
+            message += counter + ". User " + user.username() + " has " + user.money() + " egypt pounds. \n";
+            counter++;
+        }
+
+        description.setText(message);
+
+        acceptButton.setText("OK");
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+
+        rejectButton.setVisibility(View.INVISIBLE);
+    }
+
     private void updateRaceBettingFields(){
         ImageView tolleCamelButton = (ImageView) getActivity().findViewById(raceBettingFields.get(0));
         ImageView olleCamelButton = (ImageView) getActivity().findViewById(raceBettingFields.get(1));
@@ -776,7 +809,12 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                     }
                 });
 
+        PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.LEG_OVER_EVENT,
+            new PusherEventSubscriber() {
+                @Override
+                public void onNewEvent(final AbstractPusherEvent moveEvent) {
+                    roundEvaluation();
+                }
+            });
     }
-
-
 }

@@ -21,7 +21,7 @@
                 android:textColor="#ffffff"
                 android:gravity="center"
                 android:textSize="24sp"
-                android:id="@+id/popupTitle" android:text="@string/title_round"/>
+                android:id="@+id/popupTitle" android:text="@string/title_round_evaluation"/>
         </LinearLayout>
 
         <RelativeLayout
@@ -42,8 +42,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="@string/round"
-                        android:id="@+id/round"/>
+                        android:text="@string/description"
+                        android:id="@+id/description"/>
             </LinearLayout>
 
             <Button
