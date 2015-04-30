@@ -14,5 +14,7 @@ public abstract class GameLogicService extends GenericService {
 
     public abstract Map<Long, Integer> createPlayerSequence(Game game);
     public abstract Move processMove(Game game, User player, Move move);
+    public abstract void startFastMode(Game game);
+    public abstract void stopFastMode(Game game);
 
 }

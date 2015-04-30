@@ -40,6 +40,11 @@ public class DiceRolling extends Move {
         return bean;
     }
 
+    @Override
+    public Boolean isValid() {
+        return null;
+    }
+
     /**
      * Game logic for dice rolling
      */

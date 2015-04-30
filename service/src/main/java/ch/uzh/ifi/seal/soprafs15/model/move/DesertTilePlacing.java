@@ -51,6 +51,11 @@ public class DesertTilePlacing extends Move {
         return bean;
     }
 
+    @Override
+    public Boolean isValid() {
+        return null;
+    }
+
     /**
      * Game logic for dice rolling
      */

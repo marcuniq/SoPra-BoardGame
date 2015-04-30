@@ -95,6 +95,11 @@ public class Game implements Serializable {
         }
     }
 
+    public void removePlayer(User player){
+        players.remove(player);
+        player.setGame(null);
+    }
+
     public User getNextPlayer() {
         return getPlayers().get((getCurrentPlayer() + 1) % getPlayers().size());
     }

@@ -37,6 +37,11 @@ public class RaceBetting extends Move {
         return bean;
     }
 
+    @Override
+    public Boolean isValid() {
+        return null;
+    }
+
     /**
      * Game logic for race betting
      */

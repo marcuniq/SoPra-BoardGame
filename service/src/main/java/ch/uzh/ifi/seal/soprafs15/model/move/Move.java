@@ -56,5 +56,7 @@ public abstract class Move implements Serializable {
 
     public abstract GameMoveResponseBean toGameMoveResponseBean();
 
+    public abstract Boolean isValid();
+
     public abstract Move execute();
 }
