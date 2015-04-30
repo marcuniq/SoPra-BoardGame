@@ -13,7 +13,6 @@ import ch.uzh.ifi.seal.soprafs15.service.exceptions.OwnerNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import ch.uzh.ifi.seal.soprafs15.service.pusher.PusherService;
 import ch.uzh.ifi.seal.soprafs15.service.pusher.events.GameStartEvent;
-import ch.uzh.ifi.seal.soprafs15.service.pusher.events.PlayerSequenceEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,11 +72,8 @@ public class GameActionServiceImpl extends GameActionService {
         // create player sequence
         Map<Long, Integer> userIdToPlayerIdMap = gameLogicService.createPlayerSequence(game);
 
-        // let players know about the player id's of all players
-        pusherService.pushToSubscribers(new PlayerSequenceEvent(userIdToPlayerIdMap), game);
-
         // send game start event
-        pusherService.pushToSubscribers(new GameStartEvent(), game);
+        pusherService.pushToSubscribers(new GameStartEvent(userIdToPlayerIdMap), game);
 
         return gameMapperService.toGameResponseBean(game);
     }

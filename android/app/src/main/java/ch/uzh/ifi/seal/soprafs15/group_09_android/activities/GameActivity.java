@@ -13,7 +13,7 @@ public class GameActivity extends MainActivity  {
     /**
      * When the activity is created, do the following:
      *      - set window to full screen
-     *      - get the parameters passed by GameLobbyFragment (gameId and playerId)
+     *      - get the parameters passed by GameLobbyFragment (gameId and userId)
      *      - initialize the whole board (RaceTrack, DiceArea and LegBettingArea)
      *      - start playing
      * @param savedInstanceState -

@@ -53,6 +53,9 @@ public class GameListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         userId = this.getArguments().getLong("userId");
+
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        token = sharedPref.getString("token", token);
     }
 
     /**

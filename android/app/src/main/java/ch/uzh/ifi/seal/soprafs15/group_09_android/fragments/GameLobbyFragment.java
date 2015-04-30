@@ -15,9 +15,11 @@ import java.util.List;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.GameStartEvent;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerJoinedEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventSubscriber;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
@@ -59,6 +61,10 @@ public class GameLobbyFragment extends ListFragment{
         super.onCreate(savedInstanceState);
         gameId = this.getArguments().getLong("gameId");
         userId = this.getArguments().getLong("userId");
+
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        token = sharedPref.getString("token", token);
+
         isOwner = this.getArguments().getBoolean("isOwner");
     }
 
@@ -73,20 +79,22 @@ public class GameLobbyFragment extends ListFragment{
         Button startGameButton = (Button) v.findViewById(R.id.startButton);
         checkBox = (CheckBox) v.findViewById(R.id.checkBox);
 
+        subscribeToEvents();
+
         // Hide button and fast mode if user is not the owner
         if (isOwner) {
             startGameButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     fastMode = checkBox.isChecked();
-                    onStartGame();
+                    startGame();
                 }
             });
         } else {
             checkBox.setVisibility(View.INVISIBLE);
             startGameButton.setVisibility(View.INVISIBLE);
-            subscribeToGameStart();
         }
+
 
         playerArrayAdapter = new PlayerArrayAdapter(
                 getActivity(),
@@ -102,19 +110,8 @@ public class GameLobbyFragment extends ListFragment{
     @Override
     public void onResume(){
         super.onResume();
-        RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<User>>() {
-            @Override
-            public void success(List<User> players, Response response) {
-                for (User player : players) {
-                    playerArrayAdapter.add(player);
-                }
-            }
 
-            @Override
-            public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
-            }
-        });
+        getPlayers();
     }
 
     private void onStartGame() {
@@ -126,6 +123,7 @@ public class GameLobbyFragment extends ListFragment{
         Bundle b = new Bundle();
         b.putLong("gameId", gameId);
         b.putLong("userId", userId);
+        b.putInt("playerId", playerId);
         b.putBoolean("fastMode", fastMode);
         b.putString("token", token);
         intent.putExtras(b);
@@ -133,16 +131,66 @@ public class GameLobbyFragment extends ListFragment{
         getActivity().finish();
     }
 
-    private void subscribeToGameStart(){
+    private void subscribeToEvents(){
         System.out.println("subscribe to game start");
         PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.GAME_START_EVENT,
             new PusherEventSubscriber() {
                 @Override
-                public void onNewEvent(final AbstractPusherEvent moveEvent) {
+                public void onNewEvent(final AbstractPusherEvent event) {
                     System.out.println("got game start event");
+
+                    GameStartEvent gameStartEvent = (GameStartEvent) event;
+
+                    playerId = gameStartEvent.getUserIdToPlayerIdMap().get(userId);
 
                     onStartGame();
                 }
+        });
+
+        System.out.println("subscribe to player joined events");
+        PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.PLAYER_JOINED_EVENT,
+                new PusherEventSubscriber() {
+                    @Override
+                    public void onNewEvent(final AbstractPusherEvent event) {
+                        System.out.println("got player joined event");
+
+                        PlayerJoinedEvent playerJoinedEvent = (PlayerJoinedEvent) event;
+
+                        getPlayers();
+                    }
+                });
+    }
+
+    private void startGame(){
+        User user = User.setToken(token);
+        RestService.getInstance(getActivity()).start(gameId, user, new Callback<Game>() {
+            @Override
+            public void success(Game game, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
+    private void getPlayers(){
+        RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<User>>() {
+            @Override
+            public void success(List<User> players, Response response) {
+                playerArrayAdapter.clear();
+
+                for (User player : players) {
+                    playerArrayAdapter.add(player);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                tvLogBox.setText("ERROR: " + error.getMessage());
+            }
         });
     }
 }

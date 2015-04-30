@@ -1,7 +1,9 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -31,11 +33,14 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.LegBettingTile;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Move;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceBettingArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceTrack;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.CamelBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackObjectBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerTurnEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.beans.PlayerTurnEventBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.AreaService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.AreaUpdateSubscriber;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventSubscriber;
@@ -68,6 +73,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     // class variables
     private Long userId;
     private Long gameId;
+    private Integer playerId;
     private String token;
     private Boolean fastMode = false;
 
@@ -94,8 +100,13 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         Bundle b = getActivity().getIntent().getExtras();
         gameId = b.getLong("gameId");
         userId = b.getLong("userId");
+        playerId = b.getInt("playerId");
         fastMode = b.getBoolean("fastMode");
         token = b.getString("token");
+
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        token = sharedPref.getString("token", token);
+
         return v;
     }
 
@@ -542,7 +553,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * This is the method for the fast mode.
      */
     private void playFastMode() {
-        RestService.getInstance(getActivity()).startFastMode(gameId, new Callback<Game>() {
+        User user = User.setToken(token);
+        RestService.getInstance(getActivity()).startFastMode(gameId, user, new Callback<Game>() {
             @Override
             public void success(Game game, Response response) {
                 AlertDialog dialog = dummyPopup("success: " + response.toString());
@@ -746,8 +758,25 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                                         ((MoveEvent) moveEvent).getMoveId(), Toast.LENGTH_SHORT).show();
                             }
                         });
+                }
+                });
+
+        PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.PLAYER_TURN_EVENT,
+                new PusherEventSubscriber() {
+                    @Override
+                    public void onNewEvent(final AbstractPusherEvent event) {
+                        System.out.println("got new event");
+
+                        PlayerTurnEvent playerTurnEvent = (PlayerTurnEvent) event;
+
+                        if(playerId == playerTurnEvent.getPlayerId()){
+                            // TODO notify player that it is her turn
+
+                        }
                     }
                 });
+
     }
+
 
 }

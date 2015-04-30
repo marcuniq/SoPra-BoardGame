@@ -2,8 +2,6 @@ package ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.beans;
 
 import android.os.Parcelable;
 
-import java.util.Map;
-
 import auto.parcel.AutoParcel;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoGson;
@@ -13,10 +11,10 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoGson;
  */
 @AutoGson
 @AutoParcel
-public abstract class GameStartEventBean implements Parcelable {
 
+public abstract class PlayerTurnEventBean implements Parcelable{
+
+    public abstract Integer playerId();
     public abstract PushEventNameEnum pushEventNameEnum();
-
-    public abstract Map<Long, Integer> userIdToPlayerIdMap();
 
 }

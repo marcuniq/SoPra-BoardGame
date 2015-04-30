@@ -13,14 +13,16 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEv
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.GameStartEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.LegOverEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerJoinedEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerLeftEvent;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerSequenceEvent;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerTurnEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.beans.GameStartEventBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.beans.LegOverEventBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.beans.MoveEventBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.beans.PlayerJoinedEventBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.beans.PlayerLeftEventBean;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.beans.PlayerSequenceEventBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.beans.PlayerTurnEventBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoValueAdapterFactory;
 
 /**
@@ -129,11 +131,24 @@ public class PusherService {
             public void onEvent(String channel, String event, String data) {
                 System.out.println("Received player turn event with data: " + data);
 
-                PlayerSequenceEventBean bean = gson.fromJson(data, PlayerSequenceEventBean.class);
+                PlayerTurnEventBean bean = gson.fromJson(data, PlayerTurnEventBean.class);
 
                 // notify subscriber
                 PusherEventSubscriberService.getInstance()
-                        .notifySubscriber(PushEventNameEnum.PLAYER_TURN_EVENT, new PlayerSequenceEvent(bean));
+                        .notifySubscriber(PushEventNameEnum.PLAYER_TURN_EVENT, new PlayerTurnEvent(bean));
+            }
+        });
+
+        PusherAPIService.getInstance().bind(PushEventNameEnum.PLAYER_JOINED_EVENT.toString(), new SubscriptionEventListener() {
+            @Override
+            public void onEvent(String channel, String event, String data) {
+                System.out.println("Received player joined event with data: " + data);
+
+                PlayerJoinedEventBean bean = gson.fromJson(data, PlayerJoinedEventBean.class);
+
+                // notify subscriber
+                PusherEventSubscriberService.getInstance()
+                        .notifySubscriber(PushEventNameEnum.PLAYER_JOINED_EVENT, new PlayerJoinedEvent(bean));
             }
         });
 
