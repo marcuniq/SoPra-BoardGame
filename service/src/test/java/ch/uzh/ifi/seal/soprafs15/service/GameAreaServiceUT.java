@@ -61,6 +61,7 @@ public class GameAreaServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testGetRaceTrack() throws Exception {
 
         //oracle values
@@ -93,6 +94,7 @@ public class GameAreaServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testGetLegBettingArea() throws Exception {
 
         //create new user and log him in (also assert that UserService instance has been initialized)
@@ -119,11 +121,13 @@ public class GameAreaServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testGetRaceBettingArea() throws Exception {
 
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testGetDiceArea() throws Exception {
 
     }

@@ -33,6 +33,7 @@ public class UserMapperServiceUT {
     protected UserMapperService userMapperService = new UserMapperServiceImpl(userRepository);
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToUser() throws Exception {
         UserRequestBean testBean = new UserRequestBean();
         testBean.setAge(20);
@@ -54,6 +55,7 @@ public class UserMapperServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToUserResponseBean() throws Exception {
         Game testGame = new Game();
         testGame.setName("TestGame");
@@ -81,6 +83,7 @@ public class UserMapperServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToUserResponseBeanList() throws Exception {
         Game testGame = new Game();
         testGame.setName("TestGame");
@@ -140,6 +143,7 @@ public class UserMapperServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToLLResponseBean() throws Exception {
         User testUser = new User();
         testUser.setToken("TestToken");

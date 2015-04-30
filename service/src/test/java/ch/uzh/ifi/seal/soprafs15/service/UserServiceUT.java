@@ -7,6 +7,7 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -55,7 +56,19 @@ public class UserServiceUT {
         MockitoAnnotations.initMocks(this);
     }
 
+    @Test(expected = UserNotFoundException.class)
+    @SuppressWarnings("unchecked")
+    public void testLoginUserFail() throws Exception {
+
+        assertNotNull(testService);
+
+        assertEquals(0, testService.listUsers().size());
+
+        testService.login((long) 1);
+    }
+
     @Test
+    @SuppressWarnings("unchecked")
     public void testListUsers() throws Exception {
 
         assertEquals(0, testService.listUsers().size());
@@ -75,6 +88,7 @@ public class UserServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testAddUser() throws Exception {
 
         assertEquals(0, testService.listUsers().size());
@@ -99,6 +113,7 @@ public class UserServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testGetUser() throws Exception {
 
         assertEquals(0, testService.listUsers().size());
@@ -117,6 +132,7 @@ public class UserServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testUpdateUser() throws Exception {
         // not implemented yet
     }
@@ -140,6 +156,7 @@ public class UserServiceUT {
     }
 */
     @Test
+    @SuppressWarnings("unchecked")
     public void testLogin() throws Exception {
 
         assertEquals(0, testService.listUsers().size());
@@ -161,6 +178,7 @@ public class UserServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testLogout() throws Exception {
         //void method, difficult to test, omitted for time being
     }

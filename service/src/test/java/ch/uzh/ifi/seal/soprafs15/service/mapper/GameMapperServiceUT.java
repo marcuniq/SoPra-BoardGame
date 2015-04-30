@@ -54,6 +54,7 @@ public class GameMapperServiceUT {
     private UserService testUserService;
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToGame() throws Exception {
 
         //oracle objects
@@ -78,6 +79,7 @@ public class GameMapperServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToGameResponseBean() throws Exception {
 
         //oracle values
@@ -108,6 +110,7 @@ public class GameMapperServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToGameCreateResponseBean() throws Exception {
 
         //oracle values
@@ -142,6 +145,7 @@ public class GameMapperServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToGameResponseBeanList() throws Exception {
 
         //oracle values
@@ -175,6 +179,7 @@ public class GameMapperServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToUser() throws Exception {
         
         //oracle values
@@ -202,6 +207,7 @@ public class GameMapperServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToGamePlayerResponseBean() throws Exception {
 
         assertNotNull(testMapperService);
@@ -225,11 +231,13 @@ public class GameMapperServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToGamePlayerResponseBean1() throws Exception {
 
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToMoveDesertTilePlacing() throws Exception {
 
         //set up testing objects (arguments in the method to be tested)
@@ -267,6 +275,7 @@ public class GameMapperServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToMoveDiceRolling () throws Exception{
 
         //set up testing objects (arguments in the method to be tested)
@@ -300,6 +309,7 @@ public class GameMapperServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToGameMoveResponseBeanDiceRolling() throws Exception {
 
         //set up testing objects (arguments in the method to be tested)
@@ -332,11 +342,13 @@ public class GameMapperServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToGameMoveResponseBeanList() throws Exception {
 
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToGameAddPlayerResponseBean() throws Exception {
 
         //set up testing objects (arguments in the method to be tested)
@@ -359,11 +371,13 @@ public class GameMapperServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToRaceTrackResponseBean() throws Exception {
 
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToGameLegBettingAreaResponseBean() throws Exception {
 
         assertNotNull(testMapperService);
@@ -381,6 +395,7 @@ public class GameMapperServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToGameRaceBettingAreaResponseBean() throws Exception {
 
         assertNotNull(testMapperService);
@@ -406,6 +421,7 @@ public class GameMapperServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToGameDiceAreaResponseBean() throws Exception {
 
         assertNotNull(testMapperService);

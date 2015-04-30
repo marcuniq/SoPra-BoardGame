@@ -10,6 +10,7 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,7 +55,19 @@ public class GameServiceUT {
         MockitoAnnotations.initMocks(this);
     }
 
+    @Test(expected = GameNotFoundException.class)
+    @SuppressWarnings("unchecked")
+    public void testGetGameFail() throws Exception {
+
+        Assert.assertEquals(0, testGameService.listGames().size());
+
+        Assert.assertNotNull(testGameService);
+
+        testGameService.getGame((long) 1);
+    }
+
     @Test
+    @SuppressWarnings("unchecked")
     public void testListGames() throws Exception {
 
         Assert.assertEquals(0, testGameService.listGames().size());
@@ -83,6 +96,7 @@ public class GameServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testAddGame() throws Exception {
 
         Assert.assertEquals(0, testGameService.listGames().size());
@@ -107,6 +121,7 @@ public class GameServiceUT {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testGetGame() throws Exception {
 
         Assert.assertEquals(0, testGameService.listGames().size());
