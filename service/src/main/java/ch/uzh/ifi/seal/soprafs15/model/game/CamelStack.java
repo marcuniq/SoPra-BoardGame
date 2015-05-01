@@ -95,6 +95,14 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
         }
     }
 
+    public Camel getGroundCamel(){
+        return stack.isEmpty() ? null : stack.get(0);
+    }
+
+    public Camel getSecondCamel(){
+        return stack.isEmpty() ? null : stack.size() < 2 ? null : stack.get(stack.size() - 2);
+    }
+
 
     @Override
     public GameRaceTrackObjectResponseBean toBean() {

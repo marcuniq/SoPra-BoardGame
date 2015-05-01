@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs15.model.game;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -67,7 +68,12 @@ public class RaceTrack implements Serializable {
      */
     public void addRaceTrackObject(RaceTrackObject raceTrackObject) {
         fields.add(raceTrackObject);
-        fields.stream().sorted((rto1, rto2) -> Integer.compare(rto1.position, rto2.position));
+        sortByPosition();
+    }
+
+    private void sortByPosition(){
+        fields = fields.stream().sorted((rto1, rto2) -> Integer.compare(rto1.position, rto2.position))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -107,7 +113,7 @@ public class RaceTrack implements Serializable {
         // persist newCamelStack ??
 
         if(camelStack != newCamelStack)
-            fields.add(newCamelStack);
+            addRaceTrackObject(newCamelStack);
     }
 
     public void undoMoveCamelStack(Color color, Integer faceValue) {
@@ -116,6 +122,54 @@ public class RaceTrack implements Serializable {
 
     public void removeDesertTiles(){
         fields.stream().filter(rto -> rto.getClass() == DesertTile.class).forEach(dt -> removeRaceTrackObject(dt.getPosition()));
+    }
+
+    public Map<Color, Ranking> getRanking(){
+        Map<Color, Ranking> rankingMap = new HashMap<>();
+
+        sortByPosition();
+
+        // leading camel stack
+        CamelStack leadingCamelStack = (CamelStack) fields.stream().filter(rto -> rto.getClass() == CamelStack.class)
+                .max((rto1, rto2) -> Integer.compare(rto1.position, rto2.position)).get();
+
+        // top camel is first
+        Camel firstCamel = leadingCamelStack.peek();
+        rankingMap.put(firstCamel.getColor(), Ranking.FIRST);
+
+
+        // second camel
+        Camel secondCamel = null;
+        if(leadingCamelStack.getStack().size() > 1){
+            // second camel is on the same camel stack
+            secondCamel = leadingCamelStack.getSecondCamel();
+        } else {
+            // find second camel stack
+            Integer indexOfLeadingCamelStack = fields.indexOf(leadingCamelStack);
+
+            for(int i = indexOfLeadingCamelStack; i >= 0; --i){
+                if(fields.get(i) instanceof CamelStack){
+                    CamelStack secondCamelStack = (CamelStack) fields.get(i);
+                    secondCamel = secondCamelStack.peek();
+                }
+            }
+        }
+        rankingMap.put(secondCamel.getColor(), Ranking.SECOND);
+
+
+        // last camel stack
+        CamelStack lastCamelStack = (CamelStack) fields.stream().filter(rto -> rto.getClass() == CamelStack.class)
+                .min((rto1, rto2) -> Integer.compare(rto1.position, rto2.position)).get();
+
+        rankingMap.put(lastCamelStack.getGroundCamel().getColor(), Ranking.LAST);
+
+
+        // for every other camel
+        for(Color c : Color.values()){
+            rankingMap.putIfAbsent(c, Ranking.SOMEWHERE_IN_THE_MIDDLE);
+        }
+
+        return rankingMap;
     }
 
 

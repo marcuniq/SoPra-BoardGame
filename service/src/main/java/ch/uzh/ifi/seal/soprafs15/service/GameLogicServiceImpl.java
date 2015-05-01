@@ -200,7 +200,15 @@ public class GameLogicServiceImpl extends GameLogicService {
             diceArea.init();
 
             // analyze leg bets
+            Map<Color, Ranking> rankingMap = game.getRaceTrack().getRanking();
 
+            for(User p : game.getPlayers()){
+                List<LegBettingTile> tiles = p.getLegBettingTiles();
+
+                if(tiles.size() > 0){
+
+                }
+            }
 
 
             // remove desert tiles from race track
