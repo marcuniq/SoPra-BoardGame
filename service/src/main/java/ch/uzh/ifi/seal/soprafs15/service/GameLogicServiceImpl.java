@@ -94,8 +94,7 @@ public class GameLogicServiceImpl extends GameLogicService {
         move.execute();
 
         // check if game is finished
-        if(false) {
-            game.setStatus(GameStatus.FINISHED);
+        if(game.getStatus().equals(GameStatus.FINISHED)) {
             pusherService.pushToSubscribers(new GameFinishedEvent(), game);
         }
 
