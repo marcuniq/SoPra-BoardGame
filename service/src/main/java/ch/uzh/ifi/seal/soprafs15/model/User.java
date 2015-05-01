@@ -37,7 +37,7 @@ public class User implements Serializable {
 	private UserStatus status;
 
     @ManyToOne
-    private Game game;
+    private GameState gameState;
 	
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL) //, fetch=FetchType.EAGER)
     private List<Move> moves = new ArrayList<Move>();
@@ -88,7 +88,14 @@ public class User implements Serializable {
     public void addLegBettingTile(LegBettingTile tile){
         if(!legBettingTiles.contains(tile)){
             legBettingTiles.add(tile);
-            tile.setUser(this);
+            //tile.setUser(this);
+        }
+    }
+
+    public void removeLegBettingTile(LegBettingTile tile){
+        if(legBettingTiles.contains(tile)){
+            legBettingTiles.remove(tile);
+            tile.setUser(null);
         }
     }
 
@@ -98,6 +105,10 @@ public class User implements Serializable {
      */
     public RaceBettingCard getRaceBettingCard(Color color){
         return raceBettingCards.remove(color);
+    }
+
+    public void putRaceBettingCardBack(RaceBettingCard raceBettingCard){
+        raceBettingCards.put(raceBettingCard.getColor(), raceBettingCard);
     }
 
 
@@ -149,14 +160,6 @@ public class User implements Serializable {
 		this.username = username;
 	}
 
-	public Game getGame() {
-		return game;
-	}
-
-	public void setGame(Game game) {
-		this.game = game;
-	}
-
 	public List<Move> getMoves() {
 		return moves;
 	}
@@ -195,5 +198,13 @@ public class User implements Serializable {
 
     public void setDesertTile(DesertTile desertTile) {
         this.desertTile = desertTile;
+    }
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 }

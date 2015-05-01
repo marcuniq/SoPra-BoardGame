@@ -70,7 +70,7 @@ public class UserServiceImpl extends UserService {
             user_1.setId(user.getId());
             user_1.setAge(user.getAge());
             user_1.setUsername(user.getUsername());
-            user_1.setGame(user.getGame());
+            user_1.setGameState(user.getGameState());
             user_1.setMoves(user.getMoves());
             user_1.setToken(user.getToken());
             user_1.setStatus(user.getStatus());
@@ -130,5 +130,9 @@ public class UserServiceImpl extends UserService {
             user_1.setStatus(UserStatus.OFFLINE);
             userRepository.save(user_1);
         }
+    }
+
+    private String getGameName(User user){
+        return user.getGameState().getStateManager().getGame().getName();
     }
 }

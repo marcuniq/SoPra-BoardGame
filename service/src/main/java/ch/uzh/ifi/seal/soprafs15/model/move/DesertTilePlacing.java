@@ -51,6 +51,11 @@ public class DesertTilePlacing extends Move {
         return bean;
     }
 
+    @Override
+    public Boolean isValid() {
+        return true;
+    }
+
     /**
      * Game logic for dice rolling
      */
@@ -63,5 +68,13 @@ public class DesertTilePlacing extends Move {
         game.getRaceTrack().addRaceTrackObject(desertTile);
 
         return this;
+    }
+
+    /**
+     * Undo action for fast mode
+     */
+    @Override
+    public void undo() {
+        game.getRaceTrack().removeRaceTrackObject(position);
     }
 }

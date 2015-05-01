@@ -28,9 +28,8 @@ public class RaceBettingArea implements Serializable {
     @Column
     private List<RaceBettingCard> loserBetting = new ArrayList<>();
 
-    @OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name="GAME_ID")
-    private Game game;
+    @OneToOne(cascade = CascadeType.ALL)//(fetch = FetchType.EAGER)
+    private GameState gameState;
 
 
     public RaceBettingArea(){
@@ -56,16 +55,22 @@ public class RaceBettingArea implements Serializable {
      * Call to place race betting card on winner stack
      * @param raceBettingCard
      */
-    public void betOnWinner(RaceBettingCard raceBettingCard){
-        winnerBetting.add(raceBettingCard);
+    public void bet(RaceBettingCard raceBettingCard, Boolean betOnWinner){
+
+        if(betOnWinner)
+            winnerBetting.add(raceBettingCard);
+        else
+            loserBetting.add(raceBettingCard);
     }
 
     /**
-     * Call to place race betting card on loser stack
-     * @param raceBettingCard
+     * Undo action for fast mode
      */
-    public void betOnLoser(RaceBettingCard raceBettingCard){
-        loserBetting.add(raceBettingCard);
+    public RaceBettingCard undoBet(Boolean betOnWinner){
+        if(betOnWinner)
+            return winnerBetting.remove(winnerBetting.size() - 1);
+        else
+            return loserBetting.remove(loserBetting.size()-1);
     }
 
     public Long getId() {
@@ -92,11 +97,11 @@ public class RaceBettingArea implements Serializable {
         this.loserBetting = loserBetting;
     }
 
-    public Game getGame() {
-        return game;
+    public GameState getGameState() {
+        return gameState;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 }

@@ -193,7 +193,6 @@ public class GameMapperServiceImpl extends GameMapperService {
     public GameRaceTrackResponseBean toRaceTrackResponseBean(RaceTrack raceTrack) {
         GameRaceTrackResponseBean bean = new GameRaceTrackResponseBean();
         bean.setId(raceTrack.getId());
-        bean.setGameId(raceTrack.getGame().getId());
 
         List<GameRaceTrackObjectResponseBean> fields = new ArrayList<>();
         for(RaceTrackObject rto: raceTrack.getFields())

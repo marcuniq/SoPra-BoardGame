@@ -2,10 +2,7 @@ package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -26,11 +23,10 @@ public class RaceTrack implements Serializable {
     @ElementCollection
     @Column(columnDefinition = "BLOB")
     //@Size(max=16)
-    private List<RaceTrackObject> fields = new ArrayList<>(16);
+    private List<RaceTrackObject> fields = new ArrayList<>();
 
-    @OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name="GAME_ID")
-    private Game game;
+    @OneToOne(cascade = CascadeType.ALL)//(fetch = FetchType.EAGER)
+    private GameState gameState;
 
     public RaceTrack(){
     }
@@ -45,7 +41,7 @@ public class RaceTrack implements Serializable {
 
         // put camels on race trace
         // reuse dice area for random placing
-        List<Die> diceInPyramid = game.getDiceArea().getDiceInPyramid();
+        List<Die> diceInPyramid = gameState.getDiceArea().getDiceInPyramid();
 
         // group dice by face value
         Map<Integer, List<Die>> map = diceInPyramid.stream().collect(Collectors.groupingBy(v -> v.getFaceValue()));
@@ -62,7 +58,7 @@ public class RaceTrack implements Serializable {
         }
 
         // put dice back
-        game.getDiceArea().init();
+        gameState.getDiceArea().init();
     }
 
     /**
@@ -75,12 +71,39 @@ public class RaceTrack implements Serializable {
     }
 
     /**
+     * Undo action for fast mode
+     */
+    public void removeRaceTrackObject(Integer position) {
+        fields.remove(getRaceTrackObject(position));
+    }
+
+    /**
      *
      * @param position between 1 - 16
      * @return RaceTrackObject at requested position
      */
     public RaceTrackObject getRaceTrackObject(Integer position) {
-        return fields.stream().filter(rto -> rto.position == position).findFirst().get();
+        Optional<RaceTrackObject> raceTrackObject = fields.stream().filter(rto -> rto.position == position).findFirst();
+        return raceTrackObject.isPresent() ? raceTrackObject.get() : null;
+    }
+
+    public void moveCamelStack(Color color, Integer nrOfFields){
+
+        // locate Camel with color
+        CamelStack camelStack = (CamelStack) fields.stream().filter(rto -> rto.getClass() == CamelStack.class)
+                                            .filter(cs -> ((CamelStack) cs).hasCamel(color)).findFirst().get();
+
+        CamelStack newCamelStack = camelStack.splitOrGetCamelStack(color);
+
+        // advance camel stack
+        newCamelStack.setPosition(camelStack.getPosition() + nrOfFields);
+
+        // persist newCamelStack ??
+
+        if(camelStack != newCamelStack)
+            fields.add(newCamelStack);
+
+
     }
 
 
@@ -100,11 +123,11 @@ public class RaceTrack implements Serializable {
         this.fields = fields;
     }
 
-    public Game getGame() {
-        return game;
+    public GameState getGameState() {
+        return gameState;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 }
