@@ -290,34 +290,53 @@ public class GameServiceControllerIT {
 
         // Login created user (to get Token for creating new game)
         ResponseEntity<UserLoginLogoutResponseBean> loginResponse = TestUtils.loginUser(ownerResponse.getBody().getId(), template, base);
-        String token = loginResponse.getBody().getToken();
+        String ownerToken = loginResponse.getBody().getToken();
 
         // Create new Game
-        GameRequestBean gameRequest = TestUtils.toGameRequestBean("TestGame", token);
+        GameRequestBean gameRequest = TestUtils.toGameRequestBean("TestGame", ownerToken);
         ResponseEntity<GameCreateResponseBean> gameResponse = TestUtils.createGame(gameRequest, template, base);
+
+        // Create 2nd User
+        UserRequestBean userRequest = TestUtils.toUserRequestBean(33, "TestPlayer");
+        ResponseEntity<UserResponseBean> userResponse = TestUtils.createUser(userRequest, template, base);
+
+        // Login 2nd User
+        ResponseEntity<UserLoginLogoutResponseBean> secondUserLoginResponse = TestUtils.loginUser(userResponse.getBody().getId(), template, base);
+        String playerToken = secondUserLoginResponse.getBody().getToken();
+
+        // Create GamePlayerRequestBean with Token from 2nd User and assign it to the game as well
+        GamePlayerRequestBean playerRequest = TestUtils.toGamePlayerRequestBean(playerToken);
+        ResponseEntity<GameAddPlayerResponseBean> playerResponse = TestUtils.addPlayer(playerRequest, gameResponse.getBody().getId(), template, base);
+
+        // Create GamePlayerRequestBean with Token of owner for Starting the game
+        GamePlayerRequestBean ownerPlayerRequest = TestUtils.toGamePlayerRequestBean(ownerToken);
+
+        // Start Game
+        HttpEntity<GamePlayerRequestBean> httpEntity = new HttpEntity<GamePlayerRequestBean>(ownerPlayerRequest);
+        ResponseEntity<GameCreateResponseBean> startGameResult = template.exchange(base + "/games/1/start", HttpMethod.POST, httpEntity, GameCreateResponseBean.class);
 
         // Game contains no moves after initialization (before we added any move)
         List<GameMoveResponseBean> movesBefore = template.getForObject(base + "/games/1/moves", List.class);
         Assert.assertEquals(0, movesBefore.size());
 
         // Add move
-        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(token, MoveEnum.LEG_BETTING, null, null, Color.BLUE, null);
-        ResponseEntity<GameMoveResponseBean> result = TestUtils.addMove(moveRequest, gameResponse.getBody().getId(), template, base);
+        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(ownerToken, MoveEnum.LEG_BETTING, null, null, Color.BLUE, null);
+        ResponseEntity<GameMoveResponseBean> addMoveResult = TestUtils.addMove(moveRequest, gameResponse.getBody().getId(), template, base);
 
         // Oracle values
         Long oracleMoveId = (long) 1;
 
-        Assert.assertNull(result.getBody().getDesertTileAsOasis());
-        Assert.assertNull(result.getBody().getDesertTilePosition());
-        Assert.assertNull(result.getBody().getRaceBettingOnWinner());
-        Assert.assertNull(result.getBody().getDie());
+        Assert.assertNull(addMoveResult.getBody().getDesertTileAsOasis());
+        Assert.assertNull(addMoveResult.getBody().getDesertTilePosition());
+        Assert.assertNull(addMoveResult.getBody().getRaceBettingOnWinner());
+        Assert.assertNull(addMoveResult.getBody().getDie());
 
-        Assert.assertEquals((long) oracleMoveId, (long) result.getBody().getId());
+        Assert.assertEquals((long) oracleMoveId, (long) addMoveResult.getBody().getId());
 
-        Assert.assertEquals(gameResponse.getBody().getId(), result.getBody().getGameId());
-        Assert.assertEquals(ownerResponse.getBody().getId(), result.getBody().getUserId());
-        Assert.assertEquals(MoveEnum.LEG_BETTING, result.getBody().getMove());
-        Assert.assertEquals(Color.BLUE, result.getBody().getLegBettingTile().getColor());
+        Assert.assertEquals(gameResponse.getBody().getId(), addMoveResult.getBody().getGameId());
+        Assert.assertEquals(ownerResponse.getBody().getId(), addMoveResult.getBody().getUserId());
+        Assert.assertEquals(MoveEnum.LEG_BETTING, addMoveResult.getBody().getMove());
+        Assert.assertEquals(Color.BLUE, addMoveResult.getBody().getLegBettingTile().getColor());
 
         // Game contains exactly one move (after we added one move)
         List<GameMoveResponseBean> movesAfter = template.getForObject(base + "/games/1/moves", List.class);
@@ -376,18 +395,39 @@ public class GameServiceControllerIT {
 
         // Login created user (to get Token for creating new game)
         ResponseEntity<UserLoginLogoutResponseBean> loginResponse = TestUtils.loginUser(ownerResponse.getBody().getId(), template, base);
-        String token = loginResponse.getBody().getToken();
+        String ownerToken = loginResponse.getBody().getToken();
 
-        // Create new game
-        GameRequestBean gameRequest = TestUtils.toGameRequestBean("TestGame", token);
+        // Create new Game
+        GameRequestBean gameRequest = TestUtils.toGameRequestBean("TestGame", ownerToken);
         ResponseEntity<GameCreateResponseBean> gameResponse = TestUtils.createGame(gameRequest, template, base);
+
+        // Create 2nd User
+        UserRequestBean userRequest = TestUtils.toUserRequestBean(33, "TestPlayer");
+        ResponseEntity<UserResponseBean> userResponse = TestUtils.createUser(userRequest, template, base);
+
+        // Login 2nd User
+        ResponseEntity<UserLoginLogoutResponseBean> secondUserLoginResponse = TestUtils.loginUser(userResponse.getBody().getId(), template, base);
+        String playerToken = secondUserLoginResponse.getBody().getToken();
+
+        // Create GamePlayerRequestBean with Token from 2nd User and assign it to the game as well
+        GamePlayerRequestBean playerRequest = TestUtils.toGamePlayerRequestBean(playerToken);
+        ResponseEntity<GameAddPlayerResponseBean> playerResponse = TestUtils.addPlayer(playerRequest, gameResponse.getBody().getId(), template, base);
+
+        // Create GamePlayerRequestBean with Token of owner for Starting the game
+        GamePlayerRequestBean ownerPlayerRequest = TestUtils.toGamePlayerRequestBean(ownerToken);
+
+        // Start Game
+        HttpEntity<GamePlayerRequestBean> httpEntity = new HttpEntity<GamePlayerRequestBean>(ownerPlayerRequest);
+        ResponseEntity<GameCreateResponseBean> startGameResult = template.exchange(base + "/games/1/start", HttpMethod.POST, httpEntity, GameCreateResponseBean.class);
 
         // Game contains no moves after initialization (before we added any move)
         List<GameMoveResponseBean> movesBefore = template.getForObject(base + "/games/1/moves", List.class);
         Assert.assertEquals(0, movesBefore.size());
 
         // Add move
-        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(token, MoveEnum.RACE_BETTING, null, null, null, true);
+
+        // Maybe it's not the owner's turn! check playerId
+        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(ownerToken, MoveEnum.RACE_BETTING, null, null, null, true);
         ResponseEntity<GameMoveResponseBean> result = TestUtils.addMove(moveRequest, gameResponse.getBody().getId(), template, base);
 
         // Oracle values
@@ -420,11 +460,30 @@ public class GameServiceControllerIT {
 
         // Login created user (to get Token for creating new game)
         ResponseEntity<UserLoginLogoutResponseBean> loginResponse = TestUtils.loginUser(ownerResponse.getBody().getId(), template, base);
-        String token = loginResponse.getBody().getToken();
+        String ownerToken = loginResponse.getBody().getToken();
 
-        // Create new game
-        GameRequestBean gameRequest = TestUtils.toGameRequestBean("TestGame", token);
+        // Create new Game
+        GameRequestBean gameRequest = TestUtils.toGameRequestBean("TestGame", ownerToken);
         ResponseEntity<GameCreateResponseBean> gameResponse = TestUtils.createGame(gameRequest, template, base);
+
+        // Create 2nd User
+        UserRequestBean userRequest = TestUtils.toUserRequestBean(33, "TestPlayer");
+        ResponseEntity<UserResponseBean> userResponse = TestUtils.createUser(userRequest, template, base);
+
+        // Login 2nd User
+        ResponseEntity<UserLoginLogoutResponseBean> secondUserLoginResponse = TestUtils.loginUser(userResponse.getBody().getId(), template, base);
+        String playerToken = secondUserLoginResponse.getBody().getToken();
+
+        // Create GamePlayerRequestBean with Token from 2nd User and assign it to the game as well
+        GamePlayerRequestBean playerRequest = TestUtils.toGamePlayerRequestBean(playerToken);
+        ResponseEntity<GameAddPlayerResponseBean> playerResponse = TestUtils.addPlayer(playerRequest, gameResponse.getBody().getId(), template, base);
+
+        // Create GamePlayerRequestBean with Token of owner for Starting the game
+        GamePlayerRequestBean ownerPlayerRequest = TestUtils.toGamePlayerRequestBean(ownerToken);
+
+        // Start Game
+        HttpEntity<GamePlayerRequestBean> httpEntity = new HttpEntity<GamePlayerRequestBean>(ownerPlayerRequest);
+        ResponseEntity<GameCreateResponseBean> startGameResult = template.exchange(base + "/games/1/start", HttpMethod.POST, httpEntity, GameCreateResponseBean.class);
 
         // Game contains no moves after initialization (before we added any move)
         List<GameMoveResponseBean> movesBefore = template.getForObject(base + "/games/1/moves", List.class);
@@ -434,7 +493,9 @@ public class GameServiceControllerIT {
         Long oracleMoveId = (long) 1;
 
         // Add move
-        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(token, MoveEnum.DICE_ROLLING, null, null, null, null);
+
+        // maybe it's not the owner's turn! check player id
+        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(ownerToken, MoveEnum.DICE_ROLLING, null, null, null, null);
         ResponseEntity<GameMoveResponseBean> result = TestUtils.addMove(moveRequest, gameResponse.getBody().getId(), template, base);
 
         Assert.assertNull(result.getBody().getDesertTileAsOasis());
