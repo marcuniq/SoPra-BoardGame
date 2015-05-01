@@ -26,7 +26,7 @@ public class RaceTrack implements Serializable {
     @ElementCollection
     @Column(columnDefinition = "BLOB")
     //@Size(max=16)
-    private List<RaceTrackObject> fields = new ArrayList<>(16);
+    private List<RaceTrackObject> fields = new ArrayList<>();
 
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name="GAME_ID")
