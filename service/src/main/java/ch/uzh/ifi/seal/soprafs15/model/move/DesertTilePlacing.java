@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs15.model.move;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
 import ch.uzh.ifi.seal.soprafs15.model.game.DesertTile;
+import ch.uzh.ifi.seal.soprafs15.service.GameLogicService;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -60,7 +61,7 @@ public class DesertTilePlacing extends Move {
      * Game logic for dice rolling
      */
     @Override
-    public Move execute() {
+    public Move execute(GameLogicService dummy) {
         DesertTile desertTile = user.getDesertTile();
         desertTile.setIsOasis(isOasis);
         desertTile.setPosition(position);

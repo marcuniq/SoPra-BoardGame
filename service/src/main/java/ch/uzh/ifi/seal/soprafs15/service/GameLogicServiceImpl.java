@@ -5,8 +5,7 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameStatus;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserStatus;
 import ch.uzh.ifi.seal.soprafs15.model.User;
-import ch.uzh.ifi.seal.soprafs15.model.game.Color;
-import ch.uzh.ifi.seal.soprafs15.model.game.Game;
+import ch.uzh.ifi.seal.soprafs15.model.game.*;
 import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.MoveRepository;
@@ -15,8 +14,8 @@ import ch.uzh.ifi.seal.soprafs15.service.exceptions.InvalidMoveException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.NotYourTurnException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import ch.uzh.ifi.seal.soprafs15.service.pusher.PusherService;
-import ch.uzh.ifi.seal.soprafs15.service.pusher.events.FastModeAlmostFinishedEvent;
 import ch.uzh.ifi.seal.soprafs15.service.pusher.events.GameFinishedEvent;
+import ch.uzh.ifi.seal.soprafs15.service.pusher.events.LegOverEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,13 +90,10 @@ public class GameLogicServiceImpl extends GameLogicService {
         }
 
         // execute move
-        move.execute();
+        move.execute(this);
 
-        // check if game is finished
-        if(game.getStatus().equals(GameStatus.FINISHED)) {
-            pusherService.pushToSubscribers(new GameFinishedEvent(), game);
-        }
 
+        // next player's turn
         game.nextPlayer();
 
         return move;
@@ -153,7 +149,7 @@ public class GameLogicServiceImpl extends GameLogicService {
 
                     bean.setDesertTileAsOasis(random.nextBoolean());
 
-                    Integer position = random.nextInt(16);
+                    Integer position = random.nextInt(16) + 1;
                     bean.setDesertTilePosition(position);
 
                 } else if(randomMove == MoveEnum.LEG_BETTING){
@@ -175,13 +171,14 @@ public class GameLogicServiceImpl extends GameLogicService {
             move = (Move) moveRepository.save(move);
             game.addMove(move);
         }
+
         // roll back a couple of moves
         for(int i = 0; i < 3; i++){
             game.getStateManager().undoMove();
         }
 
         // notify owner
-        pusherService.pushToSubscribers(new FastModeAlmostFinishedEvent(), game);
+        //pusherService.pushToSubscribers(new FastModeAlmostFinishedEvent(), game);
         //
     }
 
@@ -191,9 +188,45 @@ public class GameLogicServiceImpl extends GameLogicService {
     }
 
     private void cleanupAfterFastMode(Game game){
-
-
-
     }
 
+    @Override
+    public Boolean runLegOverLogic(Game game) {
+        DiceArea diceArea = game.getDiceArea();
+        Boolean legOver = diceArea.getDiceInPyramid().size() == 0;
+
+        if(legOver){
+            // put dice back
+            diceArea.init();
+
+            // analyze leg bets
+
+
+
+            // remove desert tiles from race track
+            game.getRaceTrack().removeDesertTiles();
+
+            pusherService.pushToSubscribers(new LegOverEvent(), game);
+        }
+
+        return legOver;
+    }
+
+    @Override
+    public Boolean runGameOverLogic(Game game) {
+
+        // check if camel is over finishing line
+        for(int i = 16; i < 19; i++) {
+            RaceTrackObject rto = game.getRaceTrack().getRaceTrackObject(i);
+            if(rto != null && rto.getClass() == CamelStack.class) {
+                game.setStatus(GameStatus.FINISHED);
+                pusherService.pushToSubscribers(new GameFinishedEvent(), game);
+
+
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

@@ -17,5 +17,6 @@ public abstract class GameLogicService extends GenericService {
     public abstract Move processMove(Game game, User player, Move move);
     public abstract void startFastMode(Game game);
     public abstract void stopFastMode(Game game);
-
+    public abstract Boolean runLegOverLogic(Game game);
+    public abstract Boolean runGameOverLogic(Game game);
 }

@@ -5,6 +5,7 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
 import ch.uzh.ifi.seal.soprafs15.model.game.Color;
 import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingArea;
 import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingCard;
+import ch.uzh.ifi.seal.soprafs15.service.GameLogicService;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.MoveUndoException;
 
 import javax.persistence.Column;
@@ -40,14 +41,14 @@ public class RaceBetting extends Move {
 
     @Override
     public Boolean isValid() {
-        return true;
+        return user.hasRaceBettingCard(color);
     }
 
     /**
      * Game logic for race betting
      */
     @Override
-    public Move execute() {
+    public Move execute(GameLogicService dummy) {
         RaceBettingArea raceBettingArea = game.getRaceBettingArea();
 
         RaceBettingCard raceBettingCard = user.getRaceBettingCard(color);

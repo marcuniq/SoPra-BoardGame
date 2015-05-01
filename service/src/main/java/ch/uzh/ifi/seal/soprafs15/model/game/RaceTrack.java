@@ -94,16 +94,28 @@ public class RaceTrack implements Serializable {
                                             .filter(cs -> ((CamelStack) cs).hasCamel(color)).findFirst().get();
 
         CamelStack newCamelStack = camelStack.splitOrGetCamelStack(color);
+        newCamelStack.setPreviousPosition(camelStack.getPosition());
 
         // advance camel stack
+        Integer newPosition = camelStack.getPosition() + nrOfFields;
+
+        if(getRaceTrackObject(newPosition) != null){
+            // is it another camel stack or a desert tile?
+        }
         newCamelStack.setPosition(camelStack.getPosition() + nrOfFields);
 
         // persist newCamelStack ??
 
         if(camelStack != newCamelStack)
             fields.add(newCamelStack);
+    }
 
+    public void undoMoveCamelStack(Color color, Integer faceValue) {
 
+    }
+
+    public void removeDesertTiles(){
+        fields.stream().filter(rto -> rto.getClass() == DesertTile.class).forEach(dt -> removeRaceTrackObject(dt.getPosition()));
     }
 
 
@@ -130,4 +142,6 @@ public class RaceTrack implements Serializable {
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
     }
+
+
 }

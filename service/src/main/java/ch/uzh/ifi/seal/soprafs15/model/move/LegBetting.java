@@ -4,6 +4,7 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
 import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingArea;
 import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingTile;
+import ch.uzh.ifi.seal.soprafs15.service.GameLogicService;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -42,14 +43,16 @@ public class LegBetting extends Move {
 
     @Override
     public Boolean isValid() {
-        return true;
+        LegBettingArea legBettingArea = game.getLegBettingArea();
+
+        return legBettingArea.getLegBettingTile(legBettingTile.getColor()) != null;
     }
 
     /**
      * Game logic for leg betting
      */
     @Override
-    public Move execute() {
+    public Move execute(GameLogicService dummy) {
         LegBettingArea legBettingArea = game.getLegBettingArea();
         legBettingTile = legBettingArea.getLegBettingTile(legBettingTile.getColor());
 

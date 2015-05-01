@@ -107,6 +107,10 @@ public class User implements Serializable {
         return raceBettingCards.remove(color);
     }
 
+    public Boolean hasRaceBettingCard(Color color){
+        return raceBettingCards.get(color) != null;
+    }
+
     public void putRaceBettingCardBack(RaceBettingCard raceBettingCard){
         raceBettingCards.put(raceBettingCard.getColor(), raceBettingCard);
     }

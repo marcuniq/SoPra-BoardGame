@@ -1,10 +1,9 @@
 package ch.uzh.ifi.seal.soprafs15.model.move;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameStatus;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
 import ch.uzh.ifi.seal.soprafs15.model.game.*;
-import ch.uzh.ifi.seal.soprafs15.service.pusher.events.GameFinishedEvent;
+import ch.uzh.ifi.seal.soprafs15.service.GameLogicService;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -50,22 +49,22 @@ public class DiceRolling extends Move {
      * Game logic for dice rolling
      */
     @Override
-    public Move execute() {
+    public Move execute(GameLogicService gameLogicService) {
         DiceArea diceArea = game.getDiceArea();
         die = diceArea.rollDice();
+
+        user.setMoney(user.getMoney() + 1);
 
         // move camel
         RaceTrack raceTrack = game.getRaceTrack();
         raceTrack.moveCamelStack(die.getColor(), die.getFaceValue());
 
+        // check if game is over
+        Boolean gameOver = gameLogicService.runGameOverLogic(game);
 
-        // check if camel is over finishing line
-        for(int i = 16; i < 19; i++) {
-            RaceTrackObject rto = game.getRaceTrack().getRaceTrackObject(i);
-            if(rto != null && rto.getClass() == CamelStack.class) {
-                game.setStatus(GameStatus.FINISHED);
-            }
-        }
+        // check if leg is over
+        if(!gameOver)
+            gameLogicService.runLegOverLogic(game);
 
         return this;
     }
@@ -77,5 +76,11 @@ public class DiceRolling extends Move {
     public void undo() {
         DiceArea diceArea = game.getDiceArea();
         diceArea.undoRollDice();
+
+        user.setMoney(user.getMoney() - 1);
+
+        // move back camel
+        RaceTrack raceTrack = game.getRaceTrack();
+        raceTrack.undoMoveCamelStack(die.getColor(), die.getFaceValue());
     }
 }

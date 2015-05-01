@@ -27,6 +27,9 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
     @Column
     private List<Camel> stack;
 
+    @Column
+    private Integer previousPosition;
+
     public CamelStack(){
     }
     public CamelStack(List<Camel> camels){
@@ -124,4 +127,11 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
     }
 
 
+    public Integer getPreviousPosition() {
+        return previousPosition;
+    }
+
+    public void setPreviousPosition(Integer previousPosition) {
+        this.previousPosition = previousPosition;
+    }
 }
