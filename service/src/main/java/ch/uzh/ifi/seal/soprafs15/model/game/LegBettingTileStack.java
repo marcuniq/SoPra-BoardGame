@@ -1,5 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
+import ch.uzh.ifi.seal.soprafs15.model.Stack;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,7 +11,7 @@ import java.util.List;
  * @author Marco
  */
 @Entity
-public class LegBettingTileStack implements Serializable {
+public class LegBettingTileStack implements Serializable, Stack<LegBettingTile> {
 
     private static final long serialVersionUID = 1L;
 
@@ -58,6 +60,17 @@ public class LegBettingTileStack implements Serializable {
             result = tiles.get(tiles.size() - 1);
 
         return result;
+    }
+
+    /**
+     * Push onto stack
+     * @param tile
+     */
+    public void push(LegBettingTile tile){
+        if(tiles == null)
+            tiles = new ArrayList<>();
+
+        tiles.add(tile);
     }
 
 

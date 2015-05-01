@@ -58,6 +58,10 @@ public class GameActionServiceImpl extends GameActionService {
             throw new OwnerNotFoundException(owner.getId(), GameActionServiceImpl.class);
         }
 
+        if(!owner.getUsername().equals(game.getOwner())){
+
+        }
+
         if(game.getPlayers().size() < GameConstants.MIN_PLAYERS) {
             throw new NotEnoughPlayerException(game, GameActionServiceImpl.class);
         }
@@ -112,10 +116,12 @@ public class GameActionServiceImpl extends GameActionService {
             throw new OwnerNotFoundException(owner.getId(), GameActionServiceImpl.class);
         }
 
-        if(owner != null && game != null && game.getOwner().equals(owner.getUsername())) {
-            //TODO: Start fast mode
+        if(!owner.getUsername().equals(game.getOwner())){
 
         }
+
+        gameLogicService.startFastMode(game);
+
 
         return gameMapperService.toGameResponseBean(game);
     }

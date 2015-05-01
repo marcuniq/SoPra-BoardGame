@@ -37,8 +37,7 @@ public class DiceArea implements Serializable {
     private List<Die> rolledDice;
 
     @OneToOne(cascade = CascadeType.ALL)//(fetch = FetchType.EAGER)
-    @JoinColumn(name="GAME_ID")
-    private Game game;
+    private GameState gameState;
 
     @Transient
     private Random r = new Random();
@@ -80,6 +79,16 @@ public class DiceArea implements Serializable {
         return null;
     }
 
+    /**
+     * Undo action for fast mode
+     */
+    public void undoRollDice(){
+        if(rolledDice.size() > 0){
+            Die die = rolledDice.remove(rolledDice.size()-1);
+            diceInPyramid.add(die);
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -104,11 +113,11 @@ public class DiceArea implements Serializable {
         this.rolledDice = rolledDice;
     }
 
-    public Game getGame() {
-        return game;
+    public GameState getGameState() {
+        return gameState;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 }

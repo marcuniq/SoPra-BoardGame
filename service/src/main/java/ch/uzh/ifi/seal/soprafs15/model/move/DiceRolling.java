@@ -1,9 +1,10 @@
 package ch.uzh.ifi.seal.soprafs15.model.move;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameStatus;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
-import ch.uzh.ifi.seal.soprafs15.model.game.DiceArea;
-import ch.uzh.ifi.seal.soprafs15.model.game.Die;
+import ch.uzh.ifi.seal.soprafs15.model.game.*;
+import ch.uzh.ifi.seal.soprafs15.service.pusher.events.GameFinishedEvent;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,6 +41,11 @@ public class DiceRolling extends Move {
         return bean;
     }
 
+    @Override
+    public Boolean isValid() {
+        return true;
+    }
+
     /**
      * Game logic for dice rolling
      */
@@ -48,6 +54,28 @@ public class DiceRolling extends Move {
         DiceArea diceArea = game.getDiceArea();
         die = diceArea.rollDice();
 
+        // move camel
+        RaceTrack raceTrack = game.getRaceTrack();
+        raceTrack.moveCamelStack(die.getColor(), die.getFaceValue());
+
+
+        // check if camel is over finishing line
+        for(int i = 16; i < 19; i++) {
+            RaceTrackObject rto = game.getRaceTrack().getRaceTrackObject(i);
+            if(rto != null && rto.getClass() == CamelStack.class) {
+                game.setStatus(GameStatus.FINISHED);
+            }
+        }
+
         return this;
+    }
+
+    /**
+     * Undo action for fast mode
+     */
+    @Override
+    public void undo() {
+        DiceArea diceArea = game.getDiceArea();
+        diceArea.undoRollDice();
     }
 }

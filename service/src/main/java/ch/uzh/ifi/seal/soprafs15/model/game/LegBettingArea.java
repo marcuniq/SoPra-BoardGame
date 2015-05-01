@@ -28,9 +28,8 @@ public class LegBettingArea implements Serializable {
     @MapKeyEnumerated(EnumType.STRING)
     private Map<Color, LegBettingTileStack> legBettingTiles;
 
-    @OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name="GAME_ID")
-    private Game game;
+    @OneToOne(cascade = CascadeType.ALL)//(fetch = FetchType.EAGER)
+    private GameState gameState;
 
     public LegBettingArea(){
         init();
@@ -81,6 +80,11 @@ public class LegBettingArea implements Serializable {
         return legBettingTiles.get(c).pop();
     }
 
+    public void pushLegBettingTile(LegBettingTile legBettingTile) {
+        LegBettingTileStack stack = legBettingTiles.get(legBettingTile.getColor());
+        stack.push(legBettingTile);
+    }
+
 
     public Long getId() {
         return id;
@@ -98,11 +102,11 @@ public class LegBettingArea implements Serializable {
         this.legBettingTiles = legBettingTiles;
     }
 
-    public Game getGame() {
-        return game;
+    public GameState getGameState() {
+        return gameState;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 }

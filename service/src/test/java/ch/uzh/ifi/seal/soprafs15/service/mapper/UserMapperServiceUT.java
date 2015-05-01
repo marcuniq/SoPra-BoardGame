@@ -65,7 +65,7 @@ public class UserMapperServiceUT {
         User testUser = new User();
         testUser.setAge(30);
         testUser.setUsername("TestUser");
-        testUser.setGame(testGame);
+        //testUser.setGame(testGame);
         testUser.setId((long)0);
 
         UserResponseBean oracleUserResponseBean = new UserResponseBean();
@@ -104,7 +104,7 @@ public class UserMapperServiceUT {
             user.setUsername("TestUsername" + count.toString());
             user.setId((long)0 + count);
             if(count % 2 == 0) {
-                user.setGame(testGame);
+                //user.setGame(testGame);
             }
             count++;
         }

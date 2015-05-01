@@ -5,6 +5,7 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
 import ch.uzh.ifi.seal.soprafs15.model.game.Color;
 import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingArea;
 import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingCard;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.MoveUndoException;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,6 +38,11 @@ public class RaceBetting extends Move {
         return bean;
     }
 
+    @Override
+    public Boolean isValid() {
+        return true;
+    }
+
     /**
      * Game logic for race betting
      */
@@ -46,12 +52,24 @@ public class RaceBetting extends Move {
 
         RaceBettingCard raceBettingCard = user.getRaceBettingCard(color);
 
-        if(betOnWinner)
-            raceBettingArea.betOnWinner(raceBettingCard);
-        else
-            raceBettingArea.betOnLoser(raceBettingCard);
+        raceBettingArea.bet(raceBettingCard, betOnWinner);
 
         return this;
+    }
+
+    /**
+     * Undo action for fast mode
+     */
+    @Override
+    public void undo() {
+        RaceBettingArea raceBettingArea = game.getRaceBettingArea();
+
+        RaceBettingCard raceBettingCard = raceBettingArea.undoBet(betOnWinner);
+
+        if(raceBettingCard.getUser().getId() != user.getId())
+            throw new MoveUndoException("undoing race betting failed, not same user", RaceBetting.class);
+
+        user.putRaceBettingCardBack(raceBettingCard);
     }
 
     public Boolean getBetOnWinner() {
