@@ -2,10 +2,7 @@ package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -86,7 +83,27 @@ public class RaceTrack implements Serializable {
      * @return RaceTrackObject at requested position
      */
     public RaceTrackObject getRaceTrackObject(Integer position) {
-        return fields.stream().filter(rto -> rto.position == position).findFirst().get();
+        Optional<RaceTrackObject> raceTrackObject = fields.stream().filter(rto -> rto.position == position).findFirst();
+        return raceTrackObject.isPresent() ? raceTrackObject.get() : null;
+    }
+
+    public void moveCamelStack(Color color, Integer nrOfFields){
+
+        // locate Camel with color
+        CamelStack camelStack = (CamelStack) fields.stream().filter(rto -> rto.getClass() == CamelStack.class)
+                                            .filter(cs -> ((CamelStack) cs).hasCamel(color)).findFirst().get();
+
+        CamelStack newCamelStack = camelStack.splitOrGetCamelStack(color);
+
+        // advance camel stack
+        newCamelStack.setPosition(camelStack.getPosition() + nrOfFields);
+
+        // persist newCamelStack ??
+
+        if(camelStack != newCamelStack)
+            fields.add(newCamelStack);
+
+
     }
 
 

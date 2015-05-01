@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Hakuna on 30.03.2015.
@@ -60,11 +61,43 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
         return camel;
     }
 
+    public Boolean hasCamel(Color color){
+        return stack.stream().anyMatch(camel -> camel.getColor() == color);
+    }
+
+    public CamelStack splitOrGetCamelStack(Color color){
+
+        if(!stack.isEmpty() && stack.get(0).getColor() == color)
+            // Ground camel has that color
+            return this;
+        else {
+            // Camel with color is somewhere on stack
+
+            List<Camel> newStack = new ArrayList<>();
+
+            // add camel with color and all above to newStack
+            for(int i = 0; i < stack.size(); i++){
+                if(stack.get(i).getColor() == color){
+                    for(int j = i; j < stack.size(); j++){
+                        newStack.add(stack.get(j));
+                    }
+                    break;
+                }
+            }
+
+            // remove camels from stack
+            stack.removeAll(newStack);
+
+            return new CamelStack(newStack);
+        }
+    }
+
 
     @Override
     public GameRaceTrackObjectResponseBean toBean() {
         GameCamelStackResponseBean bean = new GameCamelStackResponseBean();
-        //bean.setPosition(id);
+        bean.setPosition(position);
+
         List<GameCamelResponseBean> beanStack = new ArrayList<>();
         for(Camel c : stack)
             beanStack.add(c.toBean());

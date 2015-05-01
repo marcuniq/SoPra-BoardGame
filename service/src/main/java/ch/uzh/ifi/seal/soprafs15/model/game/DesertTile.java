@@ -58,7 +58,7 @@ public class DesertTile extends RaceTrackObject implements Serializable {
     @Override
     public GameDesertTileResponseBean toBean() {
         GameDesertTileResponseBean bean = new GameDesertTileResponseBean();
-        //bean.setPosition(id);
+        bean.setPosition(position);
         bean.setPlayerId(owner.getPlayerId());
         bean.setIsOasis(isOasis);
 

@@ -3,10 +3,7 @@ package ch.uzh.ifi.seal.soprafs15.model.move;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameStatus;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
-import ch.uzh.ifi.seal.soprafs15.model.game.Camel;
-import ch.uzh.ifi.seal.soprafs15.model.game.CamelStack;
-import ch.uzh.ifi.seal.soprafs15.model.game.DiceArea;
-import ch.uzh.ifi.seal.soprafs15.model.game.Die;
+import ch.uzh.ifi.seal.soprafs15.model.game.*;
 import ch.uzh.ifi.seal.soprafs15.service.pusher.events.GameFinishedEvent;
 
 import javax.persistence.Column;
@@ -57,10 +54,15 @@ public class DiceRolling extends Move {
         DiceArea diceArea = game.getDiceArea();
         die = diceArea.rollDice();
 
+        // move camel
+        RaceTrack raceTrack = game.getRaceTrack();
+        raceTrack.moveCamelStack(die.getColor(), die.getFaceValue());
+
+
+        // check if camel is over finishing line
         for(int i = 16; i < 19; i++) {
-
-            if(game.getRaceTrack().getRaceTrackObject(i).getClass() == Camel.class || game.getRaceTrack().getRaceTrackObject(i).getClass() == CamelStack.class) {
-
+            RaceTrackObject rto = game.getRaceTrack().getRaceTrackObject(i);
+            if(rto != null && rto.getClass() == CamelStack.class) {
                 game.setStatus(GameStatus.FINISHED);
             }
         }
