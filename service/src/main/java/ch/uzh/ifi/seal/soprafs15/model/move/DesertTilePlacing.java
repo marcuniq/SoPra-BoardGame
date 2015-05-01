@@ -3,7 +3,9 @@ package ch.uzh.ifi.seal.soprafs15.model.move;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
 import ch.uzh.ifi.seal.soprafs15.model.game.DesertTile;
+import ch.uzh.ifi.seal.soprafs15.model.game.RaceTrack;
 import ch.uzh.ifi.seal.soprafs15.service.GameLogicService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -54,15 +56,20 @@ public class DesertTilePlacing extends Move {
 
     @Override
     public Boolean isValid() {
-        return true;
+        RaceTrack raceTrack = game.getRaceTrack();
+
+        return  raceTrack.getRaceTrackObject(position) == null &&
+                raceTrack.getRaceTrackObject(position - 1) == null &&
+                user.hasDesertTile();
     }
 
     /**
      * Game logic for dice rolling
      */
     @Override
+    @Autowired
     public Move execute(GameLogicService dummy) {
-        DesertTile desertTile = user.getDesertTile();
+        DesertTile desertTile = user.removeDesertTile();
         desertTile.setIsOasis(isOasis);
         desertTile.setPosition(position);
 

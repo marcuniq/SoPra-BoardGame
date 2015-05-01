@@ -174,7 +174,7 @@ public class GameLogicServiceImpl extends GameLogicService {
 
         // roll back a couple of moves
         for(int i = 0; i < 3; i++){
-            game.getStateManager().undoMove();
+            //game.getStateManager().undoMove();
         }
 
         // notify owner
@@ -203,6 +203,9 @@ public class GameLogicServiceImpl extends GameLogicService {
             Map<Color, Ranking> rankingMap = game.getRaceTrack().getRanking();
 
             for(User p : game.getPlayers()){
+                // give back desert tiles
+                p.setHasDesertTile(true);
+
                 List<LegBettingTile> tiles = p.getLegBettingTiles();
 
                 if(tiles.size() > 0){

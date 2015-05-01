@@ -369,7 +369,7 @@ public class GameServiceControllerIT {
 //        ResponseEntity<GameMoveResponseBean> result = TestUtils.addMove(moveRequest, gameResponse.getBody().getId(), template, base);
 //
 //        Assert.assertNull(result.getBody().getRaceBettingOnWinner());
-//        Assert.assertNull(result.getBody().getLegBettingTile());
+//        Assert.assertNull(result.getBody().popLegBettingTile());
 //        Assert.assertNull(result.getBody().getDie());
 //
 //        Assert.assertFalse(result.getBody().getDesertTileAsOasis());

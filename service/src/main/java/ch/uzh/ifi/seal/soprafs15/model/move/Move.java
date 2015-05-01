@@ -5,6 +5,7 @@ import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.game.GameState;
 import ch.uzh.ifi.seal.soprafs15.service.GameLogicService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -71,6 +72,7 @@ public abstract class Move implements Serializable {
 
     public abstract Boolean isValid();
 
+	@Autowired
     public abstract Move execute(GameLogicService gameLogicService);
 
     public abstract void undo();

@@ -5,6 +5,7 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
 import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingArea;
 import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingTile;
 import ch.uzh.ifi.seal.soprafs15.service.GameLogicService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,16 +46,17 @@ public class LegBetting extends Move {
     public Boolean isValid() {
         LegBettingArea legBettingArea = game.getLegBettingArea();
 
-        return legBettingArea.getLegBettingTile(legBettingTile.getColor()) != null;
+        return legBettingArea.peekLegBettingTile(legBettingTile.getColor()) != null;
     }
 
     /**
      * Game logic for leg betting
      */
     @Override
+    @Autowired
     public Move execute(GameLogicService dummy) {
         LegBettingArea legBettingArea = game.getLegBettingArea();
-        legBettingTile = legBettingArea.getLegBettingTile(legBettingTile.getColor());
+        legBettingTile = legBettingArea.popLegBettingTile(legBettingTile.getColor());
 
         // add tile to player
         legBettingTile.setUser(user);

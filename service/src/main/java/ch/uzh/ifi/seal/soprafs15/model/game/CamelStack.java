@@ -4,12 +4,12 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameCamelResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameCamelStackResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRaceTrackObjectResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.Stack;
+import javafx.util.Pair;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by Hakuna on 30.03.2015.
@@ -27,17 +27,20 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
     @Column
     private List<Camel> stack;
 
+    @ElementCollection
     @Column
-    private Integer previousPosition;
+    private List<Integer> previousPositions;
 
     public CamelStack(){
     }
     public CamelStack(List<Camel> camels){
         this.stack = camels;
+        this.previousPositions = new ArrayList<>();
     }
     public CamelStack(Integer position, List<Camel> camels) {
         this.position = position;
         this.stack = camels;
+        this.previousPositions = new ArrayList<>();
     }
 
     @Override
@@ -68,11 +71,11 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
         return stack.stream().anyMatch(camel -> camel.getColor() == color);
     }
 
-    public CamelStack splitOrGetCamelStack(Color color){
-
-        if(!stack.isEmpty() && stack.get(0).getColor() == color)
+    public Pair<CamelStack,Boolean> splitOrGetCamelStack(Color color){
+        Boolean splitOccurred = !stack.isEmpty() && getGroundCamel().getColor() != color;
+        if(!splitOccurred)
             // Ground camel has that color
-            return this;
+            return new Pair<>(this, splitOccurred);
         else {
             // Camel with color is somewhere on stack
 
@@ -91,8 +94,17 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
             // remove camels from stack
             stack.removeAll(newStack);
 
-            return new CamelStack(newStack);
+            return  new Pair<>(new CamelStack(newStack), splitOccurred);
         }
+    }
+
+    public void merge(CamelStack other){
+        stack.addAll(other.getStack());
+        previousPositions.addAll(other.getPreviousPositions());
+    }
+
+    public void addPreviousPosition(Integer position){
+        previousPositions.add(position);
     }
 
     public Camel getGroundCamel(){
@@ -134,12 +146,18 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
         this.stack = stack;
     }
 
+    @Override
+    public void setPosition(Integer position){
+        previousPositions.add(this.position);
+        this.position = position;
 
-    public Integer getPreviousPosition() {
-        return previousPosition;
     }
 
-    public void setPreviousPosition(Integer previousPosition) {
-        this.previousPosition = previousPosition;
+    public List<Integer> getPreviousPositions() {
+        return previousPositions;
+    }
+
+    public void setPreviousPositions(List<Integer> previousPositions) {
+        this.previousPositions = previousPositions;
     }
 }

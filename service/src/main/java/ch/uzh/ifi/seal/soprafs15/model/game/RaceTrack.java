@@ -1,9 +1,11 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
+import ch.uzh.ifi.seal.soprafs15.model.User;
+import javafx.util.Pair;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -72,7 +74,7 @@ public class RaceTrack implements Serializable {
     }
 
     private void sortByPosition(){
-        fields = fields.stream().sorted((rto1, rto2) -> Integer.compare(rto1.position, rto2.position))
+        fields = fields.stream().sorted((rto1, rto2) -> Integer.compare(rto1.getPosition(), rto2.getPosition()))
                 .collect(Collectors.toList());
     }
 
@@ -99,21 +101,52 @@ public class RaceTrack implements Serializable {
         CamelStack camelStack = (CamelStack) fields.stream().filter(rto -> rto.getClass() == CamelStack.class)
                                             .filter(cs -> ((CamelStack) cs).hasCamel(color)).findFirst().get();
 
-        CamelStack newCamelStack = camelStack.splitOrGetCamelStack(color);
-        newCamelStack.setPreviousPosition(camelStack.getPosition());
+        Pair<CamelStack,Boolean> pair = camelStack.splitOrGetCamelStack(color);
+        CamelStack newCamelStack = pair.getKey();
+        Boolean splitOccurred = pair.getValue();
+
+        newCamelStack.addPreviousPosition(camelStack.getPosition());
+
 
         // advance camel stack
         Integer newPosition = camelStack.getPosition() + nrOfFields;
 
-        if(getRaceTrackObject(newPosition) != null){
-            // is it another camel stack or a desert tile?
+        Boolean mergeOccurred =  new Boolean(false);
+        while(getRaceTrackObject(newPosition) != null){
+            // is at that position another camel stack or a desert tile?
+
+            if(getRaceTrackObject(newPosition) instanceof CamelStack){
+                ((CamelStack) getRaceTrackObject(newPosition)).merge(newCamelStack);
+                mergeOccurred = Boolean.TRUE;
+                break;
+            } else if(getRaceTrackObject(newPosition) instanceof DesertTile){
+                DesertTile desertTile = ((DesertTile)getRaceTrackObject(newPosition));
+
+                User owner = desertTile.getOwner();
+                owner.setMoney(owner.getMoney() + 1);
+
+                if(desertTile.getIsOasis())
+                    ++newPosition;
+                else
+                    --newPosition;
+            }
         }
-        newCamelStack.setPosition(camelStack.getPosition() + nrOfFields);
 
-        // persist newCamelStack ??
 
-        if(camelStack != newCamelStack)
+        if(splitOccurred && mergeOccurred){
+            // do nothing
+
+        } else if(splitOccurred && !mergeOccurred){
+            newCamelStack.setPosition(newPosition);
             addRaceTrackObject(newCamelStack);
+
+        } else if(!splitOccurred && mergeOccurred){
+            removeRaceTrackObject(camelStack.getPosition());
+
+        } else if(!splitOccurred && !mergeOccurred){
+            // simple move
+            newCamelStack.setPosition(newPosition);
+        }
     }
 
     public void undoMoveCamelStack(Color color, Integer faceValue) {
@@ -121,7 +154,8 @@ public class RaceTrack implements Serializable {
     }
 
     public void removeDesertTiles(){
-        fields.stream().filter(rto -> rto.getClass() == DesertTile.class).forEach(dt -> removeRaceTrackObject(dt.getPosition()));
+        List<RaceTrackObject> desertTiles = fields.stream().filter(rto -> rto.getClass() == DesertTile.class).collect(Collectors.toList());
+        fields.removeAll(desertTiles);
     }
 
     public Map<Color, Ranking> getRanking(){

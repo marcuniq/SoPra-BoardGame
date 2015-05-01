@@ -7,6 +7,7 @@ import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingArea;
 import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingCard;
 import ch.uzh.ifi.seal.soprafs15.service.GameLogicService;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.MoveUndoException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,6 +49,7 @@ public class RaceBetting extends Move {
      * Game logic for race betting
      */
     @Override
+    @Autowired
     public Move execute(GameLogicService dummy) {
         RaceBettingArea raceBettingArea = game.getRaceBettingArea();
 
