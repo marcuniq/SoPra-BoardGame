@@ -109,7 +109,7 @@ public class GameCreatorFragment extends Fragment {
                 bundle.putBoolean("isOwner", true);
                 fragment.setArguments(bundle);
 
-                ((MenuActivity) getActivity()).setFragment(fragment);
+                ((MenuActivity) getActivity()).pushFragment(fragment);
             }
 
             @Override

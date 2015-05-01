@@ -33,7 +33,7 @@ public abstract class GenericArrayAdapter<T> extends ArrayAdapter<T> {
     }
 
     public abstract void drawText(TextView textView, T object);
-    public abstract void setIcon(ImageView imageView, T object);
+    public abstract void setIcon(ImageView imageView, T object, int index);
 
 
     private void init(Context context) {
@@ -59,7 +59,7 @@ public abstract class GenericArrayAdapter<T> extends ArrayAdapter<T> {
         }
 
         drawText(viewHolder.text, getItem(position));
-        setIcon(viewHolder.image, getItem(position));
+        setIcon(viewHolder.image, getItem(position), position+1);
 
         return convertView;
     }

@@ -33,7 +33,7 @@ public class GameArrayAdapter extends GenericArrayAdapter<Game> {
     }
 
 
-    public void setIcon(ImageView imageView, Game game){
+    public void setIcon(ImageView imageView, Game game, int index){
         imageView.setBackgroundResource(R.drawable.ic_launcher);
     }
 }

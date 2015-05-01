@@ -15,6 +15,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceBettingAreaBe
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackBean;
 import retrofit.Callback;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
@@ -154,4 +155,9 @@ public interface RestApiInterface {
      */
     @POST("/games/{gameId}/start")
     void start(@Path("gameId") Long gameId, @Body User token, Callback<Game> callback);
+
+    /* TODO: java.lang.IllegalArgumentException: RestApiInterface.removeGamePlayer: Non-body HTTP method cannot contain @Body or @TypedOutput.
+     * man kann keinen Body mitschicken wenn man was löschen will? */
+    @DELETE("/games/{gameId}/players/{playerId}")
+    void removeGamePlayer(@Path("gameId") Long gameId, @Path("playerId") Integer playerId, @Body User token, Callback<User> callback);
 }

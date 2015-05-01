@@ -6,7 +6,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +20,12 @@ import java.util.List;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.GameStartEvent;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerJoinedEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventSubscriber;
@@ -32,7 +37,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 //public class GameLobbyFragment extends ListFragment {
-public class GameLobbyFragment extends ListFragment{
+public class GameLobbyFragment extends ListFragment {
 
     private TextView tvLogBox;
     private Long gameId;
@@ -44,6 +49,8 @@ public class GameLobbyFragment extends ListFragment{
     private Boolean fastMode = false;
     private CheckBox checkBox;
     private String token;
+    private List<User> players;
+    private boolean noLogout = true;
 
     /* empty constructor */
     public GameLobbyFragment() {}
@@ -118,8 +125,40 @@ public class GameLobbyFragment extends ListFragment{
     @Override
     public void onResume(){
         super.onResume();
-
         getPlayers();
+
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK){
+                    AlertDialog dialog = warningPopup();
+                    dialog.show();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private AlertDialog warningPopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("You have clicked on the back Button")
+                .setTitle("Do you want to log out from the lobby?:");
+        builder.setPositiveButton("Stay in Game", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // do nothing but close popup
+            }
+        });
+        builder.setNegativeButton("Log out", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // TODO: logout User
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+        return builder.create();
     }
 
     private void onStartGame() {
@@ -157,16 +196,16 @@ public class GameLobbyFragment extends ListFragment{
 
         System.out.println("subscribe to player joined events");
         PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.PLAYER_JOINED_EVENT,
-            new PusherEventSubscriber() {
-                @Override
-                public void onNewEvent(final AbstractPusherEvent event) {
-                    System.out.println("got player joined event");
+                new PusherEventSubscriber() {
+                    @Override
+                    public void onNewEvent(final AbstractPusherEvent event) {
+                        System.out.println("got player joined event");
 
-                    PlayerJoinedEvent playerJoinedEvent = (PlayerJoinedEvent) event;
+                        PlayerJoinedEvent playerJoinedEvent = (PlayerJoinedEvent) event;
 
-                    getPlayers();
-                }
-            });
+                        getPlayers();
+                    }
+                });
     }
 
     private void startGame(){
@@ -214,17 +253,22 @@ public class GameLobbyFragment extends ListFragment{
     private void getPlayers(){
         RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<User>>() {
             @Override
-            public void success(List<User> players, Response response) {
+            public void success(List<User> newPlayers, Response response) {
+                players = newPlayers;
                 playerArrayAdapter.clear();
-
-                for (User player : players) {
+                setListAdapter(playerArrayAdapter);
+                ImageView playerCard = (ImageView)getActivity().findViewById(R.id.player_card);
+                int cardId = 1;
+                for (User player : newPlayers) {
                     playerArrayAdapter.add(player);
+                    cardId = newPlayers.indexOf(player) + 1;
+                    if (player.id() != null && userId.equals(player.id())) playerCard.setImageResource(getActivity().getResources().getIdentifier("c" + cardId, "drawable", getActivity().getPackageName()));
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
+                Toast.makeText(getActivity(), "ERROR: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -111,6 +112,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         play();
 //        }
     }
+
 
     /**
      * Adds possible interaction with the game.
@@ -557,7 +559,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
-        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        popupWindow.setBackgroundDrawable(new BitmapDrawable(
+                getActivity().getResources(),
+                Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)));
         popupWindow.setWidth(900);
         popupWindow.showAtLocation(getActivity().findViewById(R.id.game_board), Gravity.CENTER_HORIZONTAL, 0, 0);
     }
@@ -819,6 +823,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
+
 
     /**
      * Called when creating this fragment

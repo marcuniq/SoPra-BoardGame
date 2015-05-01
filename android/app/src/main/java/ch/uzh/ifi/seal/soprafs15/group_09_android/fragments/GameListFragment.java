@@ -141,7 +141,7 @@ public class GameListFragment extends ListFragment {
                 gameLobbyFragment.setArguments(bundle);
 
                 /* See all already created games (testing) */
-                ((MenuActivity) getActivity()).setFragment(gameLobbyFragment);
+                ((MenuActivity) getActivity()).pushFragment(gameLobbyFragment);
             }
 
             @Override
