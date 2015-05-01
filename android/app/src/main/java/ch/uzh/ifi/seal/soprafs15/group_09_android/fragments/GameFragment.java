@@ -16,6 +16,7 @@ import android.widget.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.CamelBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackObjectBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
@@ -53,6 +54,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private ImageView modifiedButton;
 
     // class variables
+    private User player;
     private Long userId;
     private Long gameId;
     private Integer playerId;
@@ -66,6 +68,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
     private List<User> usersOrderedByMoney;
     private Drawable lastResource;
+    private int currentPyramidTile;
     private Boolean isDesertTileAsOasis = null;
     private GameColors pickedCardColor;
 
@@ -149,6 +152,82 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
+     * Adds all the race track fields to the game's raceTrack
+     * Adds all field to the OnClickListener
+     */
+    private void addClickListenerToButtons(){
+        int fieldRID;
+
+        // for all race track fields (buttons)
+        for (int i = 1; i<=16; i++){
+            fieldRID = getActivity().getResources().getIdentifier("field" + i, "id", getActivity().getPackageName());
+            raceTrackFields.add(fieldRID);
+            (getActivity().findViewById(fieldRID)).setOnClickListener(this);
+        }
+
+        // for all legbetting buttons
+        for (GameColors color: GameColors.values()) {
+            fieldRID = getActivity().getResources().getIdentifier("legbetting_" + color.name().toLowerCase(), "id", getActivity().getPackageName());
+            legBettingFields.add(fieldRID);
+            (getActivity().findViewById(fieldRID)).setOnClickListener(this);
+        }
+
+        // olle tolle camel betting buttons
+        raceBettingFields.add(R.id.winner_betting);
+        raceBettingFields.add(R.id.loser_betting);
+        (getActivity().findViewById(R.id.winner_betting)).setOnClickListener(this);
+        (getActivity().findViewById(R.id.loser_betting)).setOnClickListener(this);
+
+        // pyramid button to roll the dices
+        pyramidField = R.id.dice;
+        (getActivity().findViewById(pyramidField)).setOnClickListener(this);
+
+        // for the help; displays game rules
+        helpButton = R.id.help;
+        (getActivity().findViewById(helpButton)).setOnClickListener(this);
+
+        // button to display the players rack
+        playerInfoButton = R.id.playerIcon;
+        (getActivity().findViewById(playerInfoButton)).setOnClickListener(this);
+
+        currentPyramidTile = 1;
+        ImageView pyramidTile = (ImageView) getActivity().findViewById(R.id.pyramid_tile);
+        pyramidTile.setImageResource(getActivity().getResources().getIdentifier("pyramid_tile_" + currentPyramidTile + "_button", "drawable", getActivity().getPackageName()));
+    }
+
+    /**
+     * This is the main method. After each player has finished his turn, the whole board is redraw.
+     */
+    private void play(){
+        AreaService.getInstance(getActivity()).getAreasAndNotifySubscriber(gameId);
+        getPlayerStatus();
+    }
+
+    /**
+     * Displays a Popup with the given layout and draws all the dices
+     * Two Options:
+     *  - Accept: Execute a Move and close the Popup
+     *  - Reject: abort, close Popup
+     */
+    public View defaultPopup(View v, int layout) {
+        anchorView = v;
+        View popupView = getLayoutInflater(savedInstanceState).inflate(layout, container, false);
+        popupWindow = new PopupWindow(
+                popupView,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.setWidth(getActivity().findViewById(R.id.game_board).getWidth());
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL, 0, 0);
+
+        acceptButton = (Button) popupView.findViewById(R.id.accept);
+        rejectButton = (Button) popupView.findViewById(R.id.reject);
+
+        return popupView;
+    }
+
+    /**
      * Rolls a dice:
      * - get all current face values of the diceAra; if element is null, then add the [?] dice (roll_dice_0_COLOR)
      * - add for all GameColors the dices (ImageView) and add the corresponding image drawable ID from diceNames
@@ -179,6 +258,11 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                currentPyramidTile += 1;
+                String image = "pyramid_tile_" + currentPyramidTile + "_button";
+                ImageView pyramidCard = (ImageView) getActivity().findViewById(R.id.pyramid_tile);
+                if (currentPyramidTile++ > 5) image = "empty_image";
+                pyramidCard.setImageResource(getActivity().getResources().getIdentifier(image, "drawable", getActivity().getPackageName()));
                 initiateGameMove(diceRolling, null, null, null, null);
                 popupWindow.dismiss();
             }
@@ -340,8 +424,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         ImageButton desertTile = (ImageButton) popupView.findViewById(R.id.desert_tile);
         ImageButton oasisTile = (ImageButton) popupView.findViewById(R.id.oasis_tile);
 
-        String desertImageName = "c" + userId.toString() + "_desert";
-        String oasisImageName = "c" + userId.toString() + "_oasis";
+        String desertImageName = "c" + playerId.toString() + "_desert";
+        String oasisImageName = "c" + playerId.toString() + "_oasis";
         final int desertDrawableId = getActivity().getResources().getIdentifier(desertImageName, "drawable", getActivity().getPackageName());
         final int oasisDrawableId = getActivity().getResources().getIdentifier(oasisImageName, "drawable", getActivity().getPackageName());
         desertTile.setImageResource(desertDrawableId);
@@ -406,40 +490,32 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    /**
-     * Displays a Popup with the given layout and draws all the dices
-     * Two Options:
-     *  - Accept: Execute a Move and close the Popup
-     *  - Reject: abort, close Popup
-     */
-    public View defaultPopup(View v, int layout) {
-        anchorView = v;
-        View popupView = getLayoutInflater(savedInstanceState).inflate(layout, container, false);
-        popupWindow = new PopupWindow(
-                popupView,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        popupWindow.setWidth(getActivity().findViewById(R.id.game_board).getWidth());
-        popupWindow.setFocusable(true);
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL, 0, 0);
-
-        acceptButton = (Button) popupView.findViewById(R.id.accept);
-        rejectButton = (Button) popupView.findViewById(R.id.reject);
-
-        return popupView;
-    }
-
     public void playerInfoPopup(View v, int layout) {
         View popupView = defaultPopup(v, layout);
-
         GridLayout grid = (GridLayout) popupView.findViewById(R.id.grid);
+        ArrayList<String> cardNames = new ArrayList<>();
+
         ImageView image;
-        String cardImageName = "c" + playerId + "_racebettingcard_";
-        for (int i = 0; i < 5; i++){
+        String prefix;
+
+/*      //TODO: THIS PART IS NOT WORKING YET!
+        prefix = "c" + playerId + "_racebettingcard_";
+        for (RaceBettingCard raceBettingCard : player.raceBettingCards()){
+            cardNames.add(prefix + raceBettingCard.color().name().toLowerCase());
+        }
+        prefix = "legbettingtile_";
+        for (LegBettingTile legBettingTile : player.legBettingTiles()){
+            cardNames.add(prefix + legBettingTile.color().name().toLowerCase());
+        }
+        prefix = "pyramid_tile";
+        for (PyramidTile pyramidTile : player.pyramidTiles()){
+            cardNames.add(prefix + pyramidTile.value());
+        }*/
+
+        for (String card : cardNames){
             image = new ImageView(getActivity());
             image.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            image.setImageResource(getActivity().getResources().getIdentifier(cardImageName + GameColors.values()[i].name().toLowerCase(), "drawable", getActivity().getPackageName()));
+            image.setImageResource(getActivity().getResources().getIdentifier(card, "drawable", getActivity().getPackageName()));
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT );
@@ -474,6 +550,32 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         popupWindow.setOutsideTouchable(true);
         popupWindow.setFocusable(true);
         popupWindow.showAtLocation(v, Gravity.CENTER_HORIZONTAL, 0, 0);
+    }
+
+    private void roundEvaluationPopup() {
+        View popupView = defaultPopup(getView(), R.layout.popup_round_evaluation);
+
+        TextView description = (TextView) popupView.findViewById(R.id.description);
+
+        String message = "";
+        Integer counter = 1;
+
+        for (User user : usersOrderedByMoney) {
+            message += counter + ". User " + user.username() + " has " + user.money() + " egypt pounds. \n";
+            counter++;
+        }
+
+        description.setText(message);
+
+        acceptButton.setText("OK");
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+
+        rejectButton.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -520,53 +622,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
-     * Adds all the race track fields to the game's raceTrack
-     * Adds all field to the OnClickListener
-     */
-    private void addClickListenerToButtons(){
-        int fieldRID;
-
-        // for all race track fields (buttons)
-        for (int i = 1; i<=16; i++){
-            fieldRID = getActivity().getResources().getIdentifier("field" + i, "id", getActivity().getPackageName());
-            raceTrackFields.add(fieldRID);
-            (getActivity().findViewById(fieldRID)).setOnClickListener(this);
-        }
-
-        // for all legbetting buttons
-        for (GameColors color: GameColors.values()) {
-            fieldRID = getActivity().getResources().getIdentifier("legbetting_" + color.name().toLowerCase(), "id", getActivity().getPackageName());
-            legBettingFields.add(fieldRID);
-            (getActivity().findViewById(fieldRID)).setOnClickListener(this);
-        }
-
-        // olle tolle camel betting buttons
-        raceBettingFields.add(R.id.winner_betting);
-        raceBettingFields.add(R.id.loser_betting);
-        (getActivity().findViewById(R.id.winner_betting)).setOnClickListener(this);
-        (getActivity().findViewById(R.id.loser_betting)).setOnClickListener(this);
-
-        // pyramid button to roll the dices
-        pyramidField = R.id.dice;
-        (getActivity().findViewById(pyramidField)).setOnClickListener(this);
-
-        // for the help; displays game rules
-        helpButton = R.id.help;
-        (getActivity().findViewById(helpButton)).setOnClickListener(this);
-
-        // button to display the players rack
-        playerInfoButton = R.id.playerIcon;
-        (getActivity().findViewById(playerInfoButton)).setOnClickListener(this);
-    }
-
-    /**
-     * This is the main method. After each player has finished his turn, the whole board is redraw.
-     */
-    private void play(){
-        AreaService.getInstance(getActivity()).getAreasAndNotifySubscriber(gameId);
-    }
-
-    /**
      * This is the method for the fast mode.
      */
 //    private void playFastMode() {
@@ -610,7 +665,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
-
 
     /**
      * Draw the raceTrack according to the game status: all camels, all desert/oasis tiles etc.
@@ -670,57 +724,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void roundEvaluation() {
-        RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<User>>() {
-            @Override
-            public void success(List<User> users, Response response) {
-                Collections.sort(users, new Comparator<User>() {
-                    @Override
-                    public int compare(User user1, User user2) {
-
-                        return user1.money().compareTo(user2.money());
-                    }
-                });
-
-                usersOrderedByMoney = users;
-
-                roundEvaluationPopup();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                AlertDialog dialog = dummyPopup("failure: " + error.toString());
-                dialog.show();
-            }
-        });
-    }
-
-    private void roundEvaluationPopup() {
-        View popupView = defaultPopup(getView(), R.layout.popup_round_evaluation);
-
-        TextView description = (TextView) popupView.findViewById(R.id.description);
-
-        String message = "";
-        Integer counter = 1;
-
-        for (User user : usersOrderedByMoney) {
-            message += counter + ". User " + user.username() + " has " + user.money() + " egypt pounds. \n";
-            counter++;
-        }
-
-        description.setText(message);
-
-        acceptButton.setText("OK");
-        acceptButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }
-        });
-
-        rejectButton.setVisibility(View.INVISIBLE);
-    }
-
     private void updateRaceBettingFields(){
         ImageView tolleCamelButton = (ImageView) getActivity().findViewById(raceBettingFields.get(0));
         ImageView olleCamelButton = (ImageView) getActivity().findViewById(raceBettingFields.get(1));
@@ -745,6 +748,44 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 fieldLayout.removeAllViews();
             }
         }
+    }
+
+    public void getPlayerStatus() {
+        RestService.getInstance(getActivity()).getGamePlayer(gameId, playerId, new Callback<User>() {
+            @Override
+            public void success(User user, Response response) {
+                player = user;
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+            }
+        });
+    }
+
+    private void roundEvaluation() {
+        RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<User>>() {
+            @Override
+            public void success(List<User> users, Response response) {
+                Collections.sort(users, new Comparator<User>() {
+                    @Override
+                    public int compare(User user1, User user2) {
+
+                        return user1.money().compareTo(user2.money());
+                    }
+                });
+
+                usersOrderedByMoney = users;
+
+                roundEvaluationPopup();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                AlertDialog dialog = dummyPopup("failure: " + error.toString());
+                dialog.show();
+            }
+        });
     }
 
     /**
@@ -819,7 +860,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onNewEvent(final AbstractPusherEvent moveEvent) {
                         System.out.println("got new event");
-
+                        getPlayerStatus();
                         getActivity().runOnUiThread(new Runnable() {
                             public void run() {
                                 Toast.makeText(getActivity(), "new move event: " +
