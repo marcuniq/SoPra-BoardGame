@@ -148,36 +148,33 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * Rolls a dice:
+     * - get all current face values of the diceAra; if element is null, then add the [?] dice (roll_dice_0_COLOR)
+     * - add for all GameColors the dices (ImageView) and add the corresponding image drawable ID from diceNames
+     * - add onClick listener for the accept and reject buttons
+     *  - accept: initiate a game move (ROLL_DICE)
+     *  - reject: dismiss this popup
+     *
+     * @param v the button that was clicked
+     * @param popup_roll_dice the popup's layout that will be shown
+     * @param diceRolling the type of MOVE that will be executed on accept
+     */
     private void rollDicePopup(View v, int popup_roll_dice, final Moves diceRolling) {
         View popupView = defaultPopup(v,popup_roll_dice);
 
-        ImageView blueDice = (ImageView) popupView.findViewById(R.id.dice_blue);
-        ImageView greenDice = (ImageView) popupView.findViewById(R.id.dice_green);
-        ImageView orangeDice = (ImageView) popupView.findViewById(R.id.dice_orange);
-        ImageView yellowDice = (ImageView) popupView.findViewById(R.id.dice_yellow);
-        ImageView whiteDice = (ImageView) popupView.findViewById(R.id.dice_white);
-
-        List<String> diceNames = new ArrayList<>();
+        String diceNames[] = new String[5];
         String diceImageName = "roll_dice_";
-
         for (int i = 0; i < 5; i++){
-            if (diceArea.getRolledDice().isEmpty() || diceArea.getRolledDice().size() < i + 1) diceNames.add("0");
-            else {
-                diceNames.add(diceArea.getRolledDice().get(i).color().ordinal(), i+"");
-            }
+            if (diceArea.getRolledDice().isEmpty() || diceArea.getRolledDice().size() < i + 1) diceNames[i] = "0";
+            else diceNames[diceArea.getRolledDice().get(i).color().ordinal()] = diceArea.getRolledDice().get(i).faceValue()+"";
         }
 
-        final int diceBlueDrawableId = getActivity().getResources().getIdentifier(diceImageName + diceNames.get(GameColors.BLUE.ordinal()) + "_blue", "drawable", getActivity().getPackageName());
-        final int diceGreenDrawableId = getActivity().getResources().getIdentifier(diceImageName + diceNames.get(GameColors.GREEN.ordinal()) + "_green", "drawable", getActivity().getPackageName());
-        final int diceOrangeDrawableId = getActivity().getResources().getIdentifier(diceImageName + diceNames.get(GameColors.ORANGE.ordinal()) + "_orange", "drawable", getActivity().getPackageName());
-        final int diceYellowDrawableId = getActivity().getResources().getIdentifier(diceImageName + diceNames.get(GameColors.YELLOW.ordinal()) + "_yellow", "drawable", getActivity().getPackageName());
-        final int diceWhiteDrawableId = getActivity().getResources().getIdentifier(diceImageName + diceNames.get(GameColors.WHITE.ordinal()) + "_white", "drawable", getActivity().getPackageName());
-
-        blueDice.setImageResource(diceBlueDrawableId);
-        greenDice.setImageResource(diceGreenDrawableId);
-        orangeDice.setImageResource(diceOrangeDrawableId);
-        yellowDice.setImageResource(diceYellowDrawableId);
-        whiteDice.setImageResource(diceWhiteDrawableId);
+        ImageView dice;
+        for (GameColors color : GameColors.values()){
+            dice = (ImageView) popupView.findViewById(getActivity().getResources().getIdentifier("dice_" + color.name().toLowerCase(), "id", getActivity().getPackageName()));
+            dice.setImageResource(getActivity().getResources().getIdentifier(diceImageName + diceNames[color.ordinal()] + "_" + color.name().toLowerCase(), "drawable", getActivity().getPackageName()));
+        }
 
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,8 +210,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         ImageButton cardYellow = (ImageButton) popupView.findViewById(R.id.card_yellow);
         ImageButton cardWhite = (ImageButton) popupView.findViewById(R.id.card_white);
 
-        String cardImageName = "c" + userId + "_racebettingcard_";
-        String characterCardImageName = "c" + userId + "_button";
+        String cardImageName = "c" + playerId + "_racebettingcard_";
+        String characterCardImageName = "c" + playerId + "_button";
         final int cardBlueDrawableId = getActivity().getResources().getIdentifier(cardImageName + "blue", "drawable", getActivity().getPackageName());
         final int cardGreenDrawableId = getActivity().getResources().getIdentifier(cardImageName + "green", "drawable", getActivity().getPackageName());
         final int cardOrangeDrawableId = getActivity().getResources().getIdentifier(cardImageName + "orange", "drawable", getActivity().getPackageName());
@@ -422,7 +419,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 popupView,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.setWidth(getActivity().findViewById(R.id.game_board).getWidth());
         popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
         popupWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL, 0, 0);
 
         acceptButton = (Button) popupView.findViewById(R.id.accept);
@@ -440,8 +439,14 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         for (int i = 0; i < 5; i++){
             image = new ImageView(getActivity());
             image.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            Toast.makeText(getActivity(), cardImageName + GameColors.values()[i].name().toLowerCase(), Toast.LENGTH_SHORT).show();
             image.setImageResource(getActivity().getResources().getIdentifier(cardImageName + GameColors.values()[i].name().toLowerCase(), "drawable", getActivity().getPackageName()));
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT );
+            lp.setMargins(4, 4, 4, 4);
+            lp.width = 130;
+            image.setLayoutParams(lp);
+            image.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             grid.addView(image);
         }
 
