@@ -9,6 +9,7 @@ import ch.uzh.ifi.seal.soprafs15.model.game.Color;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
+import ch.uzh.ifi.seal.soprafs15.model.repositories.MoveRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.InvalidMoveException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.NotYourTurnException;
@@ -35,6 +36,7 @@ public class GameLogicServiceImpl extends GameLogicService {
 
     protected GameRepository gameRepository;
     protected UserRepository userRepository;
+    protected MoveRepository moveRepository;
     protected GameMapperService gameMapperService;
     protected PusherService pusherService;
 
@@ -42,9 +44,11 @@ public class GameLogicServiceImpl extends GameLogicService {
 
     @Autowired
     public GameLogicServiceImpl(GameRepository gameRepository, UserRepository userRepository,
+                                MoveRepository moveRepository,
                                 GameMapperService gameMapperService, PusherService pusherService){
         this.gameRepository = gameRepository;
         this.userRepository = userRepository;
+        this.moveRepository = moveRepository;
         this.gameMapperService = gameMapperService;
         this.pusherService = pusherService;
     }
@@ -74,14 +78,15 @@ public class GameLogicServiceImpl extends GameLogicService {
     @Override
     public Move processMove(Game game, User player, Move move) {
         // is it player's turn?
-        User currentPlayer = game.getPlayers().get(game.getCurrentPlayer());
+        Integer currentPlayerId = game.getCurrentPlayerId();
+        User currentPlayer = game.getPlayers().stream().filter(p -> p.getPlayerId() == currentPlayerId).findFirst().get();
 
         if(!currentPlayer.getUsername().equals(player.getUsername())) {
             throw new NotYourTurnException(GameLogicServiceImpl.class);
         }
 
         // valid move? else throw exception
-        if(false) {
+        if(!move.isValid()) {
             throw new InvalidMoveException("Invalid Move", GameLogicServiceImpl.class);
         }
 
@@ -93,6 +98,8 @@ public class GameLogicServiceImpl extends GameLogicService {
             game.setStatus(GameStatus.FINISHED);
             pusherService.pushToSubscribers(new GameFinishedEvent(), game);
         }
+
+        game.nextPlayer();
 
         return move;
     }
@@ -123,58 +130,56 @@ public class GameLogicServiceImpl extends GameLogicService {
         // start game
         game.initForGamePlay();
         game.setStatus(GameStatus.RUNNING);
+        // create player sequence
+        Map<Long, Integer> userIdToPlayerIdMap = createPlayerSequence(game);
 
         // loop and make random moves until game is finished
         while (!game.getStatus().equals(GameStatus.FINISHED)) {
-            for (int i = 1; i <= 5; i++) {
-                Integer playerId = i;
+            Integer currentPlayerId = game.getCurrentPlayerId();
+            User currentPlayer = game.getPlayers().stream().filter(p -> p.getPlayerId() == currentPlayerId).findFirst().get();
 
-                // get player whose turn it is
-                User fakeUser = players.stream().filter(p -> p.getPlayerId() == playerId).findFirst().get();
+            // make random move
+            Boolean startLoop = true;
+            Move move = null;
+            while(startLoop || !move.isValid()){
+                startLoop = false;
 
-                // make random move
-                Boolean startLoop = true;
-                Move move = null;
-                while(startLoop || !move.isValid()){
-                    startLoop = false;
+                GameMoveRequestBean bean = new GameMoveRequestBean();
+                bean.setToken(currentPlayer.getToken());
 
-                    GameMoveRequestBean bean = new GameMoveRequestBean();
-                    bean.setToken(fakeUser.getToken());
+                MoveEnum randomMove = MoveEnum.randomMove();
+                bean.setMove(randomMove);
 
-                    MoveEnum randomMove = MoveEnum.randomMove();
-                    bean.setMove(randomMove);
+                if (randomMove == MoveEnum.DESERT_TILE_PLACING){
 
-                    if (randomMove == MoveEnum.DESERT_TILE_PLACING){
+                    bean.setDesertTileAsOasis(random.nextBoolean());
 
-                        bean.setDesertTileAsOasis(random.nextBoolean());
+                    Integer position = random.nextInt(16);
+                    bean.setDesertTilePosition(position);
 
-                        Integer position = random.nextInt(16);
-                        bean.setDesertTilePosition(position);
+                } else if(randomMove == MoveEnum.LEG_BETTING){
 
-                    } else if(randomMove == MoveEnum.LEG_BETTING){
+                    bean.setLegBettingTileColor(Color.randomColor());
 
-                        bean.setLegBettingTileColor(Color.randomColor());
+                } else if(randomMove == MoveEnum.RACE_BETTING){
 
-                    } else if(randomMove == MoveEnum.RACE_BETTING){
-
-                        bean.setRaceBettingOnWinner(random.nextBoolean());
-                        bean.setRaceBettingColor(Color.randomColor());
-                    }
-
-                    move = gameMapperService.toMove(game, fakeUser, bean);
+                    bean.setRaceBettingOnWinner(random.nextBoolean());
+                    bean.setRaceBettingColor(Color.randomColor());
                 }
 
-                // execute move
-                processMove(game, fakeUser, move);
-
-                //move = (Move) moveRepository.save(move);
-                game.addMove(move);
-
-
+                move = gameMapperService.toMove(game, currentPlayer, bean);
             }
+
+            // execute move
+            processMove(game, currentPlayer, move);
+
+            move = (Move) moveRepository.save(move);
+            game.addMove(move);
         }
         // roll back a couple of moves
-
+        for(int i = 0; i < 3; i++){
+            game.getStateManager().undoMove();
+        }
 
         // notify owner
         pusherService.pushToSubscribers(new FastModeAlmostFinishedEvent(), game);

@@ -53,7 +53,7 @@ public class DesertTilePlacing extends Move {
 
     @Override
     public Boolean isValid() {
-        return null;
+        return true;
     }
 
     /**
@@ -68,5 +68,13 @@ public class DesertTilePlacing extends Move {
         game.getRaceTrack().addRaceTrackObject(desertTile);
 
         return this;
+    }
+
+    /**
+     * Undo action for fast mode
+     */
+    @Override
+    public void undo() {
+        game.getRaceTrack().removeRaceTrackObject(position);
     }
 }

@@ -28,9 +28,8 @@ public class RaceTrack implements Serializable {
     //@Size(max=16)
     private List<RaceTrackObject> fields = new ArrayList<>(16);
 
-    @OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name="GAME_ID")
-    private Game game;
+    @OneToOne(cascade = CascadeType.ALL)//(fetch = FetchType.EAGER)
+    private GameState gameState;
 
     public RaceTrack(){
     }
@@ -45,7 +44,7 @@ public class RaceTrack implements Serializable {
 
         // put camels on race trace
         // reuse dice area for random placing
-        List<Die> diceInPyramid = game.getDiceArea().getDiceInPyramid();
+        List<Die> diceInPyramid = gameState.getDiceArea().getDiceInPyramid();
 
         // group dice by face value
         Map<Integer, List<Die>> map = diceInPyramid.stream().collect(Collectors.groupingBy(v -> v.getFaceValue()));
@@ -62,7 +61,7 @@ public class RaceTrack implements Serializable {
         }
 
         // put dice back
-        game.getDiceArea().init();
+        gameState.getDiceArea().init();
     }
 
     /**
@@ -72,6 +71,13 @@ public class RaceTrack implements Serializable {
     public void addRaceTrackObject(RaceTrackObject raceTrackObject) {
         fields.add(raceTrackObject);
         fields.stream().sorted((rto1, rto2) -> Integer.compare(rto1.position, rto2.position));
+    }
+
+    /**
+     * Undo action for fast mode
+     */
+    public void removeRaceTrackObject(Integer position) {
+        fields.remove(getRaceTrackObject(position));
     }
 
     /**
@@ -100,11 +106,11 @@ public class RaceTrack implements Serializable {
         this.fields = fields;
     }
 
-    public Game getGame() {
-        return game;
+    public GameState getGameState() {
+        return gameState;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 }

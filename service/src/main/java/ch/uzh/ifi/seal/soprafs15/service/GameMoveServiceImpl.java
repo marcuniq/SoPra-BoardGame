@@ -93,7 +93,7 @@ public class GameMoveServiceImpl extends GameMoveService {
 
         // save move to repo and add to game
         move = (Move) moveRepository.save(move);
-        game.addMove(move);
+        //game.addMove(move);
 
         // notify all players about move
         MoveEvent moveEvent = new MoveEvent(move.getId());

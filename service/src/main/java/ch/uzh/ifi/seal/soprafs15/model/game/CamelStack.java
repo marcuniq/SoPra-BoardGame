@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs15.model.game;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameCamelResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameCamelStackResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRaceTrackObjectResponseBean;
+import ch.uzh.ifi.seal.soprafs15.model.Stack;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,7 +14,7 @@ import java.util.List;
  * Created by Hakuna on 30.03.2015.
  */
 @Entity
-public class CamelStack extends RaceTrackObject implements Serializable{
+public class CamelStack extends RaceTrackObject implements Serializable, Stack<Camel>{
 
     private static final long serialVersionUID = 1L;
 
@@ -35,13 +36,30 @@ public class CamelStack extends RaceTrackObject implements Serializable{
         this.stack = camels;
     }
 
-    public List<Camel> getStack() {
-        return stack;
+    @Override
+    public void push(Camel camel) {
+        if(stack == null)
+            stack = new ArrayList<>();
+
+        stack.add(camel);
     }
 
-    public void setStack(List<Camel> stack) {
-        this.stack = stack;
+    @Override
+    public Camel pop() {
+        Camel camel = null;
+        if (stack.size() > 0)
+            camel = stack.remove(stack.size() - 1);
+        return camel;
     }
+
+    @Override
+    public Camel peek() {
+        Camel camel = null;
+        if (stack.size() > 0)
+            camel = stack.get(stack.size() - 1);
+        return camel;
+    }
+
 
     @Override
     public GameRaceTrackObjectResponseBean toBean() {
@@ -63,4 +81,14 @@ public class CamelStack extends RaceTrackObject implements Serializable{
     public void setId(Long id) {
         this.id = id;
     }
+
+    public List<Camel> getStack() {
+        return stack;
+    }
+
+    public void setStack(List<Camel> stack) {
+        this.stack = stack;
+    }
+
+
 }

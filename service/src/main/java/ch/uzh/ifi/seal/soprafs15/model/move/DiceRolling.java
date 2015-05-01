@@ -42,7 +42,7 @@ public class DiceRolling extends Move {
 
     @Override
     public Boolean isValid() {
-        return null;
+        return true;
     }
 
     /**
@@ -54,5 +54,14 @@ public class DiceRolling extends Move {
         die = diceArea.rollDice();
 
         return this;
+    }
+
+    /**
+     * Undo action for fast mode
+     */
+    @Override
+    public void undo() {
+        DiceArea diceArea = game.getDiceArea();
+        diceArea.undoRollDice();
     }
 }

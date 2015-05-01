@@ -46,8 +46,8 @@ public class UserMapperServiceImpl extends UserMapperService {
             userResponseBean.setId(user.getId());
             userResponseBean.setAge(user.getAge());
             userResponseBean.setUsername(user.getUsername());
-            if(user.getGame() != null)
-                userResponseBean.setGame(user.getGame().getName());
+            if(user.getGameState() != null)
+                userResponseBean.setGame(getGameName(user));
         }
 
         return userResponseBean;
@@ -65,8 +65,8 @@ public class UserMapperServiceImpl extends UserMapperService {
             tmpUserResponseBean.setId(user.getId());
             tmpUserResponseBean.setAge(user.getAge());
             tmpUserResponseBean.setUsername(user.getUsername());
-            if(user.getGame() != null)
-                tmpUserResponseBean.setGame(user.getGame().getName());
+            if(user.getGameState() != null)
+                tmpUserResponseBean.setGame(getGameName(user));
 
             result.add(tmpUserResponseBean);
         }
@@ -83,5 +83,9 @@ public class UserMapperServiceImpl extends UserMapperService {
         UserLoginLogoutResponseBean bean = new UserLoginLogoutResponseBean();
         bean.setToken(user.getToken());
         return bean;
+    }
+
+    private String getGameName(User user){
+        return user.getGameState().getStateManager().getGame().getName();
     }
 }

@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs15.model.move;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
+import ch.uzh.ifi.seal.soprafs15.model.game.GameState;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -23,6 +24,9 @@ public abstract class Move implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="GAME_ID")
     protected Game game;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    protected GameState gameState;
     
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="USER_ID")
@@ -46,6 +50,14 @@ public abstract class Move implements Serializable {
 		this.game = game;
 	}
 
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+
 	public User getUser() {
 		return user;
 	}
@@ -59,4 +71,6 @@ public abstract class Move implements Serializable {
     public abstract Boolean isValid();
 
     public abstract Move execute();
+
+    public abstract void undo();
 }

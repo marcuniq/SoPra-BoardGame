@@ -42,7 +42,7 @@ public class LegBetting extends Move {
 
     @Override
     public Boolean isValid() {
-        return null;
+        return true;
     }
 
     /**
@@ -54,8 +54,20 @@ public class LegBetting extends Move {
         legBettingTile = legBettingArea.getLegBettingTile(legBettingTile.getColor());
 
         // add tile to player
+        legBettingTile.setUser(user);
         user.addLegBettingTile(legBettingTile);
 
         return this;
+    }
+
+    /**
+     * Undo action for fast mode
+     */
+    @Override
+    public void undo() {
+        LegBettingArea legBettingArea = game.getLegBettingArea();
+        legBettingArea.pushLegBettingTile(legBettingTile);
+
+        user.removeLegBettingTile(legBettingTile);
     }
 }
