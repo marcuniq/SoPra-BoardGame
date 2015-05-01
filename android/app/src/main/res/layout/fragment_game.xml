@@ -22,7 +22,7 @@
             <ImageButton
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:id="@+id/playerIcon"
+                android:id="@+id/player_icon"
                 android:background="@drawable/c1_head"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
@@ -40,7 +40,8 @@
                 android:id="@+id/player_name"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="80dp"
-                android:layout_marginLeft="80dp"/>
+                android:layout_marginLeft="80dp"
+                android:textSize="16sp"/>
         </RelativeLayout>
 
         <!-- display current player -->
@@ -49,15 +50,33 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true">
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+            <!-- displays current player's name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Currently playing:"
+                android:textColor="#ffffff"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"/>
+
             <!-- displays current player's image -->
             <ImageView
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:id="@+id/currentPlayerIcon"
+                android:id="@+id/current_player_icon"
                 android:background="@drawable/c1_head"
-                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
                 android:contentDescription="@string/hello_world"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"/>
 
             <!-- displays current player's name -->
             <TextView
@@ -66,11 +85,13 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/app_name"
                 android:textColor="#ffffff"
-                android:id="@+id/currentPlayerName"
-                android:layout_marginStart="70dp"
-                android:layout_marginLeft="70dp"
-                android:layout_centerVertical="true"
-                android:textStyle="bold"/>
+                android:id="@+id/current_player_name"
+                android:layout_gravity="center_vertical"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"/>
+            </LinearLayout>
         </RelativeLayout>
 
 
@@ -79,7 +100,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="false" android:layout_marginRight="50dp">
+            android:layout_alignParentEnd="false"
+            android:layout_marginEnd="50dp"
+            android:layout_marginRight="50dp">
 
             <!-- displays "money" -->
             <ImageView
@@ -101,15 +124,23 @@
                 android:layout_marginRight="50dp"
                 android:layout_marginEnd="50dp"
                 android:layout_centerInParent="true"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:textSize="24sp"/>
         </RelativeLayout>
-        <RelativeLayout android:layout_width="wrap_content" android:layout_height="match_parent"
-                        android:layout_alignParentRight="true" android:layout_alignParentEnd="true"
-                        android:layout_marginRight="12dp">
-            <ImageButton android:layout_width="40dp" android:layout_height="40dp"
-                       android:id="@+id/help" android:background="@drawable/help"
-                       android:contentDescription="@string/hello_world" android:layout_centerVertical="true"
-                    />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="12dp">
+
+            <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/help"
+                android:background="@drawable/help"
+                android:contentDescription="@string/hello_world"
+                android:layout_centerVertical="true"/>
         </RelativeLayout>
     </RelativeLayout>
 

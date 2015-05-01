@@ -9,9 +9,9 @@
     <dimen  name="grid_item_height">102.5dp</dimen>
 
     <!-- the pyramid (dice) -->
-    <dimen  name="pyramid_height">170dp</dimen>
-    <dimen  name="pyramid_width">170dp</dimen>
-    <dimen  name="pyramid_margin_left">192dp</dimen>
+    <dimen  name="pyramid_height">195dp</dimen>
+    <dimen  name="pyramid_width">195dp</dimen>
+    <dimen  name="pyramid_margin_left">178dp</dimen>
     <dimen  name="dice_size">57dp</dimen>
 
 </resources>
