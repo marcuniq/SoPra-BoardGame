@@ -1059,6 +1059,42 @@ The backend server with this API implements the 2014 board game of the year "Cam
 + Response 200
 
     [Game][]
+    
+
+## Trigger next move in fast mode [/games/{gameId}/start-fast-mode/next]
++ Parameters
+    + gameId (required, number, `1`) ... Numeric `id` of the Game.
+    
+
+### trigger move [POST]
+###### Request object: GamePlayerRequestBean
+
++ Request (application/json; charset=UTF-8)
+
+    + Body
+    
+            {
+                "token": "067e6162-3b6f-4ae2-a171-2470b63dff00"
+            }
+            
+    + Schema
+    
+            {
+                "$schema": "http://json-schema.org/draft-04/schema#",
+                "description": "GamePlayerRequestBean",
+                "type" : "object",
+                "required" : ["token"],
+                "properties" : {
+                    "token" : {
+                        "description" : "user token obtained from server at login",
+                        "type" : "string"
+                    }
+                }
+            }
+        
++ Response 200
+
+    [Game Move][]
 
 # Group Users
 
