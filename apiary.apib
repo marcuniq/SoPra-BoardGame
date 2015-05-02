@@ -33,7 +33,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "status" : "OPEN",
                 "numberOfMoves" : 0,
                 "numberOfPlayers" : 1, 
-                "currentPlayer" : ""
+                "currentPlayerId" : 1
             },
             {
                 "id": 4,
@@ -42,7 +42,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "status" : "RUNNING",
                 "numberOfMoves" : 7,
                 "numberOfPlayers" : 3, 
-                "currentPlayer" : "josua"
+                "currentPlayerId" : 2
             }]
         
         
@@ -56,7 +56,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "definitions" : {
                     "game": {
                         "type" : "object",
-                        "required" : ["id", "name", "owner", "status", "numberOfMoves", "numberOfPlayers", "currentPlayer"],
+                        "required" : ["id", "name", "owner", "status", "numberOfMoves", "numberOfPlayers", "currentPlayerId"],
                         "properties" : {
                             "id" : {
                                 "description" : "game id",
@@ -81,9 +81,9 @@ The backend server with this API implements the 2014 board game of the year "Cam
                                 "description": "number of players in the game",
                                 "type" : "integer"
                             },
-                            "currentPlayer": {
-                                "description": "username of player whos turn it is",
-                                "type" : "string"
+                            "currentPlayerId": {
+                                "description": "id of player whos turn it is",
+                                "type" : "integer"
                             }
                         }
                     }
@@ -152,7 +152,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "status" : "OPEN",
                 "numberOfMoves" : 0,
                 "numberOfPlayers" : 1,
-                "currentPlayer" : "marcuniq"
+                "currentPlayerId" : 1
             }
 
     + Schema
@@ -161,7 +161,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GameResponseBean",
                 "type" : "object",
-                "required" : ["id", "name", "owner", "status", "numberOfMoves", "numberOfPlayers", "currentPlayer"],
+                "required" : ["id", "name", "owner", "status", "numberOfMoves", "numberOfPlayers", "currentPlayerId"],
                 "properties" : {
                     "id" : {
                         "description" : "game id",
@@ -186,9 +186,9 @@ The backend server with this API implements the 2014 board game of the year "Cam
                         "description": "number of players in the game",
                         "type" : "integer"
                     },
-                    "currentPlayer": {
-                        "description": "username of player whos turn it is",
-                        "type" : "string"
+                    "currentPlayerId": {
+                        "description": "id of player whos turn it is",
+                        "type" : "integer"
                     }
                 }
             }
