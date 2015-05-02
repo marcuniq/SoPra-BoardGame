@@ -75,6 +75,7 @@ public class GameListFragment extends ListFragment {
                 getActivity(),
                 R.layout.game_item,
                 R.id.game_item_text,
+                R.id.game_item_description,
                 R.id.game_item_icon,
                 new ArrayList<Game>());
         setListAdapter(gameArrayAdapter);

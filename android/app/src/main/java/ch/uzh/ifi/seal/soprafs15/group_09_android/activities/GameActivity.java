@@ -10,6 +10,7 @@ import android.view.WindowManager;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.fragments.GameFragment;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import retrofit.Callback;
@@ -21,6 +22,7 @@ public class GameActivity extends MainActivity  {
     private Long gameId;
     private Long userId;
     private int playerId;
+    private boolean isOwner;
     private String token;
 
     /**
@@ -45,6 +47,7 @@ public class GameActivity extends MainActivity  {
             gameId = b.getLong("gameId");
             playerId = b.getInt("playerId");
             userId = b.getLong("userId");
+            isOwner = b.getBoolean("isOwner");
             token = b.getString("token");
             Boolean fastMode = b.getBoolean("fastMode");
 
@@ -95,6 +98,21 @@ public class GameActivity extends MainActivity  {
         RestService.getInstance(this).removeGamePlayer(gameId, playerId, userToken, new Callback<User>() {
             @Override
             public void success(User user, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
+
+    public void removeGame() {
+        User userToken = User.setToken(token);
+        RestService.getInstance(this).removeGame(gameId, userToken, new Callback<Game>() {
+            @Override
+            public void success(Game game, Response response) {
 
             }
 

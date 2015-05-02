@@ -115,6 +115,7 @@ public class GameLobbyFragment extends ListFragment {
                 getActivity(),
                 R.layout.player_item,
                 R.id.player_item_text,
+                R.id.player_item_description,
                 R.id.player_item_icon,
                 new ArrayList<User>());
         setListAdapter(playerArrayAdapter);
@@ -258,11 +259,11 @@ public class GameLobbyFragment extends ListFragment {
                 playerArrayAdapter.clear();
                 setListAdapter(playerArrayAdapter);
                 ImageView playerCard = (ImageView)getActivity().findViewById(R.id.player_card);
-                int cardId = 1;
+                int cardId;
                 for (User player : newPlayers) {
                     playerArrayAdapter.add(player);
                     cardId = newPlayers.indexOf(player) + 1;
-                    if (player.id() != null && userId.equals(player.id())) playerCard.setImageResource(getActivity().getResources().getIdentifier("c" + cardId, "drawable", getActivity().getPackageName()));
+                    if (userId.equals(player.id())) playerCard.setImageResource(getActivity().getResources().getIdentifier("c" + cardId, "drawable", getActivity().getPackageName()));
                 }
             }
 

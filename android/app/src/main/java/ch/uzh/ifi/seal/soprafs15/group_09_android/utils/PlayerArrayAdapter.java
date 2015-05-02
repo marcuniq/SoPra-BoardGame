@@ -19,8 +19,8 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
  */
 public class PlayerArrayAdapter extends GenericArrayAdapter<User> {
 
-    public PlayerArrayAdapter(Context context, int resource, int textResourceId, int imageResourceId, ArrayList<User> player) {
-        super(context, resource, textResourceId, imageResourceId, player);
+    public PlayerArrayAdapter(Context context, int resource, int textResourceId, int textDescriptionResourceId, int imageResourceId, ArrayList<User> player) {
+        super(context, resource, textResourceId, textDescriptionResourceId, imageResourceId, player);
     }
 
     /**
@@ -30,8 +30,13 @@ public class PlayerArrayAdapter extends GenericArrayAdapter<User> {
      * @param player
      */
     @Override
-    public void drawText(TextView textView, User player) {
+    public void setText(TextView textView, User player) {
         textView.setText(player.username());
+    }
+
+    @Override
+    public void setTextDescription(TextView textView, User player) {
+        textView.setText(player.money()+"");
     }
 
     public void setIcon(ImageView imageView, User player, int index){
