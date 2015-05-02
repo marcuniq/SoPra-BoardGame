@@ -53,8 +53,7 @@ public class LegBetting extends Move {
      * Game logic for leg betting
      */
     @Override
-    @Autowired
-    public Move execute(GameLogicService dummy) {
+    public Move execute() {
         LegBettingArea legBettingArea = game.getLegBettingArea();
         legBettingTile = legBettingArea.popLegBettingTile(legBettingTile.getColor());
 

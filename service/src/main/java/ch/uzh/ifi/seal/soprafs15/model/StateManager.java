@@ -75,6 +75,12 @@ public class StateManager implements Serializable {
     public RaceBettingArea getRaceBettingArea(){
         return gameState.getRaceBettingArea();
     }
+    public Boolean isInFastMode(){
+        return gameState.getIsInFastMode();
+    }
+    public void setIsInFastMode(Boolean isInFastMode){
+        gameState.setIsInFastMode(isInFastMode);
+    }
 
     public void addPlayer(User player){
         gameState.addPlayer(player);

@@ -1,6 +1,5 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameCamelResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameCamelStackResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRaceTrackObjectResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.Stack;
@@ -32,6 +31,7 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
     private List<Integer> previousPositions;
 
     public CamelStack(){
+
     }
     public CamelStack(List<Camel> camels){
         this.stack = camels;
@@ -43,6 +43,10 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
         this.previousPositions = new ArrayList<>();
     }
 
+    /**
+     * Push camel onto stack
+     * @param camel
+     */
     @Override
     public void push(Camel camel) {
         if(stack == null)
@@ -51,6 +55,10 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
         stack.add(camel);
     }
 
+    /**
+     * Pop top camel
+     * @return top camel or null
+     */
     @Override
     public Camel pop() {
         Camel camel = null;
@@ -59,6 +67,10 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
         return camel;
     }
 
+    /**
+     * Peek
+     * @return top camel or null
+     */
     @Override
     public Camel peek() {
         Camel camel = null;
@@ -67,10 +79,20 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
         return camel;
     }
 
+
     public Boolean hasCamel(Color color){
         return stack.stream().anyMatch(camel -> camel.getColor() == color);
     }
 
+    /**
+     * Needed for moving camel stacks in RaceTrack
+     *
+     * A split occurs if the camel to be moved is not the ground camel,
+     * so just the camel with the respective color and all above will be moved.
+     *
+     * @param color of camel to be moved
+     * @return Pair of (new or old) camel stack and if split occurred
+     */
     public Pair<CamelStack,Boolean> splitOrGetCamelStack(Color color){
         Boolean splitOccurred = !stack.isEmpty() && getGroundCamel().getColor() != color;
         if(!splitOccurred)
@@ -98,6 +120,13 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
         }
     }
 
+    /**
+     * Needed for moving camel stacks in RaceTrack
+     *
+     * Camel stacks are merged, if a camel stack ends at a position, where another camel stack is
+     *
+     * @param other camel stack to be put on this camel stack
+     */
     public void merge(CamelStack other){
         stack.addAll(other.getStack());
         previousPositions.addAll(other.getPreviousPositions());
@@ -116,20 +145,6 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
     }
 
 
-    @Override
-    public GameRaceTrackObjectResponseBean toBean() {
-        GameCamelStackResponseBean bean = new GameCamelStackResponseBean();
-        bean.setPosition(position);
-
-        List<GameCamelResponseBean> beanStack = new ArrayList<>();
-        for(Camel c : stack)
-            beanStack.add(c.toBean());
-
-        bean.setStack(beanStack);
-
-        return bean;
-    }
-
     public Long getId() {
         return id;
     }
@@ -146,18 +161,27 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
         this.stack = stack;
     }
 
-    @Override
-    public void setPosition(Integer position){
-        previousPositions.add(this.position);
-        this.position = position;
-
-    }
-
     public List<Integer> getPreviousPositions() {
         return previousPositions;
     }
 
     public void setPreviousPositions(List<Integer> previousPositions) {
         this.previousPositions = previousPositions;
+    }
+
+
+    @Override
+    public void setPosition(Integer position){
+        previousPositions.add(this.position);
+        this.position = position;
+    }
+
+    @Override
+    public GameRaceTrackObjectResponseBean toBean() {
+        GameCamelStackResponseBean bean = new GameCamelStackResponseBean();
+        bean.setPosition(position);
+        bean.setStack(stack);
+
+        return bean;
     }
 }

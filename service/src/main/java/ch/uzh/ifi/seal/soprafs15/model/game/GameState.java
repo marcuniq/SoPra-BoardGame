@@ -51,6 +51,9 @@ public class GameState implements Serializable {
     @OneToOne(mappedBy = "gameState", cascade=CascadeType.ALL)
     private DiceArea diceArea = new DiceArea();
 
+    @Column
+    private Boolean isInFastMode;
+
 
     public GameState(StateManager stateManager){
         this.stateManager = stateManager;
@@ -70,6 +73,8 @@ public class GameState implements Serializable {
         status = GameStatus.OPEN;
 
         currentPlayerId = 1;
+
+        isInFastMode = false;
     }
 
     public void addPlayer(User player){
@@ -99,10 +104,11 @@ public class GameState implements Serializable {
         }
     }
     public void nextPlayer() {
-        Optional<User> playerWithHigherId = players.stream().filter(p -> p.getPlayerId() > currentPlayerId).findFirst();
+        Optional<User> playerWithNextHigherId = players.stream().filter(p -> p.getPlayerId() > currentPlayerId)
+                .min((p1, p2) -> Integer.compare(p1.getPlayerId(), p2.getPlayerId()));
 
-        if(playerWithHigherId.isPresent()) {
-            currentPlayerId = playerWithHigherId.get().getPlayerId();
+        if(playerWithNextHigherId.isPresent()) {
+            currentPlayerId = playerWithNextHigherId.get().getPlayerId();
         } else {
             User playerWithSmallestId = players.stream().min((p1, p2) -> Integer.compare(p1.getPlayerId(), p2.getPlayerId())).get();
             currentPlayerId = playerWithSmallestId.getPlayerId();
@@ -148,6 +154,7 @@ public class GameState implements Serializable {
     public void setPlayers(List<User> players) {
         this.players = players;
     }
+
     public RaceTrack getRaceTrack() {
         return raceTrack;
     }
@@ -189,4 +196,11 @@ public class GameState implements Serializable {
     }
 
 
+    public Boolean getIsInFastMode() {
+        return isInFastMode;
+    }
+
+    public void setIsInFastMode(Boolean isInFastMode) {
+        this.isInFastMode = isInFastMode;
+    }
 }

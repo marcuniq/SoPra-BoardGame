@@ -50,8 +50,7 @@ public class DiceRolling extends Move {
      * Game logic for dice rolling
      */
     @Override
-    @Autowired
-    public Move execute(GameLogicService gameLogicService) {
+    public Move execute() {
         DiceArea diceArea = game.getDiceArea();
         die = diceArea.rollDice();
 
@@ -60,13 +59,6 @@ public class DiceRolling extends Move {
         // move camel
         RaceTrack raceTrack = game.getRaceTrack();
         raceTrack.moveCamelStack(die.getColor(), die.getFaceValue());
-
-        // check if game is over
-        Boolean gameOver = gameLogicService.runGameOverLogic(game);
-
-        // check if leg is over
-        if(!gameOver)
-            gameLogicService.runLegOverLogic(game);
 
         return this;
     }

@@ -106,6 +106,12 @@ public class User implements Serializable {
         }
     }
 
+    public void removeAllLegBettingTiles(){
+        for(LegBettingTile t : legBettingTiles)
+            t.setUser(null);
+        legBettingTiles.clear();
+    }
+
     /**
      * Remove RaceBettingCard from User to place it on race betting stack
      * @return RaceBettingCard

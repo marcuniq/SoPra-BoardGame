@@ -73,7 +73,7 @@ public abstract class Move implements Serializable {
     public abstract Boolean isValid();
 
 	@Autowired
-    public abstract Move execute(GameLogicService gameLogicService);
+    public abstract Move execute();
 
     public abstract void undo();
 }

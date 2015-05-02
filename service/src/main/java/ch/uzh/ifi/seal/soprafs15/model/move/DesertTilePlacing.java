@@ -58,17 +58,21 @@ public class DesertTilePlacing extends Move {
     public Boolean isValid() {
         RaceTrack raceTrack = game.getRaceTrack();
 
-        return  raceTrack.getRaceTrackObject(position) == null &&
-                raceTrack.getRaceTrackObject(position - 1) == null &&
-                user.hasDesertTile();
+        // constraints
+        Boolean notPosition1 = position != 1;
+        Boolean emptySpace = raceTrack.getRaceTrackObject(position) == null;
+        Boolean notAdjacentToAnotherDesertTile = raceTrack.getRaceTrackObject(position - 1) != null ?
+                raceTrack.getRaceTrackObject(position - 1).getClass() != DesertTile.class : true;
+        Boolean userHasDesertTile = user.hasDesertTile();
+
+        return  notPosition1 && emptySpace && notAdjacentToAnotherDesertTile && userHasDesertTile;
     }
 
     /**
      * Game logic for dice rolling
      */
     @Override
-    @Autowired
-    public Move execute(GameLogicService dummy) {
+    public Move execute() {
         DesertTile desertTile = user.removeDesertTile();
         desertTile.setIsOasis(isOasis);
         desertTile.setPosition(position);

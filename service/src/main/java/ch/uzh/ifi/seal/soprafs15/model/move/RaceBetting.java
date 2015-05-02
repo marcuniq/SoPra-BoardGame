@@ -49,8 +49,7 @@ public class RaceBetting extends Move {
      * Game logic for race betting
      */
     @Override
-    @Autowired
-    public Move execute(GameLogicService dummy) {
+    public Move execute() {
         RaceBettingArea raceBettingArea = game.getRaceBettingArea();
 
         RaceBettingCard raceBettingCard = user.getRaceBettingCard(color);
