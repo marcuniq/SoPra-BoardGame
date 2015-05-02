@@ -36,7 +36,9 @@ public class PlayerArrayAdapter extends GenericArrayAdapter<User> {
 
     @Override
     public void setTextDescription(TextView textView, User player) {
-        textView.setText(player.money()+"");
+        if (player.money() == null) textView.setText("");
+        else if (player.money() == 1) textView.setText(player.money() + " coin");
+        else textView.setText(player.money() + " coins");
     }
 
     public void setIcon(ImageView imageView, User player, int index){

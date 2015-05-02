@@ -1,12 +1,15 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.activities;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.fragments.GameFragment;
@@ -22,7 +25,6 @@ public class GameActivity extends MainActivity  {
     private Long gameId;
     private Long userId;
     private int playerId;
-    private boolean isOwner;
     private String token;
 
     /**
@@ -42,13 +44,10 @@ public class GameActivity extends MainActivity  {
         setContentView(R.layout.activity_game);
 
         if (savedInstanceState == null) {
-
             Bundle b = getIntent().getExtras();
             gameId = b.getLong("gameId");
             playerId = b.getInt("playerId");
             userId = b.getLong("userId");
-            isOwner = b.getBoolean("isOwner");
-            token = b.getString("token");
             Boolean fastMode = b.getBoolean("fastMode");
 
             Fragment fragment = GameFragment.newInstance();
@@ -56,6 +55,9 @@ public class GameActivity extends MainActivity  {
             bundle.putLong("gameId", gameId);
             bundle.putBoolean("fastMode", fastMode);
             fragment.setArguments(bundle);
+
+            SharedPreferences sharedPref = this.getSharedPreferences("token", Context.MODE_PRIVATE);
+            token = sharedPref.getString("token", token);
 
             setFragment(fragment);
         }
@@ -94,8 +96,7 @@ public class GameActivity extends MainActivity  {
     }
 
     public void removePlayerFromGame() {
-        User userToken = User.setToken(token);
-        RestService.getInstance(this).removeGamePlayer(gameId, playerId, userToken, new Callback<User>() {
+        RestService.getInstance(this).removeGamePlayer(gameId, playerId, User.setToken(token), new Callback<User>() {
             @Override
             public void success(User user, Response response) {
 
@@ -103,14 +104,13 @@ public class GameActivity extends MainActivity  {
 
             @Override
             public void failure(RetrofitError retrofitError) {
-
+                Toast.makeText(getApplicationContext(), "Remove Player from Game Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
 
     public void removeGame() {
-        User userToken = User.setToken(token);
-        RestService.getInstance(this).removeGame(gameId, userToken, new Callback<Game>() {
+        RestService.getInstance(this).removeGame(gameId, User.setToken(token), new Callback<Game>() {
             @Override
             public void success(Game game, Response response) {
 
@@ -118,7 +118,7 @@ public class GameActivity extends MainActivity  {
 
             @Override
             public void failure(RetrofitError retrofitError) {
-
+                Toast.makeText(getApplicationContext(), "Remove Game Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
@@ -84,23 +85,16 @@ public class GameCreatorFragment extends Fragment {
      */
     private void onClickCreateGameButton(View v) {
         String name = etName.getText().toString();
-
-        // @see http://developer.android.com/training/basics/data-storage/shared-preferences.html
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
 
-        Game game = Game.create( name,                  // name of the game
-                                 token);                // token of current user
-
-        RestService.getInstance(getActivity()).createGame(game, new Callback<Game>() {
-
+        RestService.getInstance(getActivity()).createGame(Game.create(name, token), new Callback<Game>() {
             @Override
             public void success(Game game, Response response) {
-                Long gameId = game.id();
-                joinedGameId = gameId;
+                joinedGameId = game.id();
 
                 // subscribe to pusher events
-                PusherService.getInstance(getActivity()).register(gameId, game.channelName());
+                PusherService.getInstance(getActivity()).register(joinedGameId, game.channelName());
 
                 Fragment fragment = GameLobbyFragment.newInstance();
                 Bundle bundle = new Bundle();
@@ -114,7 +108,7 @@ public class GameCreatorFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
+                Toast.makeText(getActivity(), "Crate Game Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

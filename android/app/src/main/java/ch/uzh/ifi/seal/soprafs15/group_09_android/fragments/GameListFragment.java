@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +28,11 @@ import retrofit.client.Response;
 
 public class GameListFragment extends ListFragment {
 
-    private TextView tvLogBox;
     private GameArrayAdapter gameArrayAdapter; // adapts the ArrayList of Games to the ListView
     private String token;
     private Long joinedGameId;
     private Long userId;
 
-    /* empty constructor */
     public GameListFragment() {}
 
     /**
@@ -53,9 +52,6 @@ public class GameListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         userId = this.getArguments().getLong("userId");
-
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        token = sharedPref.getString("token", token);
     }
 
     /**
@@ -93,6 +89,8 @@ public class GameListFragment extends ListFragment {
         RestService.getInstance(getActivity()).getGames(new Callback<List<Game>>() {
             @Override
             public void success(List<Game> games, Response response) {
+                gameArrayAdapter.clear();
+                setListAdapter(gameArrayAdapter);
                 for (Game game : games) {
                     gameArrayAdapter.add(game);
                 }
@@ -100,7 +98,7 @@ public class GameListFragment extends ListFragment {
 
             @Override
             public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
+                Toast.makeText(getActivity(), "Get available games Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -115,23 +113,18 @@ public class GameListFragment extends ListFragment {
      */
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
 
         Game selectedGame = (Game) getListAdapter().getItem(position);
-/*
-        Toast.makeText(v.getContext(), "You joined the game \"" + selectedGame.name() + "\" with the id (" + selectedGame.id() + ")", Toast.LENGTH_LONG).show();
 
-*/
         final Long gameId = selectedGame.id();
         joinedGameId = gameId;
         User player = User.setToken(token);
 
         RestService.getInstance(getActivity()).joinGame(gameId, player, new Callback<User>() {
-
             @Override
             public void success(User user, Response response) {
-
                 PusherService.getInstance(getActivity()).register(gameId, user.channelName());
 
                 Fragment gameLobbyFragment = GameLobbyFragment.newInstance();
@@ -147,7 +140,7 @@ public class GameListFragment extends ListFragment {
 
             @Override
             public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
+                Toast.makeText(getActivity(), "Join Game Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

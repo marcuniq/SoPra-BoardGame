@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.fragments.MainMenuFragment;
@@ -21,8 +22,8 @@ public class MenuActivity extends MainActivity {
             Bundle b = getIntent().getExtras();
             String token = b.getString("token");
 
-            /* create shared variable with token --> user identification*/
-            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            /* create shared variable with token --> user identification */
+            SharedPreferences sharedPref = this.getSharedPreferences("token", Context.MODE_PRIVATE);
             sharedPref.edit().putString("token", token).apply();
 
             setFragment(MainMenuFragment.newInstance());
@@ -38,6 +39,7 @@ public class MenuActivity extends MainActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Toast.makeText(this, "You clicked on the settings", Toast.LENGTH_LONG).show();
             return true;
         }
 

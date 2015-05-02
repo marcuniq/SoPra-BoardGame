@@ -89,10 +89,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         gameId = b.getLong("gameId");
         userId = b.getLong("userId");
         playerId = b.getInt("playerId");
-        token = b.getString("token");
         isOwner = b.getBoolean("isOwner");
 
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
     }
 
@@ -110,13 +109,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         addClickListenerToButtons();
         subscribeToAreaUpdates();
         subscribeToEvents();
-
-//        if (fastMode) {
-//            playFastMode();
-//        }
-//        else {
         play();
-//        }
     }
 
 
@@ -641,7 +634,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         return image;
     }
 
-    private void initiateGameMove(Moves moveType, GameColors legBettingTileColor, Boolean raceBettingOnWinner, Boolean desertTileAsOasis, Integer desertTilePosition) {
+    private void initiateGameMove(final Moves moveType, GameColors legBettingTileColor, Boolean raceBettingOnWinner, Boolean desertTileAsOasis, Integer desertTilePosition) {
         Move move = Move.create(token, moveType, legBettingTileColor, raceBettingOnWinner, desertTileAsOasis, desertTilePosition);
         RestService.getInstance(getActivity()).initiateGameMove(gameId, move, new Callback<Move>() {
             @Override
@@ -656,8 +649,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void failure(RetrofitError error) {
-                AlertDialog dialog = dummyPopup("failure: " + error.toString());
-                dialog.show();
+                Toast.makeText(getActivity(), moveType.name() + " Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
 
                 updateLegBettingFields();
                 updateRaceBettingFields();
@@ -782,6 +774,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void failure(RetrofitError retrofitError) {
+                Toast.makeText(getActivity(), "Get Player's Status Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -805,8 +798,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void failure(RetrofitError error) {
-                AlertDialog dialog = dummyPopup("failure: " + error.toString());
-                dialog.show();
+                Toast.makeText(getActivity(), "Get List of Players Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -915,7 +907,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
                         if(playerId == playerTurnEvent.getPlayerId()){
                             // TODO notify player that it is her turn
-
+                            updateHeaderBar();
                         }
                     }
                 });

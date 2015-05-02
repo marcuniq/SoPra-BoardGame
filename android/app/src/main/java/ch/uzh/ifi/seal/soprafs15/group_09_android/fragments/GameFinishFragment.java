@@ -30,6 +30,7 @@ import retrofit.client.Response;
 public class GameFinishFragment extends ListFragment {
 
     private Long gameId;
+    private String token;
     private boolean isOwner = false;
     private Long userId;
     private PlayerArrayAdapter playerArrayAdapter; // adapts the ArrayList of Games to the ListView
@@ -70,8 +71,7 @@ public class GameFinishFragment extends ListFragment {
                 ((GameActivity)getActivity()).removePlayerFromGame();
                 if (isOwner) ((GameActivity)getActivity()).removeGame();
 
-                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                String token = "";
+                SharedPreferences sharedPref = getActivity().getSharedPreferences("token",Context.MODE_PRIVATE);
                 token = sharedPref.getString("token", token);
 
                 Intent intent = new Intent();
@@ -113,7 +113,7 @@ public class GameFinishFragment extends ListFragment {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), "ERROR: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Get Players List Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
