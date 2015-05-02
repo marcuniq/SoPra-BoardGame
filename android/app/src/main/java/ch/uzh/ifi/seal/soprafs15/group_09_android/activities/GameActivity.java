@@ -10,7 +10,7 @@ import android.view.WindowManager;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.fragments.GameFragment;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -68,7 +68,7 @@ public class GameActivity extends MainActivity  {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("You have clicked on the back Button")
                 .setTitle("Do you want to log out?:");
-        builder.setPositiveButton("Stay in Game", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Stay in GameBean", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // do nothing but close popup
             }
@@ -91,10 +91,10 @@ public class GameActivity extends MainActivity  {
     }
 
     public void removePlayerFromGame() {
-        User userToken = User.setToken(token);
-        RestService.getInstance(this).removeGamePlayer(gameId, playerId, userToken, new Callback<User>() {
+        UserBean userToken = UserBean.setToken(token);
+        RestService.getInstance(this).removeGamePlayer(gameId, playerId, userToken, new Callback<UserBean>() {
             @Override
-            public void success(User user, Response response) {
+            public void success(UserBean user, Response response) {
 
             }
 

@@ -4,7 +4,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <!-- Grid Items of Game Board Properties -->
+    <!-- Grid Items of GameBean Board Properties -->
     <dimen  name="grid_item_width">123dp</dimen>
     <dimen  name="grid_item_height">102.5dp</dimen>
 

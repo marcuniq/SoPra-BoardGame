@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs15.group_09_android.models;
+package ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums;
 
 /**
  * Created by Marco on 25.04.2015.

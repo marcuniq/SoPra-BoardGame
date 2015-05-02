@@ -1,15 +1,15 @@
-package ch.uzh.ifi.seal.soprafs15.group_09_android.models;
+package ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans;
 
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import auto.parcel.AutoParcel;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoGson;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameColors;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Moves;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.GameColors;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.Moves;
 
 @AutoParcel @AutoGson
-public abstract class Move implements Parcelable {
+public abstract class MoveBean implements Parcelable {
 
     @Nullable
     public abstract Long id();
@@ -33,13 +33,13 @@ public abstract class Move implements Parcelable {
     @Nullable
     public abstract Integer desertTilePosition();
 
-    public static Move create( String token,
+    public static MoveBean create( String token,
                                Moves move,
                                GameColors legBettingTileColor,
                                Boolean raceBettingOnWinner,
                                Boolean desertTileAsOasis,
                                Integer desertTilePosition ) {
-        return new AutoParcel_Move(
+        return new AutoParcel_MoveBean(
                 null,
                 null,
                 null,

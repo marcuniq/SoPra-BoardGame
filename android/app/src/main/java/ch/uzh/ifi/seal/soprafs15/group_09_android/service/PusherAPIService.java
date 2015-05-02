@@ -6,7 +6,7 @@ import com.pusher.client.channel.SubscriptionEventListener;
 import com.pusher.client.connection.ConnectionEventListener;
 import com.pusher.client.connection.ConnectionState;
 
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.GameBean;
 
 /**
  * @author Marco
@@ -54,7 +54,7 @@ public class PusherAPIService {
         channel.bind(eventName, subscriptionEventListener);
     }
 
-    public Channel subscribe(Game game){
+    public Channel subscribe(GameBean game){
         return subscribe(game.channelName());
     }
 
@@ -63,7 +63,7 @@ public class PusherAPIService {
         return channel;
     }
 
-    public void unsubscribe(Game game){
+    public void unsubscribe(GameBean game){
         unsubscribe(game.channelName());
     }
     public void unsubscribe(String channelName){

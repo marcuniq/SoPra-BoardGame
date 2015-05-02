@@ -2,7 +2,7 @@ package ch.uzh.ifi.seal.soprafs15.group_09_android.service;
 
 import android.content.Context;
 
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.AreaName;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.AreaName;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.DiceArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.LegBettingArea;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.RaceBettingArea;

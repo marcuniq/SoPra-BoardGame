@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 /**
  * This adapter is set to replace the custom ArrayAdapter. So we are able to display whatever we want
- * like not only Strings bur using whole objects and their methods (like Game.name or User.username
+ * like not only Strings bur using whole objects and their methods (like GameBean.name or UserBean.username
  * etc.
  *
  * @param <T>

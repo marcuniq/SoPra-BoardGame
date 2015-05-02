@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.AbstractArea;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.AreaName;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.AreaName;
 
 /**
  * @author Marco
