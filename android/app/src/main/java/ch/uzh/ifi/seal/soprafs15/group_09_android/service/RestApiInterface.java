@@ -160,4 +160,8 @@ public interface RestApiInterface {
      * man kann keinen Body mitschicken wenn man was löschen will? */
     @DELETE("/games/{gameId}/players/{playerId}")
     void removeGamePlayer(@Path("gameId") Long gameId, @Path("playerId") Integer playerId, @Body User token, Callback<User> callback);
+
+    @DELETE("/games/{gameId}")
+    void removeGame(@Path("gameId") Long gameId, @Body User token, Callback<Game> callback);
+
 }

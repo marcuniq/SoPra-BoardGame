@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
@@ -65,7 +66,7 @@ public class LoginFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
+                Toast.makeText(getActivity(), "Create User Failed :" + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -98,7 +99,7 @@ public class LoginFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
+                Toast.makeText(getActivity(), "Login User Failed :" + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
 
 /**
  *  Uses the GenericArrayAdapter to be able to add any Object to our custom ArrayAdapter. Now we
@@ -17,8 +18,8 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
  */
 public class GameArrayAdapter extends GenericArrayAdapter<Game> {
 
-    public GameArrayAdapter(Context context,  int resource, int textResourceId, int imageResourceId, ArrayList<Game> game) {
-        super(context, resource, textResourceId, imageResourceId, game);
+    public GameArrayAdapter(Context context,  int resource, int textResourceId, int textDescriptionResourceId, int imageResourceId, ArrayList<Game> game) {
+        super(context, resource, textResourceId, textDescriptionResourceId, imageResourceId, game);
     }
 
     /**
@@ -28,10 +29,14 @@ public class GameArrayAdapter extends GenericArrayAdapter<Game> {
      * @param game
      */
     @Override
-    public void drawText(TextView textView, Game game) {
+    public void setText(TextView textView, Game game) {
         textView.setText(game.name());
     }
 
+    @Override
+    public void setTextDescription(TextView textView, Game game) {
+        textView.setText("Owner: " + game.owner());
+    }
 
     public void setIcon(ImageView imageView, Game game, int index){
         imageView.setBackgroundResource(R.drawable.ic_launcher);

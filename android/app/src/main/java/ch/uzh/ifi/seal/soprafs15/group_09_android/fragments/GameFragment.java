@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.CamelBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackObjectBean;
@@ -60,7 +62,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private Long gameId;
     private Integer playerId;
     private String token;
-    private Boolean fastMode = false;
+    private Boolean isOwner = false;
 
     private PopupWindow popupWindow;
     private View anchorView;
@@ -80,21 +82,24 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     public GameFragment() { }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_game, container, false);
-        this.savedInstanceState = savedInstanceState;
-        this.container = container;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         Bundle b = getActivity().getIntent().getExtras();
         gameId = b.getLong("gameId");
         userId = b.getLong("userId");
         playerId = b.getInt("playerId");
-        fastMode = b.getBoolean("fastMode");
-        token = b.getString("token");
+        isOwner = b.getBoolean("isOwner");
 
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
+    }
 
-        return v;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        this.savedInstanceState = savedInstanceState;
+        this.container = container;
+        return inflater.inflate(R.layout.fragment_game, container, false);
     }
 
     @Override
@@ -104,13 +109,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         addClickListenerToButtons();
         subscribeToAreaUpdates();
         subscribeToEvents();
-
-//        if (fastMode) {
-//            playFastMode();
-//        }
-//        else {
         play();
-//        }
     }
 
 
@@ -635,27 +634,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         return image;
     }
 
-    /**
-     * This is the method for the fast mode.
-     */
-//    private void playFastMode() {
-//        User user = User.setToken(token);
-//        RestService.getInstance(getActivity()).startFastMode(gameId, user, new Callback<Game>() {
-//            @Override
-//            public void success(Game game, Response response) {
-//                AlertDialog dialog = dummyPopup("success: " + response.toString());
-//                dialog.show();
-//            }
-//
-//            @Override
-//            public void failure(RetrofitError error) {
-//                AlertDialog dialog = dummyPopup("failure: " + error.toString());
-//                dialog.show();
-//            }
-//        });
-//    }
-
-    private void initiateGameMove(Moves moveType, GameColors legBettingTileColor, Boolean raceBettingOnWinner, Boolean desertTileAsOasis, Integer desertTilePosition) {
+    private void initiateGameMove(final Moves moveType, GameColors legBettingTileColor, Boolean raceBettingOnWinner, Boolean desertTileAsOasis, Integer desertTilePosition) {
         Move move = Move.create(token, moveType, legBettingTileColor, raceBettingOnWinner, desertTileAsOasis, desertTilePosition);
         RestService.getInstance(getActivity()).initiateGameMove(gameId, move, new Callback<Move>() {
             @Override
@@ -670,8 +649,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void failure(RetrofitError error) {
-                AlertDialog dialog = dummyPopup("failure: " + error.toString());
-                dialog.show();
+                Toast.makeText(getActivity(), moveType.name() + " Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
 
                 updateLegBettingFields();
                 updateRaceBettingFields();
@@ -791,10 +769,12 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 player = user;
                 currentPlayer = player; // TODO: get the current player
                 updateHeaderBar();
+                gameFinishEvaluation();
             }
 
             @Override
             public void failure(RetrofitError retrofitError) {
+                Toast.makeText(getActivity(), "Get Player's Status Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -818,12 +798,21 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void failure(RetrofitError error) {
-                AlertDialog dialog = dummyPopup("failure: " + error.toString());
-                dialog.show();
+                Toast.makeText(getActivity(), "Get List of Players Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
 
+    private void gameFinishEvaluation(){
+        Bundle b = new Bundle();
+        b.putLong("userId", userId);
+        b.putLong("gameId", gameId);
+        b.putBoolean("isOwner", isOwner);
+        Fragment fragment = new GameFinishFragment();
+        fragment.setArguments(b);
+
+        ((GameActivity) getActivity()).pushFragment(fragment);
+    }
 
     /**
      * Called when creating this fragment
@@ -918,7 +907,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
                         if(playerId == playerTurnEvent.getPlayerId()){
                             // TODO notify player that it is her turn
-
+                            updateHeaderBar();
                         }
                     }
                 });

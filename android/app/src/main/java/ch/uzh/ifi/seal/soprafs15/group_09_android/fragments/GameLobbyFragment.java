@@ -39,20 +39,15 @@ import retrofit.client.Response;
 //public class GameLobbyFragment extends ListFragment {
 public class GameLobbyFragment extends ListFragment {
 
-    private TextView tvLogBox;
     private Long gameId;
     private Long userId;
     private Integer playerId;
     private Boolean isOwner;
     private PlayerArrayAdapter playerArrayAdapter; // adapts the ArrayList of Games to the ListView
-    private ImageView ivPlayerCard;
-    private Boolean fastMode = false;
+    private Boolean isFastMode = false;
     private CheckBox checkBox;
     private String token;
-    private List<User> players;
-    private boolean noLogout = true;
 
-    /* empty constructor */
     public GameLobbyFragment() {}
 
     /**
@@ -70,11 +65,10 @@ public class GameLobbyFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         gameId = this.getArguments().getLong("gameId");
         userId = this.getArguments().getLong("userId");
-
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        token = sharedPref.getString("token", token);
-
         isOwner = this.getArguments().getBoolean("isOwner");
+
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
+        token = sharedPref.getString("token", token);
     }
 
     /**
@@ -95,14 +89,9 @@ public class GameLobbyFragment extends ListFragment {
             startGameButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    fastMode = checkBox.isChecked();
-
-                    if (fastMode) {
-                        startGameInFastMode();
-                    }
-                    else {
-                        startGame();
-                    }
+                    isFastMode = checkBox.isChecked();
+                    if (isFastMode) startGameInFastMode();
+                    else startGame();
                 }
             });
         } else {
@@ -110,11 +99,11 @@ public class GameLobbyFragment extends ListFragment {
             startGameButton.setVisibility(View.INVISIBLE);
         }
 
-
         playerArrayAdapter = new PlayerArrayAdapter(
                 getActivity(),
                 R.layout.player_item,
                 R.id.player_item_text,
+                R.id.player_item_description,
                 R.id.player_item_icon,
                 new ArrayList<User>());
         setListAdapter(playerArrayAdapter);
@@ -127,12 +116,12 @@ public class GameLobbyFragment extends ListFragment {
         super.onResume();
         getPlayers();
 
+        /* Handle Back Button input */
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
         getView().setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-
                 if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK){
                     AlertDialog dialog = warningPopup();
                     dialog.show();
@@ -154,7 +143,8 @@ public class GameLobbyFragment extends ListFragment {
         });
         builder.setNegativeButton("Log out", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // TODO: logout User
+                if (isOwner) removeGame();
+                else removePlayerFromGame();
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
@@ -162,17 +152,13 @@ public class GameLobbyFragment extends ListFragment {
     }
 
     private void onStartGame() {
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        token = sharedPref.getString("token", token);
-
         Intent intent = new Intent();
         intent.setClass(getActivity(), GameActivity.class);
         Bundle b = new Bundle();
         b.putLong("gameId", gameId);
         b.putLong("userId", userId);
         b.putInt("playerId", playerId);
-        b.putBoolean("fastMode", fastMode);
-        b.putString("token", token);
+        b.putBoolean("fastMode", isFastMode);
         intent.putExtras(b);
         startActivity(intent);
         getActivity().finish();
@@ -209,8 +195,7 @@ public class GameLobbyFragment extends ListFragment {
     }
 
     private void startGame(){
-        User user = User.setToken(token);
-        RestService.getInstance(getActivity()).start(gameId, user, new Callback<Game>() {
+        RestService.getInstance(getActivity()).start(gameId, User.setToken(token), new Callback<Game>() {
             @Override
             public void success(Game game, Response response) {
 
@@ -218,14 +203,13 @@ public class GameLobbyFragment extends ListFragment {
 
             @Override
             public void failure(RetrofitError error) {
-
+                Toast.makeText(getActivity(), "Start Game Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
 
     private void startGameInFastMode(){
-        User user = User.setToken(token);
-        RestService.getInstance(getActivity()).startFastMode(gameId, user, new Callback<Game>() {
+        RestService.getInstance(getActivity()).startFastMode(gameId, User.setToken(token), new Callback<Game>() {
             @Override
             public void success(Game game, Response response) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -239,13 +223,7 @@ public class GameLobbyFragment extends ListFragment {
 
             @Override
             public void failure(RetrofitError error) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage("failure: " + error.toString());
-                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
-                builder.create().show();
+                Toast.makeText(getActivity(), "Start Game in Fast Mode Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -254,21 +232,48 @@ public class GameLobbyFragment extends ListFragment {
         RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<User>>() {
             @Override
             public void success(List<User> newPlayers, Response response) {
-                players = newPlayers;
                 playerArrayAdapter.clear();
                 setListAdapter(playerArrayAdapter);
                 ImageView playerCard = (ImageView)getActivity().findViewById(R.id.player_card);
-                int cardId = 1;
+                int cardId;
                 for (User player : newPlayers) {
                     playerArrayAdapter.add(player);
                     cardId = newPlayers.indexOf(player) + 1;
-                    if (player.id() != null && userId.equals(player.id())) playerCard.setImageResource(getActivity().getResources().getIdentifier("c" + cardId, "drawable", getActivity().getPackageName()));
+                    if (userId.equals(player.id())) playerCard.setImageResource(getActivity().getResources().getIdentifier("c" + cardId, "drawable", getActivity().getPackageName()));
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), "ERROR: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Get Players of the game failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void removePlayerFromGame() {
+        RestService.getInstance(getActivity()).removeGamePlayer(gameId, playerId, User.setToken(token), new Callback<User>() {
+            @Override
+            public void success(User user, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                Toast.makeText(getActivity(), "Remove Player from Game Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void removeGame() {
+        RestService.getInstance(getActivity()).removeGame(gameId, User.setToken(token), new Callback<Game>() {
+            @Override
+            public void success(Game game, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                Toast.makeText(getActivity(), "Remove Game Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

@@ -22,17 +22,20 @@ public abstract class GenericArrayAdapter<T> extends ArrayAdapter<T> {
     private LayoutInflater mInflater;
     private int resource;
     private int textResourceId;
+    private int textDescriptionResourceId;
     private int imageResourceId;
 
-    public GenericArrayAdapter(Context context, int resource, int textResourceId, int imageResourceId, ArrayList<T> objects) {
+    public GenericArrayAdapter(Context context, int resource, int textResourceId, int textDescriptionResourceId, int imageResourceId, ArrayList<T> objects) {
         super(context, resource, textResourceId, objects);
         this.resource = resource;
         this.textResourceId = textResourceId;
+        this.textDescriptionResourceId = textDescriptionResourceId;
         this.imageResourceId = imageResourceId;
         init(context);
     }
 
-    public abstract void drawText(TextView textView, T object);
+    public abstract void setText(TextView textView, T object);
+    public abstract void setTextDescription(TextView textView, T object);
     public abstract void setIcon(ImageView imageView, T object, int index);
 
 
@@ -51,6 +54,7 @@ public abstract class GenericArrayAdapter<T> extends ArrayAdapter<T> {
             convertView = inflater.inflate(resource, parent, false);
 
             viewHolder.text = (TextView) convertView.findViewById(textResourceId);
+            viewHolder.textDescription = (TextView) convertView.findViewById(textDescriptionResourceId);
             viewHolder.image = (ImageView) convertView.findViewById(imageResourceId);
             
             convertView.setTag(viewHolder);
@@ -58,7 +62,8 @@ public abstract class GenericArrayAdapter<T> extends ArrayAdapter<T> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        drawText(viewHolder.text, getItem(position));
+        setText(viewHolder.text, getItem(position));
+        setTextDescription(viewHolder.textDescription, getItem(position));
         setIcon(viewHolder.image, getItem(position), position+1);
 
         return convertView;
@@ -66,6 +71,7 @@ public abstract class GenericArrayAdapter<T> extends ArrayAdapter<T> {
 
     private static class ViewHolder {
         TextView text;
+        TextView textDescription;
         ImageView image;
     }
 
