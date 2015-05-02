@@ -19,7 +19,7 @@ import java.util.List;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.PlayerArrayAdapter;
 import retrofit.Callback;
@@ -61,7 +61,7 @@ public class GameFinishFragment extends ListFragment {
                 R.id.player_item_text,
                 R.id.player_item_description,
                 R.id.player_item_icon,
-                new ArrayList<User>());
+                new ArrayList<UserBean>());
         setListAdapter(playerArrayAdapter);
 
         Button closeButton = (Button) v.findViewById(R.id.close);
@@ -71,7 +71,7 @@ public class GameFinishFragment extends ListFragment {
                 ((GameActivity)getActivity()).removePlayerFromGame();
                 if (isOwner) ((GameActivity)getActivity()).removeGame();
 
-                SharedPreferences sharedPref = getActivity().getSharedPreferences("token",Context.MODE_PRIVATE);
+                SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
                 token = sharedPref.getString("token", token);
 
                 Intent intent = new Intent();
@@ -95,18 +95,18 @@ public class GameFinishFragment extends ListFragment {
     }
 
     private void getPlayers(){
-        RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<User>>() {
+        RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<UserBean>>() {
             @Override
-            public void success(List<User> newPlayers, Response response) {
+            public void success(List<UserBean> newPlayers, Response response) {
                 playerArrayAdapter.clear();
-                Collections.sort(newPlayers, new Comparator<User>() {
+                Collections.sort(newPlayers, new Comparator<UserBean>() {
                     @Override
-                    public int compare(User user1, User user2) {
+                    public int compare(UserBean user1, UserBean user2) {
                         return user1.money().compareTo(user2.money());
                     }
                 });
                 setListAdapter(playerArrayAdapter);
-                for (User player : newPlayers) {
+                for (UserBean player : newPlayers) {
                     playerArrayAdapter.add(player);
                 }
             }

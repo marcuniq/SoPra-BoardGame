@@ -772,7 +772,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 player = user;
                 currentPlayer = player; // TODO: get the current player
                 updateHeaderBar();
-                gameFinishEvaluation();
             }
 
             @Override
