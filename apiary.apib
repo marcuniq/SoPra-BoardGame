@@ -515,8 +515,10 @@ The backend server with this API implements the 2014 board game of the year "Cam
     + Body
     
             [{
-                "id" : 72
+                "id" : 72,
+                "gameId": 2,
                 "userId": 3,
+                "playerId": 1,
                 "move" : "LEG_BETTING",
                 "legBettingTile" : {
                     "id" : 23,
@@ -527,8 +529,10 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 }
             },
             {
-                "id" : 73
+                "id" : 73,
+                "gameId": 4,
                 "userId": 3,
+                "playerId": 2,
                 "move" : "DICE_ROLLING",
                 "dice" : {
                     "color" : "WHITE",
@@ -547,14 +551,22 @@ The backend server with this API implements the 2014 board game of the year "Cam
                     "move": {
                         "description": "GameMoveResponseBean",
                         "type" : "object",
-                        "required" : ["id", "userId", "move"],
+                        "required" : ["id", "gameId", "userId", "playerId", "move"],
                         "properties" : {
                             "id" : {
                                 "description" : "move id",
                                 "type" : "integer"
                             },
+                            "gameId" : {
+                                "description" : "game id",
+                                "type" : "integer"
+                            },
                             "userId" : {
                                 "description" : "user id",
+                                "type" : "integer"
+                            },
+                            "playerId" : {
+                                "description" : "player id",
                                 "type" : "integer"
                             },
                             "move" : {
@@ -639,7 +651,9 @@ The backend server with this API implements the 2014 board game of the year "Cam
     
             {
                 "id" : 72,
+                "gameId": 3,
                 "userId": 3,
+                "playerId": 1,
                 "move" : "LEG_BETTING",
                 "legBettingTile" : {
                     "id" : 23,
@@ -656,14 +670,22 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "description": "GameMoveResponseBean",
                 "type" : "object",
-                "required" : ["id", "userId", "move"],
+                "required" : ["id", "gameId", "userId", "playerId", "move"],
                 "properties" : {
                     "id" : {
                         "description" : "move id",
                         "type" : "integer"
                     },
+                    "gameId" : {
+                        "description" : "game id",
+                        "type" : "integer"
+                    },
                     "userId" : {
                         "description" : "user id",
+                        "type" : "integer"
+                    },
+                    "playerId" : {
+                        "description" : "player id",
                         "type" : "integer"
                     },
                     "move" : {
