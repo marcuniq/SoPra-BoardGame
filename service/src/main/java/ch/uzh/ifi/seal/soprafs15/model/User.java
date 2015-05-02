@@ -13,10 +13,7 @@ import java.util.Map;
 
 @Entity
 public class User implements Serializable {
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -62,15 +59,13 @@ public class User implements Serializable {
     @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
     private DesertTile desertTile;
 
-
-
     @Column
     private Boolean hasDesertTile;
 
     public User(){}
 
     /**
-     * Initialization of user with
+     * Initialization of user with game related objects
      */
     public void initForGamePlay() {
         // money
@@ -95,10 +90,14 @@ public class User implements Serializable {
     public void addLegBettingTile(LegBettingTile tile){
         if(!legBettingTiles.contains(tile)){
             legBettingTiles.add(tile);
-            //tile.setUser(this);
+            tile.setUser(this);
         }
     }
 
+    /**
+     * Remove leg betting tile for undoing move
+     * @param tile
+     */
     public void removeLegBettingTile(LegBettingTile tile){
         if(legBettingTiles.contains(tile)){
             legBettingTiles.remove(tile);
@@ -106,6 +105,9 @@ public class User implements Serializable {
         }
     }
 
+    /**
+     * Remove all tiles when leg is over
+     */
     public void removeAllLegBettingTiles(){
         for(LegBettingTile t : legBettingTiles)
             t.setUser(null);
@@ -120,18 +122,38 @@ public class User implements Serializable {
         return raceBettingCards.remove(color);
     }
 
+    /**
+     * Helper method to find out if player still has the race betting card
+     * with the given color
+     * @param color
+     * @return
+     */
     public Boolean hasRaceBettingCard(Color color){
         return raceBettingCards.get(color) != null;
     }
 
+    /**
+     * Helper method for undoing move
+     * @param raceBettingCard
+     */
     public void putRaceBettingCardBack(RaceBettingCard raceBettingCard){
         raceBettingCards.put(raceBettingCard.getColor(), raceBettingCard);
     }
 
+    /**
+     * When player chooses to place the desert tile, it must be removed from his posession
+     * @return DesertTile
+     */
     public DesertTile removeDesertTile(){
         hasDesertTile = false;
         return desertTile;
     }
+
+    /**
+     * Helper method to check if placing the desert tile is a valid move
+     * Invalid move if player doesn't have it anymore
+     * @return
+     */
     public Boolean hasDesertTile(){
         return hasDesertTile;
     }

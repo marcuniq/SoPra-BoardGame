@@ -7,6 +7,7 @@ public class GameMoveResponseBean {
     private Long id;
     private Long gameId;
     private Long userId;
+    private Integer playerId;
     private MoveEnum move;
     private LegBettingTile legBettingTile;
     private Boolean raceBettingOnWinner;
@@ -86,5 +87,11 @@ public class GameMoveResponseBean {
         this.die = die;
     }
 
+    public Integer getPlayerId() {
+        return playerId;
+    }
 
+    public void setPlayerId(Integer playerId) {
+        this.playerId = playerId;
+    }
 }

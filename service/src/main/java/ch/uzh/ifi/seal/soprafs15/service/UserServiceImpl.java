@@ -21,7 +21,7 @@ import java.util.UUID;
 @Service("userService")
 public class UserServiceImpl extends UserService {
 
-    Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     protected UserRepository userRepository;
     protected UserMapperService userMapperService;
@@ -130,9 +130,5 @@ public class UserServiceImpl extends UserService {
             user_1.setStatus(UserStatus.OFFLINE);
             userRepository.save(user_1);
         }
-    }
-
-    private String getGameName(User user){
-        return user.getGameState().getStateManager().getGame().getName();
     }
 }

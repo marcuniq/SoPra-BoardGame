@@ -20,7 +20,7 @@ import java.util.UUID;
 @Service("userMapperService")
 public class UserMapperServiceImpl extends UserMapperService {
 
-    Logger logger = LoggerFactory.getLogger(UserMapperServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(UserMapperServiceImpl.class);
 
     protected UserRepository userRepository;
 

@@ -26,7 +26,7 @@ public abstract class Game implements Parcelable {
     @Nullable
     public abstract Integer numberOfPlayers();
     @Nullable
-    public abstract String currentPlayer();
+    public abstract Integer currentPlayerId();
     @Nullable
     public abstract String channelName();
 

@@ -2,13 +2,13 @@ package ch.uzh.ifi.seal.soprafs15.controller.beans.game;
 
 public class GameResponseBean {
 
-	private Long id;
-	private String name;
-	private String owner;
-	private GameStatus status;
-	private Integer numberOfMoves;	
-	private Integer numberOfPlayers;
-	private String currentPlayer;
+	protected Long id;
+	protected String name;
+	protected String owner;
+	protected GameStatus status;
+	protected Integer numberOfMoves;
+	protected Integer numberOfPlayers;
+	protected Integer currentPlayerId;
 	
 	public Long getId() {
 		return id;
@@ -46,10 +46,10 @@ public class GameResponseBean {
 	public void setNumberOfPlayers(Integer numberOfPlayers) {
 		this.numberOfPlayers = numberOfPlayers;
 	}
-	public String getCurrentPlayer() {
-		return currentPlayer;
+	public Integer getCurrentPlayerId() {
+		return currentPlayerId;
 	}
-	public void setCurrentPlayer(String currentPlayer) {
-		this.currentPlayer = currentPlayer;
+	public void setCurrentPlayerId(Integer currentPlayerId) {
+		this.currentPlayerId = currentPlayerId;
 	}
 }

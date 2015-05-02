@@ -31,7 +31,7 @@ import java.util.List;
 @Service("gameMoveService")
 public class GameMoveServiceImpl extends GameMoveService {
 
-    Logger logger = LoggerFactory.getLogger(GameMoveServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(GameMoveServiceImpl.class);
 
     protected MoveRepository moveRepository;
     protected GameRepository gameRepository;
@@ -69,7 +69,6 @@ public class GameMoveServiceImpl extends GameMoveService {
     }
 
     @Override
-
     public GameMoveResponseBean addMove(Long gameId, GameMoveRequestBean bean) {
         logger.debug("add move, gameId: " + gameId);
 

@@ -10,6 +10,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 
 import java.util.List;
 
+/**
+ * @author Marco
+ *
+ * Responsible for specific Jackson configuration to not send fields with NULL values
+ */
 @Configuration
 public class JacksonConfig extends WebMvcConfigurationSupport {
 

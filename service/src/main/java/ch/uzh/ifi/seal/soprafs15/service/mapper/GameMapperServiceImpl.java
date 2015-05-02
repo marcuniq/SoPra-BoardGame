@@ -26,7 +26,7 @@ import java.util.List;
 @Service("gameMapperService")
 public class GameMapperServiceImpl extends GameMapperService {
 
-    Logger logger = LoggerFactory.getLogger(GameMapperServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(GameMapperServiceImpl.class);
 
     protected UserRepository userRepository;
     protected GameRepository gameRepository;
@@ -56,19 +56,17 @@ public class GameMapperServiceImpl extends GameMapperService {
         bean.setId(game.getId());
         bean.setName(game.getName());
         bean.setOwner(game.getOwner());
-        bean.setNumberOfPlayers(game.getPlayers().size());
         bean.setStatus(game.getStatus());
+        bean.setNumberOfMoves(game.getMoves().size());
+        bean.setNumberOfPlayers(game.getPlayers().size());
+        bean.setCurrentPlayerId(game.getCurrentPlayerId());
 
         return bean;
     }
 
     @Override
     public GameCreateResponseBean toGameCreateResponseBean(Game game) {
-        GameCreateResponseBean bean = new GameCreateResponseBean();
-        bean.setId(game.getId());
-        bean.setName(game.getName());
-        bean.setOwner(game.getOwner());
-        bean.setNumberOfPlayers(game.getPlayers().size());
+        GameCreateResponseBean bean = new GameCreateResponseBean(toGameResponseBean(game));
         bean.setChannelName(game.getPusherChannelName());
 
         return bean;

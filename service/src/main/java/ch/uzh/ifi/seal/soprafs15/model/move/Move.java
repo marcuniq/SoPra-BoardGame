@@ -13,10 +13,7 @@ import java.io.Serializable;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class Move implements Serializable {
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -68,11 +65,18 @@ public abstract class Move implements Serializable {
 		this.user = user;
 	}
 
-    public abstract GameMoveResponseBean toGameMoveResponseBean();
+
+    public GameMoveResponseBean toGameMoveResponseBean(){
+		GameMoveResponseBean bean = new GameMoveResponseBean();
+		bean.setId(id);
+		bean.setGameId(game.getId());
+		bean.setUserId(user.getId());
+		bean.setPlayerId(user.getPlayerId());
+		return bean;
+	}
 
     public abstract Boolean isValid();
 
-	@Autowired
     public abstract Move execute();
 
     public abstract void undo();

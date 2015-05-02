@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.model.move;
 
+import ch.uzh.ifi.seal.soprafs15.GameConstants;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
 import ch.uzh.ifi.seal.soprafs15.model.game.*;
@@ -31,10 +32,7 @@ public class DiceRolling extends Move {
      */
     @Override
     public GameMoveResponseBean toGameMoveResponseBean() {
-        GameMoveResponseBean bean = new GameMoveResponseBean();
-        bean.setId(id);
-        bean.setGameId(game.getId());
-        bean.setUserId(user.getId());
+        GameMoveResponseBean bean = super.toGameMoveResponseBean();
         bean.setMove(MoveEnum.DICE_ROLLING);
         bean.setDie(die);
 
@@ -43,6 +41,8 @@ public class DiceRolling extends Move {
 
     @Override
     public Boolean isValid() {
+        // DiceRolling is always valid
+        // if no die in pyramid anymore -> new leg & DiceArea gets reinitialized again
         return true;
     }
 
@@ -54,7 +54,7 @@ public class DiceRolling extends Move {
         DiceArea diceArea = game.getDiceArea();
         die = diceArea.rollDice();
 
-        user.setMoney(user.getMoney() + 1);
+        user.setMoney(user.getMoney() + GameConstants.DICE_ROLLING_MONEY_WINNINGS);
 
         // move camel
         RaceTrack raceTrack = game.getRaceTrack();
