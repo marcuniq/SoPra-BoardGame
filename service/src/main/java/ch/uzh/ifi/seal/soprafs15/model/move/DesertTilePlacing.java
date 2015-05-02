@@ -3,6 +3,9 @@ package ch.uzh.ifi.seal.soprafs15.model.move;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
 import ch.uzh.ifi.seal.soprafs15.model.game.DesertTile;
+import ch.uzh.ifi.seal.soprafs15.model.game.RaceTrack;
+import ch.uzh.ifi.seal.soprafs15.service.GameLogicService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,7 +56,16 @@ public class DesertTilePlacing extends Move {
 
     @Override
     public Boolean isValid() {
-        return true;
+        RaceTrack raceTrack = game.getRaceTrack();
+
+        // constraints
+        Boolean notPosition1 = position != 1;
+        Boolean emptySpace = raceTrack.getRaceTrackObject(position) == null;
+        Boolean notAdjacentToAnotherDesertTile = raceTrack.getRaceTrackObject(position - 1) != null ?
+                raceTrack.getRaceTrackObject(position - 1).getClass() != DesertTile.class : true;
+        Boolean userHasDesertTile = user.hasDesertTile();
+
+        return  notPosition1 && emptySpace && notAdjacentToAnotherDesertTile && userHasDesertTile;
     }
 
     /**
@@ -61,7 +73,7 @@ public class DesertTilePlacing extends Move {
      */
     @Override
     public Move execute() {
-        DesertTile desertTile = user.getDesertTile();
+        DesertTile desertTile = user.removeDesertTile();
         desertTile.setIsOasis(isOasis);
         desertTile.setPosition(position);
 

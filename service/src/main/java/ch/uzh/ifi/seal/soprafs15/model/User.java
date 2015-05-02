@@ -62,6 +62,11 @@ public class User implements Serializable {
     @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
     private DesertTile desertTile;
 
+
+
+    @Column
+    private Boolean hasDesertTile;
+
     public User(){}
 
     /**
@@ -79,6 +84,8 @@ public class User implements Serializable {
         // desert tile
         desertTile = new DesertTile();
         desertTile.setOwner(this);
+
+        hasDesertTile = true;
     }
 
     /**
@@ -99,6 +106,12 @@ public class User implements Serializable {
         }
     }
 
+    public void removeAllLegBettingTiles(){
+        for(LegBettingTile t : legBettingTiles)
+            t.setUser(null);
+        legBettingTiles.clear();
+    }
+
     /**
      * Remove RaceBettingCard from User to place it on race betting stack
      * @return RaceBettingCard
@@ -107,10 +120,21 @@ public class User implements Serializable {
         return raceBettingCards.remove(color);
     }
 
+    public Boolean hasRaceBettingCard(Color color){
+        return raceBettingCards.get(color) != null;
+    }
+
     public void putRaceBettingCardBack(RaceBettingCard raceBettingCard){
         raceBettingCards.put(raceBettingCard.getColor(), raceBettingCard);
     }
 
+    public DesertTile removeDesertTile(){
+        hasDesertTile = false;
+        return desertTile;
+    }
+    public Boolean hasDesertTile(){
+        return hasDesertTile;
+    }
 
     public Map<Color, RaceBettingCard> getRaceBettingCards() {
         return raceBettingCards;
@@ -198,6 +222,14 @@ public class User implements Serializable {
 
     public void setDesertTile(DesertTile desertTile) {
         this.desertTile = desertTile;
+    }
+
+    public Boolean getHasDesertTile() {
+        return hasDesertTile;
+    }
+
+    public void setHasDesertTile(Boolean hasDesertTile) {
+        this.hasDesertTile = hasDesertTile;
     }
 
     public GameState getGameState() {

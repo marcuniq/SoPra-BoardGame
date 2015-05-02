@@ -1,10 +1,10 @@
 package ch.uzh.ifi.seal.soprafs15.model.move;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameStatus;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
 import ch.uzh.ifi.seal.soprafs15.model.game.*;
-import ch.uzh.ifi.seal.soprafs15.service.pusher.events.GameFinishedEvent;
+import ch.uzh.ifi.seal.soprafs15.service.GameLogicService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -54,18 +54,11 @@ public class DiceRolling extends Move {
         DiceArea diceArea = game.getDiceArea();
         die = diceArea.rollDice();
 
+        user.setMoney(user.getMoney() + 1);
+
         // move camel
         RaceTrack raceTrack = game.getRaceTrack();
         raceTrack.moveCamelStack(die.getColor(), die.getFaceValue());
-
-
-        // check if camel is over finishing line
-        for(int i = 16; i < 19; i++) {
-            RaceTrackObject rto = game.getRaceTrack().getRaceTrackObject(i);
-            if(rto != null && rto.getClass() == CamelStack.class) {
-                game.setStatus(GameStatus.FINISHED);
-            }
-        }
 
         return this;
     }
@@ -77,5 +70,11 @@ public class DiceRolling extends Move {
     public void undo() {
         DiceArea diceArea = game.getDiceArea();
         diceArea.undoRollDice();
+
+        user.setMoney(user.getMoney() - 1);
+
+        // move back camel
+        RaceTrack raceTrack = game.getRaceTrack();
+        raceTrack.undoMoveCamelStack(die.getColor(), die.getFaceValue());
     }
 }

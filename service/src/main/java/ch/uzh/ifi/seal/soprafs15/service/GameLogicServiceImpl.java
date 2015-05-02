@@ -1,22 +1,23 @@
 package ch.uzh.ifi.seal.soprafs15.service;
 
+import ch.uzh.ifi.seal.soprafs15.GameConstants;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameStatus;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserStatus;
 import ch.uzh.ifi.seal.soprafs15.model.User;
-import ch.uzh.ifi.seal.soprafs15.model.game.Color;
-import ch.uzh.ifi.seal.soprafs15.model.game.Game;
+import ch.uzh.ifi.seal.soprafs15.model.game.*;
 import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.MoveRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.InvalidMoveException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.NotInFastModeException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.NotYourTurnException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import ch.uzh.ifi.seal.soprafs15.service.pusher.PusherService;
-import ch.uzh.ifi.seal.soprafs15.service.pusher.events.FastModeAlmostFinishedEvent;
 import ch.uzh.ifi.seal.soprafs15.service.pusher.events.GameFinishedEvent;
+import ch.uzh.ifi.seal.soprafs15.service.pusher.events.LegOverEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,11 +94,15 @@ public class GameLogicServiceImpl extends GameLogicService {
         // execute move
         move.execute();
 
-        // check if game is finished
-        if(game.getStatus().equals(GameStatus.FINISHED)) {
-            pusherService.pushToSubscribers(new GameFinishedEvent(), game);
-        }
+        // check if game is over
+        Boolean gameOver = runGameOverLogic(game);
 
+        // check if leg is over
+        if(!gameOver)
+            runLegOverLogic(game);
+
+
+        // next player's turn
         game.nextPlayer();
 
         return move;
@@ -106,9 +111,11 @@ public class GameLogicServiceImpl extends GameLogicService {
     @Override
     public void startFastMode(Game game) {
 
+        game.setIsInFastMode(true);
+
         // create fake users
         List<User> players = new ArrayList<>();
-        for(int i = 1; i <= 5; i++){
+        for(int i = 1; i <= GameConstants.FAST_MODE_NUMBER_PLAYERS; i++){
             User fakeUser = new User();
             fakeUser.setUsername("FakeUser" + i + "-Game" + game.getId());
             fakeUser.setAge(42);
@@ -129,60 +136,76 @@ public class GameLogicServiceImpl extends GameLogicService {
         // start game
         game.initForGamePlay();
         game.setStatus(GameStatus.RUNNING);
+
         // create player sequence
         Map<Long, Integer> userIdToPlayerIdMap = createPlayerSequence(game);
 
         // loop and make random moves until game is finished
-        while (!game.getStatus().equals(GameStatus.FINISHED)) {
-            Integer currentPlayerId = game.getCurrentPlayerId();
-            User currentPlayer = game.getPlayers().stream().filter(p -> p.getPlayerId() == currentPlayerId).findFirst().get();
-
-            // make random move
-            Boolean startLoop = true;
-            Move move = null;
-            while(startLoop || !move.isValid()){
-                startLoop = false;
-
-                GameMoveRequestBean bean = new GameMoveRequestBean();
-                bean.setToken(currentPlayer.getToken());
-
-                MoveEnum randomMove = MoveEnum.randomMove();
-                bean.setMove(randomMove);
-
-                if (randomMove == MoveEnum.DESERT_TILE_PLACING){
-
-                    bean.setDesertTileAsOasis(random.nextBoolean());
-
-                    Integer position = random.nextInt(16);
-                    bean.setDesertTilePosition(position);
-
-                } else if(randomMove == MoveEnum.LEG_BETTING){
-
-                    bean.setLegBettingTileColor(Color.randomColor());
-
-                } else if(randomMove == MoveEnum.RACE_BETTING){
-
-                    bean.setRaceBettingOnWinner(random.nextBoolean());
-                    bean.setRaceBettingColor(Color.randomColor());
-                }
-
-                move = gameMapperService.toMove(game, currentPlayer, bean);
-            }
-
-            // execute move
-            processMove(game, currentPlayer, move);
-
-            move = (Move) moveRepository.save(move);
-            game.addMove(move);
+        for(int i = 0; i < GameConstants.FAST_MODE_NUMBER_LOOPS && !game.getStatus().equals(GameStatus.FINISHED); ++i) {
+            triggerMoveInFastMode(game);
         }
+
         // roll back a couple of moves
-        for(int i = 0; i < 3; i++){
-            game.getStateManager().undoMove();
-        }
+        //for(int i = 0; i < 3; i++){
+            //game.getStateManager().undoMove();
+        //}
 
         // notify owner
-        pusherService.pushToSubscribers(new FastModeAlmostFinishedEvent(), game);
+        //pusherService.pushToSubscribers(new FastModeAlmostFinishedEvent(), game);
         //
+    }
+
+    @Override
+    public Move triggerMoveInFastMode(Game game){
+
+        if(!game.isInFastMode()){
+            throw new NotInFastModeException(GameLogicServiceImpl.class);
+        }
+
+        // get current player
+        Integer currentPlayerId = game.getCurrentPlayerId();
+        User currentPlayer = game.getPlayers().stream().filter(p -> p.getPlayerId() == currentPlayerId).findFirst().get();
+
+        // create random move
+        Boolean startLoop = true;
+        Move move = null;
+        while(startLoop || !move.isValid()){
+            startLoop = false;
+
+            GameMoveRequestBean bean = new GameMoveRequestBean();
+            bean.setToken(currentPlayer.getToken());
+
+            MoveEnum randomMove = MoveEnum.randomMove();
+            bean.setMove(randomMove);
+
+            if (randomMove == MoveEnum.DESERT_TILE_PLACING){
+
+                bean.setDesertTileAsOasis(random.nextBoolean());
+
+                Integer position = random.nextInt(16) + 1;
+                bean.setDesertTilePosition(position);
+
+            } else if(randomMove == MoveEnum.LEG_BETTING){
+
+                bean.setLegBettingTileColor(Color.randomColor());
+
+            } else if(randomMove == MoveEnum.RACE_BETTING){
+
+                bean.setRaceBettingOnWinner(random.nextBoolean());
+                bean.setRaceBettingColor(Color.randomColor());
+            }
+
+            move = gameMapperService.toMove(game, currentPlayer, bean);
+        }
+
+        // process move
+        processMove(game, currentPlayer, move);
+
+        // save
+        move = (Move) moveRepository.save(move);
+        game.addMove(move);
+
+        return move;
     }
 
     @Override
@@ -190,10 +213,125 @@ public class GameLogicServiceImpl extends GameLogicService {
 
     }
 
-    private void cleanupAfterFastMode(Game game){
 
+    private Boolean runLegOverLogic(Game game) {
+        DiceArea diceArea = game.getDiceArea();
+        Boolean legOver = diceArea.getDiceInPyramid().size() == 0;
 
+        if(legOver){
+            // put dice back
+            diceArea.init();
 
+            // give back desert tiles
+            for(User p : game.getPlayers()){
+                p.setHasDesertTile(true);
+            }
+
+            // remove desert tiles from race track
+            game.getRaceTrack().removeDesertTiles();
+
+            // payout time
+            runPayoutLogic(game);
+
+            // remove leg betting tiles from players
+            for(User p : game.getPlayers()){
+                p.removeAllLegBettingTiles();
+            }
+
+            // reinitialize leg betting area
+            game.getLegBettingArea().init();
+
+            // notify player
+            pusherService.pushToSubscribers(new LegOverEvent(), game);
+        }
+
+        return legOver;
     }
 
+    private Boolean runGameOverLogic(Game game) {
+
+        // check if camel is over finishing line, then game is over
+        for(int i = 16; i < 19; i++) {
+            RaceTrackObject rto = game.getRaceTrack().getRaceTrackObject(i);
+            if(rto != null && rto.getClass() == CamelStack.class) {
+                game.setStatus(GameStatus.FINISHED);
+
+                // payout time
+                runPayoutLogic(game);
+
+                // notify player
+                pusherService.pushToSubscribers(new GameFinishedEvent(), game);
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void runPayoutLogic(Game game){
+
+        Map<Color, Ranking> camelRankingMap = game.getRaceTrack().getRanking();
+
+        // payout leg betting
+        for(User p : game.getPlayers()){
+
+            // payout for each leg betting tile
+            for(LegBettingTile t : p.getLegBettingTiles()){
+
+                Integer winningMoney = 0;
+                switch (camelRankingMap.get(t.getColor())){
+                    case FIRST: winningMoney = t.getLeadingPositionGain(); break;
+                    case SECOND:winningMoney = t.getSecondPositionGain(); break;
+                    default:    winningMoney = t.getOtherPositionLoss(); break;
+                }
+
+                p.setMoney(p.getMoney() + winningMoney);
+            }
+        }
+
+        // payout race betting
+        if(game.getStatus() == GameStatus.FINISHED){
+
+            // get race betting stacks
+            List<RaceBettingCard> winnerBetting = game.getRaceBettingArea().getWinnerBetting();
+            List<RaceBettingCard> loserBetting = game.getRaceBettingArea().getLoserBetting();
+
+            // determine winnerColor and loserColor
+            Color winnerColor = camelRankingMap.entrySet()
+                                    .stream()
+                                    .filter(entry -> Objects.equals(entry.getValue(), Ranking.FIRST))
+                                    .map(Map.Entry::getKey)
+                                    .findFirst().get();
+
+            Color loserColor = camelRankingMap.entrySet()
+                                    .stream()
+                                    .filter(entry -> Objects.equals(entry.getValue(), Ranking.LAST))
+                                    .map(Map.Entry::getKey)
+                                    .findFirst().get();
+
+            // payout
+            payoutRaceBettings(winnerBetting, winnerColor);
+            payoutRaceBettings(loserBetting, loserColor);
+        }
+    }
+
+    /**
+     *
+     * @param bettings is a stack of either winner betting or loser betting
+     * @param color is either the winning color or the losing color
+     */
+    private void payoutRaceBettings(List<RaceBettingCard> bettings, Color color){
+        List<Integer> moneyReward = Arrays.asList(8,5,3,2,1);
+
+        for(RaceBettingCard r : bettings){
+            if(r.getColor() == color){
+                User player = r.getUser();
+
+                Integer winningMoney = !moneyReward.isEmpty() ? moneyReward.remove(0) : -1;
+                player.setMoney(player.getMoney() + winningMoney);
+
+            }
+        }
+    }
 }

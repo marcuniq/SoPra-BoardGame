@@ -1,11 +1,13 @@
 package ch.uzh.ifi.seal.soprafs15.service;
 
 import ch.uzh.ifi.seal.soprafs15.GameConstants;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameStatus;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
+import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.NotEnoughPlayerException;
@@ -124,5 +126,16 @@ public class GameActionServiceImpl extends GameActionService {
 
 
         return gameMapperService.toGameResponseBean(game);
+    }
+
+    @Override
+    public GameMoveResponseBean triggerMoveInFastMode(Long gameId, GamePlayerRequestBean bean) {
+        // find game and owner
+        Game game = gameRepository.findOne(gameId);
+        User owner = gameMapperService.toUser(bean);
+
+        Move move = gameLogicService.triggerMoveInFastMode(game);
+
+        return gameMapperService.toGameMoveResponseBean(move);
     }
 }

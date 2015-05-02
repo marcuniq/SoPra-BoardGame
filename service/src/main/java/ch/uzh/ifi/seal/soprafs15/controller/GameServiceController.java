@@ -130,6 +130,19 @@ public class GameServiceController extends GenericService {
         return result;
     }
 
+    /*
+     *	Context: /games/{gameId}/start-fast-mode/next
+     *  Description:
+     */
+    @RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/start-fast-mode/next")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameMoveResponseBean triggerMoveInFastMode(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
+        logger.debug("trigger move in fast mode: " + gameId);
+
+        GameMoveResponseBean result = gameActionService.triggerMoveInFastMode(gameId, gamePlayerRequestBean);
+        return result;
+    }
 
     /*
      *	Context: /games/{gameId}/moves

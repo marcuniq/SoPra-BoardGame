@@ -63,6 +63,7 @@ public class Game implements Serializable {
 
     public void removePlayer(User player){
         stateManager.removePlayer(player);
+        player.setGameState(null);
     }
 
     public List<Move> getMoves() {
@@ -102,6 +103,15 @@ public class Game implements Serializable {
     public DiceArea getDiceArea() {
         return stateManager.getDiceArea();
     }
+
+    public Boolean isInFastMode(){
+        return stateManager.isInFastMode();
+    }
+
+    public void setIsInFastMode(Boolean isInFastMode){
+        stateManager.setIsInFastMode(isInFastMode);
+    }
+
 
     public Long getId() {
 		return id;

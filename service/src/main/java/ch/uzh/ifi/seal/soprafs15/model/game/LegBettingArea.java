@@ -76,8 +76,14 @@ public class LegBettingArea implements Serializable {
      * @param c Color
      * @return top LegBettingTile of that particular color
      */
-    public LegBettingTile getLegBettingTile(Color c) {
-        return legBettingTiles.get(c).pop();
+    public LegBettingTile popLegBettingTile(Color c) {
+        LegBettingTile tile = legBettingTiles.get(c).pop();
+        tile.setStack(null);
+        return tile;
+    }
+
+    public LegBettingTile peekLegBettingTile(Color c){
+        return legBettingTiles.get(c).peek();
     }
 
     public void pushLegBettingTile(LegBettingTile legBettingTile) {
