@@ -48,20 +48,26 @@
             android:layout_width="800dp"
             android:layout_height="350dp"
             android:layout_marginTop="55dp"
-            android:background="#70d35400"
             android:orientation="vertical"
-            android:layout_centerInParent="true">
+            android:layout_centerInParent="true"
+            android:background="@drawable/border">
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="#70d35400"
+                android:layout_centerInParent="true">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="35dp"
-                android:layout_centerHorizontal="true">
+                android:layout_centerInParent="true">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="130dp"
+                    android:layout_height="180dp"
                     android:id="@+id/card"
                     android:src="@drawable/legbettingtile_blue_2"
                     android:scaleType="fitCenter"
@@ -81,9 +87,10 @@
                 android:clickable="true"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_margin="5dp"/>
+                android:layout_margin="30dp"/>
         </RelativeLayout>
 
+    </RelativeLayout>
     </RelativeLayout>
 
 </RelativeLayout>
