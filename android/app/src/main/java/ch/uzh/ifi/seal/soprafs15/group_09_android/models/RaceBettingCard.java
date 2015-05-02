@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import auto.parcel.AutoParcel;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoGson;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameColors;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.GameColors;
 
 @AutoParcel @AutoGson
 public abstract class RaceBettingCard implements Parcelable {

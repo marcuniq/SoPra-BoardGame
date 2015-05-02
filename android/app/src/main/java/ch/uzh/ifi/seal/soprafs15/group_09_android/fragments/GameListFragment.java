@@ -17,8 +17,8 @@ import java.util.List;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.GameBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameArrayAdapter;
@@ -36,7 +36,7 @@ public class GameListFragment extends ListFragment {
     public GameListFragment() {}
 
     /**
-     * Called after User has successfully logged in.
+     * Called after UserBean has successfully logged in.
      * @return A new instance of fragment GamesListFragment.
      */
     public static GameListFragment newInstance() {
@@ -73,7 +73,7 @@ public class GameListFragment extends ListFragment {
                 R.id.game_item_text,
                 R.id.game_item_description,
                 R.id.game_item_icon,
-                new ArrayList<Game>());
+                new ArrayList<GameBean>());
         setListAdapter(gameArrayAdapter);
 
         return v;
@@ -86,12 +86,12 @@ public class GameListFragment extends ListFragment {
     @Override
     public void onResume(){
         super.onResume();
-        RestService.getInstance(getActivity()).getGames(new Callback<List<Game>>() {
+        RestService.getInstance(getActivity()).getGames(new Callback<List<GameBean>>() {
             @Override
-            public void success(List<Game> games, Response response) {
+            public void success(List<GameBean> games, Response response) {
                 gameArrayAdapter.clear();
                 setListAdapter(gameArrayAdapter);
-                for (Game game : games) {
+                for (GameBean game : games) {
                     gameArrayAdapter.add(game);
                 }
             }
@@ -116,15 +116,15 @@ public class GameListFragment extends ListFragment {
         SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
 
-        Game selectedGame = (Game) getListAdapter().getItem(position);
+        GameBean selectedGame = (GameBean) getListAdapter().getItem(position);
 
         final Long gameId = selectedGame.id();
         joinedGameId = gameId;
-        User player = User.setToken(token);
+        UserBean player = UserBean.setToken(token);
 
-        RestService.getInstance(getActivity()).joinGame(gameId, player, new Callback<User>() {
+        RestService.getInstance(getActivity()).joinGame(gameId, player, new Callback<UserBean>() {
             @Override
-            public void success(User user, Response response) {
+            public void success(UserBean user, Response response) {
                 PusherService.getInstance(getActivity()).register(gameId, user.channelName());
 
                 Fragment gameLobbyFragment = GameLobbyFragment.newInstance();

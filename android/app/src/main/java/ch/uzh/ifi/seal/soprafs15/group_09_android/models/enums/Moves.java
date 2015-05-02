@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs15.group_09_android.utils;
+package ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums;
 
 public enum Moves {
     DICE_ROLLING,

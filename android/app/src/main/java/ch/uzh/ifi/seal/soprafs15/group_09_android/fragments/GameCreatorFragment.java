@@ -14,8 +14,8 @@ import android.widget.Toast;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.GameBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import retrofit.Callback;
@@ -28,7 +28,7 @@ public class GameCreatorFragment extends Fragment {
     private TextView tvLogBox;
     private Button createGameButton;
     private String token;
-    private User player;
+    private UserBean player;
     private Long userId;
     private Long joinedGameId;
 
@@ -52,7 +52,7 @@ public class GameCreatorFragment extends Fragment {
     }
 
     /**
-     * User can add a game name and make a POST request to the server and thus create a new game
+     * UserBean can add a game name and make a POST request to the server and thus create a new game
      *
      * @param inflater
      * @param container
@@ -88,10 +88,11 @@ public class GameCreatorFragment extends Fragment {
         SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
 
-        RestService.getInstance(getActivity()).createGame(Game.create(name, token), new Callback<Game>() {
+        RestService.getInstance(getActivity()).createGame(GameBean.create(name, token), new Callback<GameBean>() {
             @Override
-            public void success(Game game, Response response) {
-                joinedGameId = game.id();
+            public void success(GameBean game, Response response) {
+                Long gameId = game.id();
+                joinedGameId = gameId;
 
                 // subscribe to pusher events
                 PusherService.getInstance(getActivity()).register(joinedGameId, game.channelName());

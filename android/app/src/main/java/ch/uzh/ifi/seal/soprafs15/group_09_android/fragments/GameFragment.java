@@ -19,14 +19,17 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.CamelBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.MoveBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackObjectBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.AreaName;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerTurnEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.*;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameColors;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Moves;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.GameColors;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.Moves;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -56,8 +59,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private ImageView modifiedButton;
 
     // class variables
-    private User player;
-    private User currentPlayer;
+    private UserBean player;
+    private UserBean currentPlayer;
     private Long userId;
     private Long gameId;
     private Integer playerId;
@@ -69,7 +72,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private Bundle savedInstanceState;
     private ViewGroup container;
 
-    private List<User> usersOrderedByMoney;
+    private List<UserBean> usersOrderedByMoney;
     private Drawable lastResource;
     private int currentPyramidTile;
     private Boolean isDesertTileAsOasis = null;
@@ -210,7 +213,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     /**
      * Displays a Popup with the given layout and draws all the dices
      * Two Options:
-     *  - Accept: Execute a Move and close the Popup
+     *  - Accept: Execute a MoveBean and close the Popup
      *  - Reject: abort, close Popup
      */
     public View defaultPopup(View v, int layout) {
@@ -573,8 +576,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         String message = "";
         Integer counter = 1;
 
-        for (User user : usersOrderedByMoney) {
-            message += counter + ". User " + user.username() + " has " + user.money() + " egypt pounds. \n";
+        for (UserBean user : usersOrderedByMoney) {
+            message += counter + ". UserBean " + user.username() + " has " + user.money() + " egypt pounds. \n";
             counter++;
         }
 
@@ -635,10 +638,10 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initiateGameMove(final Moves moveType, GameColors legBettingTileColor, Boolean raceBettingOnWinner, Boolean desertTileAsOasis, Integer desertTilePosition) {
-        Move move = Move.create(token, moveType, legBettingTileColor, raceBettingOnWinner, desertTileAsOasis, desertTilePosition);
-        RestService.getInstance(getActivity()).initiateGameMove(gameId, move, new Callback<Move>() {
+        MoveBean move = MoveBean.create(token, moveType, legBettingTileColor, raceBettingOnWinner, desertTileAsOasis, desertTilePosition);
+        RestService.getInstance(getActivity()).initiateGameMove(gameId, move, new Callback<MoveBean>() {
             @Override
-            public void success(Move move, Response response) {
+            public void success(MoveBean move, Response response) {
                 AlertDialog dialog = dummyPopup("success: " + response.toString() + move.toString());
                 dialog.show();
 
@@ -763,9 +766,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     }
 
     public void getPlayerStatus() {
-        RestService.getInstance(getActivity()).getGamePlayer(gameId, playerId, new Callback<User>() {
+        RestService.getInstance(getActivity()).getGamePlayer(gameId, playerId, new Callback<UserBean>() {
             @Override
-            public void success(User user, Response response) {
+            public void success(UserBean user, Response response) {
                 player = user;
                 currentPlayer = player; // TODO: get the current player
                 updateHeaderBar();
@@ -780,12 +783,12 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     }
 
     private void roundEvaluation() {
-        RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<User>>() {
+        RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<UserBean>>() {
             @Override
-            public void success(List<User> users, Response response) {
-                Collections.sort(users, new Comparator<User>() {
+            public void success(List<UserBean> users, Response response) {
+                Collections.sort(users, new Comparator<UserBean>() {
                     @Override
-                    public int compare(User user1, User user2) {
+                    public int compare(UserBean user1, UserBean user2) {
 
                         return user1.money().compareTo(user2.money());
                     }

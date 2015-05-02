@@ -6,8 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -20,12 +18,10 @@ import java.util.List;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.GameBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.GameStartEvent;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerJoinedEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventSubscriber;
@@ -47,11 +43,13 @@ public class GameLobbyFragment extends ListFragment {
     private Boolean isFastMode = false;
     private CheckBox checkBox;
     private String token;
+    private List<UserBean> players;
+    private boolean noLogout = true;
 
     public GameLobbyFragment() {}
 
     /**
-     * Called after User has successfully logged in.
+     * Called after UserBean has successfully logged in.
      * @return A new instance of fragment GamesListFragment.
      */
     public static GameLobbyFragment newInstance() {
@@ -105,7 +103,7 @@ public class GameLobbyFragment extends ListFragment {
                 R.id.player_item_text,
                 R.id.player_item_description,
                 R.id.player_item_icon,
-                new ArrayList<User>());
+                new ArrayList<UserBean>());
         setListAdapter(playerArrayAdapter);
 
         return v;
@@ -136,7 +134,7 @@ public class GameLobbyFragment extends ListFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("You have clicked on the back Button")
                 .setTitle("Do you want to log out from the lobby?:");
-        builder.setPositiveButton("Stay in Game", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Stay in GameBean", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // do nothing but close popup
             }
@@ -145,6 +143,7 @@ public class GameLobbyFragment extends ListFragment {
             public void onClick(DialogInterface dialog, int id) {
                 if (isOwner) removeGame();
                 else removePlayerFromGame();
+                // TODO: logout User
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
@@ -195,9 +194,9 @@ public class GameLobbyFragment extends ListFragment {
     }
 
     private void startGame(){
-        RestService.getInstance(getActivity()).start(gameId, User.setToken(token), new Callback<Game>() {
+        RestService.getInstance(getActivity()).start(gameId, UserBean.setToken(token), new Callback<GameBean>() {
             @Override
-            public void success(Game game, Response response) {
+            public void success(GameBean game, Response response) {
 
             }
 
@@ -209,9 +208,9 @@ public class GameLobbyFragment extends ListFragment {
     }
 
     private void startGameInFastMode(){
-        RestService.getInstance(getActivity()).startFastMode(gameId, User.setToken(token), new Callback<Game>() {
+        RestService.getInstance(getActivity()).startFastMode(gameId, UserBean.setToken(token), new Callback<GameBean>() {
             @Override
-            public void success(Game game, Response response) {
+            public void success(GameBean game, Response response) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage("success: " + response.toString()).setTitle("We have a message for you:");
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -229,14 +228,14 @@ public class GameLobbyFragment extends ListFragment {
     }
 
     private void getPlayers(){
-        RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<User>>() {
+        RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<UserBean>>() {
             @Override
-            public void success(List<User> newPlayers, Response response) {
+            public void success(List<UserBean> newPlayers, Response response) {
                 playerArrayAdapter.clear();
                 setListAdapter(playerArrayAdapter);
                 ImageView playerCard = (ImageView)getActivity().findViewById(R.id.player_card);
                 int cardId;
-                for (User player : newPlayers) {
+                for (UserBean player : newPlayers) {
                     playerArrayAdapter.add(player);
                     cardId = newPlayers.indexOf(player) + 1;
                     if (userId.equals(player.id())) playerCard.setImageResource(getActivity().getResources().getIdentifier("c" + cardId, "drawable", getActivity().getPackageName()));
@@ -251,9 +250,9 @@ public class GameLobbyFragment extends ListFragment {
     }
 
     public void removePlayerFromGame() {
-        RestService.getInstance(getActivity()).removeGamePlayer(gameId, playerId, User.setToken(token), new Callback<User>() {
+        RestService.getInstance(getActivity()).removeGamePlayer(gameId, playerId, UserBean.setToken(token), new Callback<UserBean>() {
             @Override
-            public void success(User user, Response response) {
+            public void success(UserBean user, Response response) {
 
             }
 
@@ -265,9 +264,9 @@ public class GameLobbyFragment extends ListFragment {
     }
 
     public void removeGame() {
-        RestService.getInstance(getActivity()).removeGame(gameId, User.setToken(token), new Callback<Game>() {
+        RestService.getInstance(getActivity()).removeGame(gameId, UserBean.setToken(token), new Callback<GameBean>() {
             @Override
-            public void success(Game game, Response response) {
+            public void success(GameBean game, Response response) {
 
             }
 

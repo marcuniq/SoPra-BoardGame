@@ -13,8 +13,8 @@ import android.widget.Toast;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.fragments.GameFragment;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.GameBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -73,7 +73,7 @@ public class GameActivity extends MainActivity  {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("You have clicked on the back Button")
                 .setTitle("Do you want to log out?:");
-        builder.setPositiveButton("Stay in Game", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Stay in GameBean", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // do nothing but close popup
             }
@@ -96,9 +96,9 @@ public class GameActivity extends MainActivity  {
     }
 
     public void removePlayerFromGame() {
-        RestService.getInstance(this).removeGamePlayer(gameId, playerId, User.setToken(token), new Callback<User>() {
+        RestService.getInstance(this).removeGamePlayer(gameId, playerId, UserBean.setToken(token), new Callback<UserBean>() {
             @Override
-            public void success(User user, Response response) {
+            public void success(UserBean user, Response response) {
 
             }
 
@@ -110,9 +110,9 @@ public class GameActivity extends MainActivity  {
     }
 
     public void removeGame() {
-        RestService.getInstance(this).removeGame(gameId, User.setToken(token), new Callback<Game>() {
+        RestService.getInstance(this).removeGame(gameId, UserBean.setToken(token), new Callback<GameBean>() {
             @Override
-            public void success(Game game, Response response) {
+            public void success(GameBean game, Response response) {
 
             }
 

@@ -3,11 +3,9 @@ package ch.uzh.ifi.seal.soprafs15.group_09_android.models;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
-import java.util.ArrayList;
-
 import auto.parcel.AutoParcel;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoGson;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameColors;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.GameColors;
 
 @AutoParcel @AutoGson
 public abstract class LegBettingTile implements Parcelable {
