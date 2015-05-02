@@ -30,10 +30,7 @@ public class RaceBetting extends Move {
      */
     @Override
     public GameMoveResponseBean toGameMoveResponseBean() {
-        GameMoveResponseBean bean = new GameMoveResponseBean();
-        bean.setId(id);
-        bean.setGameId(game.getId());
-        bean.setUserId(user.getId());
+        GameMoveResponseBean bean = super.toGameMoveResponseBean();
         bean.setMove(MoveEnum.RACE_BETTING);
         bean.setRaceBettingOnWinner(betOnWinner);
 

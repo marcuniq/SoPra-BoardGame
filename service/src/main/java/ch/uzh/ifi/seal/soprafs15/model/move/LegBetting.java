@@ -32,10 +32,7 @@ public class LegBetting extends Move {
      */
     @Override
     public GameMoveResponseBean toGameMoveResponseBean() {
-        GameMoveResponseBean bean = new GameMoveResponseBean();
-        bean.setId(id);
-        bean.setGameId(game.getId());
-        bean.setUserId(user.getId());
+        GameMoveResponseBean bean = super.toGameMoveResponseBean();
         bean.setMove(MoveEnum.LEG_BETTING);
         bean.setLegBettingTile(legBettingTile);
 
@@ -58,7 +55,6 @@ public class LegBetting extends Move {
         legBettingTile = legBettingArea.popLegBettingTile(legBettingTile.getColor());
 
         // add tile to player
-        legBettingTile.setUser(user);
         user.addLegBettingTile(legBettingTile);
 
         return this;

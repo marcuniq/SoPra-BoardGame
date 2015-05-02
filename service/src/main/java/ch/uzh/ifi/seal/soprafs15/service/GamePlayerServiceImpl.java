@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Marco
@@ -32,7 +33,7 @@ import java.util.List;
 @Service("gamePlayerService")
 public class GamePlayerServiceImpl extends GamePlayerService {
 
-    protected Logger logger = LoggerFactory.getLogger(GamePlayerServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(GamePlayerServiceImpl.class);
 
     protected GameRepository gameRepository;
     protected UserRepository userRepository;
@@ -49,7 +50,6 @@ public class GamePlayerServiceImpl extends GamePlayerService {
     }
 
     @Override
-    @Transactional
     public List<GamePlayerResponseBean> listPlayer(Long gameId) {
         List<User> players = gameRepository.findOne(gameId).getPlayers();
 
@@ -57,7 +57,6 @@ public class GamePlayerServiceImpl extends GamePlayerService {
     }
 
     @Override
-    @Transactional
     public GameAddPlayerResponseBean addPlayer(Long gameId, GamePlayerRequestBean bean) {
         User player = gameMapperService.toUser(bean);
 
@@ -70,13 +69,11 @@ public class GamePlayerServiceImpl extends GamePlayerService {
         if(game == null) {
             throw new GameNotFoundException(gameId, GamePlayerServiceImpl.class);
         }
-
         if(game.getPlayers().size() >= GameConstants.MAX_PLAYERS) {
             throw new GameFullException(game, GamePlayerServiceImpl.class);
         }
 
-        // initialize player for game play & save
-        //player.initForGamePlay();
+        // add player to game
         game.addPlayer(player);
 
         // notify players in lobby
@@ -86,7 +83,6 @@ public class GamePlayerServiceImpl extends GamePlayerService {
     }
 
     @Override
-    @Transactional
     public GamePlayerResponseBean getPlayer(Long gameId, Integer playerId) {
         Game game = gameRepository.findOne(gameId);
 
@@ -94,9 +90,13 @@ public class GamePlayerServiceImpl extends GamePlayerService {
             throw new GameNotFoundException(gameId, GamePlayerServiceImpl.class);
         }
 
-        User player = game.getPlayers().stream().filter(p -> p.getPlayerId() == playerId).findFirst().get();
+        Optional<User> player = game.getPlayers().stream().filter(p -> p.getPlayerId() == playerId).findFirst();
 
-        return gameMapperService.toGamePlayerResponseBean(player);
+        if(!player.isPresent()){
+            throw new UserNotFoundException("Player with playerId "+ playerId +" not found", GamePlayerServiceImpl.class);
+        }
+
+        return gameMapperService.toGamePlayerResponseBean(player.get());
     }
 
     @Override
@@ -107,8 +107,12 @@ public class GamePlayerServiceImpl extends GamePlayerService {
             throw new GameNotFoundException(gameId, GamePlayerServiceImpl.class);
         }
 
-        User player = game.getPlayers().stream().filter(p -> p.getPlayerId() == playerId).findFirst().get();
+        Optional<User> player = game.getPlayers().stream().filter(p -> p.getPlayerId() == playerId).findFirst();
 
-        return new ArrayList<>(player.getRaceBettingCards().values());
+        if(!player.isPresent()){
+            throw new UserNotFoundException("Player with playerId "+ playerId +" not found", GamePlayerServiceImpl.class);
+        }
+
+        return new ArrayList<>(player.get().getRaceBettingCards().values());
     }
 }

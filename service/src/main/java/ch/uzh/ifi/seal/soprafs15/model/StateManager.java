@@ -10,6 +10,8 @@ import java.util.List;
 
 /**
  * @author Marco
+ *
+ * Responsible for managing the game state and undoing moves
  */
 @Entity
 public class StateManager implements Serializable {
@@ -27,7 +29,6 @@ public class StateManager implements Serializable {
     private GameState gameState;
 
 
-
     public StateManager(){}
 
     public StateManager(Game game){
@@ -39,6 +40,9 @@ public class StateManager implements Serializable {
         gameState = new GameState(this);
     }
 
+    /**
+     * Undo handling
+     */
     public void undoMove(){
         if(gameState.getMoves().size() > 0){
             Move move = gameState.getMoves().get(gameState.getMoves().size()-1);
@@ -118,6 +122,4 @@ public class StateManager implements Serializable {
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
     }
-
-
 }

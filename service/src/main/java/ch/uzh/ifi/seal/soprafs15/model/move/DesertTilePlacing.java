@@ -43,10 +43,7 @@ public class DesertTilePlacing extends Move {
      */
     @Override
     public GameMoveResponseBean toGameMoveResponseBean() {
-        GameMoveResponseBean bean = new GameMoveResponseBean();
-        bean.setId(id);
-        bean.setGameId(game.getId());
-        bean.setUserId(user.getId());
+        GameMoveResponseBean bean = super.toGameMoveResponseBean();
         bean.setMove(MoveEnum.DESERT_TILE_PLACING);
         bean.setDesertTileAsOasis(isOasis);
         bean.setDesertTilePosition(position);

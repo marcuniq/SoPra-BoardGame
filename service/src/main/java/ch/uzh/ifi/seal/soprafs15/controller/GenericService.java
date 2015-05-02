@@ -1,7 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.controller;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.ExceptionBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.JsonUriWrapper;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.AbstractException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,26 +18,14 @@ import java.util.List;
 
 public abstract class GenericService {
 	
-	Logger logger = LoggerFactory.getLogger(GenericService.class);
-	
-	protected JsonUriWrapper getJsonUrl(String uri) {
-		JsonUriWrapper wrapper = new JsonUriWrapper();
-		wrapper.setUri(uri);
-		
-		return wrapper;
-	}
+	private final Logger logger = LoggerFactory.getLogger(GenericService.class);
 	
 	@ExceptionHandler(TransactionSystemException.class)
 	@ResponseStatus(HttpStatus.CONFLICT)
 	public void handleTransactionSystemException(Exception exception, HttpServletRequest request) {
 		logger.error("", exception);
 	}
-	
-/*	@ExceptionHandler(Exception.class)
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	public void handleException(Exception exception, HttpServletRequest request) {
-		logger.error("", exception);
-	}*/
+
 
 
     /*

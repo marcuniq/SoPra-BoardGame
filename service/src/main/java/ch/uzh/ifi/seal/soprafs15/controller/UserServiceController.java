@@ -15,6 +15,8 @@ import javax.validation.Valid;
 import java.util.List;
 /**
  * @author Marco
+ *
+ * Controller for handling all endpoints starting with /games
  */
 @RestController
 public class UserServiceController extends GenericService {
@@ -29,7 +31,7 @@ public class UserServiceController extends GenericService {
 
     /*
      *	Context: /users
-     *  Description:
+     *  Description: Get a list of all users
      */
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT)
 	@ResponseStatus(HttpStatus.OK)
@@ -44,7 +46,7 @@ public class UserServiceController extends GenericService {
 
     /*
      *	Context: /users
-     *  Description:
+     *  Description: Create a new user
      */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT)
 	@ResponseStatus(HttpStatus.CREATED)
@@ -59,7 +61,7 @@ public class UserServiceController extends GenericService {
 
     /*
      *	Context: /users/{userId}
-     *  Description:
+     *  Description: Get user with userId
      */
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{userId}")
 	@ResponseStatus(HttpStatus.OK)
@@ -74,7 +76,7 @@ public class UserServiceController extends GenericService {
 
     /*
      *	Context: /users/{userId}/login
-     *  Description:
+     *  Description: Log in user with userId
      */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{userId}/login")
 	@ResponseStatus(HttpStatus.OK)
@@ -89,12 +91,12 @@ public class UserServiceController extends GenericService {
 
     /*
      *	Context: /users/{userId}/logout
-     *  Description:
+     *  Description: Log out user with userId
      */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{userId}/logout")
 	@ResponseStatus(HttpStatus.OK)
 	public void logout(@PathVariable Long userId, @RequestBody @Valid UserLoginLogoutRequestBean userLoginLogoutRequestBean) {
-		logger.debug("getUser: " + userId);
+		logger.debug("logout user: " + userId);
 
         userService.logout(userId, userLoginLogoutRequestBean);
 	}

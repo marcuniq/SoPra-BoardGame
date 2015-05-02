@@ -21,12 +21,11 @@ import java.util.List;
 /**
  * @author Marco
  */
-
 @Transactional
 @Service("gameService")
 public class GameServiceImpl extends GameService {
 
-    Logger logger = LoggerFactory.getLogger(GameServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(GameServiceImpl.class);
 
     protected GameRepository gameRepository;
     protected UserRepository userRepository;
