@@ -2,7 +2,6 @@ package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import ch.uzh.ifi.seal.soprafs15.GameConstants;
 import ch.uzh.ifi.seal.soprafs15.model.User;
-import javafx.util.Pair;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -102,9 +101,9 @@ public class RaceTrack implements Serializable {
         CamelStack camelStack = (CamelStack) fields.stream().filter(rto -> rto.getClass() == CamelStack.class)
                                             .filter(cs -> ((CamelStack) cs).hasCamel(color)).findFirst().get();
 
-        Pair<CamelStack,Boolean> pair = camelStack.splitOrGetCamelStack(color);
-        CamelStack newCamelStack = pair.getKey();
-        Boolean splitOccurred = pair.getValue();
+        CamelStackBooleanPair pair = camelStack.splitOrGetCamelStack(color);
+        CamelStack newCamelStack = pair.getStack();
+        Boolean splitOccurred = pair.getSplitOccurred();
 
         newCamelStack.addPreviousPosition(camelStack.getPosition());
 
@@ -232,6 +231,4 @@ public class RaceTrack implements Serializable {
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
     }
-
-
 }

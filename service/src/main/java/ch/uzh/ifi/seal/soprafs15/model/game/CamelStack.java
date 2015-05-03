@@ -3,7 +3,6 @@ package ch.uzh.ifi.seal.soprafs15.model.game;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameCamelStackResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRaceTrackObjectResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.Stack;
-import javafx.util.Pair;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -93,11 +92,11 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
      * @param color of camel to be moved
      * @return Pair of (new or old) camel stack and if split occurred
      */
-    public Pair<CamelStack,Boolean> splitOrGetCamelStack(Color color){
+    public CamelStackBooleanPair splitOrGetCamelStack(Color color){
         Boolean splitOccurred = !stack.isEmpty() && getGroundCamel().getColor() != color;
         if(!splitOccurred)
             // Ground camel has that color
-            return new Pair<>(this, splitOccurred);
+            return new CamelStackBooleanPair(this, splitOccurred);
         else {
             // Camel with color is somewhere on stack
 
@@ -116,7 +115,7 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
             // remove camels from stack
             stack.removeAll(newStack);
 
-            return  new Pair<>(new CamelStack(newStack), splitOccurred);
+            return  new CamelStackBooleanPair(new CamelStack(newStack), splitOccurred);
         }
     }
 
