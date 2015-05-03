@@ -44,19 +44,12 @@
             </RelativeLayout>
         </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="800dp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="55dp"
-            android:background="#70d35400"
-            android:orientation="vertical"
-            android:layout_centerHorizontal="true">
-
             <LinearLayout
                 android:layout_width="400dp"
                 android:layout_height="500dp"
-                android:layout_centerInParent="true"
-                android:orientation="vertical">
+                android:layout_centerHorizontal="true"
+                android:orientation="vertical"
+                android:layout_marginTop="50dp">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -69,6 +62,19 @@
                     android:textSize="18sp">
                 </TextView>
 
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="5dp"
+                    android:background="@drawable/border">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#70d35400">
                 <ListView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -76,10 +82,10 @@
                     android:orientation="horizontal"
                     android:layout_margin="5dp">
                 </ListView>
+                </RelativeLayout>
+                </RelativeLayout>
             </LinearLayout>
 
         </RelativeLayout>
-
-    </RelativeLayout>
 
 </RelativeLayout>

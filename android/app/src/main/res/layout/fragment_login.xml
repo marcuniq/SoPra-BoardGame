@@ -11,10 +11,15 @@
     tools:context=".AuthActivity"
     android:background="@drawable/background">
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border"
+        android:layout_gravity="center">
+
     <FrameLayout
         android:layout_width="390dp"
         android:layout_height="320dp"
-        android:layout_gravity="center"
         android:background="#70d35400">
 
         <Button
@@ -60,28 +65,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Age"
-            android:textColor="#000000"
-            android:textSize="18sp"
+            android:textColor="#ffffff"
+            android:textSize="22sp"
             android:layout_gravity="center"
             android:layout_marginTop="-35dp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:shadowColor="#000000"
+            android:shadowRadius="2"/>
         <TextView
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Username"
-            android:textSize="18sp"
-            android:textColor="#000000"
+            android:textSize="22sp"
+            android:textColor="#ffffff"
             android:layout_gravity="center_horizontal|top"
             android:textStyle="bold"
-            android:layout_marginTop="15dp"/>
-        <TextView
-            android:id="@+id/logBox"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom"
-            android:layout_marginBottom="30dp"
-            android:textColor="#ffb40006"/>
+            android:layout_marginTop="15dp"
+            android:shadowColor="#000000"
+            android:shadowRadius="2"/>
     </FrameLayout>
-
+</RelativeLayout>
 </GridLayout>
