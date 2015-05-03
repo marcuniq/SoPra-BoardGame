@@ -119,10 +119,10 @@ public class GameServiceController extends GenericService {
 
 
     /*
-     *	Context: /games/{gameId}/start-fast-mode
+     *	Context: /games/{gameId}/fast-mode/start
      *  Description: Start the game with gameId in fast-mode, only owner is allowed to do that
      */
-    @RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/start-fast-mode")
+    @RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/fast-mode/start")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GameResponseBean startFastMode(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
@@ -133,10 +133,10 @@ public class GameServiceController extends GenericService {
     }
 
     /*
-     *	Context: /games/{gameId}/start-fast-mode/next
+     *	Context: /games/{gameId}/fast-mode/next
      *  Description: Trigger next move in fast-mode, only owner is allowed to do that
      */
-    @RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/start-fast-mode/next")
+    @RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/fast-mode/next")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GameMoveResponseBean triggerMoveInFastMode(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
