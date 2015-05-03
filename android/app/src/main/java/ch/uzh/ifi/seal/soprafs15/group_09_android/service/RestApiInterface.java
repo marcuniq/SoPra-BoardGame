@@ -2,9 +2,16 @@ package ch.uzh.ifi.seal.soprafs15.group_09_android.service;
 
 import java.util.List;
 
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.MoveBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.GameBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DiceAreaBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.LegBettingAreaBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceBettingAreaBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackBean;
 import retrofit.Callback;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
@@ -17,22 +24,22 @@ public interface RestApiInterface {
      * @param callback
      */
     @GET("/users")
-    void getUsers(Callback<List<User>> callback);
+    void getUsers(Callback<List<UserBean>> callback);
 
     /**
      * Register a new user on the server
-     * @User user: User to register
+     * @User user: UserBean to register
      * @param callback
      */
     @POST("/users")
-    void createUser(@Body User user, Callback<User> callback);
+    void createUser(@Body UserBean user, Callback<UserBean> callback);
 
     /**
      * Returns all games
      * @param callback
      */
     @GET("/games")
-    void getGames(Callback<List<Game>> callback);
+    void getGames(Callback<List<GameBean>> callback);
 
     /**
      * Returns all players
@@ -41,7 +48,7 @@ public interface RestApiInterface {
      * @help  http://stackoverflow.com/questions/20382253/dynamically-add-optional-parameters-to-api-requests
      */
     @GET("/games/{gameId}/players")
-    void getPlayers(@Path("gameId") Long gameId, Callback<List<User>> callback);
+    void getPlayers(@Path("gameId") Long gameId, Callback<List<UserBean>> callback);
 
     /**
      * Returns all moves
@@ -49,7 +56,7 @@ public interface RestApiInterface {
      * @param callback
      */
     @GET("/games/{gameId}/moves")
-    void getGameMoves(@Path("gameId") Long gameId, Callback<List<Move>> callback);
+    void getGameMoves(@Path("gameId") Long gameId, Callback<List<MoveBean>> callback);
 
     /**
      * Returns a specific move
@@ -58,39 +65,12 @@ public interface RestApiInterface {
      * @param callback
      */
     @GET("/games/{gameId}/moves/{moveId}")
-    void getGameMove(@Path("gameId") Long gameId, @Path("moveId") Long moveId, Callback<List<Move>> callback);
+    void getGameMove(@Path("gameId") Long gameId, @Path("moveId") Long moveId, Callback<List<MoveBean>> callback);
 
-    /**
-     * Returns all race tracks
-     * @param gameId
-     * @param callback
-     */
-    @GET("/games/{gameId}/racetrack")
-    void getGameRaceTrack(@Path("gameId") Long gameId, Callback<List<RaceTrack>> callback);
 
-    /**
-     * Returns all leg betting areas
-     * @param gameId
-     * @param callback
-     */
-    @GET("/games/{gameId}/legbettingarea")
-    void getGameLegBettingArea(@Path("gameId") Long gameId, Callback<List<LegBettingArea>> callback);
+    @POST("/games/{gameId}/moves")
+    void initiateGameMove(@Path("gameId") Long gameId, @Body MoveBean move, Callback<MoveBean> callback);
 
-    /**
-     * Returns all race betting areas
-     * @param gameId
-     * @param callback
-     */
-    @GET("/games/{gameId}/racebettingarea")
-    void getGameRaceBettingArea(@Path("gameId") Long gameId, Callback<List<RaceBettingArea>> callback);
-
-    /**
-     * Returns all dice areas
-     * @param gameId
-     * @param callback
-     */
-    @GET("/games/{gameId}/dicearea")
-    void getGameDiceArea(@Path("gameId") Long gameId, Callback<List<DiceArea>> callback);
 
     /**
      * Creates a new game
@@ -98,7 +78,7 @@ public interface RestApiInterface {
      * @param callback
      */
     @POST("/games")
-    void createGame(@Body Game game, Callback<Game> callback);
+    void createGame(@Body GameBean game, Callback<GameBean> callback);
 
     /**
      * Logins a user
@@ -106,7 +86,7 @@ public interface RestApiInterface {
      * @param callback
      */
     @POST("/users/{userId}/login")
-    void loginUser(@Path("userId") Long userId, Callback<User> callback);
+    void loginUser(@Path("userId") Long userId, Callback<UserBean> callback);
 
     /**
      *
@@ -115,5 +95,69 @@ public interface RestApiInterface {
      * @param callback
      */
     @POST("/games/{gameId}/players")
-    void joinGame(@Path("gameId") Long gameId, @Body User token, Callback<Game> callback);
+    void joinGame(@Path("gameId") Long gameId, @Body UserBean token, Callback<UserBean> callback);
+
+    /**
+     *
+     * @param gameId
+     * @param callback
+     */
+    @GET("/games/{gameId}/racetrack")
+    void getRacetrack(@Path("gameId") Long gameId, Callback<RaceTrackBean> callback);
+
+    /**
+     *
+     * @param gameId
+     * @param callback
+     */
+    @GET("/games/{gameId}/legbettingarea")
+    void getLegBettingArea(@Path("gameId") Long gameId, Callback<LegBettingAreaBean> callback);
+
+    /**
+     *
+     * @param gameId
+     * @param callback
+     */
+    @GET("/games/{gameId}/racebettingarea")
+    void getRaceBettingArea(@Path("gameId") Long gameId, Callback<RaceBettingAreaBean> callback);
+
+    /**
+     *
+     * @param gameId
+     * @param callback
+     */
+    @GET("/games/{gameId}/dicearea")
+    void getDiceArea(@Path("gameId") Long gameId, Callback<DiceAreaBean> callback);
+
+    /**
+     *
+     * @param gameId
+     * @param playerId
+     * @param callback
+     */
+    @GET("/games/{gameId}/players/{playerId}")
+    void getGamePlayer(@Path("gameId") Long gameId, @Path("playerId") Integer playerId, Callback<UserBean> callback);
+
+    /**
+     *
+     * @param gameId
+     */
+    @POST("/games/{gameId}/start-fast-mode")
+    void startFastMode(@Path("gameId") Long gameId, @Body UserBean token, Callback<GameBean> callback);
+
+    /**
+     *
+     * @param gameId
+     */
+    @POST("/games/{gameId}/start")
+    void start(@Path("gameId") Long gameId, @Body UserBean token, Callback<GameBean> callback);
+
+    /* TODO: java.lang.IllegalArgumentException: RestApiInterface.removeGamePlayer: Non-body HTTP method cannot contain @Body or @TypedOutput.
+     * man kann keinen Body mitschicken wenn man was löschen will? */
+    @DELETE("/games/{gameId}/players/{playerId}")
+    void removeGamePlayer(@Path("gameId") Long gameId, @Path("playerId") Integer playerId, @Body UserBean token, Callback<UserBean> callback);
+
+    @DELETE("/games/{gameId}")
+    void removeGame(@Path("gameId") Long gameId, @Body UserBean token, Callback<GameBean> callback);
+
 }

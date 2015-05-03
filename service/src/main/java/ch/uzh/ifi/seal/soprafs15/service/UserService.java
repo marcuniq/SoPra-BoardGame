@@ -5,7 +5,6 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutRequestBea
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
-import ch.uzh.ifi.seal.soprafs15.model.User;
 
 import java.util.List;
 

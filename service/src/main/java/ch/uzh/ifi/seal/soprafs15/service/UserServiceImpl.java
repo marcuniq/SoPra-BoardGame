@@ -3,6 +3,7 @@ package ch.uzh.ifi.seal.soprafs15.service;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.*;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.UserMapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,7 @@ import java.util.UUID;
 @Service("userService")
 public class UserServiceImpl extends UserService {
 
-    Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     protected UserRepository userRepository;
     protected UserMapperService userMapperService;
@@ -48,6 +49,10 @@ public class UserServiceImpl extends UserService {
     @Override
     public UserResponseBean getUser(Long userId) {
         User user = userRepository.findOne(userId);
+
+        if(user == null)
+            throw new UserNotFoundException(userId, UserServiceImpl.class);
+
         return userMapperService.toUserResponseBean(user);
     }
 
@@ -56,12 +61,16 @@ public class UserServiceImpl extends UserService {
         User user = userMapperService.toUser(bean);
         User user_1 = userRepository.findOne(userId);
 
+        if(user_1 == null) {
+            throw new UserNotFoundException(userId, UserServiceImpl.class);
+        }
+
         if(user_1 != null && user_1.getToken().equals(user.getToken())) {
 
             user_1.setId(user.getId());
             user_1.setAge(user.getAge());
             user_1.setUsername(user.getUsername());
-            user_1.setGame(user.getGame());
+            user_1.setGameState(user.getGameState());
             user_1.setMoves(user.getMoves());
             user_1.setToken(user.getToken());
             user_1.setStatus(user.getStatus());
@@ -81,6 +90,10 @@ public class UserServiceImpl extends UserService {
         User user = userMapperService.toUser(bean);
         User user_1 = userRepository.findOne(userId);
 
+        if(user_1 == null) {
+            throw new UserNotFoundException(userId, UserServiceImpl.class);
+        }
+
         if(user_1 != null && user_1.getToken().equals(user.getToken())) {
             userRepository.delete(userId);
         }
@@ -89,6 +102,10 @@ public class UserServiceImpl extends UserService {
     @Override
     public UserLoginLogoutResponseBean login(Long userId) {
         User user = userRepository.findOne(userId);
+
+        if(user == null) {
+            throw new UserNotFoundException(userId, UserServiceImpl.class);
+        }
 
         if(user != null) {
             user.setToken(UUID.randomUUID().toString());
@@ -104,6 +121,10 @@ public class UserServiceImpl extends UserService {
     public void logout(Long userId, UserLoginLogoutRequestBean bean) {
         User user = userMapperService.toUser(bean);
         User user_1 = userRepository.findOne(userId);
+
+        if(user_1 == null) {
+            throw new UserNotFoundException(userId, UserServiceImpl.class);
+        }
 
         if(user_1 != null && user_1.getToken().equals(user.getToken())) {
             user_1.setStatus(UserStatus.OFFLINE);

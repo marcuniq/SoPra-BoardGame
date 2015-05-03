@@ -1,11 +1,8 @@
 package ch.uzh.ifi.seal.soprafs15.controller;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.*;
+import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingCard;
 import ch.uzh.ifi.seal.soprafs15.service.*;
-import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
-import ch.uzh.ifi.seal.soprafs15.service.exceptions.InvalidMoveException;
-import ch.uzh.ifi.seal.soprafs15.service.exceptions.PlayerTurnException;
-import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +14,13 @@ import java.util.List;
 
 /**
  * @author Marco
+ *
+ * Controller for handling all endpoints starting with /games
  */
 @RestController
 public class GameServiceController extends GenericService {
 
-	Logger logger = LoggerFactory.getLogger(GameServiceController.class);
+	private final Logger logger = LoggerFactory.getLogger(GameServiceController.class);
 
     @Autowired
     protected GameService gameService;
@@ -47,7 +46,7 @@ public class GameServiceController extends GenericService {
 
 	/*
 	 *	Context: /games
-     *  Description:
+     *  Description: Get a list of games
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT)
 	@ResponseStatus(HttpStatus.OK)
@@ -55,18 +54,14 @@ public class GameServiceController extends GenericService {
 	public List<GameResponseBean> listGames() {
 		logger.debug("listGames");
 
-        try {
-            List<GameResponseBean> result = gameService.listGames();
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        List<GameResponseBean> result = gameService.listGames();
+        return result;
 	}
 
 
     /*
      *	Context: /games
-     *  Description:
+     *  Description: Create a new game
      */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT)
 	@ResponseStatus(HttpStatus.CREATED)
@@ -74,17 +69,13 @@ public class GameServiceController extends GenericService {
 	public GameCreateResponseBean addGame(@RequestBody @Valid GameRequestBean gameRequestBean) {
 		logger.debug("addGame: " + gameRequestBean);
 
-        try {
-            GameCreateResponseBean result = gameService.addGame(gameRequestBean);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameCreateResponseBean result = gameService.addGame(gameRequestBean);
+        return result;
 	}
 	
 	/*
 	 *	Context: /games/{gameId}
-     *  Description:
+     *  Description: Get game with gameId
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}")
 	@ResponseStatus(HttpStatus.OK)
@@ -92,18 +83,14 @@ public class GameServiceController extends GenericService {
 	public GameResponseBean getGame(@PathVariable Long gameId) {
 		logger.debug("getGame: " + gameId);
 
-        try {
-            GameResponseBean result = gameService.getGame(gameId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameResponseBean result = gameService.getGame(gameId);
+        return result;
 	}
 
 
     /*
      *	Context: /games/{gameId}/start
-     *  Description:
+     *  Description: Start the game with gameId, only owner is allowed to do that
      */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/start")
 	@ResponseStatus(HttpStatus.OK)
@@ -111,18 +98,14 @@ public class GameServiceController extends GenericService {
 	public GameResponseBean startGame(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
 		logger.debug("startGame: " + gameId);
 
-        try {
-            GameResponseBean result = gameActionService.startGame(gameId, gamePlayerRequestBean);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameResponseBean result = gameActionService.startGame(gameId, gamePlayerRequestBean);
+        return result;
 	}
 
 
     /*
      *	Context: /games/{gameId}/stop
-     *  Description:
+     *  Description: Stop the game with gameId, only owner is allowed to do that
      */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/stop")
 	@ResponseStatus(HttpStatus.OK)
@@ -130,56 +113,43 @@ public class GameServiceController extends GenericService {
 	public GameResponseBean stopGame(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
 		logger.debug("startGame: " + gameId);
 
-        try {
-            GameResponseBean result = gameActionService.stopGame(gameId, gamePlayerRequestBean);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameResponseBean result = gameActionService.stopGame(gameId, gamePlayerRequestBean);
+        return result;
 	}
 
 
     /*
-     *	Context: /games/{gameId}/start-fast-mode
-     *  Description:
+     *	Context: /games/{gameId}/fast-mode/start
+     *  Description: Start the game with gameId in fast-mode, only owner is allowed to do that
      */
-    @RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/start-fast-mode")
+    @RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/fast-mode/start")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GameResponseBean startFastMode(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
         logger.debug("start fast mode: " + gameId);
 
-        try {
-            GameResponseBean result = gameActionService.startFastMode(gameId, gamePlayerRequestBean);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameResponseBean result = gameActionService.startFastMode(gameId, gamePlayerRequestBean);
+        return result;
     }
 
-
     /*
-     *	Context: /games/{gameId}/moves
-     *  Description:
+     *	Context: /games/{gameId}/fast-mode/next
+     *  Description: Trigger next move in fast-mode, only owner is allowed to do that
      */
-    @RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/possible-moves")
+    @RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/fast-mode/next")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<GameMoveResponseBean> listPossibleMoves(@PathVariable Long gameId) {
-        logger.debug("listMoves");
+    public GameMoveResponseBean triggerMoveInFastMode(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
+        logger.debug("trigger move in fast mode: " + gameId);
 
-        try {
-            List<GameMoveResponseBean> result = gameMoveService.listMoves(gameId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameMoveResponseBean result = gameActionService.triggerMoveInFastMode(gameId, gamePlayerRequestBean);
+        return result;
     }
 
 
 	/*
 	 *	Context: /games/{gameId}/moves
-     *  Description:
+     *  Description: Get a list of all moves made for the game with gameId
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/moves")
 	@ResponseStatus(HttpStatus.OK)
@@ -187,24 +157,19 @@ public class GameServiceController extends GenericService {
 	public List<GameMoveResponseBean> listMoves(@PathVariable Long gameId) {
 		logger.debug("listMoves");
 
-        try {
-            List<GameMoveResponseBean> result = gameMoveService.listMoves(gameId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        List<GameMoveResponseBean> result = gameMoveService.listMoves(gameId);
+        return result;
 	}
 
 
     /*
 	 *	Context: /games/{gameId}/moves
-     *  Description:
+     *  Description: Make a move, done by a player whose turn it is
      */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/moves")
 	@ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-	public GameMoveResponseBean addMove(@PathVariable Long gameId, @RequestBody @Valid GameMoveRequestBean gameMoveRequestBean)
-            throws PlayerTurnException, GameNotFoundException, UserNotFoundException, InvalidMoveException {
+	public GameMoveResponseBean addMove(@PathVariable Long gameId, @RequestBody @Valid GameMoveRequestBean gameMoveRequestBean){
 		logger.debug("addMove: " + gameMoveRequestBean);
 
         GameMoveResponseBean result = gameMoveService.addMove(gameId, gameMoveRequestBean);
@@ -214,7 +179,7 @@ public class GameServiceController extends GenericService {
 
     /*
      *	Context: /games/{gameId}/moves/{moveId}
-     *  Description:
+     *  Description: Get the move with moveId
      */
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/moves/{moveId}")
 	@ResponseStatus(HttpStatus.OK)
@@ -222,12 +187,8 @@ public class GameServiceController extends GenericService {
 	public GameMoveResponseBean getMove(@PathVariable Long gameId, @PathVariable Long moveId) {
 		logger.debug("gameId: " + gameId + " , moveId" + moveId);
 
-        try {
-            GameMoveResponseBean result = gameMoveService.getMove(moveId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameMoveResponseBean result = gameMoveService.getMove(moveId);
+        return result;
 	}
 
 
@@ -241,12 +202,8 @@ public class GameServiceController extends GenericService {
 	public List<GamePlayerResponseBean> listPlayers(@PathVariable Long gameId) {
 		logger.debug("listPlayers");
 
-        try {
-            List<GamePlayerResponseBean> result = gamePlayerService.listPlayer(gameId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        List<GamePlayerResponseBean> result = gamePlayerService.listPlayer(gameId);
+        return result;
 	}
 
 
@@ -260,12 +217,8 @@ public class GameServiceController extends GenericService {
 	public GameAddPlayerResponseBean addPlayer(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
 		logger.debug("addPlayer: " + gamePlayerRequestBean);
 
-        try {
-            GameAddPlayerResponseBean result = gamePlayerService.addPlayer(gameId, gamePlayerRequestBean);
-            return result;
-        } catch (Exception e) {
-            return null;
-        }
+        GameAddPlayerResponseBean result = gamePlayerService.addPlayer(gameId, gamePlayerRequestBean);
+        return result;
 	}
 
 
@@ -276,33 +229,40 @@ public class GameServiceController extends GenericService {
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/players/{playerId}")
 	@ResponseStatus(HttpStatus.OK)
     @ResponseBody
-	public GamePlayerResponseBean getPlayer(@PathVariable Long gameId, @PathVariable Long playerId) {
+	public GamePlayerResponseBean getPlayer(@PathVariable Long gameId, @PathVariable Integer playerId) {
 		logger.debug("getPlayer: " + gameId);
 
-        try {
-            GamePlayerResponseBean result = gamePlayerService.getPlayer(gameId, playerId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GamePlayerResponseBean result = gamePlayerService.getPlayer(gameId, playerId);
+        return result;
 	}
 
     /*
-    *	Context: /games/racetrack
-    *  Description: Get race track
-    */
+     *	Context: /games/{gameId}/players/{playerId}/racebettingcards
+     *  Description: Get player's race betting cards
+     */
+    @RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/players/{playerId}/racebettingcards")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<RaceBettingCard> getRaceBettingCards(@PathVariable Long gameId, @PathVariable Integer playerId,
+                                            @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
+        logger.debug("getRaceBettingCards: " + playerId);
+
+        List<RaceBettingCard> result = gamePlayerService.getRaceBettingCards(gameId, playerId);
+        return result;
+    }
+
+    /*
+     *	Context: /games/racetrack
+     *  Description: Get race track
+     */
     @RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{gameId}/racetrack")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GameRaceTrackResponseBean getRaceTrack(@PathVariable Long gameId) {
         logger.debug("get racetrack: " + gameId);
 
-        try {
-            GameRaceTrackResponseBean result = gameAreaService.getRaceTrack(gameId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameRaceTrackResponseBean result = gameAreaService.getRaceTrack(gameId);
+        return result;
     }
 
     /*
@@ -315,12 +275,8 @@ public class GameServiceController extends GenericService {
     public GameLegBettingAreaResponseBean getLegBettingArea(@PathVariable Long gameId) {
         logger.debug("get leg betting area: " + gameId);
 
-        try {
-            GameLegBettingAreaResponseBean result = gameAreaService.getLegBettingArea(gameId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameLegBettingAreaResponseBean result = gameAreaService.getLegBettingArea(gameId);
+        return result;
     }
 
     /*
@@ -333,12 +289,8 @@ public class GameServiceController extends GenericService {
     public GameRaceBettingAreaResponseBean getRaceBettingArea(@PathVariable Long gameId) {
         logger.debug("get race betting area: " + gameId);
 
-        try {
-            GameRaceBettingAreaResponseBean result = gameAreaService.getRaceBettingArea(gameId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameRaceBettingAreaResponseBean result = gameAreaService.getRaceBettingArea(gameId);
+        return result;
     }
 
     /*
@@ -351,11 +303,7 @@ public class GameServiceController extends GenericService {
     public GameDiceAreaResponseBean getDiceArea(@PathVariable Long gameId) {
         logger.debug("get dice area: " + gameId);
 
-        try {
-            GameDiceAreaResponseBean result = gameAreaService.getDiceArea(gameId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        GameDiceAreaResponseBean result = gameAreaService.getDiceArea(gameId);
+        return result;
     }
 }

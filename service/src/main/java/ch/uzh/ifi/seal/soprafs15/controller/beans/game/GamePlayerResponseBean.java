@@ -6,11 +6,12 @@ import java.util.List;
 
 public class GamePlayerResponseBean {
 
-	private Long id;
-    private String username;
-    private Integer money;
-    private List<LegBettingTile> legBettingTiles;
-	private Integer numberOfMoves;
+	protected Long id;
+    protected Integer playerId;
+    protected String username;
+    protected Integer money;
+    protected List<LegBettingTile> legBettingTiles;
+    protected Integer numberOfMoves;
 	
 
 	public Long getId() {
@@ -27,4 +28,36 @@ public class GamePlayerResponseBean {
 	public void setNumberOfMoves(Integer numberOfMoves) {
 		this.numberOfMoves = numberOfMoves;
 	}
+
+    public Integer getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(Integer playerId) {
+        this.playerId = playerId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Integer getMoney() {
+        return money;
+    }
+
+    public void setMoney(Integer money) {
+        this.money = money;
+    }
+
+    public List<LegBettingTile> getLegBettingTiles() {
+        return legBettingTiles;
+    }
+
+    public void setLegBettingTiles(List<LegBettingTile> legBettingTiles) {
+        this.legBettingTiles = legBettingTiles;
+    }
 }

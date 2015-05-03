@@ -3,6 +3,9 @@ package ch.uzh.ifi.seal.soprafs15.model.move;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
+import ch.uzh.ifi.seal.soprafs15.model.game.GameState;
+import ch.uzh.ifi.seal.soprafs15.service.GameLogicService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,10 +13,7 @@ import java.io.Serializable;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class Move implements Serializable {
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -23,6 +23,9 @@ public abstract class Move implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="GAME_ID")
     protected Game game;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    protected GameState gameState;
     
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="USER_ID")
@@ -46,6 +49,14 @@ public abstract class Move implements Serializable {
 		this.game = game;
 	}
 
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+
 	public User getUser() {
 		return user;
 	}
@@ -54,7 +65,19 @@ public abstract class Move implements Serializable {
 		this.user = user;
 	}
 
-    public abstract GameMoveResponseBean toGameMoveResponseBean();
+
+    public GameMoveResponseBean toGameMoveResponseBean(){
+		GameMoveResponseBean bean = new GameMoveResponseBean();
+		bean.setId(id);
+		bean.setGameId(game.getId());
+		bean.setUserId(user.getId());
+		bean.setPlayerId(user.getPlayerId());
+		return bean;
+	}
+
+    public abstract Boolean isValid();
 
     public abstract Move execute();
+
+    public abstract void undo();
 }

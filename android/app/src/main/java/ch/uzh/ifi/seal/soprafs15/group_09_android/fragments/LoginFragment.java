@@ -10,9 +10,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -24,6 +26,7 @@ public class LoginFragment extends Fragment {
     private EditText etUsername;
     private TextView tvLogBox;
     private Button loginButton;
+    private Long userId;
     private String token = "you fool";
 
     /**
@@ -47,12 +50,12 @@ public class LoginFragment extends Fragment {
         final String username = etUsername.getText().toString();
         Integer age = Integer.parseInt(etAge.getText().toString());
 
-        User user = User.create( username,              // username
-                                 age);                  // age
+        UserBean user = UserBean.create(username,              // username
+                age);                  // age
 
-        RestService.getInstance(getActivity()).createUser(user, new Callback<User>() {
+        RestService.getInstance(getActivity()).createUser(user, new Callback<UserBean>() {
             @Override
-            public void success(User user, Response response) {
+            public void success(UserBean user, Response response) {
                 try {
                     loginUser(user, v); // get the token
                 }
@@ -63,17 +66,19 @@ public class LoginFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
+                Toast.makeText(getActivity(), "Create User Failed :" + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    private void loginUser(User user, final View v){
-        RestService.getInstance(getActivity()).loginUser(user.id(), new Callback<User>() {
+    private void loginUser(UserBean user, final View v){
+        userId = user.id();
+
+        RestService.getInstance(getActivity()).loginUser(userId, new Callback<UserBean>() {
             @Override
-            public void success(User user, Response response) {
+            public void success(UserBean user, Response response) {
                 if (user == null) {
-                    throw new NullPointerException("User is null in LoginFragment.");
+                    throw new NullPointerException("UserBean is null in LoginFragment.");
                 }
 
                 token = user.token();
@@ -86,6 +91,7 @@ public class LoginFragment extends Fragment {
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), MenuActivity.class);
                 Bundle b = new Bundle();
+                b.putLong("userId", userId);
                 b.putString("token", token);
                 intent.putExtras(b);
                 startActivity(intent);
@@ -93,7 +99,7 @@ public class LoginFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
+                Toast.makeText(getActivity(), "Login User Failed :" + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

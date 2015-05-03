@@ -4,14 +4,14 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <!-- Grid Items of Game Board Properties -->
-    <dimen  name="grid_item_width">115dp</dimen>
+    <!-- Grid Items of GameBean Board Properties -->
+    <dimen  name="grid_item_width">123dp</dimen>
     <dimen  name="grid_item_height">102.5dp</dimen>
 
     <!-- the pyramid (dice) -->
-    <dimen  name="pyramid_height">170dp</dimen>
-    <dimen  name="pyramid_width">170dp</dimen>
-    <dimen  name="pyramid_margin_left">175dp</dimen>
+    <dimen  name="pyramid_height">195dp</dimen>
+    <dimen  name="pyramid_width">195dp</dimen>
+    <dimen  name="pyramid_margin_left">178dp</dimen>
     <dimen  name="dice_size">57dp</dimen>
 
 </resources>

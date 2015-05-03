@@ -1,7 +1,12 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
@@ -10,41 +15,68 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Colors;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Dice;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.InteractionTile;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.LegBet;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.Popup;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.RaceTrackField;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.CamelBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.MoveBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackObjectBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.AreaName;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEvent;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerTurnEvent;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.*;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.GameColors;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.Moves;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class GameFragment extends Fragment implements View.OnClickListener {
 
-    private ArrayList<RaceTrackField> raceTrack = new ArrayList<>();
-    private ArrayList<Integer> legBettingArea = new ArrayList<>();
-    private ArrayList<InteractionTile> interactionTiles = new ArrayList<>();
-    private ArrayList<Dice> dices = new ArrayList<>();
-    private ArrayList<LegBet> legBets = new ArrayList<>();
+    // the areas
+    private DiceArea diceArea;
+    private RaceTrack raceTrack;
+    private LegBettingArea legBettingArea;
+    private RaceBettingArea raceBettingArea;
 
-    private TextView tvPlayerName;
-    private ImageButton ivPlayerIcon;
-    private TextView tvCurrentPlayerName;
-    private ImageView  ivCurrentPlayerIcon;
-    private TextView tvMoney;
+    // all buttons in game
+    private ArrayList<Integer> raceTrackFieldIds = new ArrayList<>();
+    private ArrayList<Integer> legBettingFieldIds = new ArrayList<>();
+    private ArrayList<Integer> raceBettingFieldIds = new ArrayList<>();
+    private Integer pyramidFieldId;
+    private Integer helpButtonId;
+    private Integer playerIconId;
+    private Button acceptButton;
+    private Button rejectButton;
+    private ImageView modifiedButton;
 
-    private Bundle savedInstanceState;
-    private ViewGroup container;
-    private Long playerId;
+    // class variables
+    private UserBean player;
+    private UserBean currentPlayer;
+    private Long userId;
     private Long gameId;
+    private Integer playerId;
+    private String token;
+    private Boolean isOwner = false;
 
     private PopupWindow popupWindow;
+    private View anchorView;
+    private Bundle savedInstanceState;
+    private ViewGroup container;
+
+    private List<UserBean> usersOrderedByMoney;
+    private Drawable lastResource;
+    private int currentPyramidTile;
+    private Boolean isDesertTileAsOasis = null;
+    private GameColors pickedCardColor;
 
     public static GameFragment newInstance() {
         return new GameFragment();
@@ -52,27 +84,34 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
     public GameFragment() { }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Bundle b = getActivity().getIntent().getExtras();
+        gameId = b.getLong("gameId");
+        userId = b.getLong("userId");
+        playerId = b.getInt("playerId");
+        isOwner = b.getBoolean("isOwner");
+
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
+        token = sharedPref.getString("token", token);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_game, container, false);
         this.savedInstanceState = savedInstanceState;
         this.container = container;
-        Bundle b = getActivity().getIntent().getExtras();
-        gameId = b.getLong("gameId");
-
-        Toast.makeText(v.getContext(), "GameId = " + gameId, Toast.LENGTH_LONG).show();
-
-        return v;
+        return inflater.inflate(R.layout.fragment_game, container, false);
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        initializeRaceTrack();
-        initializeLegBettingArea();
-        initializeDiceArea();
 
+        addClickListenerToButtons();
+        subscribeToAreaUpdates();
+        subscribeToEvents();
         play();
     }
 
@@ -87,83 +126,155 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * @param v the view that is clicked on
      */
     public void onClick(View v) {
-        String message = "Oops! Not found!";
-
-        for (RaceTrackField field: raceTrack) {
-            if (field.getPosition() == v.getId()) {
-                message = (String) v.getContentDescription();
-                AlertDialog dialog = dummyPopup(message);
-                dialog.show();
-                return;
+        // prevent action from a player if it's not his turn
+        if (player.equals(currentPlayer)) {
+            for (Integer button : raceTrackFieldIds) {
+                if (button == v.getId()) {
+                    interactionTilePopup(v, R.layout.popup_interaction_tile, Moves.DESERT_TILE_PLACING);
+                    return;
+                }
+            }
+            for (Integer button : legBettingFieldIds) {
+                if (button == v.getId()) {
+                    legBettingPopup(v, R.layout.popup_leg_betting, Moves.LEG_BETTING, legBettingFieldIds.indexOf(button));
+                    return;
+                }
+            }
+            for (Integer button : raceBettingFieldIds) {
+                if (button == v.getId()) {
+                    raceBettingPopup(v, R.layout.popup_race_betting, Moves.RACE_BETTING, raceBettingFieldIds.indexOf(button));
+                    return;
+                }
+            }
+            if (pyramidFieldId == v.getId()) {
+                rollDicePopup(v, R.layout.popup_roll_dice, Moves.DICE_ROLLING);
             }
         }
-        for (Integer legBet: legBettingArea) {
-            if (legBet == v.getId()) {
-                message = (String) v.getContentDescription();
-                AlertDialog dialog = dummyPopup(message);
-                dialog.show();
-                return;
-            }
+        if (helpButtonId == v.getId()){
+            instructionsPopup(v, R.layout.popup_instructions);
         }
-        if (R.id.dice == v.getId()){
-//            message = (String) v.getContentDescription();
-//            ((GameActivity)getActivity()).pushFragment(RollDiceFragment.newInstance());
-                displayPopup(v, R.layout.popup_roll_dice, Popup.ROLL_DICE);
-            return;
+        if (playerIconId == v.getId()){
+            playerInfoPopup(v, R.layout.popup_player_info);
+        }
+    }
+
+    /**
+     * Adds all the race track fields to the game's raceTrack
+     * Adds all field to the OnClickListener
+     */
+    private void addClickListenerToButtons(){
+        int fieldRID;
+
+        // for all race track fields (buttons)
+        for (int i = 1; i<=16; i++){
+            fieldRID = getActivity().getResources().getIdentifier("field" + i, "id", getActivity().getPackageName());
+            raceTrackFieldIds.add(fieldRID);
+            (getActivity().findViewById(fieldRID)).setOnClickListener(this);
         }
 
-        AlertDialog dialog = dummyPopup(message);
-        dialog.show();
+        // for all legbetting buttons
+        for (GameColors color: GameColors.values()) {
+            fieldRID = getActivity().getResources().getIdentifier("legbetting_" + color.name().toLowerCase(), "id", getActivity().getPackageName());
+            legBettingFieldIds.add(fieldRID);
+            (getActivity().findViewById(fieldRID)).setOnClickListener(this);
+        }
+
+        // olle tolle camel betting buttons
+        raceBettingFieldIds.add(R.id.winner_betting);
+        raceBettingFieldIds.add(R.id.loser_betting);
+        (getActivity().findViewById(R.id.winner_betting)).setOnClickListener(this);
+        (getActivity().findViewById(R.id.loser_betting)).setOnClickListener(this);
+
+        // pyramid button to roll the dices
+        pyramidFieldId = R.id.dice;
+        (getActivity().findViewById(pyramidFieldId)).setOnClickListener(this);
+
+        // for the help; displays game rules
+        helpButtonId = R.id.help;
+        (getActivity().findViewById(helpButtonId)).setOnClickListener(this);
+
+        // button to display the players rack
+        playerIconId = R.id.player_icon;
+        (getActivity().findViewById(playerIconId)).setOnClickListener(this);
+
+        currentPyramidTile = 1;
+        ImageView pyramidTile = (ImageView) getActivity().findViewById(R.id.pyramid_tile);
+        pyramidTile.setImageResource(getActivity().getResources().getIdentifier("pyramid_tile_" + currentPyramidTile + "_button", "drawable", getActivity().getPackageName()));
+    }
+
+    /**
+     * This is the main method. After each player has finished his turn, the whole board is redraw.
+     */
+    private void play(){
+        AreaService.getInstance(getActivity()).getAreasAndNotifySubscriber(gameId);
+        getPlayerStatus();
     }
 
     /**
      * Displays a Popup with the given layout and draws all the dices
      * Two Options:
-     *  - Accept: Execute a Move and close the Popup
+     *  - Accept: Execute a MoveBean and close the Popup
      *  - Reject: abort, close Popup
-     *
-     * @param anchorView the current view (Bean)
      */
-    public void displayPopup(View anchorView, int layout, Popup POPUP) {
+    public View defaultPopup(View v, int layout) {
+        anchorView = v;
         View popupView = getLayoutInflater(savedInstanceState).inflate(layout, container, false);
         popupWindow = new PopupWindow(
                 popupView,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.setWidth(getActivity().findViewById(R.id.game_board).getWidth());
         popupWindow.setFocusable(true);
-        popupWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL,0,0);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.showAtLocation(anchorView, Gravity.CENTER_HORIZONTAL, 0, 0);
 
-        switch (POPUP){
-            case ROLL_DICE:
-                initPopupRollDice(popupView);
-                break;
-            case LEGBET:
-                // initPopupLegBet()
-                break;
-            case RACEBET:
-                // initPopupRaceBet()
-                break;
-            case PLACE_TILE:
-                // initPopupPlaceTile()
-                break;
-            case ROUND_EVALUATION:
-                // initPopupRoundEvaluation()
-                break;
-            default:
-                // do something meaningful
+        acceptButton = (Button) popupView.findViewById(R.id.accept);
+        rejectButton = (Button) popupView.findViewById(R.id.reject);
+
+        return popupView;
+    }
+
+    /**
+     * Rolls a dice:
+     * - get all current face values of the diceAra; if element is null, then add the [?] dice (roll_dice_0_COLOR)
+     * - add for all GameColors the dices (ImageView) and add the corresponding image drawable ID from diceNames
+     * - add onClick listener for the accept and reject buttons
+     *  - accept: initiate a game move (ROLL_DICE)
+     *  - reject: dismiss this popup
+     *
+     * @param v the button that was clicked
+     * @param popup_roll_dice the popup's layout that will be shown
+     * @param diceRolling the type of MOVE that will be executed on accept
+     */
+    private void rollDicePopup(View v, int popup_roll_dice, final Moves diceRolling) {
+        View popupView = defaultPopup(v,popup_roll_dice);
+
+        String diceNames[] = new String[5];
+        String diceImageName = "roll_dice_";
+        for (int i = 0; i < 5; i++){
+            if (diceArea.getRolledDice().isEmpty() || diceArea.getRolledDice().size() < i + 1) diceNames[i] = "0";
+            else diceNames[diceArea.getRolledDice().get(i).color().ordinal()] = diceArea.getRolledDice().get(i).faceValue()+"";
         }
 
-        Button acceptButton = (Button) popupView.findViewById(R.id.accept);
-        Button rejectButton = (Button) popupView.findViewById(R.id.reject);
+        ImageView dice;
+        for (GameColors color : GameColors.values()){
+            dice = (ImageView) popupView.findViewById(getActivity().getResources().getIdentifier("dice_" + color.name().toLowerCase(), "id", getActivity().getPackageName()));
+            dice.setImageResource(getActivity().getResources().getIdentifier(diceImageName + diceNames[color.ordinal()] + "_" + color.name().toLowerCase(), "drawable", getActivity().getPackageName()));
+        }
 
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: send Game Move
-                // popupWindow.update();
+                currentPyramidTile += 1;
+                String image = "pyramid_tile_" + currentPyramidTile + "_button";
+                ImageView pyramidCard = (ImageView) getActivity().findViewById(R.id.pyramid_tile);
+                if (currentPyramidTile++ > 5) image = "empty_image";
+                pyramidCard.setImageResource(getActivity().getResources().getIdentifier(image, "drawable", getActivity().getPackageName()));
+                initiateGameMove(diceRolling, null, null, null, null);
                 popupWindow.dismiss();
             }
         });
+
         rejectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,20 +283,316 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void initPopupRollDice(View popupView){
-        ImageView blueDice = (ImageView) popupView.findViewById(R.id.dice_blue);
-        ImageView greenDice = (ImageView) popupView.findViewById(R.id.dice_green);
-        ImageView orangeDice = (ImageView) popupView.findViewById(R.id.dice_orange);
-        ImageView yellowDice = (ImageView) popupView.findViewById(R.id.dice_yellow);
-        ImageView whiteDice = (ImageView) popupView.findViewById(R.id.dice_white);
+    private void raceBettingPopup(View v, int popup_race_betting, final Moves raceBetting, int type) {
+        modifiedButton = (ImageView) v.findViewById(v.getId());
+        lastResource = modifiedButton.getDrawable();
+        pickedCardColor = null; // because card color is outside function accessible we need to set it to null every time
 
-        blueDice.setBackgroundResource(dices.get(Colors.BLUE.ordinal()).getCurrentDice());
-        greenDice.setBackgroundResource(dices.get(Colors.GREEN.ordinal()).getCurrentDice());
-        orangeDice.setBackgroundResource(dices.get(Colors.ORANGE.ordinal()).getCurrentDice());
-        yellowDice.setBackgroundResource(dices.get(Colors.YELLOW.ordinal()).getCurrentDice());
-        whiteDice.setBackgroundResource(dices.get(Colors.WHITE.ordinal()).getCurrentDice());
+        View popupView = defaultPopup(v, popup_race_betting);
+        TextView title = (TextView) popupView.findViewById(R.id.popupTitle);
+
+        // check if it is olle or tolle betting
+        if ((type != 0)) title.setText(R.string.title_raceBet_olle); // cast the type {0 or 1} to boolean
+        else title.setText(R.string.title_raceBet_tolle);
+
+        ImageButton cardBlue = (ImageButton) popupView.findViewById(R.id.card_blue);
+        ImageButton cardGreen = (ImageButton) popupView.findViewById(R.id.card_green);
+        ImageButton cardOrange = (ImageButton) popupView.findViewById(R.id.card_orange);
+        ImageButton cardYellow = (ImageButton) popupView.findViewById(R.id.card_yellow);
+        ImageButton cardWhite = (ImageButton) popupView.findViewById(R.id.card_white);
+
+        String cardImageName = "c" + playerId + "_racebettingcard_";
+        String characterCardImageName = "c" + playerId + "_button";
+        final int cardBlueDrawableId = getActivity().getResources().getIdentifier(cardImageName + "blue", "drawable", getActivity().getPackageName());
+        final int cardGreenDrawableId = getActivity().getResources().getIdentifier(cardImageName + "green", "drawable", getActivity().getPackageName());
+        final int cardOrangeDrawableId = getActivity().getResources().getIdentifier(cardImageName + "orange", "drawable", getActivity().getPackageName());
+        final int cardYellowDrawableId = getActivity().getResources().getIdentifier(cardImageName + "yellow", "drawable", getActivity().getPackageName());
+        final int cardWhiteDrawableId = getActivity().getResources().getIdentifier(cardImageName + "white", "drawable", getActivity().getPackageName());
+        final int characterCardDrawableId = getActivity().getResources().getIdentifier(characterCardImageName, "drawable", getActivity().getPackageName());
+
+        cardBlue.setImageResource(cardBlueDrawableId);
+        cardGreen.setImageResource(cardGreenDrawableId);
+        cardOrange.setImageResource(cardOrangeDrawableId);
+        cardYellow.setImageResource(cardYellowDrawableId);
+        cardWhite.setImageResource(cardWhiteDrawableId);
+
+        cardBlue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                acceptButton.setVisibility(View.VISIBLE);
+                pickedCardColor = GameColors.BLUE;
+                acceptButton.setText(R.string.button_text_blue);
+                modifiedButton.setImageResource(characterCardDrawableId);
+            }
+        });
+        cardGreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                acceptButton.setVisibility(View.VISIBLE);
+                pickedCardColor = GameColors.GREEN;
+                acceptButton.setText(R.string.button_text_green);
+                modifiedButton.setImageResource(characterCardDrawableId);
+            }
+        });
+        cardOrange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                acceptButton.setVisibility(View.VISIBLE);
+                pickedCardColor = GameColors.ORANGE;
+                acceptButton.setText(R.string.button_text_orange);
+                modifiedButton.setImageResource(characterCardDrawableId);
+            }
+        });
+        cardYellow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                acceptButton.setVisibility(View.VISIBLE);
+                pickedCardColor = GameColors.YELLOW;
+                acceptButton.setText(R.string.button_text_yellow);
+                modifiedButton.setImageResource(characterCardDrawableId);
+            }
+        });
+        cardWhite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                acceptButton.setVisibility(View.VISIBLE);
+                pickedCardColor = GameColors.WHITE;
+                acceptButton.setText(R.string.button_text_white);
+                modifiedButton.setImageResource(characterCardDrawableId);
+            }
+        });
+
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (pickedCardColor != null) {
+                    initiateGameMove(raceBetting, null, null, null, null);
+                    popupWindow.dismiss();
+                }
+            }
+        });
+
+        rejectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                modifiedButton.setImageDrawable(lastResource);
+                popupWindow.dismiss();
+            }
+        });
     }
 
+    private void legBettingPopup(View v, int popup_leg_betting, final Moves legBetting, int color) {
+        pickedCardColor = GameColors.values()[color];
+        modifiedButton = (ImageView) v.findViewById(v.getId());
+        lastResource = modifiedButton.getDrawable();
+        if (lastResource == null) return; // forbid picking "empty" card
+
+        View popupView = defaultPopup(v, popup_leg_betting);
+        ImageView card = (ImageView) popupView.findViewById(R.id.card);
+        Integer cardValue = legBettingArea.getTopLegBettingTiles().get(GameColors.values()[color].ordinal()).leadingPositionGain();
+
+        String cardImageName = "legbettingtile_" + pickedCardColor.name().toLowerCase() + "_" + cardValue;
+        final int cardDrawableId = getActivity().getResources().getIdentifier(cardImageName, "drawable", getActivity().getPackageName());
+        card.setImageResource(cardDrawableId);
+
+        // find the id for the next card
+        int nextResourceId;
+        if (cardValue != null && cardValue == 5) nextResourceId = 3;
+        else if (cardValue != null && cardValue == 3) nextResourceId = 2;
+        else nextResourceId = 0;
+
+        // compose the new card drawable id
+        String newCardImageName = "legbettingtile_" + pickedCardColor.name().toLowerCase() + "_" + nextResourceId + "_button";
+        final int newcardDrawableId = getActivity().getResources().getIdentifier(newCardImageName, "drawable", getActivity().getPackageName());
+
+        // do not set any image when next card value is 0
+        if (nextResourceId == 0) modifiedButton.setImageResource(R.drawable.empty_image);
+        else modifiedButton.setImageResource(newcardDrawableId);
+
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (pickedCardColor != null) {
+                    initiateGameMove(legBetting, null, null, null, null);
+                    popupWindow.dismiss();
+                }
+            }
+        });
+
+        rejectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                modifiedButton.setImageDrawable(lastResource);
+                popupWindow.dismiss();
+            }
+        });
+    }
+
+    private void interactionTilePopup(View v, int popup_interaction_tile, final Moves desertTilePlacing) {
+        modifiedButton = null;
+        isDesertTileAsOasis = null;
+
+        View popupView = defaultPopup(v, popup_interaction_tile);
+        ImageButton desertTile = (ImageButton) popupView.findViewById(R.id.desert_tile);
+        ImageButton oasisTile = (ImageButton) popupView.findViewById(R.id.oasis_tile);
+
+        String desertImageName = "c" + playerId.toString() + "_desert";
+        String oasisImageName = "c" + playerId.toString() + "_oasis";
+        final int desertDrawableId = getActivity().getResources().getIdentifier(desertImageName, "drawable", getActivity().getPackageName());
+        final int oasisDrawableId = getActivity().getResources().getIdentifier(oasisImageName, "drawable", getActivity().getPackageName());
+        desertTile.setImageResource(desertDrawableId);
+        oasisTile.setImageResource(oasisDrawableId);
+
+        desertTile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                acceptButton.setVisibility(View.VISIBLE);
+                if (modifiedButton != null) ((RelativeLayout) modifiedButton.getParent()).removeView(modifiedButton);
+                isDesertTileAsOasis = true;
+                RelativeLayout fieldLayout = (RelativeLayout) anchorView;
+                acceptButton.setText(R.string.button_text_desert);
+                modifiedButton = createDynamicImage(0,
+                    desertDrawableId,
+                    RelativeLayout.CENTER_HORIZONTAL,
+                    RelativeLayout.CENTER_VERTICAL);
+                ViewGroup.LayoutParams params = modifiedButton.getLayoutParams();
+                params.width = 75;
+                params.height = 75;
+                fieldLayout.addView(modifiedButton);
+            }
+        });
+        oasisTile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                acceptButton.setVisibility(View.VISIBLE);
+                if (modifiedButton != null) ((RelativeLayout) modifiedButton.getParent()).removeView(modifiedButton);
+                isDesertTileAsOasis = false;
+                RelativeLayout fieldLayout = (RelativeLayout) anchorView;
+                acceptButton.setText(R.string.button_text_oasis);
+                modifiedButton = createDynamicImage(0,
+                    oasisDrawableId,
+                    RelativeLayout.CENTER_HORIZONTAL,
+                    RelativeLayout.CENTER_VERTICAL);
+                ViewGroup.LayoutParams params = modifiedButton.getLayoutParams();
+                params.width = 75;
+                params.height = 75;
+                fieldLayout.addView(modifiedButton);
+            }
+        });
+
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isDesertTileAsOasis != null) {
+                    for (Integer field : raceTrackFieldIds) {
+                        if (anchorView.getId() == field) {
+                            initiateGameMove(desertTilePlacing, null, null, isDesertTileAsOasis, raceTrackFieldIds.indexOf(field));
+                        }
+                    }
+                    popupWindow.dismiss();
+                }
+            }
+        });
+
+        rejectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (modifiedButton != null)
+                    ((RelativeLayout) modifiedButton.getParent()).removeView(modifiedButton);
+                popupWindow.dismiss();
+            }
+        });
+    }
+
+    public void playerInfoPopup(View v, int layout) {
+        View popupView = defaultPopup(v, layout);
+        GridLayout grid = (GridLayout) popupView.findViewById(R.id.grid);
+        ArrayList<String> cardNames = new ArrayList<>();
+
+        ImageView image;
+        String prefix;
+
+/*      //TODO: THIS PART IS NOT WORKING YET!
+        prefix = "c" + playerId + "_racebettingcard_";
+        for (RaceBettingCard raceBettingCard : player.raceBettingCards()){
+            cardNames.add(prefix + raceBettingCard.color().name().toLowerCase());
+        }
+        prefix = "legbettingtile_";
+        for (LegBettingTile legBettingTile : player.legBettingTiles()){
+            cardNames.add(prefix + legBettingTile.color().name().toLowerCase());
+        }
+        prefix = "pyramid_tile";
+        for (PyramidTile pyramidTile : player.pyramidTiles()){
+            cardNames.add(prefix + pyramidTile.value());
+        }*/
+
+        for (String card : cardNames){
+            image = new ImageView(getActivity());
+            image.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            image.setImageResource(getActivity().getResources().getIdentifier(card, "drawable", getActivity().getPackageName()));
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT );
+            lp.setMargins(4, 4, 4, 4);
+            lp.width = 130;
+            image.setLayoutParams(lp);
+            image.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            grid.addView(image);
+        }
+
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+    }
+
+    /**
+     * Displays a popup for the playing rules.
+     *
+     * @param layout
+     */
+    public void instructionsPopup(View v, int layout) {
+        View popupView = getLayoutInflater(savedInstanceState).inflate(layout, container, false);
+        popupWindow = new PopupWindow(
+                popupView,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable(
+                getActivity().getResources(),
+                Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)));
+        popupWindow.setWidth(900);
+        popupWindow.showAtLocation(getActivity().findViewById(R.id.game_board), Gravity.CENTER_HORIZONTAL, 0, 0);
+    }
+
+    private void roundEvaluationPopup() {
+        View popupView = defaultPopup(getView(), R.layout.popup_round_evaluation);
+
+        TextView description = (TextView) popupView.findViewById(R.id.description);
+
+        String message = "";
+        Integer counter = 1;
+
+        for (UserBean user : usersOrderedByMoney) {
+            message += counter + ". UserBean " + user.username() + " has " + user.money() + " egypt pounds. \n";
+            counter++;
+        }
+
+        description.setText(message);
+
+        acceptButton.setText("OK");
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+
+        rejectButton.setVisibility(View.INVISIBLE);
+    }
 
     /**
      * This is only for testing purposes, an alert popup that displays dynamic messages.
@@ -196,16 +603,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private AlertDialog dummyPopup(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(message)
-                .setTitle("Congratulations");
-        // Add the buttons
+            .setTitle("We have a message for you:");
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog
             }
         });
         return builder.create();
@@ -237,279 +637,26 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         return image;
     }
 
-    /**
-     * Adds all the race track fields to the game's raceTrack
-     * Adds all field to the OnClickListener
-     */
-    private void initializeRaceTrack(){
-        InteractionTile c1Tiles = new InteractionTile();
-        InteractionTile c2Tiles = new InteractionTile();
-        InteractionTile c3Tiles = new InteractionTile();
-        InteractionTile c4Tiles = new InteractionTile();
-        InteractionTile c5Tiles = new InteractionTile();
-        InteractionTile c6Tiles = new InteractionTile();
-        InteractionTile c7Tiles = new InteractionTile();
-        InteractionTile c8Tiles = new InteractionTile();
-
-        c1Tiles.add(R.drawable.c1_desert);
-        c1Tiles.add(R.drawable.c1_oasis);
-
-        c2Tiles.add(R.drawable.c2_desert);
-        c2Tiles.add(R.drawable.c2_oasis);
-
-        c3Tiles.add(R.drawable.c3_desert);
-        c3Tiles.add(R.drawable.c3_oasis);
-
-        c4Tiles.add(R.drawable.c4_desert);
-        c4Tiles.add(R.drawable.c4_oasis);
-
-        c5Tiles.add(R.drawable.c5_desert);
-        c5Tiles.add(R.drawable.c5_oasis);
-
-        c6Tiles.add(R.drawable.c6_desert);
-        c6Tiles.add(R.drawable.c6_oasis);
-
-        c7Tiles.add(R.drawable.c7_desert);
-        c7Tiles.add(R.drawable.c7_oasis);
-
-        c8Tiles.add(R.drawable.c8_desert);
-        c8Tiles.add(R.drawable.c8_oasis);
-
-        interactionTiles.add(c1Tiles);
-        interactionTiles.add(c2Tiles);
-        interactionTiles.add(c3Tiles);
-        interactionTiles.add(c4Tiles);
-        interactionTiles.add(c5Tiles);
-        interactionTiles.add(c6Tiles);
-        interactionTiles.add(c7Tiles);
-        interactionTiles.add(c8Tiles);
-
-        raceTrack.add(new RaceTrackField(R.id.field1));
-        raceTrack.add(new RaceTrackField(R.id.field2));
-        raceTrack.add(new RaceTrackField(R.id.field3));
-        raceTrack.add(new RaceTrackField(R.id.field4));
-        raceTrack.add(new RaceTrackField(R.id.field5));
-        raceTrack.add(new RaceTrackField(R.id.field6));
-        raceTrack.add(new RaceTrackField(R.id.field7));
-        raceTrack.add(new RaceTrackField(R.id.field8));
-        raceTrack.add(new RaceTrackField(R.id.field9));
-        raceTrack.add(new RaceTrackField(R.id.field10));
-        raceTrack.add(new RaceTrackField(R.id.field11));
-        raceTrack.add(new RaceTrackField(R.id.field12));
-        raceTrack.add(new RaceTrackField(R.id.field13));
-        raceTrack.add(new RaceTrackField(R.id.field14));
-        raceTrack.add(new RaceTrackField(R.id.field15));
-        raceTrack.add(new RaceTrackField(R.id.field16));
-
-        for (RaceTrackField field: raceTrack) {
-            (getActivity().findViewById(field.getPosition())).setOnClickListener(this);
-        }
-    }
-
-    /**
-     * Adds all legBettingAreas to an ArrayList
-     * Adds all legBettingAreas to the OnClickListener
-     */
-    private void initializeLegBettingArea(){
-        LegBet blueLegBets = new LegBet();
-        LegBet greenLegBets = new LegBet();
-        LegBet orangeLegBets = new LegBet();
-        LegBet yellowLegBets = new LegBet();
-        LegBet whiteLegBets = new LegBet();
-
-        blueLegBets.add(R.drawable.legbettingtile_blue_2);
-        blueLegBets.add(R.drawable.legbettingtile_blue_3);
-        blueLegBets.add(R.drawable.legbettingtile_blue_5);
-
-        greenLegBets.add(R.drawable.legbettingtile_green_2);
-        greenLegBets.add(R.drawable.legbettingtile_green_3);
-        greenLegBets.add(R.drawable.legbettingtile_green_5);
-
-        orangeLegBets.add(R.drawable.legbettingtile_orange_2);
-        orangeLegBets.add(R.drawable.legbettingtile_orange_3);
-        orangeLegBets.add(R.drawable.legbettingtile_orange_5);
-
-        yellowLegBets.add(R.drawable.legbettingtile_yellow_2);
-        yellowLegBets.add(R.drawable.legbettingtile_yellow_3);
-        yellowLegBets.add(R.drawable.legbettingtile_yellow_5);
-
-        whiteLegBets.add(R.drawable.legbettingtile_white_2);
-        whiteLegBets.add(R.drawable.legbettingtile_white_3);
-        whiteLegBets.add(R.drawable.legbettingtile_white_5);
-
-        legBets.add(blueLegBets);
-        legBets.add(greenLegBets);
-        legBets.add(orangeLegBets);
-        legBets.add(yellowLegBets);
-        legBets.add(whiteLegBets);
-
-        legBettingArea.add(R.id.legbetting_blue);
-        legBettingArea.add(R.id.legbetting_green);
-        legBettingArea.add(R.id.legbetting_orange);
-        legBettingArea.add(R.id.legbetting_yellow);
-        legBettingArea.add(R.id.legbetting_white);
-        legBettingArea.add(R.id.winner_betting);
-        legBettingArea.add(R.id.loser_betting);
-
-        for (Integer legbet: legBettingArea) {
-            (getActivity().findViewById(legbet)).setOnClickListener(this);
-        }
-    }
-
-    /**
-     * Adds the dice button (pyramid) to the OnClickListener
-     * Adds all dices to the ArrayList dices
-     */
-    private void initializeDiceArea(){
-        Dice blueDices = new Dice();
-        Dice greenDices = new Dice();
-        Dice orangeDices = new Dice();
-        Dice yellowDices = new Dice();
-        Dice whiteDices = new Dice();
-
-        blueDices.add(R.drawable.roll_dice_0_blue);
-        blueDices.add(R.drawable.roll_dice_1_blue);
-        blueDices.add(R.drawable.roll_dice_2_blue);
-        blueDices.add(R.drawable.roll_dice_3_blue);
-
-        greenDices.add(R.drawable.roll_dice_0_green);
-        greenDices.add(R.drawable.roll_dice_1_green);
-        greenDices.add(R.drawable.roll_dice_2_green);
-        greenDices.add(R.drawable.roll_dice_3_green);
-
-        orangeDices.add(R.drawable.roll_dice_0_orange);
-        orangeDices.add(R.drawable.roll_dice_1_orange);
-        orangeDices.add(R.drawable.roll_dice_2_orange);
-        orangeDices.add(R.drawable.roll_dice_3_orange);
-
-        yellowDices.add(R.drawable.roll_dice_0_yellow);
-        yellowDices.add(R.drawable.roll_dice_1_yellow);
-        yellowDices.add(R.drawable.roll_dice_2_yellow);
-        yellowDices.add(R.drawable.roll_dice_3_yellow);
-
-        whiteDices.add(R.drawable.roll_dice_0_white);
-        whiteDices.add(R.drawable.roll_dice_1_white);
-        whiteDices.add(R.drawable.roll_dice_2_white);
-        whiteDices.add(R.drawable.roll_dice_3_white);
-
-        dices.add(blueDices);
-        dices.add(greenDices);
-        dices.add(orangeDices);
-        dices.add(yellowDices);
-        dices.add(whiteDices);
-
-        (getActivity().findViewById(R.id.dice)).setOnClickListener(this);
-    }
-
-    /**
-     * This is the main method. After each player has finished his turn, the whole board is redraw.
-     */
-    private void play(){
-        // TODO: on PUSH from SERVER; get all new information.
-        // TODO: create some "round" system
-//        gameMoves();
-//        gameRaceTrack();
-//        gameLegBettingArea();
-//        gameRaceBettingArea();
-//        gameDiceArea();
-        addItemsToRaceTrack();
-
-        // TODO: check if player is on his turn; then enable interaction
-    }
-
-    /**
-     * @api  http://docs.sopra.apiary.io/#reference/games/game-move/retrieve-a-game-move
-     */
-    private void gameMoves() {
-        RestService.getInstance(getActivity()).getGameMoves(gameId, new Callback<List<Move>>() {
-
+    private void initiateGameMove(final Moves moveType, GameColors legBettingTileColor, Boolean raceBettingOnWinner, Boolean desertTileAsOasis, Integer desertTilePosition) {
+        MoveBean move = MoveBean.create(token, moveType, legBettingTileColor, raceBettingOnWinner, desertTileAsOasis, desertTilePosition);
+        RestService.getInstance(getActivity()).initiateGameMove(gameId, move, new Callback<MoveBean>() {
             @Override
-            public void success(List<Move> moves, Response response) {
+            public void success(MoveBean move, Response response) {
+                AlertDialog dialog = dummyPopup("success: " + response.toString() + move.toString());
+                dialog.show();
 
+                updateLegBettingFields();
+                updateRaceBettingFields();
+                updateRaceTrackFields();
             }
 
             @Override
             public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), moveType.name() + " Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
 
-            }
-        });
-    }
-
-    /**
-     * @api  http://docs.sopra.apiary.io/#reference/games/game-race-track/retrieve-race-track
-     */
-    private void gameRaceTrack() {
-        RestService.getInstance(getActivity()).getGameRaceTrack(gameId, new Callback<List<RaceTrack>>() {
-
-            @Override
-            public void success(List<RaceTrack> raceTrackField, Response response) {
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-    }
-
-    /**
-     * @api  http://docs.sopra.apiary.io/#reference/games/game-leg-betting-area/retrieve-leg-betting-area
-     */
-    private void gameLegBettingArea() {
-        RestService.getInstance(getActivity()).getGameLegBettingArea(gameId, new Callback<List<LegBettingArea>>() {
-
-            @Override
-            public void success(List<LegBettingArea> legBettingAreas, Response response) {
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-    }
-
-    /**
-     * @api  http://docs.sopra.apiary.io/#reference/games/game-race-betting-area/retrieve-race-betting-area
-     */
-    private void gameRaceBettingArea() {
-        RestService.getInstance(getActivity()).getGameRaceBettingArea(gameId, new Callback<List<RaceBettingArea>>() {
-
-            @Override
-            public void success(List<RaceBettingArea> raceBettingAreas, Response response) {
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-    }
-
-    /**
-     * @api  http://docs.sopra.apiary.io/#reference/games/game-dice-area/retrieve-dice-area
-     */
-    private void gameDiceArea() {
-        RestService.getInstance(getActivity()).getGameDiceArea(gameId, new Callback<List<DiceArea>>() {
-
-            @Override
-            public void success(List<DiceArea> diceAreas, Response response) {
-                // TODO: set the dices ArrayList accoring to the values
-                /* dices.get(COLOR_ID).setDicePointer(position);
-                * where:
-                 * - COLOR_ID = {0 .. 4} (blue - white)
-                *  - position = {0 .. 3} (?, 1, 2, 3)
-                *
-                *  e.g.: dices.get(Colors.BLUE.ordinal()).setDicePointer(2);
-                * */
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                // TODO: handle failure
+                updateLegBettingFields();
+                updateRaceBettingFields();
+                updateRaceTrackFields();
             }
         });
     }
@@ -517,46 +664,262 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     /**
      * Draw the raceTrack according to the game status: all camels, all desert/oasis tiles etc.
      */
-    private void addItemsToRaceTrack() {
+    private void updateRaceTrackFields() {
         int[] margins = {0, 10, 20, 30, 40};
-        cleanRaceTrack();
+        int fieldId;
+        String imageName;
+        int drawableId;
+        clearRaceTrack();
 
-        for (RaceTrackField field: raceTrack) {
-            ArrayList<Integer> camels = field.getCamels();
-            RelativeLayout fieldLayout = (RelativeLayout) getActivity().findViewById(field.getPosition());
+        if (raceTrack == null) return;
+        for (RaceTrackObjectBean field: raceTrack.getFields()) {
+            List<CamelBean> camels = field.stack();
+            fieldId = raceTrackFieldIds.get(raceTrack.getFields().indexOf(field));
+            RelativeLayout fieldLayout = (RelativeLayout) getActivity().findViewById(fieldId);
 
-            if (field.hasDesert()) {
-                fieldLayout.addView(createDynamicImage(0,
-                        field.getDesert(),
-                        RelativeLayout.CENTER_HORIZONTAL,
-                        RelativeLayout.CENTER_VERTICAL));
-            } else if (field.hasOasis()) {
-                fieldLayout.addView(createDynamicImage(0,
-                        field.getOasis(),
-                        RelativeLayout.CENTER_HORIZONTAL,
-                        RelativeLayout.CENTER_VERTICAL));
-            } else if (!camels.isEmpty()) {
+            if (camels != null && field.isOasis() == null) {
                 for (int pos = 0; pos < camels.size(); pos++){
+                    imageName = "camel_" + camels.get(pos).color().name().toLowerCase();
+                    drawableId = getActivity().getResources().getIdentifier(imageName, "drawable", getActivity().getPackageName());
                     fieldLayout.addView(createDynamicImage(margins[pos],
-                            camels.get(pos),
+                            drawableId,
                             RelativeLayout.ALIGN_PARENT_BOTTOM,
-                            RelativeLayout.ALIGN_PARENT_LEFT));
+                        RelativeLayout.ALIGN_PARENT_LEFT));
                 }
+            } else if (field.isOasis()) {
+                imageName = "c" + field.playerId() + "_oasis";
+                drawableId = getActivity().getResources().getIdentifier(imageName, "drawable", getActivity().getPackageName());
+                fieldLayout.addView(createDynamicImage(0,
+                        drawableId,
+                        RelativeLayout.CENTER_HORIZONTAL,
+                        RelativeLayout.CENTER_VERTICAL));
+            } else if (!field.isOasis()) {
+                imageName = "c" + field.playerId() + "_desert";
+                drawableId = getActivity().getResources().getIdentifier(imageName, "drawable", getActivity().getPackageName());
+                fieldLayout.addView(createDynamicImage(0,
+                        drawableId,
+                        RelativeLayout.CENTER_HORIZONTAL,
+                        RelativeLayout.CENTER_VERTICAL));
             }
         }
+    }
+
+    private void updateLegBettingFields(){
+        Integer legBetFieldID;
+        int color;
+        for(LegBettingTile topTile : legBettingArea.getTopLegBettingTiles()){
+            color = legBettingArea.getTopLegBettingTiles().indexOf(topTile);
+            legBetFieldID = legBettingFieldIds.get(color);
+            ImageView legBetButton = (ImageView) getActivity().findViewById(legBetFieldID);
+
+            // compose the correct name for the current color's top leg betting tile
+            String cardImageName = "legbettingtile_" + GameColors.values()[color].name().toLowerCase() + "_" + topTile.leadingPositionGain() + "_button";
+            final int cardDrawableId = getActivity().getResources().getIdentifier(cardImageName, "drawable", getActivity().getPackageName());
+            legBetButton.setImageResource(cardDrawableId);
+        }
+    }
+
+    private void updateRaceBettingFields(){
+        ImageView tolleCamelButton = (ImageView) getActivity().findViewById(raceBettingFieldIds.get(0));
+        ImageView olleCamelButton = (ImageView) getActivity().findViewById(raceBettingFieldIds.get(1));
+
+/* TODO: get the last playerId who has set the card on the specific field (winner/loser)
+        String tolleCamelImageName = "c_" + raceBettingArea.getNrOfWinnerBetting() + "_button";
+        String olleCamelImageName = "c_" + raceBettingArea.getNrOfLoserBetting() + "_button";
+        final int tolleCamelDrawableId = getActivity().getResources().getIdentifier(tolleCamelImageName, "drawable", getActivity().getPackageName());
+        final int olleCamelDrawableId = getActivity().getResources().getIdentifier(olleCamelImageName, "drawable", getActivity().getPackageName());
+        tolleCamelButton.setImageResource(tolleCamelDrawableId);
+        olleCamelButton.setImageResource(olleCamelDrawableId);*/
+    }
+
+    private void updateHeaderBar(){
+        ImageView playerIcon = (ImageView) getActivity().findViewById(playerIconId);
+        TextView playerName = (TextView) getActivity().findViewById(R.id.player_name);
+        ImageView currentPlayerIcon = (ImageView) getActivity().findViewById(R.id.current_player_icon);
+        TextView currentPlayerName = (TextView) getActivity().findViewById(R.id.current_player_name);
+        TextView money = (TextView) getActivity().findViewById(R.id.money);
+
+        playerIcon.setImageResource(getActivity().getResources().getIdentifier("c" + playerId + "_head", "id", getActivity().getPackageName()));
+        playerName.setText(player.username());
+        if (player.equals(currentPlayer)) {
+            currentPlayerName.setText("YOU");
+            currentPlayerIcon.setVisibility(View.GONE);
+        } else {
+            currentPlayerName.setText(currentPlayer.username());
+            currentPlayerIcon.setImageResource(getActivity().getResources().getIdentifier("c" + currentPlayer.id() + "_head", "id", getActivity().getPackageName()));
+            currentPlayerIcon.setVisibility(View.VISIBLE);
+        }
+        money.setText(player.money()+"");
     }
 
     /**
      * Removes all views from the racetrack
      */
-    private void cleanRaceTrack() {
+    private void clearRaceTrack() {
         RelativeLayout fieldLayout;
-        for (RaceTrackField field: raceTrack) {
-            fieldLayout = (RelativeLayout) getActivity().findViewById(field.getPosition());
+        for (Integer field: raceTrackFieldIds) {
+            fieldLayout = (RelativeLayout) getActivity().findViewById(field);
             if (!(fieldLayout == null) && fieldLayout.getChildCount() > 0) {
                 fieldLayout.removeAllViews();
             }
         }
     }
 
+    public void getPlayerStatus() {
+        RestService.getInstance(getActivity()).getGamePlayer(gameId, playerId, new Callback<UserBean>() {
+            @Override
+            public void success(UserBean user, Response response) {
+                player = user;
+                currentPlayer = player; // TODO: get the current player
+                updateHeaderBar();
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                Toast.makeText(getActivity(), "Get Player's Status Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void roundEvaluation() {
+        RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<UserBean>>() {
+            @Override
+            public void success(List<UserBean> users, Response response) {
+                Collections.sort(users, new Comparator<UserBean>() {
+                    @Override
+                    public int compare(UserBean user1, UserBean user2) {
+
+                        return user1.money().compareTo(user2.money());
+                    }
+                });
+
+                usersOrderedByMoney = users;
+
+                roundEvaluationPopup();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), "Get List of Players Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void gameFinishEvaluation(){
+        Bundle b = new Bundle();
+        b.putLong("userId", userId);
+        b.putLong("gameId", gameId);
+        b.putBoolean("isOwner", isOwner);
+        Fragment fragment = new GameFinishFragment();
+        fragment.setArguments(b);
+
+        ((GameActivity) getActivity()).pushFragment(fragment);
+    }
+
+    /**
+     * Called when creating this fragment
+     *
+     * Server pushes event to players -> PusherService gets it and notifies all subscribers to that
+     * event -> AreaService is per default registered to all events and notifies all AreaUpdateSubscriber
+     * (see PusherService.registerAreaServiceAsSubscriber())
+     */
+    private void subscribeToAreaUpdates(){
+        AreaService.getInstance(getActivity()).addSubscriber(AreaName.DICE_AREA, new AreaUpdateSubscriber() {
+            @Override
+            public void onUpdate(AbstractArea area) {
+                diceArea = (DiceArea) area;
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                AlertDialog dialog = dummyPopup("DICE_AREA subscribe error: " + errorMessage);
+                dialog.show();
+            }
+        });
+
+        AreaService.getInstance(getActivity()).addSubscriber(AreaName.LEG_BETTING_AREA, new AreaUpdateSubscriber() {
+            @Override
+            public void onUpdate(AbstractArea area) {
+                legBettingArea = (LegBettingArea) area;
+                updateLegBettingFields();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                AlertDialog dialog = dummyPopup("LEG_BETTING_AREA subscribe error: " + errorMessage);
+                dialog.show();
+            }
+        });
+
+        AreaService.getInstance(getActivity()).addSubscriber(AreaName.RACE_BETTING_AREA, new AreaUpdateSubscriber() {
+            @Override
+            public void onUpdate(AbstractArea area) {
+                raceBettingArea = (RaceBettingArea) area;
+                updateRaceBettingFields();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                AlertDialog dialog = dummyPopup("RACE_BETTING_AREA subscribe error: " + errorMessage);
+                dialog.show();
+            }
+        });
+
+        AreaService.getInstance(getActivity()).addSubscriber(AreaName.RACE_TRACK, new AreaUpdateSubscriber() {
+            @Override
+            public void onUpdate(AbstractArea area) {
+                raceTrack = (RaceTrack) area;
+                updateRaceTrackFields();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                AlertDialog dialog = dummyPopup("RACE_TRACK subscribe error: " + errorMessage);
+                dialog.show();
+            }
+        });
+    }
+
+    private void subscribeToEvents(){
+        // for demonstration purposes
+        // subscribe to move event and display id
+        PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.MOVE_EVENT,
+                new PusherEventSubscriber() {
+                    @Override
+                    public void onNewEvent(final AbstractPusherEvent moveEvent) {
+                        System.out.println("got new event");
+                        getPlayerStatus();
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getActivity(), "new move event: " +
+                                        ((MoveEvent) moveEvent).getMoveId(), Toast.LENGTH_SHORT).show();
+                                updateHeaderBar();
+                            }
+                        });
+                }
+                });
+
+        PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.PLAYER_TURN_EVENT,
+                new PusherEventSubscriber() {
+                    @Override
+                    public void onNewEvent(final AbstractPusherEvent event) {
+                        System.out.println("got new event");
+
+                        PlayerTurnEvent playerTurnEvent = (PlayerTurnEvent) event;
+
+                        if(playerId == playerTurnEvent.getPlayerId()){
+                            // TODO notify player that it is her turn
+                            updateHeaderBar();
+                        }
+                    }
+                });
+
+        PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.LEG_OVER_EVENT,
+            new PusherEventSubscriber() {
+                @Override
+                public void onNewEvent(final AbstractPusherEvent moveEvent) {
+                    roundEvaluation();
+                }
+            });
+    }
 }

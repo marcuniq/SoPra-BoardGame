@@ -15,6 +15,8 @@ import javax.validation.Valid;
 import java.util.List;
 /**
  * @author Marco
+ *
+ * Controller for handling all endpoints starting with /games
  */
 @RestController
 public class UserServiceController extends GenericService {
@@ -29,7 +31,7 @@ public class UserServiceController extends GenericService {
 
     /*
      *	Context: /users
-     *  Description:
+     *  Description: Get a list of all users
      */
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT)
 	@ResponseStatus(HttpStatus.OK)
@@ -37,18 +39,14 @@ public class UserServiceController extends GenericService {
 	public List<UserResponseBean> listUsers() {
 		logger.debug("listUsers");
 
-        try {
-            List<UserResponseBean> result = userService.listUsers();
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        List<UserResponseBean> result = userService.listUsers();
+        return result;
 	}
 
 
     /*
      *	Context: /users
-     *  Description:
+     *  Description: Create a new user
      */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT)
 	@ResponseStatus(HttpStatus.CREATED)
@@ -56,18 +54,14 @@ public class UserServiceController extends GenericService {
 	public UserResponseBean addUser(@RequestBody @Valid UserRequestBean userRequestBean) {
 		logger.debug("addUser: " + userRequestBean);
 
-        try {
-            UserResponseBean result = userService.addUser(userRequestBean);
-            return result;
-        } catch(Exception e){
-            return null;
-        }
+        UserResponseBean result = userService.addUser(userRequestBean);
+        return result;
 	}
 
 
     /*
      *	Context: /users/{userId}
-     *  Description:
+     *  Description: Get user with userId
      */
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT + "/{userId}")
 	@ResponseStatus(HttpStatus.OK)
@@ -75,18 +69,14 @@ public class UserServiceController extends GenericService {
 	public UserResponseBean getUser(@PathVariable Long userId) {
 		logger.debug("getUser: " + userId);
 
-        try {
-            UserResponseBean result = userService.getUser(userId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        UserResponseBean result = userService.getUser(userId);
+        return result;
 	}
 
 
     /*
      *	Context: /users/{userId}/login
-     *  Description:
+     *  Description: Log in user with userId
      */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{userId}/login")
 	@ResponseStatus(HttpStatus.OK)
@@ -94,29 +84,20 @@ public class UserServiceController extends GenericService {
 	public UserLoginLogoutResponseBean login(@PathVariable Long userId) {
 		logger.debug("login: " + userId);
 
-        try {
-            UserLoginLogoutResponseBean result = userService.login(userId);
-            return result;
-        } catch (Exception e){
-            return null;
-        }
+        UserLoginLogoutResponseBean result = userService.login(userId);
+        return result;
 	}
 
 
     /*
      *	Context: /users/{userId}/logout
-     *  Description:
+     *  Description: Log out user with userId
      */
 	@RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{userId}/logout")
 	@ResponseStatus(HttpStatus.OK)
 	public void logout(@PathVariable Long userId, @RequestBody @Valid UserLoginLogoutRequestBean userLoginLogoutRequestBean) {
-		logger.debug("getUser: " + userId);
+		logger.debug("logout user: " + userId);
 
-        try{
-            userService.logout(userId, userLoginLogoutRequestBean);
-
-        } catch (Exception e){
-
-        }
+        userService.logout(userId, userLoginLogoutRequestBean);
 	}
 }

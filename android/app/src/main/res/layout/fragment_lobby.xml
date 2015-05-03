@@ -34,13 +34,11 @@
             android:layout_marginTop="260dp"/>
 
         <RelativeLayout
-            android:layout_width="340dp"
-            android:layout_height="match_parent"
+            android:layout_width="390dp"
+            android:layout_height="fill_parent"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="50dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginEnd="5dp">
+            android:layout_margin="5dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -52,7 +50,7 @@
                     android:id="@+id/you"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Your Card:"
+                    android:text="Your Card"
                     android:textSize="24sp"
                     android:textColor="#ffffff"
                     android:textStyle="bold"
@@ -61,32 +59,34 @@
                     android:layout_marginStart="20dp"/>
             </RelativeLayout>
 
+
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
+                android:layout_height="fill_parent"
                 android:layout_marginTop="50dp"
-                android:background="#70d35400">
+                android:background="@drawable/border">
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#70d35400">
                 <ImageView
-                    android:layout_width="181dp"
-                    android:layout_height="300dp"
+                    android:layout_width="200dp"
+                    android:layout_height="250dp"
                     android:id="@+id/player_card"
-                    android:background="@drawable/c1"
+                    android:src="@drawable/c1"
                     android:contentDescription="@string/hello_world"
-                    android:layout_centerInParent="true" />
+                    android:layout_centerInParent="true"
+                    android:scaleType="fitCenter"/>
+                </RelativeLayout>
                 </RelativeLayout>
          </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="340dp"
+            android:layout_width="390dp"
             android:layout_height="45dp"
             android:background="#333333"
-            android:layout_marginTop="50dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp">
+            android:layout_margin="5dp">
 
             <TextView
                 android:id="@+id/playerListLabel"
@@ -101,22 +101,29 @@
                 android:layout_marginStart="20dp"/>
         </RelativeLayout>
 
+
         <RelativeLayout
-            android:layout_width="340dp"
+            android:layout_width="390dp"
             android:layout_height="fill_parent"
             android:orientation="vertical"
-            android:layout_marginTop="100dp"
-            android:background="#70d35400"
+            android:layout_marginTop="55dp"
+            android:background="@drawable/border"
             android:id="@+id/relativeLayout"
             android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp">
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="5dp">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#70d35400">
             <ListView
                 android:id="@android:id/list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp">
             </ListView>
+        </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
 </FrameLayout>

@@ -5,14 +5,14 @@ package ch.uzh.ifi.seal.soprafs15.controller.beans.game;
  */
 public class GameDesertTileResponseBean extends GameRaceTrackObjectResponseBean {
 
-    private Long playerId;
+    private Integer playerId;
     private Boolean isOasis;
 
-    public Long getPlayerId() {
+    public Integer getPlayerId() {
         return playerId;
     }
 
-    public void setPlayerId(Long playerId) {
+    public void setPlayerId(Integer playerId) {
         this.playerId = playerId;
     }
 

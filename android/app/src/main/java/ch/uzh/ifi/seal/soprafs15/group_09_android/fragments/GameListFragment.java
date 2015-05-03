@@ -10,33 +10,33 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventRegistry;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.GameBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameArrayAdapter;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class GameListFragment extends ListFragment {
 
-    private TextView tvLogBox;
     private GameArrayAdapter gameArrayAdapter; // adapts the ArrayList of Games to the ListView
     private String token;
     private Long joinedGameId;
-    private Long playerId;
+    private Long userId;
 
-    /* empty constructor */
     public GameListFragment() {}
 
     /**
-     * Called after User has successfully logged in.
+     * Called after UserBean has successfully logged in.
      * @return A new instance of fragment GamesListFragment.
      */
     public static GameListFragment newInstance() {
@@ -50,6 +50,8 @@ public class GameListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        userId = this.getArguments().getLong("userId");
     }
 
     /**
@@ -69,8 +71,9 @@ public class GameListFragment extends ListFragment {
                 getActivity(),
                 R.layout.game_item,
                 R.id.game_item_text,
+                R.id.game_item_description,
                 R.id.game_item_icon,
-                new ArrayList<Game>());
+                new ArrayList<GameBean>());
         setListAdapter(gameArrayAdapter);
 
         return v;
@@ -83,17 +86,19 @@ public class GameListFragment extends ListFragment {
     @Override
     public void onResume(){
         super.onResume();
-        RestService.getInstance(getActivity()).getGames(new Callback<List<Game>>() {
+        RestService.getInstance(getActivity()).getGames(new Callback<List<GameBean>>() {
             @Override
-            public void success(List<Game> games, Response response) {
-                for (Game game : games) {
+            public void success(List<GameBean> games, Response response) {
+                gameArrayAdapter.clear();
+                setListAdapter(gameArrayAdapter);
+                for (GameBean game : games) {
                     gameArrayAdapter.add(game);
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
+                Toast.makeText(getActivity(), "Get available games Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -108,38 +113,34 @@ public class GameListFragment extends ListFragment {
      */
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
 
-        Game selectedGame = (Game) getListAdapter().getItem(position);
-/*
-        Toast.makeText(v.getContext(), "You joined the game \"" + selectedGame.name() + "\" with the id (" + selectedGame.id() + ")", Toast.LENGTH_LONG).show();
-*/
-        Long gameId = selectedGame.id();
+        GameBean selectedGame = (GameBean) getListAdapter().getItem(position);
+
+        final Long gameId = selectedGame.id();
         joinedGameId = gameId;
-        User player = User.setToken(token);
-        playerId = player.id();
+        UserBean player = UserBean.setToken(token);
 
-        RestService.getInstance(getActivity()).joinGame(gameId, player, new Callback<Game>() {
-
+        RestService.getInstance(getActivity()).joinGame(gameId, player, new Callback<UserBean>() {
             @Override
-            public void success(Game game, Response response) {
-
-                PusherEventRegistry.register(game);
+            public void success(UserBean user, Response response) {
+                PusherService.getInstance(getActivity()).register(gameId, user.channelName());
 
                 Fragment gameLobbyFragment = GameLobbyFragment.newInstance();
                 Bundle bundle = new Bundle();
                 bundle.putLong("gameId", joinedGameId);
+                bundle.putLong("userId", userId);
                 bundle.putBoolean("isOwner", false);
                 gameLobbyFragment.setArguments(bundle);
 
                 /* See all already created games (testing) */
-                ((MenuActivity) getActivity()).setFragment(gameLobbyFragment);
+                ((MenuActivity) getActivity()).pushFragment(gameLobbyFragment);
             }
 
             @Override
             public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
+                Toast.makeText(getActivity(), "Join Game Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

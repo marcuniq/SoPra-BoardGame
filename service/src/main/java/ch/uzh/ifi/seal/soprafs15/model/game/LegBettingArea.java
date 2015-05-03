@@ -1,11 +1,11 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
-import ch.uzh.ifi.seal.soprafs15.model.move.LegBetting;
-import org.hibernate.annotations.Cascade;
-
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Hakuna on 30.03.2015.
@@ -28,9 +28,8 @@ public class LegBettingArea implements Serializable {
     @MapKeyEnumerated(EnumType.STRING)
     private Map<Color, LegBettingTileStack> legBettingTiles;
 
-    @OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name="GAME_ID")
-    private Game game;
+    @OneToOne(cascade = CascadeType.ALL)//(fetch = FetchType.EAGER)
+    private GameState gameState;
 
     public LegBettingArea(){
         init();
@@ -77,8 +76,19 @@ public class LegBettingArea implements Serializable {
      * @param c Color
      * @return top LegBettingTile of that particular color
      */
-    public LegBettingTile getLegBettingTile(Color c) {
-        return legBettingTiles.get(c).pop();
+    public LegBettingTile popLegBettingTile(Color c) {
+        LegBettingTile tile = legBettingTiles.get(c).pop();
+        tile.setStack(null);
+        return tile;
+    }
+
+    public LegBettingTile peekLegBettingTile(Color c){
+        return legBettingTiles.get(c).peek();
+    }
+
+    public void pushLegBettingTile(LegBettingTile legBettingTile) {
+        LegBettingTileStack stack = legBettingTiles.get(legBettingTile.getColor());
+        stack.push(legBettingTile);
     }
 
 
@@ -98,11 +108,11 @@ public class LegBettingArea implements Serializable {
         this.legBettingTiles = legBettingTiles;
     }
 
-    public Game getGame() {
-        return game;
+    public GameState getGameState() {
+        return gameState;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 }

@@ -1,6 +1,5 @@
 package ch.uzh.ifi.seal.soprafs15.controller.beans.game;
 
-import ch.uzh.ifi.seal.soprafs15.model.game.Color;
 import ch.uzh.ifi.seal.soprafs15.model.game.Die;
 import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingTile;
 
@@ -8,6 +7,7 @@ public class GameMoveResponseBean {
     private Long id;
     private Long gameId;
     private Long userId;
+    private Integer playerId;
     private MoveEnum move;
     private LegBettingTile legBettingTile;
     private Boolean raceBettingOnWinner;
@@ -87,5 +87,11 @@ public class GameMoveResponseBean {
         this.die = die;
     }
 
+    public Integer getPlayerId() {
+        return playerId;
+    }
 
+    public void setPlayerId(Integer playerId) {
+        this.playerId = playerId;
+    }
 }

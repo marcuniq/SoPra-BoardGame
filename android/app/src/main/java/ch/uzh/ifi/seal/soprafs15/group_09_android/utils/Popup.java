@@ -4,6 +4,6 @@ public enum Popup {
     ROLL_DICE,
     RACEBET,
     LEGBET,
-    PLACE_TILE,
-    ROUND_EVALUATION
+    PLACE_TILE,    ROUND,
+    WAITING_FOR_RESPONSE
 }

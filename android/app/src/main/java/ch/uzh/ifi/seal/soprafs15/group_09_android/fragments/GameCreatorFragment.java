@@ -10,10 +10,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.Game;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.User;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.GameBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -25,7 +28,8 @@ public class GameCreatorFragment extends Fragment {
     private TextView tvLogBox;
     private Button createGameButton;
     private String token;
-    private User player;
+    private UserBean player;
+    private Long userId;
     private Long joinedGameId;
 
     /**
@@ -43,10 +47,12 @@ public class GameCreatorFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        userId = this.getArguments().getLong("userId");
     }
 
     /**
-     * User can add a game name and make a POST request to the server and thus create a new game
+     * UserBean can add a game name and make a POST request to the server and thus create a new game
      *
      * @param inflater
      * @param container
@@ -79,35 +85,31 @@ public class GameCreatorFragment extends Fragment {
      */
     private void onClickCreateGameButton(View v) {
         String name = etName.getText().toString();
-
-        // @see http://developer.android.com/training/basics/data-storage/shared-preferences.html
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
 
-        Game game = Game.create( name,                  // name of the game
-                                 token);                // token of current user
-
-        RestService.getInstance(getActivity()).createGame(game, new Callback<Game>() {
-
+        RestService.getInstance(getActivity()).createGame(GameBean.create(name, token), new Callback<GameBean>() {
             @Override
-            public void success(Game game, Response response) {
+            public void success(GameBean game, Response response) {
                 Long gameId = game.id();
                 joinedGameId = gameId;
 
-                //PusherEventRegistry.register(game);
+                // subscribe to pusher events
+                PusherService.getInstance(getActivity()).register(joinedGameId, game.channelName());
 
                 Fragment fragment = GameLobbyFragment.newInstance();
                 Bundle bundle = new Bundle();
                 bundle.putLong("gameId", joinedGameId);
+                bundle.putLong("userId", userId);
                 bundle.putBoolean("isOwner", true);
                 fragment.setArguments(bundle);
 
-                ((MenuActivity) getActivity()).setFragment(fragment);
+                ((MenuActivity) getActivity()).pushFragment(fragment);
             }
 
             @Override
             public void failure(RetrofitError error) {
-                tvLogBox.setText("ERROR: " + error.getMessage());
+                Toast.makeText(getActivity(), "Crate Game Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

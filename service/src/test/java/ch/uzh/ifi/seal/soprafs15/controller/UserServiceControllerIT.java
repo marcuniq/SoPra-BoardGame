@@ -5,12 +5,11 @@ import ch.uzh.ifi.seal.soprafs15.TestUtils;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -49,54 +48,76 @@ public class UserServiceControllerIT {
 	
 	@Test
 	@SuppressWarnings("unchecked")
-	public void testCreateUserSuccess() {
+	public void testCreateUserSuccess() throws Exception {
 
-        // Server Reset: Clean Repos
-        //TestUtils.clearRepositories(template, base);
-
+        // Make sure that no user is saved at Initialization
 		List<UserResponseBean> usersBefore = template.getForObject(base + "/users", List.class);
 		Assert.assertEquals(0, usersBefore.size());
 
+        // Create new User
 		UserRequestBean request = TestUtils.toUserRequestBean(43, "TestUser1");
-
         ResponseEntity<UserResponseBean> response = TestUtils.createUser(request, template, base);
+
+        // Oracle values
+        Long oracleUserId = (long) 1;
 
 		Assert.assertEquals(request.getAge(), response.getBody().getAge());
         Assert.assertEquals(request.getUsername(), response.getBody().getUsername());
-        Assert.assertEquals(1, (long) response.getBody().getId());
-		
+        Assert.assertEquals((long) oracleUserId, (long) response.getBody().getId());
+
+        // Make sure that exactly one user is saved after Test
 	    List<UserResponseBean> usersAfter = template.getForObject(base + "/users", List.class);
 		Assert.assertEquals(1, usersAfter.size());
-
-        // Server Reset: Clean Repos
-        //TestUtils.clearRepositories(template, base);
 	}
+
+//    @Test
+//    @SuppressWarnings("unchecked")
+//    public void testCreateUserFail() throws Exception {
+//
+//        List<UserResponseBean> usersBefore = template.getForObject(base + "/users", List.class);
+//        Assert.assertEquals(0, usersBefore.size());
+//
+//        UserRequestBean request = TestUtils.toUserRequestBean(43, "TestUser1");
+//
+//        ResponseEntity<UserResponseBean> response = TestUtils.createUser(request, template, base);
+//
+//        Assert.assertEquals(request.getAge(), response.getBody().getAge());
+//        Assert.assertEquals(request.getUsername(), response.getBody().getUsername());
+//        Assert.assertEquals(1, (long) response.getBody().getId());
+//
+//        List<UserResponseBean> usersAfter = template.getForObject(base + "/users", List.class);
+//        Assert.assertEquals(1, usersAfter.size());
+//
+//        // Create second user with same name as first user --> Fail
+//
+//        UserRequestBean secondUserRequest = TestUtils.toUserRequestBean(23, "TestUser1");
+//
+//        ResponseEntity<UserResponseBean> secondUserResponse = TestUtils.createUser(secondUserRequest, template, base);
+//
+//        // TODO UserAlreadyExistsException instead of UserResponseBean
+//
+//        List<UserResponseBean> usersAfterSecond = template.getForObject(base + "/users", List.class);
+//        Assert.assertEquals(1, usersAfterSecond.size());
+//    }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testLoginUserSuccess() {
+    public void testLoginUserSuccess() throws Exception {
 
-        // Server Reset: Clean Repos
-        //TestUtils.clearRepositories(template, base);
+        // Make sure that no user is saved at Initialization
+        List<UserResponseBean> usersBefore = template.getForObject(base + "/users", List.class);
+        Assert.assertEquals(0, usersBefore.size());
 
-        // Set up
-
+        // Create new User
         UserRequestBean request = TestUtils.toUserRequestBean(43, "TestUser1");
-
         ResponseEntity<UserResponseBean> response = TestUtils.createUser(request, template, base);
 
-        // Test Login
+        // Login this User
+        ResponseEntity<UserLoginLogoutResponseBean> loginResponse = TestUtils.loginUser(response.getBody().getId(), template, base);
 
-        ResponseEntity<UserLoginLogoutResponseBean> loginResponse = TestUtils.loginUser(1, template, base);
-
+        // Oracle values: TokenLength
         Long oracleTokenLength = (long) "067e6162-3b6f-4ae2-a171-2470b63dff00".length();
 
         Assert.assertEquals((long) oracleTokenLength, loginResponse.getBody().getToken().length());
-
-        // Server Reset: Clean Repos
-        //TestUtils.clearRepositories(template, base);
     }
-
-
-
 }

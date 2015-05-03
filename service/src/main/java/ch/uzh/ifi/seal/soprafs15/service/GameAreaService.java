@@ -5,10 +5,6 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameDiceAreaResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameLegBettingAreaResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRaceBettingAreaResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRaceTrackResponseBean;
-import ch.uzh.ifi.seal.soprafs15.model.game.DiceArea;
-import ch.uzh.ifi.seal.soprafs15.model.game.LegBettingArea;
-import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingArea;
-import ch.uzh.ifi.seal.soprafs15.model.game.RaceTrack;
 
 /**
  * @author Marco

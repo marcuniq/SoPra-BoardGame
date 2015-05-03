@@ -1,16 +1,35 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.models;
 
-import android.os.Parcelable;
+import java.util.List;
 
-import auto.parcel.AutoParcel;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoGson;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.LegBettingAreaBean;
 
-@AutoParcel @AutoGson
-public abstract class LegBettingArea implements Parcelable {
-    public abstract String name();
+/**
+ * @author Marco
+ */
+public class LegBettingArea extends AbstractArea {
 
-    public static LegBettingArea create(String name) {
-        return new AutoParcel_LegBettingArea(name);
+    private Long id;
+    private List<LegBettingTile> topLegBettingTiles;
+
+    public LegBettingArea(LegBettingAreaBean bean){
+        this.id = bean.id();
+        this.topLegBettingTiles = bean.topLegBettingTiles();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<LegBettingTile> getTopLegBettingTiles() {
+        return topLegBettingTiles;
+    }
+
+    public void setTopLegBettingTiles(List<LegBettingTile> topLegBettingTiles) {
+        this.topLegBettingTiles = topLegBettingTiles;
     }
 }
-

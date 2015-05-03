@@ -13,10 +13,7 @@ import java.util.Map;
 
 @Entity
 public class User implements Serializable {
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -37,7 +34,7 @@ public class User implements Serializable {
 	private UserStatus status;
 
     @ManyToOne
-    private Game game;
+    private GameState gameState;
 	
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL) //, fetch=FetchType.EAGER)
     private List<Move> moves = new ArrayList<Move>();
@@ -50,20 +47,25 @@ public class User implements Serializable {
     @MapKeyEnumerated(EnumType.STRING)
     private Map<Color, RaceBettingCard> raceBettingCards = new HashMap<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany( mappedBy = "user",
+                cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
+                fetch = FetchType.EAGER)
     @Column(columnDefinition = "BLOB")
-    private List<LegBettingTile> legBettingTiles;
+    private List<LegBettingTile> legBettingTiles = new ArrayList<>();
 
     @Column
-    private Long playerId;
+    private Integer playerId;
 
     @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
     private DesertTile desertTile;
 
+    @Column
+    private Boolean hasDesertTile;
+
     public User(){}
 
     /**
-     * Initialization of user
+     * Initialization of user with game related objects
      */
     public void initForGamePlay() {
         // money
@@ -77,6 +79,8 @@ public class User implements Serializable {
         // desert tile
         desertTile = new DesertTile();
         desertTile.setOwner(this);
+
+        hasDesertTile = true;
     }
 
     /**
@@ -91,6 +95,26 @@ public class User implements Serializable {
     }
 
     /**
+     * Remove leg betting tile for undoing move
+     * @param tile
+     */
+    public void removeLegBettingTile(LegBettingTile tile){
+        if(legBettingTiles.contains(tile)){
+            legBettingTiles.remove(tile);
+            tile.setUser(null);
+        }
+    }
+
+    /**
+     * Remove all tiles when leg is over
+     */
+    public void removeAllLegBettingTiles(){
+        for(LegBettingTile t : legBettingTiles)
+            t.setUser(null);
+        legBettingTiles.clear();
+    }
+
+    /**
      * Remove RaceBettingCard from User to place it on race betting stack
      * @return RaceBettingCard
      */
@@ -98,6 +122,41 @@ public class User implements Serializable {
         return raceBettingCards.remove(color);
     }
 
+    /**
+     * Helper method to find out if player still has the race betting card
+     * with the given color
+     * @param color
+     * @return
+     */
+    public Boolean hasRaceBettingCard(Color color){
+        return raceBettingCards.get(color) != null;
+    }
+
+    /**
+     * Helper method for undoing move
+     * @param raceBettingCard
+     */
+    public void putRaceBettingCardBack(RaceBettingCard raceBettingCard){
+        raceBettingCards.put(raceBettingCard.getColor(), raceBettingCard);
+    }
+
+    /**
+     * When player chooses to place the desert tile, it must be removed from his posession
+     * @return DesertTile
+     */
+    public DesertTile removeDesertTile(){
+        hasDesertTile = false;
+        return desertTile;
+    }
+
+    /**
+     * Helper method to check if placing the desert tile is a valid move
+     * Invalid move if player doesn't have it anymore
+     * @return
+     */
+    public Boolean hasDesertTile(){
+        return hasDesertTile;
+    }
 
     public Map<Color, RaceBettingCard> getRaceBettingCards() {
         return raceBettingCards;
@@ -147,14 +206,6 @@ public class User implements Serializable {
 		this.username = username;
 	}
 
-	public Game getGame() {
-		return game;
-	}
-
-	public void setGame(Game game) {
-		this.game = game;
-	}
-
 	public List<Move> getMoves() {
 		return moves;
 	}
@@ -179,11 +230,11 @@ public class User implements Serializable {
 		this.status = status;
 	}
 
-    public Long getPlayerId() {
+    public Integer getPlayerId() {
         return playerId;
     }
 
-    public void setPlayerId(Long playerId) {
+    public void setPlayerId(Integer playerId) {
         this.playerId = playerId;
     }
 
@@ -193,5 +244,21 @@ public class User implements Serializable {
 
     public void setDesertTile(DesertTile desertTile) {
         this.desertTile = desertTile;
+    }
+
+    public Boolean getHasDesertTile() {
+        return hasDesertTile;
+    }
+
+    public void setHasDesertTile(Boolean hasDesertTile) {
+        this.hasDesertTile = hasDesertTile;
+    }
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 }

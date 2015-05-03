@@ -3,10 +3,10 @@ package ch.uzh.ifi.seal.soprafs15.model.game;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameStatus;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.move.Move;
+import ch.uzh.ifi.seal.soprafs15.model.StateManager;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,31 +27,9 @@ public class Game implements Serializable {
 	
 	@Column(nullable = false) 
 	private String owner;
-	
-	@Column 
-	private GameStatus status;
-	
-	@Column
-	private Integer currentPlayer = 0;
 
-    @OneToMany(mappedBy="game", cascade = CascadeType.ALL) //, fetch=FetchType.EAGER)
-    private List<Move> moves = new ArrayList<Move>();
-    
-    @OneToMany(mappedBy="game", cascade = CascadeType.ALL) //, fetch=FetchType.EAGER)
-    //@OrderColumn
-    private List<User> players = new ArrayList<User>();
-
-    @OneToOne(mappedBy = "game", cascade=CascadeType.ALL)
-    private RaceTrack raceTrack = new RaceTrack();
-
-    @OneToOne(mappedBy = "game", cascade=CascadeType.ALL)
-    private LegBettingArea legBettingArea = new LegBettingArea();
-
-    @OneToOne(mappedBy = "game", cascade=CascadeType.ALL)
-    private RaceBettingArea raceBettingArea = new RaceBettingArea();
-
-    @OneToOne(mappedBy = "game", cascade=CascadeType.ALL)
-    private DiceArea diceArea = new DiceArea();
+    @OneToOne(cascade=CascadeType.ALL)
+    private StateManager stateManager;
 
     @Column
     private String pusherChannelName;
@@ -62,43 +40,77 @@ public class Game implements Serializable {
     }
 
     private void init() {
-        raceTrack.setGame(this);
-        legBettingArea.setGame(this);
-        raceBettingArea.setGame(this);
-        diceArea.setGame(this);
-
-        status = GameStatus.OPEN;
+        stateManager = new StateManager(this);
 
         pusherChannelName = UUID.randomUUID().toString();
     }
 
     public void initForGamePlay() {
-        raceTrack.initForGamePlay();
+        stateManager.getRaceTrack().initForGamePlay();
 
-        for(User p : players)
+        for(User p : stateManager.getPlayers())
             p.initForGamePlay();
     }
 
 
     public void addMove(Move move) {
-        if(!moves.contains(move)) {
-            moves.add(move);
-            //move.setGame(this);
-        }
-
+        stateManager.addMove(move);
     }
 
     public void addPlayer(User player){
-        if(!players.contains(player)) {
-            players.add(player);
-            player.setGame(this);
-        }
+        stateManager.addPlayer(player);
     }
 
-    public User getNextPlayer() {
-        return getPlayers().get((getCurrentPlayer() + 1) % getPlayers().size());
+    public void removePlayer(User player){
+        stateManager.removePlayer(player);
+        player.setGameState(null);
     }
 
+    public List<Move> getMoves() {
+        return stateManager.getMoves();
+    }
+
+    public List<User> getPlayers() {
+        return stateManager.getPlayers();
+    }
+
+    public GameStatus getStatus() {
+        return stateManager.getStatus();
+    }
+
+    public void setStatus(GameStatus status) {
+        stateManager.setStatus(status);
+    }
+
+    public Integer getCurrentPlayerId() {
+        return stateManager.getCurrentPlayerId();
+    }
+
+    public void nextPlayer(){ stateManager.nextPlayer();}
+
+    public RaceTrack getRaceTrack() {
+        return stateManager.getRaceTrack();
+    }
+
+    public LegBettingArea getLegBettingArea() {
+        return stateManager.getLegBettingArea();
+    }
+
+    public RaceBettingArea getRaceBettingArea() {
+        return stateManager.getRaceBettingArea();
+    }
+
+    public DiceArea getDiceArea() {
+        return stateManager.getDiceArea();
+    }
+
+    public Boolean isInFastMode(){
+        return stateManager.isInFastMode();
+    }
+
+    public void setIsInFastMode(Boolean isInFastMode){
+        stateManager.setIsInFastMode(isInFastMode);
+    }
 
 
     public Long getId() {
@@ -125,71 +137,6 @@ public class Game implements Serializable {
 		this.owner = owner;
 	}
 
-	public List<Move> getMoves() {
-		return moves;
-	}
-
-	public void setMoves(List<Move> moves) {
-		this.moves = moves;
-	}
-
-	public List<User> getPlayers() {
-		return players;
-	}
-
-	public void setPlayers(List<User> players) {
-		this.players = players;
-	}
-
-	public GameStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(GameStatus status) {
-		this.status = status;
-	}
-
-	public Integer getCurrentPlayer() {
-		return currentPlayer;
-	}
-
-	public void setCurrentPlayer(Integer currentPlayer) {
-		this.currentPlayer = currentPlayer;
-	}
-
-    public RaceTrack getRaceTrack() {
-        return raceTrack;
-    }
-
-    public void setRaceTrack(RaceTrack raceTrack) {
-        this.raceTrack = raceTrack;
-    }
-
-    public LegBettingArea getLegBettingArea() {
-        return legBettingArea;
-    }
-
-    public void setLegBettingArea(LegBettingArea legBettingArea) {
-        this.legBettingArea = legBettingArea;
-    }
-
-    public RaceBettingArea getRaceBettingArea() {
-        return raceBettingArea;
-    }
-
-    public void setRaceBettingArea(RaceBettingArea raceBettingArea) {
-        this.raceBettingArea = raceBettingArea;
-    }
-
-    public DiceArea getDiceArea() {
-        return diceArea;
-    }
-
-    public void setDiceArea(DiceArea diceArea) {
-        this.diceArea = diceArea;
-    }
-
-
     public String getPusherChannelName() {
         return pusherChannelName;
     }
@@ -198,5 +145,11 @@ public class Game implements Serializable {
         this.pusherChannelName = pusherChannelName;
     }
 
+    public StateManager getStateManager() {
+        return stateManager;
+    }
 
+    public void setStateManager(StateManager stateManager) {
+        this.stateManager = stateManager;
+    }
 }

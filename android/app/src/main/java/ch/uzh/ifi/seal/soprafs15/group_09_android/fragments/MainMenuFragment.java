@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
+
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 
@@ -19,6 +21,7 @@ public class MainMenuFragment extends Fragment {
 
     private Button createGameMenuButton;
     private Button listGameMenuButton;
+    private Long userId;
     private String token;
 
     public MainMenuFragment() {}
@@ -36,8 +39,11 @@ public class MainMenuFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_main_menu, container, false);
 
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("token",Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
+
+        Bundle b = getActivity().getIntent().getExtras();
+        userId = b.getLong("userId");
 
         createGameMenuButton = (Button) v.findViewById(R.id.createGameMenuButton);
         createGameMenuButton.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +69,12 @@ public class MainMenuFragment extends Fragment {
      * @param v the current View
      */
     private void onClickCreateGameMenuButton(View v) {
-        ((MenuActivity)getActivity()).pushFragment(GameCreatorFragment.newInstance());
+        Bundle b = new Bundle();
+        b.putLong("userId", userId);
+        Fragment fragment = new GameCreatorFragment();
+        fragment.setArguments(b);
+
+        ((MenuActivity) getActivity()).pushFragment(fragment);
     }
 
     /**
@@ -72,6 +83,13 @@ public class MainMenuFragment extends Fragment {
      * @param v the current View
      */
     private void onClickListGameMenuButton(View v) {
-        ((MenuActivity)getActivity()).pushFragment(GameListFragment.newInstance());
+        Bundle b = new Bundle();
+        b.putLong("userId", userId);
+        Fragment fragment = new GameListFragment();
+        fragment.setArguments(b);
+
+        ((MenuActivity) getActivity()).pushFragment(fragment);
     }
+
+
 }

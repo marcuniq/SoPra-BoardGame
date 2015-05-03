@@ -22,7 +22,7 @@
             <ImageButton
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:id="@+id/playerIcon"
+                android:id="@+id/player_icon"
                 android:background="@drawable/c1_head"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
@@ -30,7 +30,7 @@
                 android:contentDescription="@string/hello_world"
                 android:clickable="true" />
 
-            <!-- displays Game status or so -->
+            <!-- displays GameBean status or so -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -40,7 +40,8 @@
                 android:id="@+id/player_name"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="80dp"
-                android:layout_marginLeft="80dp"/>
+                android:layout_marginLeft="80dp"
+                android:textSize="16sp"/>
         </RelativeLayout>
 
         <!-- display current player -->
@@ -49,15 +50,33 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true">
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+            <!-- displays current player's name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Currently playing:"
+                android:textColor="#ffffff"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"/>
+
             <!-- displays current player's image -->
             <ImageView
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:id="@+id/currentPlayerIcon"
+                android:id="@+id/current_player_icon"
                 android:background="@drawable/c1_head"
-                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
                 android:contentDescription="@string/hello_world"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"/>
 
             <!-- displays current player's name -->
             <TextView
@@ -66,11 +85,13 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/app_name"
                 android:textColor="#ffffff"
-                android:id="@+id/currentPlayerName"
-                android:layout_marginStart="70dp"
-                android:layout_marginLeft="70dp"
-                android:layout_centerVertical="true"
-                android:textStyle="bold"/>
+                android:id="@+id/current_player_name"
+                android:layout_gravity="center_vertical"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"/>
+            </LinearLayout>
         </RelativeLayout>
 
 
@@ -79,7 +100,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="false" android:layout_marginRight="50dp">
+            android:layout_alignParentEnd="false"
+            android:layout_marginEnd="50dp"
+            android:layout_marginRight="50dp">
 
             <!-- displays "money" -->
             <ImageView
@@ -101,15 +124,23 @@
                 android:layout_marginRight="50dp"
                 android:layout_marginEnd="50dp"
                 android:layout_centerInParent="true"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:textSize="24sp"/>
         </RelativeLayout>
-        <RelativeLayout android:layout_width="wrap_content" android:layout_height="match_parent"
-                        android:layout_alignParentRight="true" android:layout_alignParentEnd="true"
-                        android:layout_marginRight="12dp">
-            <ImageView android:layout_width="40dp" android:layout_height="40dp"
-                       android:id="@+id/help" android:background="@drawable/help"
-                       android:contentDescription="@string/hello_world" android:layout_centerVertical="true"
-                    />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="12dp">
+
+            <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/help"
+                android:background="@drawable/help"
+                android:contentDescription="@string/hello_world"
+                android:layout_centerVertical="true"/>
         </RelativeLayout>
     </RelativeLayout>
 
@@ -312,89 +343,105 @@
             android:layout_height="fill_parent">
 
             <!-- legbetting cards blue -->
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:id="@+id/legbetting_blue"
-                android:layout_marginTop="15dp"
-                android:layout_marginLeft="-5dp"
-                android:layout_marginStart="-5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="-6dp"
+                android:layout_marginStart="-6dp"
                 android:contentDescription="@string/legbetting_blue"
-                android:background="@drawable/legbettingtile_blue_5_button"/>
+                android:scaleType="fitCenter"
+                android:src="@drawable/legbettingtile_blue_5_button"
+                android:clickable="true"/>
 
             <!-- legbetting cards green -->
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:id="@+id/legbetting_green"
-                android:layout_marginTop="75dp"
-                android:layout_marginLeft="75dp"
-                android:layout_marginStart="75dp"
+                android:layout_marginTop="73dp"
+                android:layout_marginLeft="78dp"
+                android:layout_marginStart="78dp"
                 android:contentDescription="@string/legbetting_green"
-                android:background="@drawable/legbettingtile_green_5_button"/>
+                android:scaleType="fitCenter"
+                android:src="@drawable/legbettingtile_green_5_button"
+                android:clickable="true"/>
 
             <!-- legbetting cards orange -->
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="80dp"
                 android:id="@+id/legbetting_orange"
-                android:layout_marginTop="183dp"
-                android:layout_marginLeft="113dp"
-                android:layout_marginStart="113dp"
+                android:layout_marginTop="208dp"
+                android:layout_marginLeft="118dp"
+                android:layout_marginStart="118dp"
                 android:contentDescription="@string/legbetting_orange"
-                android:background="@drawable/legbettingtile_orange_5_button"/>
+                android:scaleType="fitCenter"
+                android:src="@drawable/legbettingtile_orange_5_button"
+                android:clickable="true"/>
 
             <!-- legbetting cards yellow -->
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:id="@+id/legbetting_yellow"
-                android:layout_marginTop="288dp"
-                android:layout_marginLeft="75dp"
-                android:layout_marginStart="75dp"
+                android:layout_marginTop="285dp"
+                android:layout_marginLeft="78dp"
+                android:layout_marginStart="78dp"
                 android:contentDescription="@string/legbetting_yellow"
-                android:background="@drawable/legbettingtile_yellow_5_button"/>
+                android:scaleType="fitCenter"
+                android:src="@drawable/legbettingtile_yellow_5_button"
+                android:clickable="true"/>
 
             <!-- legbetting cards white -->
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:id="@+id/legbetting_white"
-                android:layout_marginTop="355dp"
-                android:layout_marginLeft="-3dp"
-                android:layout_marginStart="-3dp"
+                android:layout_marginTop="351dp"
+                android:layout_marginLeft="-5dp"
+                android:layout_marginStart="-5dp"
                 android:contentDescription="@string/legbetting_white"
-                android:background="@drawable/legbettingtile_white_5_button"/>
+                android:scaleType="fitCenter"
+                android:src="@drawable/legbettingtile_white_5_button"
+                android:clickable="true"/>
 
             <!-- winner betting -->
-            <ImageButton
+            <ImageView
                 android:layout_width="110dp"
                 android:layout_height="75dp"
                 android:id="@+id/winner_betting"
                 android:layout_marginTop="13dp"
-                android:layout_marginLeft="263dp"
-                android:layout_marginStart="263dp"
-                android:contentDescription="@string/winner_betting"/>
+                android:layout_marginLeft="280dp"
+                android:layout_marginStart="280dp"
+                android:contentDescription="@string/winner_betting"
+                android:clickable="true"
+                android:src="@drawable/empty_image"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="140dp"
+                android:layout_height="80dp"
                 android:id="@+id/pyramid_tile"
-                android:layout_marginTop="183dp"
-                android:layout_marginLeft="245dp"
-                android:layout_marginStart="245dp"
+                android:layout_marginTop="208dp"
+                android:layout_marginLeft="260dp"
+                android:layout_marginStart="260dp"
                 android:contentDescription="@string/pyramid_tile"
-                android:background="@drawable/pyramid_tile_1_button"/>
+                android:scaleType="fitCenter"
+                android:src="@drawable/pyramid_tile_1_button"
+                android:clickable="true"/>
 
             <!-- loser betting -->
-            <ImageButton
+            <ImageView
                 android:layout_width="110dp"
                 android:layout_height="75dp"
                 android:id="@+id/loser_betting"
                 android:layout_marginTop="414dp"
-                android:layout_marginLeft="263dp"
-                android:layout_marginStart="263dp"
-                android:contentDescription="@string/loser_betting"/>
+                android:layout_marginLeft="280dp"
+                android:layout_marginStart="280dp"
+                android:contentDescription="@string/loser_betting"
+                android:clickable="true"
+                android:src="@drawable/empty_image"/>
 
         </RelativeLayout>
     </LinearLayout>

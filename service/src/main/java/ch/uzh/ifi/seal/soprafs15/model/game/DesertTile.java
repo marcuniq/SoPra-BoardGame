@@ -1,7 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameDesertTileResponseBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRaceTrackObjectResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 
 import javax.persistence.*;
@@ -59,7 +58,7 @@ public class DesertTile extends RaceTrackObject implements Serializable {
     @Override
     public GameDesertTileResponseBean toBean() {
         GameDesertTileResponseBean bean = new GameDesertTileResponseBean();
-        //bean.setId(id);
+        bean.setPosition(position);
         bean.setPlayerId(owner.getPlayerId());
         bean.setIsOasis(isOasis);
 

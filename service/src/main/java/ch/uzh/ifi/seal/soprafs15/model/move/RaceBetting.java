@@ -3,9 +3,11 @@ package ch.uzh.ifi.seal.soprafs15.model.move;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;
 import ch.uzh.ifi.seal.soprafs15.model.game.Color;
-import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingArea;
 import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingCard;
+import ch.uzh.ifi.seal.soprafs15.service.GameLogicService;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.MoveUndoException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,14 +30,16 @@ public class RaceBetting extends Move {
      */
     @Override
     public GameMoveResponseBean toGameMoveResponseBean() {
-        GameMoveResponseBean bean = new GameMoveResponseBean();
-        bean.setId(id);
-        bean.setGameId(game.getId());
-        bean.setUserId(user.getId());
+        GameMoveResponseBean bean = super.toGameMoveResponseBean();
         bean.setMove(MoveEnum.RACE_BETTING);
         bean.setRaceBettingOnWinner(betOnWinner);
 
         return bean;
+    }
+
+    @Override
+    public Boolean isValid() {
+        return user.hasRaceBettingCard(color);
     }
 
     /**
@@ -47,12 +51,24 @@ public class RaceBetting extends Move {
 
         RaceBettingCard raceBettingCard = user.getRaceBettingCard(color);
 
-        if(betOnWinner)
-            raceBettingArea.betOnWinner(raceBettingCard);
-        else
-            raceBettingArea.betOnLoser(raceBettingCard);
+        raceBettingArea.bet(raceBettingCard, betOnWinner);
 
         return this;
+    }
+
+    /**
+     * Undo action for fast mode
+     */
+    @Override
+    public void undo() {
+        RaceBettingArea raceBettingArea = game.getRaceBettingArea();
+
+        RaceBettingCard raceBettingCard = raceBettingArea.undoBet(betOnWinner);
+
+        if(raceBettingCard.getUser().getId() != user.getId())
+            throw new MoveUndoException("undoing race betting failed, not same user", RaceBetting.class);
+
+        user.putRaceBettingCardBack(raceBettingCard);
     }
 
     public Boolean getBetOnWinner() {

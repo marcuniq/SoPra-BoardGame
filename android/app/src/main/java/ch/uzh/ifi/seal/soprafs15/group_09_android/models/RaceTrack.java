@@ -1,16 +1,37 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.models;
 
-import android.os.Parcelable;
 
-import auto.parcel.AutoParcel;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoGson;
+import java.util.List;
 
-@AutoParcel @AutoGson
-public abstract class RaceTrack implements Parcelable {
-    public abstract String name();
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackObjectBean;
 
-    public static RaceTrack create(String name) {
-        return new AutoParcel_RaceTrack(name);
+/**
+ * @author Marco
+ */
+public class RaceTrack extends AbstractArea {
+
+    private Long id;
+    private List<RaceTrackObjectBean> fields;
+
+    public RaceTrack(RaceTrackBean bean){
+        this.id = bean.id();
+        this.fields = bean.fields();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<RaceTrackObjectBean> getFields() {
+        return fields;
+    }
+
+    public void setFields(List<RaceTrackObjectBean> fields) {
+        this.fields = fields;
     }
 }
-

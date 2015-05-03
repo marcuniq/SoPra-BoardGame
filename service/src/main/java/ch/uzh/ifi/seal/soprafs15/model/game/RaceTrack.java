@@ -1,11 +1,12 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
+import ch.uzh.ifi.seal.soprafs15.GameConstants;
+import ch.uzh.ifi.seal.soprafs15.model.User;
+import javafx.util.Pair;
+
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -26,11 +27,10 @@ public class RaceTrack implements Serializable {
     @ElementCollection
     @Column(columnDefinition = "BLOB")
     //@Size(max=16)
-    private List<RaceTrackObject> fields = new ArrayList<>(16);
+    private List<RaceTrackObject> fields = new ArrayList<>();
 
-    @OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name="GAME_ID")
-    private Game game;
+    @OneToOne(cascade = CascadeType.ALL)//(fetch = FetchType.EAGER)
+    private GameState gameState;
 
     public RaceTrack(){
     }
@@ -40,39 +40,50 @@ public class RaceTrack implements Serializable {
      */
     public void initForGamePlay() {
         // set 16 placeholders
-        for(int i = 0; i < 16; i++)
-            fields.add(new RaceTrackFieldPlaceholder());
+        //for(int i = 0; i < 16; i++)
+        //    fields.add(new RaceTrackFieldPlaceholder());
 
         // put camels on race trace
         // reuse dice area for random placing
-        List<Die> diceInPyramid = game.getDiceArea().getDiceInPyramid();
+        List<Die> diceInPyramid = gameState.getDiceArea().getDiceInPyramid();
 
         // group dice by face value
         Map<Integer, List<Die>> map = diceInPyramid.stream().collect(Collectors.groupingBy(v -> v.getFaceValue()));
 
-        for(Integer i : map.keySet()){
+        for(Integer position : map.keySet()){
             List<Camel> stack = new ArrayList<>();
 
-            for (Die d: map.get(i)){
+            for (Die d: map.get(position)){
                 stack.add(new Camel(d.getColor()));
             }
 
             if(!stack.isEmpty())
-                placeRaceTrackObject(new CamelStack(stack), i);
+                addRaceTrackObject(new CamelStack(position, stack));
         }
 
         // put dice back
-        game.getDiceArea().init();
+        gameState.getDiceArea().init();
     }
 
     /**
      *
-     * @param raceTrackObject CamelStack, DesertTile or RaceTrackFieldPlaceholder
-     * @param position between 1 - 16
+     * @param raceTrackObject CamelStack or DesertTile
      */
+    public void addRaceTrackObject(RaceTrackObject raceTrackObject) {
+        fields.add(raceTrackObject);
+        sortByPosition();
+    }
 
-    public void placeRaceTrackObject(RaceTrackObject raceTrackObject, Integer position) {
-        fields.set(position - 1, raceTrackObject);
+    private void sortByPosition(){
+        fields = fields.stream().sorted((rto1, rto2) -> Integer.compare(rto1.getPosition(), rto2.getPosition()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Undo action for fast mode
+     */
+    public void removeRaceTrackObject(Integer position) {
+        fields.remove(getRaceTrackObject(position));
     }
 
     /**
@@ -81,7 +92,120 @@ public class RaceTrack implements Serializable {
      * @return RaceTrackObject at requested position
      */
     public RaceTrackObject getRaceTrackObject(Integer position) {
-        return fields.get(position - 1);
+        Optional<RaceTrackObject> raceTrackObject = fields.stream().filter(rto -> rto.position == position).findFirst();
+        return raceTrackObject.isPresent() ? raceTrackObject.get() : null;
+    }
+
+    public void moveCamelStack(Color color, Integer nrOfFieldsToAdvance){
+
+        // locate Camel with color
+        CamelStack camelStack = (CamelStack) fields.stream().filter(rto -> rto.getClass() == CamelStack.class)
+                                            .filter(cs -> ((CamelStack) cs).hasCamel(color)).findFirst().get();
+
+        Pair<CamelStack,Boolean> pair = camelStack.splitOrGetCamelStack(color);
+        CamelStack newCamelStack = pair.getKey();
+        Boolean splitOccurred = pair.getValue();
+
+        newCamelStack.addPreviousPosition(camelStack.getPosition());
+
+
+        // advance camel stack
+        Integer newPosition = camelStack.getPosition() + nrOfFieldsToAdvance;
+
+        Boolean mergeOccurred =  new Boolean(false);
+        while(getRaceTrackObject(newPosition) != null){
+            // is at that position another camel stack or a desert tile?
+
+            if(getRaceTrackObject(newPosition) instanceof CamelStack){
+                ((CamelStack) getRaceTrackObject(newPosition)).merge(newCamelStack);
+                mergeOccurred = Boolean.TRUE;
+                break;
+            } else if(getRaceTrackObject(newPosition) instanceof DesertTile){
+                DesertTile desertTile = ((DesertTile)getRaceTrackObject(newPosition));
+
+                User owner = desertTile.getOwner();
+                owner.setMoney(owner.getMoney() + GameConstants.DESERT_TILE_PAYOUT);
+
+                if(desertTile.getIsOasis())
+                    newPosition += GameConstants.DESERT_TILE_MOVE_SPACE;
+                else
+                    newPosition -= GameConstants.DESERT_TILE_MOVE_SPACE;
+            }
+        }
+
+
+        if(splitOccurred && mergeOccurred){
+            // do nothing
+
+        } else if(splitOccurred && !mergeOccurred){
+            newCamelStack.setPosition(newPosition);
+            addRaceTrackObject(newCamelStack);
+
+        } else if(!splitOccurred && mergeOccurred){
+            removeRaceTrackObject(camelStack.getPosition());
+
+        } else if(!splitOccurred && !mergeOccurred){
+            // simple move
+            newCamelStack.setPosition(newPosition);
+        }
+
+        sortByPosition();
+    }
+
+    public void undoMoveCamelStack(Color color, Integer faceValue) {
+
+    }
+
+    public void removeDesertTiles(){
+        List<RaceTrackObject> desertTiles = fields.stream().filter(rto -> rto.getClass() == DesertTile.class).collect(Collectors.toList());
+        fields.removeAll(desertTiles);
+    }
+
+    public Map<Color, Ranking> getRanking(){
+        Map<Color, Ranking> rankingMap = new HashMap<>();
+
+        sortByPosition();
+
+        // leading camel stack
+        CamelStack leadingCamelStack = (CamelStack) fields.stream().filter(rto -> rto.getClass() == CamelStack.class)
+                .max((rto1, rto2) -> Integer.compare(rto1.position, rto2.position)).get();
+
+        // top camel is first
+        Camel firstCamel = leadingCamelStack.peek();
+        rankingMap.put(firstCamel.getColor(), Ranking.FIRST);
+
+
+        // second camel
+        Camel secondCamel = null;
+        if(leadingCamelStack.getStack().size() > 1){
+            // second camel is on the same camel stack
+            secondCamel = leadingCamelStack.getSecondCamel();
+        } else {
+            // find second camel stack
+
+
+            CamelStack secondCamelStack = (CamelStack) fields.stream().filter(rto -> rto.getClass() == CamelStack.class)
+                    .filter(cs -> cs.position != leadingCamelStack.position)
+                    .max((cs1, cs2) -> Integer.compare(cs1.position, cs2.position)).get();
+
+            secondCamel = secondCamelStack.peek();
+        }
+        rankingMap.put(secondCamel.getColor(), Ranking.SECOND);
+
+
+        // last camel stack
+        CamelStack lastCamelStack = (CamelStack) fields.stream().filter(rto -> rto.getClass() == CamelStack.class)
+                .min((rto1, rto2) -> Integer.compare(rto1.position, rto2.position)).get();
+
+        rankingMap.put(lastCamelStack.getGroundCamel().getColor(), Ranking.LAST);
+
+
+        // for every other camel
+        for(Color c : Color.values()){
+            rankingMap.putIfAbsent(c, Ranking.SOMEWHERE_IN_THE_MIDDLE);
+        }
+
+        return rankingMap;
     }
 
 
@@ -101,11 +225,13 @@ public class RaceTrack implements Serializable {
         this.fields = fields;
     }
 
-    public Game getGame() {
-        return game;
+    public GameState getGameState() {
+        return gameState;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
+
+
 }

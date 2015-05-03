@@ -26,7 +26,7 @@ import java.util.List;
 @Service("gameMapperService")
 public class GameMapperServiceImpl extends GameMapperService {
 
-    Logger logger = LoggerFactory.getLogger(GameMapperServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(GameMapperServiceImpl.class);
 
     protected UserRepository userRepository;
     protected GameRepository gameRepository;
@@ -56,19 +56,17 @@ public class GameMapperServiceImpl extends GameMapperService {
         bean.setId(game.getId());
         bean.setName(game.getName());
         bean.setOwner(game.getOwner());
-        bean.setNumberOfPlayers(game.getPlayers().size());
         bean.setStatus(game.getStatus());
+        bean.setNumberOfMoves(game.getMoves().size());
+        bean.setNumberOfPlayers(game.getPlayers().size());
+        bean.setCurrentPlayerId(game.getCurrentPlayerId());
 
         return bean;
     }
 
     @Override
     public GameCreateResponseBean toGameCreateResponseBean(Game game) {
-        GameCreateResponseBean bean = new GameCreateResponseBean();
-        bean.setId(game.getId());
-        bean.setName(game.getName());
-        bean.setOwner(game.getOwner());
-        bean.setNumberOfPlayers(game.getPlayers().size());
+        GameCreateResponseBean bean = new GameCreateResponseBean(toGameResponseBean(game));
         bean.setChannelName(game.getPusherChannelName());
 
         return bean;
@@ -91,10 +89,17 @@ public class GameMapperServiceImpl extends GameMapperService {
     }
 
     @Override
+    @Transactional(readOnly=true)
     public GamePlayerResponseBean toGamePlayerResponseBean(User player) {
         GamePlayerResponseBean gamePlayerResponseBean = new GamePlayerResponseBean();
         gamePlayerResponseBean.setId(player.getId());
+        gamePlayerResponseBean.setPlayerId(player.getPlayerId());
+        gamePlayerResponseBean.setUsername(player.getUsername());
+        gamePlayerResponseBean.setMoney(player.getMoney());
         gamePlayerResponseBean.setNumberOfMoves(player.getMoves().size());
+
+        if(player.getLegBettingTiles() != null)
+            gamePlayerResponseBean.setLegBettingTiles(player.getLegBettingTiles());
 
         return gamePlayerResponseBean;
     }
@@ -174,8 +179,10 @@ public class GameMapperServiceImpl extends GameMapperService {
     }
 
     @Override
-    public GameAddPlayerResponseBean toGameAddPlayerResponseBean(Game game) {
-        GameAddPlayerResponseBean bean = new GameAddPlayerResponseBean();
+    public GameAddPlayerResponseBean toGameAddPlayerResponseBean(User player, Game game) {
+        GamePlayerResponseBean gamePlayerResponseBean = toGamePlayerResponseBean(player);
+
+        GameAddPlayerResponseBean bean = new GameAddPlayerResponseBean(gamePlayerResponseBean);
         bean.setChannelName(game.getPusherChannelName());
         return bean;
     }
@@ -184,7 +191,6 @@ public class GameMapperServiceImpl extends GameMapperService {
     public GameRaceTrackResponseBean toRaceTrackResponseBean(RaceTrack raceTrack) {
         GameRaceTrackResponseBean bean = new GameRaceTrackResponseBean();
         bean.setId(raceTrack.getId());
-        bean.setGameId(raceTrack.getGame().getId());
 
         List<GameRaceTrackObjectResponseBean> fields = new ArrayList<>();
         for(RaceTrackObject rto: raceTrack.getFields())
