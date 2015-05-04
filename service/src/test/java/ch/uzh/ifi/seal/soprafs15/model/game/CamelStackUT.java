@@ -13,7 +13,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-
 public class CamelStackUT {
 
     //declare 2 camels that are in the stack from the beginning
