@@ -138,7 +138,13 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             }
             for (Integer button : legBettingFieldIds) {
                 if (button == v.getId()) {
-                    legBettingPopup(v, R.layout.popup_leg_betting, Moves.LEG_BETTING, legBettingFieldIds.indexOf(button));
+
+                    pickedCardColor = GameColors.values()[legBettingFieldIds.indexOf(button)];
+                    modifiedButton = (ImageView) v.findViewById(button);
+                    lastResource = modifiedButton.getDrawable();
+                    if (lastResource == null) return; // forbid picking "empty" card
+
+                    legBettingPopup(v, R.layout.popup_leg_betting, Moves.LEG_BETTING);
                     return;
                 }
             }
@@ -257,7 +263,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         if (!diceArea.getRolledDice().isEmpty()) {
             for (DieBean dieBean : diceArea.getRolledDice()){
                 diceImageNames.set(dieBean.color().ordinal(), dieBean.faceValue() + "_" + dieBean.color().name().toLowerCase());
-                System.out.println(dieBean.faceValue() + "_" + dieBean.color().name().toLowerCase());
             }
         }
 
@@ -387,19 +392,18 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void legBettingPopup(View v, int popup_leg_betting, final Moves legBetting, int color) {
-        pickedCardColor = GameColors.values()[color];
-        modifiedButton = (ImageView) v.findViewById(v.getId());
-        lastResource = modifiedButton.getDrawable();
-        if (lastResource == null) return; // forbid picking "empty" card
-
+    private void legBettingPopup(View v, int popup_leg_betting, final Moves legBetting) {
         View popupView = defaultPopup(v, popup_leg_betting);
-        ImageView card = (ImageView) popupView.findViewById(R.id.card);
-        Integer cardValue = legBettingArea.getTopLegBettingTiles().get(GameColors.values()[color].ordinal()).leadingPositionGain();
 
+        Integer cardValue = null;
+        for (LegBettingTile tile : legBettingArea.getTopLegBettingTiles()) {
+            if (tile != null && tile.color() != null && tile.color() == pickedCardColor) cardValue = tile.leadingPositionGain();
+        }
+
+        ImageView takenCard = (ImageView) popupView.findViewById(R.id.card);
         String cardImageName = "legbettingtile_" + pickedCardColor.name().toLowerCase() + "_" + cardValue;
         final int cardDrawableId = getActivity().getResources().getIdentifier(cardImageName, "drawable", getActivity().getPackageName());
-        card.setImageResource(cardDrawableId);
+        takenCard.setImageResource(cardDrawableId);
 
         // find the id for the next card
         int nextResourceId;
@@ -407,13 +411,14 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         else if (cardValue != null && cardValue == 3) nextResourceId = 2;
         else nextResourceId = 0;
 
-        // compose the new card drawable id
-        String newCardImageName = "legbettingtile_" + pickedCardColor.name().toLowerCase() + "_" + nextResourceId + "_button";
-        final int newcardDrawableId = getActivity().getResources().getIdentifier(newCardImageName, "drawable", getActivity().getPackageName());
-
         // do not set any image when next card value is 0
-        if (nextResourceId == 0) modifiedButton.setImageResource(R.drawable.empty_image);
-        else modifiedButton.setImageResource(newcardDrawableId);
+        if (nextResourceId == 0) modifiedButton.setImageResource(0);
+        else {
+            // compose the new card drawable id
+            String newCardImageName = "legbettingtile_" + pickedCardColor.name().toLowerCase() + "_" + nextResourceId + "_button";
+            int newcardDrawableId = getActivity().getResources().getIdentifier(newCardImageName, "drawable", getActivity().getPackageName());
+            modifiedButton.setImageResource(newcardDrawableId);
+        }
 
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -651,9 +656,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 AlertDialog dialog = dummyPopup("success: " + response.toString() + move.toString());
                 dialog.show();
 
-                updateLegBettingFields();
+/*                updateLegBettingFields();
                 updateRaceBettingFields();
-                updateRaceTrackFields();
+                updateRaceTrackFields();*/
             }
 
             @Override
@@ -712,16 +717,24 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
     private void updateLegBettingFields(){
         Integer legBetFieldID;
-        int color;
-        for(LegBettingTile topTile : legBettingArea.getTopLegBettingTiles()){
-            color = legBettingArea.getTopLegBettingTiles().indexOf(topTile);
-            legBetFieldID = legBettingFieldIds.get(color);
-            ImageView legBetButton = (ImageView) getActivity().findViewById(legBetFieldID);
-
-            // compose the correct name for the current color's top leg betting tile
-            String cardImageName = "legbettingtile_" + GameColors.values()[color].name().toLowerCase() + "_" + topTile.leadingPositionGain() + "_button";
-            final int cardDrawableId = getActivity().getResources().getIdentifier(cardImageName, "drawable", getActivity().getPackageName());
-            legBetButton.setImageResource(cardDrawableId);
+        ImageView legBetButton;
+        String cardImageName;
+        int cardDrawableId;
+        for (GameColors color : GameColors.values()){
+            legBetFieldID = legBettingFieldIds.get(color.ordinal());
+            legBetButton = (ImageView) getActivity().findViewById(legBetFieldID);
+            legBetButton.setImageResource(0);
+            for(LegBettingTile topTile : legBettingArea.getTopLegBettingTiles()){
+                if (!(topTile == null) && !(topTile.color() == null)){
+                    if ( topTile.color() == color ) {
+                        // compose the correct name for the current color's top leg betting tile
+                        cardImageName = "legbettingtile_" + color.name().toLowerCase() + "_" + topTile.leadingPositionGain() + "_button";
+                        cardDrawableId = getActivity().getResources().getIdentifier(cardImageName, "drawable", getActivity().getPackageName());
+                        legBetButton.setImageResource(cardDrawableId);
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -746,7 +759,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         TextView money = (TextView) getActivity().findViewById(R.id.money);
 
         playerIcon.setImageResource(getActivity().getResources().getIdentifier("c" + playerId + "_head", "id", getActivity().getPackageName()));
-        playerName.setText(players.get(playerId-1).username());
+        playerName.setText(players.get(playerId - 1).username());
         if ( playerTurnEvent == null || playerId.equals(playerTurnEvent.getPlayerId()) ) {
             currentPlayerName.setText("YOU");
             currentPlayerIcon.setVisibility(View.GONE);
@@ -776,6 +789,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             @Override
             public void success(List<UserBean> newPlayers, Response response) {
                 players = newPlayers;
+                updateHeaderBar();
             }
 
             @Override
