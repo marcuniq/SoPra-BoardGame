@@ -58,7 +58,7 @@ public class UserServiceUT {
 
     @Test(expected = UserNotFoundException.class)
     @SuppressWarnings("unchecked")
-    public void testLoginUserFail() throws Exception {
+    public void testLoginFail() throws Exception {
 
         assertNotNull(testService);
 
