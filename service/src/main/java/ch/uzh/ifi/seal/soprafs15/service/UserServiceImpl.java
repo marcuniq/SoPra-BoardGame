@@ -63,7 +63,7 @@ public class UserServiceImpl extends UserService {
     }
 
     @Override
-    public UserResponseBean updateUser(Long userId, UserRequestBean bean) {
+    public UserResponseBean updateUser(Long userId, UserLoginLogoutRequestBean bean) {
         User user = userMapperService.toUser(bean);
         User user_1 = userRepository.findOne(userId);
 
@@ -92,15 +92,15 @@ public class UserServiceImpl extends UserService {
     }
 
     @Override
-    public void deleteUser(Long userId, UserRequestBean bean) {
-        User user = userMapperService.toUser(bean);
-        User user_1 = userRepository.findOne(userId);
+    public void deleteUser(Long userId, UserLoginLogoutRequestBean bean) {
+        User userFromBean = userMapperService.toUser(bean);
+        User userFromId = userRepository.findOne(userId);
 
-        if(user_1 == null) {
+        if(userFromId == null) {
             throw new UserNotFoundException(userId, UserServiceImpl.class);
         }
 
-        if(user_1 != null && user_1.getToken().equals(user.getToken())) {
+        if(userFromId.getToken().equals(userFromBean.getToken())) {
             userRepository.delete(userId);
         }
     }

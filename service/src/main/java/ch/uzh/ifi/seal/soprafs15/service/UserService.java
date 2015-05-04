@@ -16,8 +16,8 @@ public abstract class UserService extends GenericService {
     public abstract List<UserResponseBean> listUsers();
     public abstract UserResponseBean addUser(UserRequestBean bean);
     public abstract UserResponseBean getUser(Long userId);
-    public abstract UserResponseBean updateUser(Long userId, UserRequestBean bean);
-    public abstract void deleteUser(Long userId, UserRequestBean bean);
+    public abstract UserResponseBean updateUser(Long userId, UserLoginLogoutRequestBean bean);
+    public abstract void deleteUser(Long userId, UserLoginLogoutRequestBean bean);
     public abstract UserLoginLogoutResponseBean login(Long userId);
     public abstract void logout(Long userId, UserLoginLogoutRequestBean bean);
 }

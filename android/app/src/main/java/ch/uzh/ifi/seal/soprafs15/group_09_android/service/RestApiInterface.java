@@ -1,5 +1,8 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.service;
 
+
+import org.json.JSONObject;
+
 import java.util.List;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.MoveBean;
@@ -100,6 +103,15 @@ public interface RestApiInterface {
     /**
      *
      * @param gameId
+     * @param token
+     * @param callback
+     */
+    @POST("/games/{gameId}")
+    void getGame(@Path("gameId") Long gameId, @Body UserBean token, Callback<GameBean> callback);
+
+    /**
+     *
+     * @param gameId
      * @param callback
      */
     @GET("/games/{gameId}/racetrack")
@@ -167,5 +179,14 @@ public interface RestApiInterface {
 
     @DELETE("/games/{gameId}")
     void removeGame(@Path("gameId") Long gameId, @Body UserBean token, Callback<GameBean> callback);
+
+    /**
+     *
+     * @param userId
+     * @param token
+     * @param callback actually empty, just using JSONObject as filler
+     */
+    @DELETE("/users/{userId}")
+    void removeUser(@Path("userId") Long userId, @Body UserBean token, Callback<JSONObject> callback);
 
 }
