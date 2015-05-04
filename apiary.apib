@@ -597,6 +597,7 @@ The backend server with this API implements the 2014 board game of the year "Cam
                 "move" : "DESERT_TILE_PLACING",
                 "legBettingTileColor" : null,
                 "raceBettingOnWinner" : null,
+                "raceBettingColor" : null,
                 "desertTileAsOasis" : True,
                 "desertTilePosition" : 5
             }
@@ -622,6 +623,9 @@ The backend server with this API implements the 2014 board game of the year "Cam
                     "raceBettingOnWinner" : {
                         "description" : "",
                         "type" : "boolean"
+                    },
+                    "raceBettingColor" : {
+                        "enum": ["BLUE", "YELLOW", "GREEN", "RED", "WHITE"]
                     },
                     "desertTileAsOasis" : {
                         "description" : "",
