@@ -107,16 +107,16 @@ public class GameServiceControllerUT {
         Long oracleMoveId = (long) 1;
 
         // Get Token of not currentPlayer
-        String notCurrentPlayerToken = new String();
+        String currentPlayerToken = new String();
         List<GamePlayerResponseBean> players = gamePlayerService.listPlayer(gameResponse.getId());
 
         for(GamePlayerResponseBean player : players) {
             if(player.getPlayerId() == currentPlayerId) {
                 if(player.getUsername().equals(userResponse.getUsername())) {
-                    notCurrentPlayerToken = playerToken;
+                    currentPlayerToken = playerToken;
                     oracleUserId = userResponse.getId();
                 } else {
-                    notCurrentPlayerToken = ownerToken;
+                    currentPlayerToken = ownerToken;
                     oracleUserId = ownerResponse.getId();
                 }
             }
@@ -127,7 +127,7 @@ public class GameServiceControllerUT {
         Assert.assertEquals(0, movesBefore.size());
 
         // Add Move
-        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(notCurrentPlayerToken, MoveEnum.LEG_BETTING, null, null, Color.BLUE, null, null);
+        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(currentPlayerToken, MoveEnum.LEG_BETTING, null, null, Color.BLUE, null, null);
         GameMoveResponseBean addMoveResult = gameMoveService.addMove(gameResponse.getId(), moveRequest);
 
         Assert.assertNull(addMoveResult.getDesertTileAsOasis());
@@ -187,16 +187,16 @@ public class GameServiceControllerUT {
         Long oracleMoveId = (long) 1;
 
         // Get Token of not currentPlayer
-        String notCurrentPlayerToken = new String();
+        String currentPlayerToken = new String();
         List<GamePlayerResponseBean> players = gamePlayerService.listPlayer(gameResponse.getId());
 
         for(GamePlayerResponseBean player : players) {
             if(player.getPlayerId() == currentPlayerId) {
                 if(player.getUsername().equals(userResponse.getUsername())) {
-                    notCurrentPlayerToken = playerToken;
+                    currentPlayerToken = playerToken;
                     oracleUserId = userResponse.getId();
                 } else {
-                    notCurrentPlayerToken = ownerToken;
+                    currentPlayerToken = ownerToken;
                     oracleUserId = ownerResponse.getId();
                 }
             }
@@ -207,7 +207,7 @@ public class GameServiceControllerUT {
         Assert.assertEquals(0, movesBefore.size());
 
         // Add Move
-        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(notCurrentPlayerToken, MoveEnum.DESERT_TILE_PLACING, false, 7, null, null, null);
+        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(currentPlayerToken, MoveEnum.DESERT_TILE_PLACING, false, 7, null, null, null);
         GameMoveResponseBean addMoveResult = gameMoveService.addMove(gameResponse.getId(), moveRequest);
 
         Assert.assertNull(addMoveResult.getRaceBettingOnWinner());
@@ -263,7 +263,7 @@ public class GameServiceControllerUT {
         Integer currentPlayerId = startGameResponse.getCurrentPlayerId();
 
         // Get Token of not currentPlayer
-        String notCurrentPlayerToken = new String();
+        String currentPlayerToken = new String();
         List<GamePlayerResponseBean> players = gamePlayerService.listPlayer(gameResponse.getId());
 
         // Oracle values
@@ -273,10 +273,10 @@ public class GameServiceControllerUT {
         for(GamePlayerResponseBean player : players) {
             if(player.getPlayerId() == currentPlayerId) {
                 if(player.getUsername().equals(userResponse.getUsername())) {
-                    notCurrentPlayerToken = playerToken;
+                    currentPlayerToken = playerToken;
                     oracleUserId = userResponse.getId();
                 } else {
-                    notCurrentPlayerToken = ownerToken;
+                    currentPlayerToken = ownerToken;
                     oracleUserId = ownerResponse.getId();
                 }
             }
@@ -287,7 +287,7 @@ public class GameServiceControllerUT {
         Assert.assertEquals(0, movesBefore.size());
 
         // Add Move
-        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(notCurrentPlayerToken, MoveEnum.DICE_ROLLING, null, null, null, null, null);;
+        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(currentPlayerToken, MoveEnum.DICE_ROLLING, null, null, null, null, null);;
         GameMoveResponseBean result = gameMoveService.addMove(gameResponse.getId(), moveRequest);
 
         Assert.assertNull(result.getDesertTileAsOasis());
