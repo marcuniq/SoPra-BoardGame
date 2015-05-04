@@ -10,11 +10,6 @@ import static org.junit.Assert.*;
 
 public class LegBettingUT {
 
-    @Before
-    public void setUp() throws Exception {
-
-    }
-
     @Test
     public void testExecute() throws Exception {
 
@@ -43,7 +38,6 @@ public class LegBettingUT {
         testState.setLegBettingArea(testArea);
         testManager.setGameState(testState);
 
-
         //set up a test Game
         Game testGame = new Game();
         testGame.setName("testGame");
@@ -69,6 +63,5 @@ public class LegBettingUT {
         assertEquals(5,(int) testUser.getLegBettingTiles().get(0).getLeadingPositionGain());
         assertEquals(1,(int) testUser.getLegBettingTiles().get(0).getSecondPositionGain());
         assertEquals(-1,(int) testUser.getLegBettingTiles().get(0).getOtherPositionLoss());
-
     }
 }

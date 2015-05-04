@@ -111,7 +111,6 @@ public class CamelStackUT {
 
     }
 
-
 /*    @Test
     public void testMerge() throws Exception {
 
