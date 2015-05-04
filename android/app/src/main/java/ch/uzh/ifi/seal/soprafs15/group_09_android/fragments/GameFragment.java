@@ -16,9 +16,10 @@ import android.view.ViewGroup;
 import android.widget.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.CamelBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DieBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.GameBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.MoveBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackObjectBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
@@ -59,8 +60,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private ImageView modifiedButton;
 
     // class variables
-    private UserBean player;
-    private UserBean currentPlayer;
+    private List<UserBean> players;
+    private PlayerTurnEvent playerTurnEvent;
     private Long userId;
     private Long gameId;
     private Integer playerId;
@@ -127,7 +128,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      */
     public void onClick(View v) {
         // prevent action from a player if it's not his turn
-        if (player.equals(currentPlayer)) {
+        if ( playerTurnEvent == null || playerId.equals(playerTurnEvent.getPlayerId()) ) {
             for (Integer button : raceTrackFieldIds) {
                 if (button == v.getId()) {
                     interactionTilePopup(v, R.layout.popup_interaction_tile, Moves.DESERT_TILE_PLACING);
@@ -249,17 +250,20 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private void rollDicePopup(View v, int popup_roll_dice, final Moves diceRolling) {
         View popupView = defaultPopup(v,popup_roll_dice);
 
-        String diceNames[] = new String[5];
-        String diceImageName = "roll_dice_";
-        for (int i = 0; i < 5; i++){
-            if (diceArea.getRolledDice().isEmpty() || diceArea.getRolledDice().size() < i + 1) diceNames[i] = "0";
-            else diceNames[diceArea.getRolledDice().get(i).color().ordinal()] = diceArea.getRolledDice().get(i).faceValue()+"";
+        ArrayList<String> diceImageNames = new ArrayList<>();
+        for (GameColors color : GameColors.values()) diceImageNames.add("0_" + color.name().toLowerCase());
+
+        if (!diceArea.getRolledDice().isEmpty()) {
+            for (DieBean dieBean : diceArea.getRolledDice()){
+                diceImageNames.set(dieBean.color().ordinal(), dieBean.faceValue() + "_" + dieBean.color().name().toLowerCase());
+                System.out.println(dieBean.faceValue() + "_" + dieBean.color().name().toLowerCase());
+            }
         }
 
         ImageView dice;
-        for (GameColors color : GameColors.values()){
+        for (GameColors color : GameColors.values()) {
             dice = (ImageView) popupView.findViewById(getActivity().getResources().getIdentifier("dice_" + color.name().toLowerCase(), "id", getActivity().getPackageName()));
-            dice.setImageResource(getActivity().getResources().getIdentifier(diceImageName + diceNames[color.ordinal()] + "_" + color.name().toLowerCase(), "drawable", getActivity().getPackageName()));
+            dice.setImageResource(getActivity().getResources().getIdentifier("roll_dice_" + diceImageNames.get(color.ordinal()), "drawable", getActivity().getPackageName()));
         }
 
         acceptButton.setOnClickListener(new View.OnClickListener() {
@@ -740,16 +744,16 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         TextView money = (TextView) getActivity().findViewById(R.id.money);
 
         playerIcon.setImageResource(getActivity().getResources().getIdentifier("c" + playerId + "_head", "id", getActivity().getPackageName()));
-        playerName.setText(player.username());
-        if (player.equals(currentPlayer)) {
+        playerName.setText(players.get(playerId-1).username());
+        if ( playerTurnEvent == null || playerId.equals(playerTurnEvent.getPlayerId()) ) {
             currentPlayerName.setText("YOU");
             currentPlayerIcon.setVisibility(View.GONE);
         } else {
-            currentPlayerName.setText(currentPlayer.username());
-            currentPlayerIcon.setImageResource(getActivity().getResources().getIdentifier("c" + currentPlayer.id() + "_head", "id", getActivity().getPackageName()));
+            currentPlayerName.setText(players.get(playerTurnEvent.getPlayerId()-1).username());
+            currentPlayerIcon.setImageResource(getActivity().getResources().getIdentifier("c" + playerTurnEvent.getPlayerId() + "_head", "id", getActivity().getPackageName()));
             currentPlayerIcon.setVisibility(View.VISIBLE);
         }
-        money.setText(player.money()+"");
+        money.setText(players.get(playerId-1).money()+"");
     }
 
     /**
@@ -766,12 +770,10 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     }
 
     public void getPlayerStatus() {
-        RestService.getInstance(getActivity()).getGamePlayer(gameId, playerId, new Callback<UserBean>() {
+        RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<UserBean>>() {
             @Override
-            public void success(UserBean user, Response response) {
-                player = user;
-                currentPlayer = player; // TODO: get the current player
-                updateHeaderBar();
+            public void success(List<UserBean> newPlayers, Response response) {
+                players = newPlayers;
             }
 
             @Override
@@ -905,11 +907,12 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                     public void onNewEvent(final AbstractPusherEvent event) {
                         System.out.println("got new event");
 
-                        PlayerTurnEvent playerTurnEvent = (PlayerTurnEvent) event;
+                        playerTurnEvent = (PlayerTurnEvent) event;
 
-                        if(playerId == playerTurnEvent.getPlayerId()){
+                        updateHeaderBar();
+
+                        if(playerId.equals(playerTurnEvent.getPlayerId())){
                             // TODO notify player that it is her turn
-                            updateHeaderBar();
                         }
                     }
                 });
