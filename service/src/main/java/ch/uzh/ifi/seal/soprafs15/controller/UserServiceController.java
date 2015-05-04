@@ -102,8 +102,8 @@ public class UserServiceController extends GenericService {
 	}
 
     /*
-    *	Context: /users/{userId}/logout
-    *  Description: Log out user with userId
+    *	Context: /users/{userId}/delete
+    *  Description: Delete user with userId
     */
     @RequestMapping(method = RequestMethod.DELETE, value = CONTEXT + "/{userId}/delete")
     @ResponseStatus(HttpStatus.OK)
