@@ -289,7 +289,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentPyramidTile = diceArea.getRolledDice().size()+1;
+                currentPyramidTile = diceArea.getRolledDice().size()+2;
                 String image;
                 ImageView pyramidCard = (ImageView) getActivity().findViewById(R.id.pyramid_tile);
                 if (currentPyramidTile > 5 ) image = "empty_image";
@@ -525,8 +525,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT );
-            lp.setMargins(4, 4, 4, 4);
-            lp.width = 110;
+            lp.width = 98;
+            lp.height = 156;
             image.setLayoutParams(lp);
             image.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             grid.addView(image);
