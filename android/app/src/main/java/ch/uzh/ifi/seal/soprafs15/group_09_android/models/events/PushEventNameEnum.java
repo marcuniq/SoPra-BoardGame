@@ -9,6 +9,7 @@ public enum PushEventNameEnum {
     LEG_OVER_EVENT,
     GAME_START_EVENT,
     GAME_STOP_EVENT,
+    GAME_FINISHED_EVENT,
     PLAYER_TURN_EVENT,
     PLAYER_JOINED_EVENT
 }

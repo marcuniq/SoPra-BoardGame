@@ -10,6 +10,7 @@ import com.pusher.client.connection.ConnectionState;
 import com.pusher.client.connection.ConnectionStateChange;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEvent;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.GameFinishedEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.GameStartEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.LegOverEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
@@ -17,6 +18,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerJoinedEven
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerLeftEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerTurnEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.beans.GameFinishedEventBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.beans.GameStartEventBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.beans.LegOverEventBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.beans.MoveEventBean;
@@ -110,6 +112,19 @@ public class PusherService {
                 // notify subscriber
                 PusherEventSubscriberService.getInstance()
                         .notifySubscriber(PushEventNameEnum.LEG_OVER_EVENT, new LegOverEvent(bean));
+            }
+        });
+
+        PusherAPIService.getInstance().bind(PushEventNameEnum.GAME_FINISHED_EVENT.toString(), new SubscriptionEventListener() {
+            @Override
+            public void onEvent(String channel, String event, String data) {
+                System.out.println("Received game finished event with data: " + data);
+
+                GameFinishedEventBean bean = gson.fromJson(data, GameFinishedEventBean.class);
+
+                // notify subscriber
+                PusherEventSubscriberService.getInstance()
+                        .notifySubscriber(PushEventNameEnum.GAME_FINISHED_EVENT, new GameFinishedEvent(bean));
             }
         });
 
