@@ -137,7 +137,7 @@ public class UserServiceUT {
         // not implemented yet
     }
 
-    /*@Test
+    @Test
     //method not yet implemented
     public void testDeleteUser() throws Exception {
 
@@ -147,14 +147,14 @@ public class UserServiceUT {
 
         //Assert testService has been initialized and call method to be tested
         assertNotNull(testService);
-        testService.deleteUser(response.getPosition(), request);
+        testService.deleteUser(response.getId(), request);
 
         //Assertions
-        assertNull(testService.getUser(response.getPosition()));
+        assertNull(mockUserRepo.findByUsername("karl"));
 
 
     }
-*/
+
     @Test
     @SuppressWarnings("unchecked")
     public void testLogin() throws Exception {
