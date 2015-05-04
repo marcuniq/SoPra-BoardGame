@@ -2,6 +2,7 @@ package ch.uzh.ifi.seal.soprafs15.service;
 
 import ch.uzh.ifi.seal.soprafs15.Application;
 import ch.uzh.ifi.seal.soprafs15.TestUtils;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
@@ -145,9 +146,13 @@ public class UserServiceUT {
         UserRequestBean request = TestUtils.toUserRequestBean(67,"karl");
         UserResponseBean response = testService.addUser(request);
 
+        // login
+        UserLoginLogoutResponseBean tokenResponse = testService.login(response.getId());
+        UserLoginLogoutRequestBean tokenRequest = TestUtils.toUserLLRequestBean(tokenResponse.getToken());
+
         //Assert testService has been initialized and call method to be tested
         assertNotNull(testService);
-        testService.deleteUser(response.getId(), request);
+        testService.deleteUser(response.getId(), tokenRequest);
 
         //Assertions
         assertNull(mockUserRepo.findByUsername("karl"));
