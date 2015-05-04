@@ -66,6 +66,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private Integer playerId;
     private String token;
     private Boolean isOwner = false;
+    private Boolean isFastMode;
 
     private PopupWindow popupWindow;
     private View anchorView;
@@ -91,8 +92,11 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         Bundle b = getActivity().getIntent().getExtras();
         gameId = b.getLong("gameId");
         userId = b.getLong("userId");
-        playerId = b.getInt("playerId");
+        if(b.containsKey("playerId"))
+            playerId = b.getInt("playerId");
         isOwner = b.getBoolean("isOwner");
+        isFastMode = b.getBoolean("isFastMode");
+
 
         SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
@@ -109,10 +113,15 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     public void onResume(){
         super.onResume();
 
-        addClickListenerToButtons();
-        subscribeToAreaUpdates();
-        subscribeToEvents();
-        play();
+        if(!isFastMode) {
+            addClickListenerToButtons();
+            subscribeToAreaUpdates();
+            subscribeToEvents();
+            play();
+        } else {
+            subscribeToAreaUpdates();
+            AreaService.getInstance(getActivity()).getAreasAndNotifySubscriber(gameId);
+        }
     }
 
 

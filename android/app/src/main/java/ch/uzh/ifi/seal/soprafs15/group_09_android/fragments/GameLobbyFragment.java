@@ -156,7 +156,8 @@ public class GameLobbyFragment extends ListFragment {
         Bundle b = new Bundle();
         b.putLong("gameId", gameId);
         b.putLong("userId", userId);
-        b.putInt("playerId", playerId);
+        if(playerId != null)
+            b.putInt("playerId", playerId);
         b.putBoolean("fastMode", isFastMode);
         intent.putExtras(b);
         startActivity(intent);
@@ -211,13 +212,7 @@ public class GameLobbyFragment extends ListFragment {
         RestService.getInstance(getActivity()).startFastMode(gameId, UserBean.setToken(token), new Callback<GameBean>() {
             @Override
             public void success(GameBean game, Response response) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage("success: " + response.toString()).setTitle("We have a message for you:");
-                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
-                builder.create().show();
+                onStartGame();
             }
 
             @Override
