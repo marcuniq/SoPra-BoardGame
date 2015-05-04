@@ -22,6 +22,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.GameBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.GameStartEvent;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerJoinedEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventSubscriber;
@@ -143,8 +144,6 @@ public class GameLobbyFragment extends ListFragment {
             public void onClick(DialogInterface dialog, int id) {
                 if (isOwner) removeGame();
                 else removePlayerFromGame();
-                // TODO: logout User
-                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
         return builder.create();
@@ -253,12 +252,13 @@ public class GameLobbyFragment extends ListFragment {
         RestService.getInstance(getActivity()).removeGamePlayer(gameId, playerId, UserBean.setToken(token), new Callback<UserBean>() {
             @Override
             public void success(UserBean user, Response response) {
-
+                getActivity().getSupportFragmentManager().popBackStack();
             }
 
             @Override
             public void failure(RetrofitError retrofitError) {
                 Toast.makeText(getActivity(), "Remove Player from Game Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
     }
@@ -267,12 +267,13 @@ public class GameLobbyFragment extends ListFragment {
         RestService.getInstance(getActivity()).removeGame(gameId, UserBean.setToken(token), new Callback<GameBean>() {
             @Override
             public void success(GameBean game, Response response) {
-
+                getActivity().getSupportFragmentManager().popBackStack();
             }
 
             @Override
             public void failure(RetrofitError retrofitError) {
                 Toast.makeText(getActivity(), "Remove Game Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
     }

@@ -29,6 +29,8 @@ public abstract class MoveBean implements Parcelable {
     @Nullable
     public abstract Boolean raceBettingOnWinner();
     @Nullable
+    public abstract GameColors raceBettingColor();
+    @Nullable
     public abstract Boolean desertTileAsOasis();
     @Nullable
     public abstract Integer desertTilePosition();
@@ -37,6 +39,7 @@ public abstract class MoveBean implements Parcelable {
                                Moves move,
                                GameColors legBettingTileColor,
                                Boolean raceBettingOnWinner,
+                               GameColors raceBettingColor,
                                Boolean desertTileAsOasis,
                                Integer desertTilePosition ) {
         return new AutoParcel_MoveBean(
@@ -48,6 +51,7 @@ public abstract class MoveBean implements Parcelable {
                 move,
                 legBettingTileColor,
                 raceBettingOnWinner,
+                raceBettingColor,
                 desertTileAsOasis,
                 desertTilePosition );
     }
