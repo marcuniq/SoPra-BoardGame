@@ -40,7 +40,7 @@ public class DiceArea implements Serializable {
     private GameState gameState;
 
     @Transient
-    private Random r = new Random();
+    private Random r = new Random(System.currentTimeMillis());
 
     public DiceArea(){
         init();

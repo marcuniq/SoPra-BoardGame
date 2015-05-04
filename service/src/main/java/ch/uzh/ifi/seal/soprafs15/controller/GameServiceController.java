@@ -247,7 +247,7 @@ public class GameServiceController extends GenericService {
                                             @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
         logger.debug("getRaceBettingCards: " + playerId);
 
-        List<RaceBettingCard> result = gamePlayerService.getRaceBettingCards(gameId, playerId);
+        List<RaceBettingCard> result = gamePlayerService.getRaceBettingCards(gameId, playerId, gamePlayerRequestBean);
         return result;
     }
 

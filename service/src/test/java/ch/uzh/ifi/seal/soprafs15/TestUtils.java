@@ -87,7 +87,7 @@ public class TestUtils {
         return gamePlayerRequest;
     }
 
-    public static GameMoveRequestBean toGameMoveRequestBean(String token, MoveEnum move, Boolean desertTileAsOasis, Integer position, Color color, Boolean raceBettingOnWinner) {
+    public static GameMoveRequestBean toGameMoveRequestBean(String token, MoveEnum move, Boolean desertTileAsOasis, Integer position, Color color, Boolean raceBettingOnWinner, Color raceBettingColor) {
 
         GameMoveRequestBean gameMoveRequest = new GameMoveRequestBean();
         gameMoveRequest.setToken(token);
@@ -96,6 +96,7 @@ public class TestUtils {
         gameMoveRequest.setDesertTilePosition(position);
         gameMoveRequest.setLegBettingTileColor(color);
         gameMoveRequest.setRaceBettingOnWinner(raceBettingOnWinner);
+        gameMoveRequest.setRaceBettingColor(raceBettingColor);
 
         return gameMoveRequest;
     }

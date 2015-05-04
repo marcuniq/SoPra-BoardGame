@@ -27,6 +27,11 @@ public class RaceBettingCard implements Serializable {
     @JsonIgnore
     private User user;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="RACEBETTINGCARDSTACK_ID")
+    @JsonIgnore
+    private RaceBettingCardStack stack;
+
 
     public RaceBettingCard(){}
 
@@ -56,5 +61,13 @@ public class RaceBettingCard implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public RaceBettingCardStack getStack() {
+        return stack;
+    }
+
+    public void setStack(RaceBettingCardStack stack) {
+        this.stack = stack;
     }
 }

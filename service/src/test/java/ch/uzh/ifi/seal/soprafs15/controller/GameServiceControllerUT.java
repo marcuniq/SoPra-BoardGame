@@ -105,7 +105,7 @@ public class GameServiceControllerUT {
         }
 
         // Add move with Token of player who is not currentPlayer
-        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(notCurrentPlayerToken, MoveEnum.LEG_BETTING, null, null, Color.BLUE, null);
+        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(notCurrentPlayerToken, MoveEnum.LEG_BETTING, null, null, Color.BLUE, null, null);
         gameMoveService.addMove(gameResponse.getId(), moveRequest);
     }
 
@@ -161,7 +161,7 @@ public class GameServiceControllerUT {
         }
 
         // Add move with Token of player who is not currentPlayer
-        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(notCurrentPlayerToken, MoveEnum.DESERT_TILE_PLACING, false, 7, null, null);
+        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(notCurrentPlayerToken, MoveEnum.DESERT_TILE_PLACING, false, 7, null, null, null);
         gameMoveService.addMove(gameResponse.getId(), moveRequest);
     }
 
@@ -217,7 +217,7 @@ public class GameServiceControllerUT {
         }
 
         // Add move with Token of player who is not currentPlayer
-        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(notCurrentPlayerToken, MoveEnum.DICE_ROLLING, null, null, null, null);;
+        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(notCurrentPlayerToken, MoveEnum.DICE_ROLLING, null, null, null, null, null);;
         gameMoveService.addMove(gameResponse.getId(), moveRequest);
     }
 }

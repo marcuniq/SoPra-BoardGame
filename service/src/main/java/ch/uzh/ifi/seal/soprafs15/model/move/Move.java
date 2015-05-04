@@ -25,7 +25,8 @@ public abstract class Move implements Serializable {
     protected Game game;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    protected GameState gameState;
+	@JoinColumn(name="GAMESTATE_ID")
+	protected GameState gameState;
     
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="USER_ID")

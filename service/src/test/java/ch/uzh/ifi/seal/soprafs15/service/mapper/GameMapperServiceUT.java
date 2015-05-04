@@ -403,13 +403,18 @@ public class GameMapperServiceUT {
         List<RaceBettingCard> loserBets = new ArrayList<RaceBettingCard>();
         List<RaceBettingCard> winnerBets = new ArrayList<RaceBettingCard>();
 
+        RaceBettingCardStack loserStack = new RaceBettingCardStack();
+        loserStack.setStack(loserBets);
+        RaceBettingCardStack winnerStack = new RaceBettingCardStack();
+        winnerStack.setStack(winnerBets);
+
         Integer oracleLoserSize = loserBets.size();
         Integer oracleWinnerSize = winnerBets.size();
 
         RaceBettingArea raceBettingArea = new RaceBettingArea();
         raceBettingArea.setId((long) 1);
-        raceBettingArea.setLoserBetting(loserBets);
-        raceBettingArea.setWinnerBetting(winnerBets);
+        raceBettingArea.setLoserBetting(loserStack);
+        raceBettingArea.setWinnerBetting(winnerStack);
 
         GameRaceBettingAreaResponseBean result = testMapperService.toGameRaceBettingAreaResponseBean(raceBettingArea);
 
