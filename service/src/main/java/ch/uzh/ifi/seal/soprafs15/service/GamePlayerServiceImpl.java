@@ -11,6 +11,7 @@ import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameFullException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.NotAuthorizedException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import ch.uzh.ifi.seal.soprafs15.service.pusher.PusherService;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,7 +100,7 @@ public class GamePlayerServiceImpl extends GamePlayerService {
     }
 
     @Override
-    public List<RaceBettingCard> getRaceBettingCards(Long gameId, Integer playerId) {
+    public List<RaceBettingCard> getRaceBettingCards(Long gameId, Integer playerId, GamePlayerRequestBean bean) {
         Game game = gameRepository.findOne(gameId);
 
         if(game == null) {
@@ -111,6 +111,16 @@ public class GamePlayerServiceImpl extends GamePlayerService {
 
         if(!player.isPresent()){
             throw new UserNotFoundException("Player with playerId "+ playerId +" not found", GamePlayerServiceImpl.class);
+        }
+
+        User playerFromBean = gameMapperService.toUser(bean);
+
+        if(playerFromBean == null){
+            throw new UserNotFoundException("Invalid token, user not found", GamePlayerServiceImpl.class);
+        }
+
+        if(player.get().getId() != playerFromBean.getId()){
+            throw new NotAuthorizedException("Player is not authorized to see another player's race betting cards", GamePlayerServiceImpl.class);
         }
 
         return new ArrayList<>(player.get().getRaceBettingCards().values());

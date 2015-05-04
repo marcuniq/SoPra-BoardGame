@@ -11,7 +11,7 @@ public enum MoveEnum {
 
     private static final List<MoveEnum> VALUES = Collections.unmodifiableList(Arrays.asList(values()));
     private static final int SIZE = VALUES.size();
-    private static final Random RANDOM = new Random();
+    private static final Random RANDOM = new Random(System.currentTimeMillis());
 
     public static MoveEnum randomMove()  {
         return VALUES.get(RANDOM.nextInt(SIZE));

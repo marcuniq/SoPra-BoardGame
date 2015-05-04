@@ -13,7 +13,7 @@ public enum Color {
 
     private static final List<Color> VALUES = Collections.unmodifiableList(Arrays.asList(values()));
     private static final int SIZE = VALUES.size();
-    private static final Random RANDOM = new Random();
+    private static final Random RANDOM = new Random(System.currentTimeMillis());
 
     public static Color randomColor()  {
         return VALUES.get(RANDOM.nextInt(SIZE));

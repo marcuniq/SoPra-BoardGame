@@ -3,7 +3,9 @@ package ch.uzh.ifi.seal.soprafs15.model.game;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Hakuna on 30.03.2015.
@@ -11,67 +13,83 @@ import java.util.List;
 @Entity
 public class RaceBettingArea implements Serializable {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @ElementCollection
-    @Column
-    private List<RaceBettingCard> winnerBetting = new ArrayList<>();
-
-    @ElementCollection
-    @Column
-    private List<RaceBettingCard> loserBetting = new ArrayList<>();
+    @OneToMany(mappedBy = "raceBettingArea", cascade=CascadeType.ALL)
+    @Column(columnDefinition = "BLOB")
+    @MapKeyColumn(name = "betOnWinner",nullable = false)
+    private Map<Boolean, RaceBettingCardStack> raceBettings;
 
     @OneToOne(cascade = CascadeType.ALL)//(fetch = FetchType.EAGER)
     private GameState gameState;
 
 
     public RaceBettingArea(){
-
+        init();
     }
 
     /**
-     *
+     * Initialization of RaceBettingArea
      */
     private void init() {
+        raceBettings = new HashMap<>();
 
+        RaceBettingCardStack winnerBetting = new RaceBettingCardStack(this, true);
+        raceBettings.put(true, winnerBetting);
+
+        RaceBettingCardStack loserBetting = new RaceBettingCardStack(this, false);
+        raceBettings.put(false, loserBetting);
     }
 
     public Integer getNrOfWinnerBetting(){
-        return winnerBetting.size();
+        return raceBettings.get(true).size();
     }
     public Integer getNrOfLoserBetting() {
-        return loserBetting.size();
+        return raceBettings.get(false).size();
     }
 
 
     /**
-     * Call to place race betting card on winner stack
+     * Call to place race betting card on winner or loser stack
      * @param raceBettingCard
      */
     public void bet(RaceBettingCard raceBettingCard, Boolean betOnWinner){
-
-        if(betOnWinner)
-            winnerBetting.add(raceBettingCard);
-        else
-            loserBetting.add(raceBettingCard);
+        raceBettings.get(betOnWinner).push(raceBettingCard);
     }
 
     /**
      * Undo action for fast mode
      */
     public RaceBettingCard undoBet(Boolean betOnWinner){
-        if(betOnWinner)
-            return winnerBetting.remove(winnerBetting.size() - 1);
-        else
-            return loserBetting.remove(loserBetting.size()-1);
+        return raceBettings.get(betOnWinner).pop();
     }
+
+    /**
+     * Helper method to return race betting stack on winner
+     * @return
+     */
+    public RaceBettingCardStack getWinnerBetting() {
+        return raceBettings.get(true);
+    }
+    public void setWinnerBetting(RaceBettingCardStack stack){
+        raceBettings.put(true, stack);
+    }
+
+    /**
+     * Helper method to return race betting stack on loser
+     * @return
+     */
+    public RaceBettingCardStack getLoserBetting() {
+        return raceBettings.get(false);
+    }
+    public void setLoserBetting(RaceBettingCardStack stack){
+        raceBettings.put(false, stack);
+    }
+
 
     public Long getId() {
         return id;
@@ -81,20 +99,13 @@ public class RaceBettingArea implements Serializable {
         this.id = id;
     }
 
-    public List<RaceBettingCard> getWinnerBetting() {
-        return winnerBetting;
+
+    public Map<Boolean, RaceBettingCardStack> getRaceBettings() {
+        return raceBettings;
     }
 
-    public void setWinnerBetting(List<RaceBettingCard> winnerBetting) {
-        this.winnerBetting = winnerBetting;
-    }
-
-    public List<RaceBettingCard> getLoserBetting() {
-        return loserBetting;
-    }
-
-    public void setLoserBetting(List<RaceBettingCard> loserBetting) {
-        this.loserBetting = loserBetting;
+    public void setRaceBettings(Map<Boolean, RaceBettingCardStack> raceBettings) {
+        this.raceBettings = raceBettings;
     }
 
     public GameState getGameState() {

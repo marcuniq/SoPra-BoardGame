@@ -320,7 +320,7 @@ public class GameServiceControllerIT {
         Assert.assertEquals(0, movesBefore.size());
 
         // Add move
-        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(ownerToken, MoveEnum.LEG_BETTING, null, null, Color.BLUE, null);
+        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(ownerToken, MoveEnum.LEG_BETTING, null, null, Color.BLUE, null, null);
         ResponseEntity<GameMoveResponseBean> addMoveResult = TestUtils.addMove(moveRequest, gameResponse.getBody().getId(), template, base);
 
         // Oracle values
@@ -427,7 +427,7 @@ public class GameServiceControllerIT {
         // Add move
 
         // Maybe it's not the owner's turn! check playerId
-        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(ownerToken, MoveEnum.RACE_BETTING, null, null, null, true);
+        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(ownerToken, MoveEnum.RACE_BETTING, null, null, null, true, Color.BLUE);
         ResponseEntity<GameMoveResponseBean> result = TestUtils.addMove(moveRequest, gameResponse.getBody().getId(), template, base);
 
         // Oracle values
@@ -495,7 +495,7 @@ public class GameServiceControllerIT {
         // Add move
 
         // maybe it's not the owner's turn! check player id
-        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(ownerToken, MoveEnum.DICE_ROLLING, null, null, null, null);
+        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(ownerToken, MoveEnum.DICE_ROLLING, null, null, null, null, null);
         ResponseEntity<GameMoveResponseBean> result = TestUtils.addMove(moveRequest, gameResponse.getBody().getId(), template, base);
 
         Assert.assertNull(result.getBody().getDesertTileAsOasis());

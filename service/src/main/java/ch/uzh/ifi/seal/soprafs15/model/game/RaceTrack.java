@@ -14,18 +14,14 @@ import java.util.stream.Collectors;
 @Entity
 public class RaceTrack implements Serializable {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @ElementCollection
-    @Column(columnDefinition = "BLOB")
-    //@Size(max=16)
+    @OneToMany(mappedBy = "raceTrack", cascade=CascadeType.ALL)
+    @OrderBy("position ASC")
     private List<RaceTrackObject> fields = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)//(fetch = FetchType.EAGER)
@@ -38,9 +34,6 @@ public class RaceTrack implements Serializable {
      * Initialization of race track
      */
     public void initForGamePlay() {
-        // set 16 placeholders
-        //for(int i = 0; i < 16; i++)
-        //    fields.add(new RaceTrackFieldPlaceholder());
 
         // put camels on race trace
         // reuse dice area for random placing
@@ -69,6 +62,7 @@ public class RaceTrack implements Serializable {
      * @param raceTrackObject CamelStack or DesertTile
      */
     public void addRaceTrackObject(RaceTrackObject raceTrackObject) {
+        raceTrackObject.setRaceTrack(this);
         fields.add(raceTrackObject);
         sortByPosition();
     }
@@ -82,7 +76,9 @@ public class RaceTrack implements Serializable {
      * Undo action for fast mode
      */
     public void removeRaceTrackObject(Integer position) {
-        fields.remove(getRaceTrackObject(position));
+        RaceTrackObject rto = getRaceTrackObject(position);
+        rto.setRaceTrack(null);
+        fields.remove(rto);
     }
 
     /**
@@ -95,30 +91,39 @@ public class RaceTrack implements Serializable {
         return raceTrackObject.isPresent() ? raceTrackObject.get() : null;
     }
 
+    private List<CamelStack> findCamelStacks(){
+        List<RaceTrackObject> list = fields.stream().filter(rto -> rto.getClass() == CamelStack.class).collect(Collectors.toList());
+
+        return (List<CamelStack>)(List<?>) list;
+    }
+
     public void moveCamelStack(Color color, Integer nrOfFieldsToAdvance){
 
         // locate Camel with color
-        CamelStack camelStack = (CamelStack) fields.stream().filter(rto -> rto.getClass() == CamelStack.class)
-                                            .filter(cs -> ((CamelStack) cs).hasCamel(color)).findFirst().get();
+        CamelStack camelStackWithWantedColor = findCamelStacks().stream().filter(cs -> cs.hasCamel(color)).findAny().get();
 
-        CamelStackBooleanPair pair = camelStack.splitOrGetCamelStack(color);
-        CamelStack newCamelStack = pair.getStack();
+        CamelStackBooleanPair pair = camelStackWithWantedColor.splitOrGetCamelStack(color);
+        CamelStack topSplitCamelStack = pair.getStack();
         Boolean splitOccurred = pair.getSplitOccurred();
 
-        newCamelStack.addPreviousPosition(camelStack.getPosition());
 
+        // moving a camel stack means temporarily removing it from the race track and put it back on a new position
+        if(!splitOccurred)
+            removeRaceTrackObject(camelStackWithWantedColor.getPosition());
 
-        // advance camel stack
-        Integer newPosition = camelStack.getPosition() + nrOfFieldsToAdvance;
+        // find new position
+        Integer newPosition = camelStackWithWantedColor.getPosition() + nrOfFieldsToAdvance;
 
         Boolean mergeOccurred =  new Boolean(false);
         while(getRaceTrackObject(newPosition) != null){
             // is at that position another camel stack or a desert tile?
 
             if(getRaceTrackObject(newPosition) instanceof CamelStack){
-                ((CamelStack) getRaceTrackObject(newPosition)).merge(newCamelStack);
+
+                ((CamelStack) getRaceTrackObject(newPosition)).push(topSplitCamelStack);
                 mergeOccurred = Boolean.TRUE;
                 break;
+
             } else if(getRaceTrackObject(newPosition) instanceof DesertTile){
                 DesertTile desertTile = ((DesertTile)getRaceTrackObject(newPosition));
 
@@ -132,20 +137,9 @@ public class RaceTrack implements Serializable {
             }
         }
 
-
-        if(splitOccurred && mergeOccurred){
-            // do nothing
-
-        } else if(splitOccurred && !mergeOccurred){
-            newCamelStack.setPosition(newPosition);
-            addRaceTrackObject(newCamelStack);
-
-        } else if(!splitOccurred && mergeOccurred){
-            removeRaceTrackObject(camelStack.getPosition());
-
-        } else if(!splitOccurred && !mergeOccurred){
-            // simple move
-            newCamelStack.setPosition(newPosition);
+        if(!mergeOccurred) {
+            topSplitCamelStack.setPosition(newPosition);
+            addRaceTrackObject(topSplitCamelStack);
         }
 
         sortByPosition();

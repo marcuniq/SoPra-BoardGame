@@ -168,14 +168,21 @@ public class GameLogicServiceImpl extends GameLogicService {
 
         // create random move
         Boolean startLoop = true;
+        int loopIteration = 0;
         Move move = null;
         while(startLoop || !move.isValid()){
             startLoop = false;
+            ++loopIteration;
 
             GameMoveRequestBean bean = new GameMoveRequestBean();
             bean.setToken(currentPlayer.getToken());
 
             MoveEnum randomMove = MoveEnum.randomMove();
+
+            // make it a bit less random to avoid long waiting to find a valid move
+            if(loopIteration > 3)
+                randomMove = MoveEnum.DICE_ROLLING;
+
             bean.setMove(randomMove);
 
             if (randomMove == MoveEnum.DESERT_TILE_PLACING){
@@ -251,7 +258,7 @@ public class GameLogicServiceImpl extends GameLogicService {
     private Boolean runGameOverLogic(Game game) {
 
         // check if camel is over finishing line, then game is over
-        for(int i = 16; i < 19; i++) {
+        for(int i = 17; i < 20; i++) {
             RaceTrackObject rto = game.getRaceTrack().getRaceTrackObject(i);
             if(rto != null && rto.getClass() == CamelStack.class) {
                 game.setStatus(GameStatus.FINISHED);
@@ -294,8 +301,8 @@ public class GameLogicServiceImpl extends GameLogicService {
         if(game.getStatus() == GameStatus.FINISHED){
 
             // get race betting stacks
-            List<RaceBettingCard> winnerBetting = game.getRaceBettingArea().getWinnerBetting();
-            List<RaceBettingCard> loserBetting = game.getRaceBettingArea().getLoserBetting();
+            List<RaceBettingCard> winnerBetting = game.getRaceBettingArea().getWinnerBetting().getStack();
+            List<RaceBettingCard> loserBetting = game.getRaceBettingArea().getLoserBetting().getStack();
 
             // determine winnerColor and loserColor
             Color winnerColor = camelRankingMap.entrySet()

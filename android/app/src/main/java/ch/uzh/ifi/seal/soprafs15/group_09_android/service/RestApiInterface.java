@@ -145,8 +145,15 @@ public interface RestApiInterface {
      *
      * @param gameId
      */
-    @POST("/games/{gameId}/start-fast-mode")
+    @POST("/games/{gameId}/fast-mode/start")
     void startFastMode(@Path("gameId") Long gameId, @Body User token, Callback<Game> callback);
+
+    /**
+     *
+     * @param gameId
+     */
+    @POST("/games/{gameId}/fast-mode/next")
+    void triggerNextMoveInFastMode(@Path("gameId") Long gameId, @Body User token, Callback<Move> callback);
 
     /**
      *
