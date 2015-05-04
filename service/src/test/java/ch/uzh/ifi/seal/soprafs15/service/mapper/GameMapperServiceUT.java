@@ -232,7 +232,7 @@ public class GameMapperServiceUT {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testToGamePlayerResponseBean1() throws Exception {
+    public void testToGamePlayerResponseBeanList() throws Exception {
 
     }
 
