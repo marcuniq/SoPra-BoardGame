@@ -686,7 +686,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         if (raceTrack == null) return;
         for (RaceTrackObjectBean field: raceTrack.getFields()) {
             List<CamelBean> camels = field.stack();
-            fieldId = raceTrackFieldIds.get(raceTrack.getFields().indexOf(field));
+            fieldId = raceTrackFieldIds.get(field.position());
             RelativeLayout fieldLayout = (RelativeLayout) getActivity().findViewById(fieldId);
 
             if (camels != null && field.isOasis() == null) {
