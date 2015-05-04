@@ -78,6 +78,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private int currentPyramidTile;
     private Boolean isDesertTileAsOasis = null;
     private GameColors pickedCardColor;
+    private Boolean raceBettingOnWinner = null;
 
     public static GameFragment newInstance() {
         return new GameFragment();
@@ -274,7 +275,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 ImageView pyramidCard = (ImageView) getActivity().findViewById(R.id.pyramid_tile);
                 if (currentPyramidTile++ > 5) image = "empty_image";
                 pyramidCard.setImageResource(getActivity().getResources().getIdentifier(image, "drawable", getActivity().getPackageName()));
-                initiateGameMove(diceRolling, null, null, null, null);
+                initiateGameMove(diceRolling, null, null, null, null, null);
                 popupWindow.dismiss();
             }
         });
@@ -291,12 +292,13 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         modifiedButton = (ImageView) v.findViewById(v.getId());
         lastResource = modifiedButton.getDrawable();
         pickedCardColor = null; // because card color is outside function accessible we need to set it to null every time
+        raceBettingOnWinner = (type == 0);
 
         View popupView = defaultPopup(v, popup_race_betting);
         TextView title = (TextView) popupView.findViewById(R.id.popupTitle);
 
         // check if it is olle or tolle betting
-        if ((type != 0)) title.setText(R.string.title_raceBet_olle); // cast the type {0 or 1} to boolean
+        if (raceBettingOnWinner) title.setText(R.string.title_raceBet_olle); // cast the type {0 or 1} to boolean
         else title.setText(R.string.title_raceBet_tolle);
 
         ImageButton cardBlue = (ImageButton) popupView.findViewById(R.id.card_blue);
@@ -370,7 +372,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 if (pickedCardColor != null) {
-                    initiateGameMove(raceBetting, null, null, null, null);
+                    initiateGameMove(raceBetting, null, raceBettingOnWinner, pickedCardColor, null, null);
                     popupWindow.dismiss();
                 }
             }
@@ -417,7 +419,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 if (pickedCardColor != null) {
-                    initiateGameMove(legBetting, null, null, null, null);
+                    initiateGameMove(legBetting, pickedCardColor, null, null, null, null);
                     popupWindow.dismiss();
                 }
             }
@@ -490,7 +492,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 if (isDesertTileAsOasis != null) {
                     for (Integer field : raceTrackFieldIds) {
                         if (anchorView.getId() == field) {
-                            initiateGameMove(desertTilePlacing, null, null, isDesertTileAsOasis, raceTrackFieldIds.indexOf(field));
+                            initiateGameMove(desertTilePlacing, null, null, null, isDesertTileAsOasis, raceTrackFieldIds.indexOf(field));
                         }
                     }
                     popupWindow.dismiss();
@@ -641,8 +643,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         return image;
     }
 
-    private void initiateGameMove(final Moves moveType, GameColors legBettingTileColor, Boolean raceBettingOnWinner, Boolean desertTileAsOasis, Integer desertTilePosition) {
-        MoveBean move = MoveBean.create(token, moveType, legBettingTileColor, raceBettingOnWinner, desertTileAsOasis, desertTilePosition);
+    private void initiateGameMove(final Moves moveType, GameColors legBettingTileColor, Boolean raceBettingOnWinner, GameColors raceBettingColor, Boolean desertTileAsOasis, Integer desertTilePosition) {
+        MoveBean move = MoveBean.create(token, moveType, legBettingTileColor, raceBettingOnWinner, raceBettingColor, desertTileAsOasis, desertTilePosition);
         RestService.getInstance(getActivity()).initiateGameMove(gameId, move, new Callback<MoveBean>() {
             @Override
             public void success(MoveBean move, Response response) {
