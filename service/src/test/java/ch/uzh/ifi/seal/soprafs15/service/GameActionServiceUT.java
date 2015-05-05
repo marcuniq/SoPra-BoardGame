@@ -125,7 +125,7 @@ public class GameActionServiceUT {
     @Test(expected = GameNotFoundException.class)
     @SuppressWarnings("unchecked")
     public void testStartGameGameNotFoundFail() throws Exception {
-        Assert.assertEquals(0, gameService.listGames().size());
+        Assert.assertEquals(0, gameService.listGames(null).size());
 
         // Create new User (OWNER)
         UserRequestBean ownerRequest = TestUtils.toUserRequestBean(66, "Eric");
@@ -142,8 +142,8 @@ public class GameActionServiceUT {
         Long notGameId = (long) 2;
 
         // Assert that only one game exists (the one that we created)
-        Assert.assertEquals(1, gameService.listGames().size());
-        Assert.assertEquals(gameService.listGames().size(), (long) gameResponse.getId());
+        Assert.assertEquals(1, gameService.listGames(null).size());
+        Assert.assertEquals(gameService.listGames(null).size(), (long) gameResponse.getId());
         Assert.assertEquals(GameStatus.OPEN, gameResponse.getStatus());
         Assert.assertNotEquals(notGameId, gameResponse.getId());
 

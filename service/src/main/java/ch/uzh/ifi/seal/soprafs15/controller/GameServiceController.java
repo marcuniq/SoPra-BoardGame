@@ -51,10 +51,10 @@ public class GameServiceController extends GenericService {
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT)
 	@ResponseStatus(HttpStatus.OK)
     @ResponseBody
-	public List<GameResponseBean> listGames() {
+	public List<GameResponseBean> listGames(@RequestParam(required = false) final String status) {
 		logger.debug("listGames");
 
-        List<GameResponseBean> result = gameService.listGames();
+        List<GameResponseBean> result = gameService.listGames(status);
         return result;
 	}
 
@@ -242,7 +242,7 @@ public class GameServiceController extends GenericService {
      *  Description: Remove player with playerId of game with gameId
      */
     @RequestMapping(method = RequestMethod.DELETE, value = CONTEXT + "/{gameId}/players/{playerId}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void removePlayer(@PathVariable Long gameId, @PathVariable Integer playerId,
                              @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean,

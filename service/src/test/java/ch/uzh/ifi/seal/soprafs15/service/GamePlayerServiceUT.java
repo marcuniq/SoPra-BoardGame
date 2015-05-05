@@ -65,7 +65,7 @@ public class GamePlayerServiceUT {
         assertNotNull(testGameService);
         assertNotNull(testUserService);
 
-        assertEquals(0, testGameService.listGames().size());
+        assertEquals(0, testGameService.listGames(null).size());
         assertEquals(0, testUserService.listUsers().size());
 
         UserRequestBean userRequest = TestUtils.toUserRequestBean(82, "Ulrich");
@@ -87,7 +87,7 @@ public class GamePlayerServiceUT {
         assertNotNull(testGameService);
         assertNotNull(testUserService);
 
-        assertEquals(0, testGameService.listGames().size());
+        assertEquals(0, testGameService.listGames(null).size());
         assertEquals(0, testUserService.listUsers().size());
 
         UserRequestBean userRequest = TestUtils.toUserRequestBean(82, "Ulrich");
@@ -110,7 +110,7 @@ public class GamePlayerServiceUT {
         assertNotNull(testGameService);
         assertNotNull(testUserService);
 
-        assertEquals(0, testGameService.listGames().size());
+        assertEquals(0, testGameService.listGames(null).size());
         assertEquals(0, testUserService.listUsers().size());
 
         UserRequestBean firstUserRequest = TestUtils.toUserRequestBean(12, "Hanfred");
@@ -173,7 +173,7 @@ public class GamePlayerServiceUT {
         assertNotNull(testGameService);
         assertNotNull(testUserService);
 
-        assertEquals(0, testGameService.listGames().size());
+        assertEquals(0, testGameService.listGames(null).size());
         assertEquals(0, testUserService.listUsers().size());
 
         UserRequestBean ownerRequest = TestUtils.toUserRequestBean(93, "TestOwner");
@@ -186,7 +186,7 @@ public class GamePlayerServiceUT {
         assertEquals((long) oracleChannelNameLength, gameResponse.getChannelName().length());
         assertEquals(1, testGamePlayerService.listPlayer(gameResponse.getId()).size());
         assertEquals(1, testUserService.listUsers().size());
-        assertEquals(1, testGameService.listGames().size());
+        assertEquals(1, testGameService.listGames(null).size());
 
         UserRequestBean playerRequest = TestUtils.toUserRequestBean(74, "TestPlayer");
         UserResponseBean playerResponse = testUserService.addUser(playerRequest);
@@ -206,7 +206,7 @@ public class GamePlayerServiceUT {
 
         assertEquals(2, testGamePlayerService.listPlayer(gameResponse.getId()).size());
         assertEquals(2, testUserService.listUsers().size());
-        assertEquals(1, testGameService.listGames().size());
+        assertEquals(1, testGameService.listGames(null).size());
     }
 
     @Test
@@ -219,7 +219,7 @@ public class GamePlayerServiceUT {
         assertNotNull(testGameService);
         assertNotNull(testUserService);
 
-        assertEquals(0, testGameService.listGames().size());
+        assertEquals(0, testGameService.listGames(null).size());
         assertEquals(0, testUserService.listUsers().size());
 
         UserRequestBean ownerRequest = TestUtils.toUserRequestBean(93, "TestOwner");
@@ -232,7 +232,7 @@ public class GamePlayerServiceUT {
         assertEquals((long) oracleChannelNameLength, gameResponse.getChannelName().length());
         assertEquals(1, testGamePlayerService.listPlayer(gameResponse.getId()).size());
         assertEquals(1, testUserService.listUsers().size());
-        assertEquals(1, testGameService.listGames().size());
+        assertEquals(1, testGameService.listGames(null).size());
 
         UserRequestBean playerRequest = TestUtils.toUserRequestBean(74, "TestPlayer");
         UserResponseBean playerResponse = testUserService.addUser(playerRequest);
@@ -247,7 +247,7 @@ public class GamePlayerServiceUT {
 
         assertEquals(2, testGamePlayerService.listPlayer(gameResponse.getId()).size());
         assertEquals(2, testUserService.listUsers().size());
-        assertEquals(1, testGameService.listGames().size());
+        assertEquals(1, testGameService.listGames(null).size());
     }
 
     @Test
@@ -260,7 +260,7 @@ public class GamePlayerServiceUT {
         assertNotNull(testGameService);
         assertNotNull(testUserService);
 
-        assertEquals(0, testGameService.listGames().size());
+        assertEquals(0, testGameService.listGames(null).size());
         assertEquals(0, testUserService.listUsers().size());
 
         UserRequestBean userRequest = TestUtils.toUserRequestBean(61, "TestUser");
@@ -279,6 +279,6 @@ public class GamePlayerServiceUT {
 
         assertEquals(1, testGamePlayerService.listPlayer(gameResponse.getId()).size());
         assertEquals(1, testUserService.listUsers().size());
-        assertEquals(1, testGameService.listGames().size());
+        assertEquals(1, testGameService.listGames(null).size());
     }
 }
