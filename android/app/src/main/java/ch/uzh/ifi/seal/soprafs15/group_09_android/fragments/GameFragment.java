@@ -78,6 +78,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private String token;
     private Boolean isOwner = false;
     private Boolean interactionIsPrevented = false;
+    private Boolean isFastMode;
 
     private PopupWindow popupWindow;
     private View anchorView;
@@ -108,8 +109,13 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         Bundle b = getActivity().getIntent().getExtras();
         gameId = b.getLong("gameId");
         userId = b.getLong("userId");
-        playerId = b.getInt("playerId");
+        if(b.containsKey("playerId"))
+            playerId = b.getInt("playerId");
+        else
+            playerId = 1;
         isOwner = b.getBoolean("isOwner");
+        isFastMode = b.getBoolean("isFastMode");
+
 
         SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
@@ -132,7 +138,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         cleanRack(true);
         subscribeToAreaUpdates();
         subscribeToEvents();
-        play();
+        AreaService.getInstance(getActivity()).getAreasAndNotifySubscriber(gameId);
+        getPlayerStatus();
     }
 
     /**
@@ -231,13 +238,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         pyramidTile.setImageResource(R.drawable.pyramid_tile_1_button);
     }
 
-    /**
-     * This is the main method. After each player has finished his turn, the whole board is redraw.
-     */
-    private void play(){
-        AreaService.getInstance(getActivity()).getAreasAndNotifySubscriber(gameId);
-        getPlayerStatus();
-    }
 
     /**
      * Displays a Popup with the given layout and draws all the dices
@@ -606,7 +606,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private AlertDialog dummyPopup(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(message)
-            .setTitle("We have a message for you:");
+                .setTitle("We have a message for you:");
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
             }
@@ -647,7 +647,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void success(MoveBean move, Response response) {
                 switch (moveType) {
                     case DICE_ROLLING:
-                        System.out.println("added tile : " +  (pyramidTiles.size() + 1) + " to player's rack");
+                        System.out.println("added tile : " + (pyramidTiles.size() + 1) + " to player's rack");
                         pyramidTiles.add(pyramidTiles.size() + 1);
                         break;
                     case LEG_BETTING:
@@ -937,7 +937,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 dialog.show();
             }
         });
-        subscribedAreas.put(areaName,areaUpdateSubscriber);
+        subscribedAreas.put(areaName, areaUpdateSubscriber);
     }
 
     private void subscribeToEvents(){
@@ -979,7 +979,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                         }
                     }
         });
-        subscribedPushers.put(pushEventNameEnum,pusherEventSubscriber);
+        subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
 
         PusherService.getInstance(getActivity()).addSubscriber(
                 pushEventNameEnum = PushEventNameEnum.LEG_OVER_EVENT,
@@ -989,8 +989,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                         roundEvaluation();
                         cleanRack();
                     }
-        });
-        subscribedPushers.put(pushEventNameEnum,pusherEventSubscriber);
+                });
+        subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
 
         PusherService.getInstance(getActivity()).addSubscriber(
                 pushEventNameEnum = PushEventNameEnum.GAME_FINISHED_EVENT,
@@ -1005,8 +1005,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                             }
                         });
                     }
-        });
-        subscribedPushers.put(pushEventNameEnum,pusherEventSubscriber);
+                });
+        subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
     }
 
     private void unsubscribeToAreaUpdates(){
