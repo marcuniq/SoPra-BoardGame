@@ -154,6 +154,7 @@ public class GameLobbyFragment extends ListFragment {
     }
 
     private void onStartGame() {
+        unsubscribeFromEvents();
         Intent intent = new Intent();
         intent.setClass(getActivity(), GameActivity.class);
         Bundle b = new Bundle();
