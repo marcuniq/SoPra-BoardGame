@@ -8,6 +8,7 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserExistsException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -186,5 +187,24 @@ public class UserServiceUT {
     @SuppressWarnings("unchecked")
     public void testLogout() throws Exception {
         //void method, difficult to test, omitted for time being
+    }
+
+    @Test(expected = UserExistsException.class)
+    @SuppressWarnings("unchecked")
+    public void testAddUserUserExistsFail() throws Exception {
+        assertNotNull(testService);
+        assertEquals(0, testService.listUsers().size());
+
+        // create first user
+        UserRequestBean firstUserRequest = TestUtils.toUserRequestBean(29, "Hansueli");
+        testService.addUser(firstUserRequest);
+
+        assertEquals(1, testService.listUsers().size());
+
+        // create second user (with same username)
+        UserRequestBean invalidRequest = TestUtils.toUserRequestBean(85, firstUserRequest.getUsername());
+        testService.addUser(invalidRequest);
+
+        assertEquals(1, testService.listUsers().size());
     }
 }

@@ -44,7 +44,7 @@ public class UserServiceImpl extends UserService {
     public UserResponseBean addUser(UserRequestBean bean) {
 
         if(userRepository.findByUsername(bean.getUsername()) != null) {
-            throw new UserExistsException(userMapperService.toUser(bean), UserServiceImpl.class);
+            throw new UserExistsException(userRepository.findByUsername(bean.getUsername()), UserServiceImpl.class);
         }
 
         User user = userMapperService.toUser(bean);
