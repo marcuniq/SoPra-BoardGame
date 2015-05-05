@@ -245,10 +245,11 @@ public class GameServiceController extends GenericService {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public void removePlayer(@PathVariable Long gameId, @PathVariable Integer playerId,
-                                               @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
+                             @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean,
+                             @RequestParam(required = false) final Boolean isUserId) {
         logger.debug("remove player " + playerId + " from game " + gameId);
 
-        gamePlayerService.removePlayer(gameId, playerId, gamePlayerRequestBean);
+        gamePlayerService.removePlayer(gameId, playerId, gamePlayerRequestBean, isUserId);
     }
 
     /*

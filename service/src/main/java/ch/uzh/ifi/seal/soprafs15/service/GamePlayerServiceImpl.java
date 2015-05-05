@@ -4,6 +4,7 @@ import ch.uzh.ifi.seal.soprafs15.GameConstants;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameAddPlayerResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerResponseBean;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameStatus;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingCard;
@@ -100,7 +101,7 @@ public class GamePlayerServiceImpl extends GamePlayerService {
     }
 
     @Override
-    public void removePlayer(Long gameId, Integer playerId, GamePlayerRequestBean bean) {
+    public void removePlayer(Long gameId, Integer playerIdOrUserId, GamePlayerRequestBean bean, Boolean isUserId) {
         // find owner
         User owner = gameMapperService.toUser(bean);
 
@@ -115,13 +116,30 @@ public class GamePlayerServiceImpl extends GamePlayerService {
         }
 
         // find player
-        Optional<User> player = game.getPlayers().stream().filter(p -> p.getPlayerId() == playerId).findFirst();
+        User player = null;
 
-        if(!player.isPresent()){
-            throw new UserNotFoundException("Player with playerId "+ playerId +" not found", GamePlayerServiceImpl.class);
+        if(isUserId != null && isUserId){
+            // provided Id is a userId
+            player = userRepository.findOne(playerIdOrUserId.longValue());
+
+            // check whether user is player at this game
+            Optional<User> playerOption = game.getPlayers().stream().filter(p -> p.getId() == playerIdOrUserId.longValue()).findFirst();
+
+            if (!playerOption.isPresent()) {
+                throw new UserNotFoundException("User with userId " + playerIdOrUserId + " is not player at this game", GamePlayerServiceImpl.class);
+            }
+        } else {
+
+            // provided Id is a playerId
+            Optional<User> playerOption = game.getPlayers().stream().filter(p -> p.getPlayerId() == playerIdOrUserId).findFirst();
+
+            if (!playerOption.isPresent()) {
+                throw new UserNotFoundException("Player with playerId " + playerIdOrUserId + " not found", GamePlayerServiceImpl.class);
+            }
+            player = playerOption.get();
         }
 
-        game.removePlayer(player.get());
+        game.removePlayer(player);
     }
 
     @Override

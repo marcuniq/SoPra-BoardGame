@@ -16,6 +16,6 @@ public abstract class GamePlayerService extends GenericService {
     public abstract List<GamePlayerResponseBean> listPlayer(Long gameId);
     public abstract GameAddPlayerResponseBean addPlayer(Long gameId, GamePlayerRequestBean bean);
     public abstract GamePlayerResponseBean getPlayer(Long gameId, Integer playerId);
-    public abstract void removePlayer(Long gameId, Integer playerId, GamePlayerRequestBean bean);
+    public abstract void removePlayer(Long gameId, Integer playerId, GamePlayerRequestBean bean, Boolean isUserId);
     public abstract List<RaceBettingCard> getRaceBettingCards(Long gameId, Integer playerId, GamePlayerRequestBean gamePlayerRequestBean);
 }
