@@ -12,6 +12,7 @@ import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.NotEnoughPlayerException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.OwnerNotFoundException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -63,40 +64,36 @@ public class GameActionServiceUT {
     @Autowired
     private GameMoveService gameMoveService;
 
-//    @Test(expected = OwnerNotFoundException.class)
-//    @SuppressWarnings("unchecked")
-//    public void testStartGameOwnerNotFoundFail() {
-//        // Create new User (OWNER)
-//        UserRequestBean ownerRequest = TestUtils.toUserRequestBean(66, "Eric");
-//        UserResponseBean ownerResponse = userService.addUser(ownerRequest);
-//
-//        // Login OWNER
-//        UserLoginLogoutResponseBean ownerLoginResponse = userService.login(ownerResponse.getId());
-//
-//        // Create new Game
-//        GameRequestBean gameRequest = TestUtils.toGameRequestBean("TestGame", ownerLoginResponse.getToken());
-//        GameCreateResponseBean gameResponse = gameService.addGame(gameRequest);
-//
-//        // Create 2nd user (PLAYER)
-//        UserRequestBean playerRequest = TestUtils.toUserRequestBean(29, "Nick");
-//        UserResponseBean playerResponse = userService.addUser(playerRequest);
-//
-//        // Login PLAYER
-//        UserLoginLogoutResponseBean playerLoginResponse = userService.login(playerResponse.getId());
-//
-//        // Add PLAYER to Game
-//        GamePlayerRequestBean addPlayerRequest = TestUtils.toGamePlayerRequestBean(playerLoginResponse.getToken());
-//        gamePlayerService.addPlayer(gameResponse.getId(), addPlayerRequest);
-//
-//        // Delete OWNER
-//        UserLoginLogoutRequestBean ownerDeleteRequest = new UserLoginLogoutRequestBean();
-//        ownerDeleteRequest.setToken(ownerLoginResponse.getToken());
-//        userService.deleteUser(ownerResponse.getId(), ownerDeleteRequest);
-//
-//        // Start Game
-//        GamePlayerRequestBean startGameRequest = TestUtils.toGamePlayerRequestBean(ownerLoginResponse.getToken());
-//        GameResponseBean result = gameActionService.startGame(gameResponse.getId(), startGameRequest);
-//    }
+    @Test(expected = UserNotFoundException.class)
+    @SuppressWarnings("unchecked")
+    public void testStartGameOwnerNotFoundFail() {
+        // Create new User (OWNER)
+        UserRequestBean ownerRequest = TestUtils.toUserRequestBean(66, "Eric");
+        UserResponseBean ownerResponse = userService.addUser(ownerRequest);
+
+        // Login OWNER
+        UserLoginLogoutResponseBean ownerLoginResponse = userService.login(ownerResponse.getId());
+
+        // Create new Game
+        GameRequestBean gameRequest = TestUtils.toGameRequestBean("TestGame", ownerLoginResponse.getToken());
+        GameCreateResponseBean gameResponse = gameService.addGame(gameRequest);
+
+        // Create 2nd user (PLAYER)
+        UserRequestBean playerRequest = TestUtils.toUserRequestBean(29, "Nick");
+        UserResponseBean playerResponse = userService.addUser(playerRequest);
+
+        // Login PLAYER
+        UserLoginLogoutResponseBean playerLoginResponse = userService.login(playerResponse.getId());
+
+        // Add PLAYER to Game
+        GamePlayerRequestBean addPlayerRequest = TestUtils.toGamePlayerRequestBean(playerLoginResponse.getToken());
+        gamePlayerService.addPlayer(gameResponse.getId(), addPlayerRequest);
+
+
+        // Start Game
+        GamePlayerRequestBean startGameRequest = TestUtils.toGamePlayerRequestBean("asdf");
+        GameResponseBean result = gameActionService.startGame(gameResponse.getId(), startGameRequest);
+    }
 
     @Test
     @SuppressWarnings("unchecked")

@@ -21,4 +21,5 @@ public class UserNotFoundException extends UncheckedException {
     public UserNotFoundException(String token, Boolean dummy, Class invoker) {
         this("The user with token " + token + " couldn't be found.", invoker);
     }
+
 }
