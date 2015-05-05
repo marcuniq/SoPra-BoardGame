@@ -18,6 +18,7 @@ import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
+import retrofit.http.Query;
 
 public interface RestApiInterface {
 
@@ -172,10 +173,11 @@ public interface RestApiInterface {
     @POST("/games/{gameId}/start")
     void start(@Path("gameId") Long gameId, @Body UserBean token, Callback<GameBean> callback);
 
-    /* TODO: java.lang.IllegalArgumentException: RestApiInterface.removeGamePlayer: Non-body HTTP method cannot contain @Body or @TypedOutput.
-     * man kann keinen Body mitschicken wenn man was löschen will? */
     @DELETE("/games/{gameId}/players/{playerId}")
-    void removeGamePlayer(@Path("gameId") Long gameId, @Path("playerId") Integer playerId, @Body UserBean token, Callback<UserBean> callback);
+    void removeGamePlayer(@Path("gameId") Long gameId, @Path("playerId") Integer playerId,@Body UserBean token, Callback<UserBean> callback);
+
+    @DELETE("/games/{gameId}/players/{playerId}")
+    void removeGamePlayer(@Path("gameId") Long gameId, @Path("playerId") Integer playerId, @Query("isUserId") Boolean isUserId, @Body UserBean token, Callback<UserBean> callback);
 
     @DELETE("/games/{gameId}")
     void removeGame(@Path("gameId") Long gameId, @Body UserBean token, Callback<GameBean> callback);
