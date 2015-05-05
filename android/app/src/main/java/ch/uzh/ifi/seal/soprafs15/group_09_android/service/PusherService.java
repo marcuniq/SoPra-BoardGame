@@ -196,4 +196,8 @@ public class PusherService {
     public void removeSubscriber(PushEventNameEnum event, PusherEventSubscriber eventSubscriber){
         PusherEventSubscriberService.getInstance().removeSubscriber(event, eventSubscriber);
     }
+
+    public void removeAllSubscriber(){
+        PusherEventSubscriberService.getInstance().removeAllSubscriber();
+    }
 }

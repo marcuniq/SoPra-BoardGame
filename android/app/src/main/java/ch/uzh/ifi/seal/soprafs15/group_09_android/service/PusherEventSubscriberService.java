@@ -20,6 +20,10 @@ public class PusherEventSubscriberService {
 
 
     private PusherEventSubscriberService(){
+        init();
+    }
+
+    private void init(){
         subscriber = new HashMap<>();
 
         for(PushEventNameEnum e : PushEventNameEnum.values())
@@ -34,6 +38,11 @@ public class PusherEventSubscriberService {
 
     public void removeSubscriber(PushEventNameEnum event, PusherEventSubscriber eventSubscriber){
         subscriber.get(event).remove(eventSubscriber);
+    }
+
+    public void removeAllSubscriber(){
+        subscriber.clear();
+        init();
     }
 
     public void notifySubscriber(PushEventNameEnum eventNameEnum, AbstractPusherEvent event){

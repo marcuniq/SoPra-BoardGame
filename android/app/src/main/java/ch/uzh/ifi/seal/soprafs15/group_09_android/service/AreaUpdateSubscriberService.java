@@ -19,6 +19,10 @@ public class AreaUpdateSubscriberService {
     private HashMap<AreaName, List<AreaUpdateSubscriber>> subscriber;
 
     private AreaUpdateSubscriberService(){
+        init();
+    }
+
+    private void init(){
         subscriber = new HashMap<>();
 
         for(AreaName n : AreaName.values())
@@ -32,6 +36,11 @@ public class AreaUpdateSubscriberService {
 
     public void removeSubscriber(AreaName areaName, AreaUpdateSubscriber areaSubscriber){
         subscriber.get(areaName).remove(areaSubscriber);
+    }
+
+    public void removeAllSubscriber(){
+        subscriber.clear();
+        init();
     }
 
     public void notifySubscriber(AreaName areaName, AbstractArea area){
