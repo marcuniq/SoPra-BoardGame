@@ -100,6 +100,31 @@ public class GamePlayerServiceImpl extends GamePlayerService {
     }
 
     @Override
+    public void removePlayer(Long gameId, Integer playerId, GamePlayerRequestBean bean) {
+        // find owner
+        User owner = gameMapperService.toUser(bean);
+
+        // find game
+        Game game = gameRepository.findOne(gameId);
+
+        if (owner == null){
+            throw new UserNotFoundException(bean.getToken(), true, UserServiceImpl.class);
+        }
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GamePlayerServiceImpl.class);
+        }
+
+        // find player
+        Optional<User> player = game.getPlayers().stream().filter(p -> p.getPlayerId() == playerId).findFirst();
+
+        if(!player.isPresent()){
+            throw new UserNotFoundException("Player with playerId "+ playerId +" not found", GamePlayerServiceImpl.class);
+        }
+
+        game.removePlayer(player.get());
+    }
+
+    @Override
     public List<RaceBettingCard> getRaceBettingCards(Long gameId, Integer playerId, GamePlayerRequestBean bean) {
         Game game = gameRepository.findOne(gameId);
 

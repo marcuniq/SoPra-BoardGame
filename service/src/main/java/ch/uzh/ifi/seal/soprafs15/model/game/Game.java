@@ -63,7 +63,6 @@ public class Game implements Serializable {
 
     public void removePlayer(User player){
         stateManager.removePlayer(player);
-        player.setGameState(null);
     }
 
     public List<Move> getMoves() {

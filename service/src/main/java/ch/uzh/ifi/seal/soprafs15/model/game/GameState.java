@@ -87,7 +87,29 @@ public class GameState implements Serializable {
     public void removePlayer(User player){
         if(players.contains(player)){
             players.remove(player);
-            //player.setGameState(null);
+            player.setGameState(null);
+
+            // remove all player related things from game
+
+            // remove desert tile from racetrack
+            raceTrack.removePlayersDesertTile(player.getId());
+            player.setDesertTile(null);
+
+            // remove race betting cards
+            raceBettingArea.removePlayersBet(player.getId());
+            player.setRaceBettingCards(null);
+
+            // put back leg betting tiles
+            List<LegBettingTile> tiles = player.getLegBettingTiles();
+            for(LegBettingTile t : tiles)
+                t.setUser(null);
+
+            player.setLegBettingTiles(null);
+            legBettingArea.pushAndSort(tiles);
+
+            // remove money
+            player.setMoney(0);
+
         }
     }
 

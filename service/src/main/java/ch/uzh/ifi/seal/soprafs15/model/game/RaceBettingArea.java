@@ -1,11 +1,14 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
+import ch.uzh.ifi.seal.soprafs15.model.User;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by Hakuna on 30.03.2015.
@@ -90,6 +93,12 @@ public class RaceBettingArea implements Serializable {
         raceBettings.put(false, stack);
     }
 
+
+    public void removePlayersBet(Long userId){
+        for(Boolean b : raceBettings.keySet()){
+            raceBettings.get(b).removePlayersBet(userId);
+        }
+    }
 
     public Long getId() {
         return id;

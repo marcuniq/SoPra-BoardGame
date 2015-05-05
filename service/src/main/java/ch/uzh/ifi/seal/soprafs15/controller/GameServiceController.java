@@ -236,6 +236,21 @@ public class GameServiceController extends GenericService {
         return result;
 	}
 
+
+    /*
+     *	Context: /games/{gameId}/players/{playerId}
+     *  Description: Remove player with playerId of game with gameId
+     */
+    @RequestMapping(method = RequestMethod.DELETE, value = CONTEXT + "/{gameId}/players/{playerId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void removePlayer(@PathVariable Long gameId, @PathVariable Integer playerId,
+                                               @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
+        logger.debug("remove player " + playerId + " from game " + gameId);
+
+        gamePlayerService.removePlayer(gameId, playerId, gamePlayerRequestBean);
+    }
+
     /*
      *	Context: /games/{gameId}/players/{playerId}/racebettingcards
      *  Description: Get player's race betting cards

@@ -1,11 +1,13 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
 import ch.uzh.ifi.seal.soprafs15.model.Stack;
+import ch.uzh.ifi.seal.soprafs15.model.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Marco
@@ -71,8 +73,20 @@ public class RaceBettingCardStack implements Serializable, Stack<RaceBettingCard
         return result;
     }
 
+
+
     public Integer size(){
         return stack.size();
+    }
+
+    public void removePlayersBet(Long userId){
+        List<RaceBettingCard> playersBet = stack.stream()
+                .filter(raceBettingCard -> raceBettingCard.getUser().getId() == userId)
+                .collect(Collectors.toList());
+
+        //playersBet.stream().forEach(raceBettingCard -> raceBettingCard.setStack(null));
+
+        stack.removeAll(playersBet);
     }
 
 

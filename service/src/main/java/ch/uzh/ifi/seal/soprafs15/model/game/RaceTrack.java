@@ -97,6 +97,12 @@ public class RaceTrack implements Serializable {
         return (List<CamelStack>)(List<?>) list;
     }
 
+    private List<DesertTile> findDesertTiles(){
+        List<RaceTrackObject> list = fields.stream().filter(rto -> rto.getClass() == DesertTile.class).collect(Collectors.toList());
+
+        return (List<DesertTile>)(List<?>) list;
+    }
+
     public void moveCamelStack(Color color, Integer nrOfFieldsToAdvance){
 
         // locate Camel with color
@@ -152,6 +158,12 @@ public class RaceTrack implements Serializable {
     public void removeDesertTiles(){
         List<RaceTrackObject> desertTiles = fields.stream().filter(rto -> rto.getClass() == DesertTile.class).collect(Collectors.toList());
         fields.removeAll(desertTiles);
+    }
+
+    public void removePlayersDesertTile(Long userId){
+        Optional<DesertTile> playersDesertTile = findDesertTiles().stream().filter(desertTile -> desertTile.getOwner().getId() == userId).findFirst();
+        if(playersDesertTile.isPresent())
+            fields.remove(playersDesertTile.get());
     }
 
     public Map<Color, Ranking> getRanking(){

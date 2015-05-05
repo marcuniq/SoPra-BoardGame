@@ -1,5 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
+import ch.uzh.ifi.seal.soprafs15.model.move.LegBetting;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -89,6 +91,17 @@ public class LegBettingArea implements Serializable {
     public void pushLegBettingTile(LegBettingTile legBettingTile) {
         LegBettingTileStack stack = legBettingTiles.get(legBettingTile.getColor());
         stack.push(legBettingTile);
+    }
+
+    public void pushAndSort(List<LegBettingTile> tilesToPush){
+        for(Color c : Color.values()){
+            LegBettingTileStack stack = legBettingTiles.get(c);
+
+            tilesToPush.stream()
+                    .filter(t -> t.getColor() == c)
+                    .sorted((t1, t2) -> Integer.compare(t2.getLeadingPositionGain(), t1.getLeadingPositionGain()))
+                    .forEachOrdered(t -> stack.push(t));
+        }
     }
 
 
