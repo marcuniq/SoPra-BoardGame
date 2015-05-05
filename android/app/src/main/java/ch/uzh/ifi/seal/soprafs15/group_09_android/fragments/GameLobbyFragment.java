@@ -14,7 +14,9 @@ import android.view.ViewGroup;
 import android.widget.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
@@ -46,6 +48,7 @@ public class GameLobbyFragment extends ListFragment {
     private String token;
     private List<UserBean> players;
     private boolean noLogout = true;
+    private HashMap<PushEventNameEnum, PusherEventSubscriber> subscribedPushers = new HashMap<>();
 
     public GameLobbyFragment() {}
 
@@ -142,6 +145,7 @@ public class GameLobbyFragment extends ListFragment {
         });
         builder.setNegativeButton("Log out", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                unsubscribeToEvents();
                 if (isOwner) removeGame();
                 else removePlayerFromGame();
             }
@@ -163,24 +167,30 @@ public class GameLobbyFragment extends ListFragment {
     }
 
     private void subscribeToEvents(){
+        PushEventNameEnum pushEventNameEnum;
+        PusherEventSubscriber pusherEventSubscriber;
+
         System.out.println("subscribe to game start");
-        PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.GAME_START_EVENT,
-            new PusherEventSubscriber() {
-                @Override
-                public void onNewEvent(final AbstractPusherEvent event) {
-                    System.out.println("got game start event");
+        PusherService.getInstance(getActivity()).addSubscriber(
+                pushEventNameEnum = PushEventNameEnum.GAME_START_EVENT,
+                pusherEventSubscriber = new PusherEventSubscriber() {
+                    @Override
+                    public void onNewEvent(final AbstractPusherEvent event) {
+                        System.out.println("got game start event");
 
-                    GameStartEvent gameStartEvent = (GameStartEvent) event;
+                        GameStartEvent gameStartEvent = (GameStartEvent) event;
 
-                    playerId = gameStartEvent.getUserIdToPlayerIdMap().get(userId);
+                        playerId = gameStartEvent.getUserIdToPlayerIdMap().get(userId);
 
-                    onStartGame();
-                }
-            });
+                        onStartGame();
+                    }
+        });
+        subscribedPushers.put(pushEventNameEnum,pusherEventSubscriber);
 
         System.out.println("subscribe to player joined events");
-        PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.PLAYER_JOINED_EVENT,
-                new PusherEventSubscriber() {
+        PusherService.getInstance(getActivity()).addSubscriber(
+                pushEventNameEnum = PushEventNameEnum.PLAYER_JOINED_EVENT,
+                pusherEventSubscriber = new PusherEventSubscriber() {
                     @Override
                     public void onNewEvent(final AbstractPusherEvent event) {
                         System.out.println("got player joined event");
@@ -189,7 +199,14 @@ public class GameLobbyFragment extends ListFragment {
 
                         getPlayers();
                     }
-                });
+        });
+        subscribedPushers.put(pushEventNameEnum,pusherEventSubscriber);
+    }
+
+    private void unsubscribeToEvents(){
+        for (Map.Entry<PushEventNameEnum, PusherEventSubscriber> subscribedPusher : subscribedPushers.entrySet()){
+            PusherService.getInstance(getActivity()).removeSubscriber(subscribedPusher.getKey(), subscribedPusher.getValue());
+        }
     }
 
     private void startGame(){
