@@ -24,7 +24,6 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.GameBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.GameStartEvent;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerJoinedEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventSubscriber;
@@ -48,6 +47,7 @@ public class GameLobbyFragment extends ListFragment {
     private String token;
     private List<UserBean> players;
     private boolean noLogout = true;
+
     private HashMap<PushEventNameEnum, PusherEventSubscriber> subscribedPushers = new HashMap<>();
 
     public GameLobbyFragment() {}
@@ -145,7 +145,7 @@ public class GameLobbyFragment extends ListFragment {
         });
         builder.setNegativeButton("Log out", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                unsubscribeToEvents();
+                unsubscribeFromEvents();
                 if (isOwner) removeGame();
                 else removePlayerFromGame();
             }
@@ -184,8 +184,8 @@ public class GameLobbyFragment extends ListFragment {
 
                         onStartGame();
                     }
-        });
-        subscribedPushers.put(pushEventNameEnum,pusherEventSubscriber);
+                });
+        subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
 
         System.out.println("subscribe to player joined events");
         PusherService.getInstance(getActivity()).addSubscriber(
@@ -199,14 +199,8 @@ public class GameLobbyFragment extends ListFragment {
 
                         getPlayers();
                     }
-        });
-        subscribedPushers.put(pushEventNameEnum,pusherEventSubscriber);
-    }
-
-    private void unsubscribeToEvents(){
-        for (Map.Entry<PushEventNameEnum, PusherEventSubscriber> subscribedPusher : subscribedPushers.entrySet()){
-            PusherService.getInstance(getActivity()).removeSubscriber(subscribedPusher.getKey(), subscribedPusher.getValue());
-        }
+                });
+        subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
     }
 
     private void startGame(){
@@ -293,6 +287,13 @@ public class GameLobbyFragment extends ListFragment {
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
+    }
+
+    private void unsubscribeFromEvents(){
+        for (Map.Entry<PushEventNameEnum, PusherEventSubscriber> subscribedPusher : subscribedPushers.entrySet()){
+            PusherService.getInstance(getActivity()).removeSubscriber(subscribedPusher.getKey(), subscribedPusher.getValue());
+        }
+        subscribedPushers.clear();
     }
 }
 

@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -95,11 +96,30 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private HashMap<AreaName, AreaUpdateSubscriber> subscribedAreas = new HashMap<>();
     private HashMap<PushEventNameEnum, PusherEventSubscriber> subscribedPushers = new HashMap<>();
 
+    private OnBackPressedListener onBackPressedListener;
+
+    public interface OnBackPressedListener {
+        public void unsubscribeFromEvents();
+        public void unsubscribeFromAreas();
+        public void setSubscribedAreas (HashMap<AreaName, AreaUpdateSubscriber> subscribedAreas);
+        public void setSubscribedPushers (HashMap<PushEventNameEnum, PusherEventSubscriber> subscribedPushers);
+    }
+
     public static GameFragment newInstance() {
         return new GameFragment();
     }
 
     public GameFragment() { }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            onBackPressedListener = (OnBackPressedListener) activity;
+        } catch (ClassCastException castException) {
+            /** The activity does not implement the listener. */
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -130,8 +150,12 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
         addClickListenerToButtons();
         cleanRack(true);
+
         subscribeToAreaUpdates();
+
         subscribeToEvents();
+
+
         play();
     }
 
@@ -464,14 +488,15 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 acceptButton.setVisibility(View.VISIBLE);
-                if (modifiedButton != null) ((RelativeLayout) modifiedButton.getParent()).removeView(modifiedButton);
+                if (modifiedButton != null)
+                    ((RelativeLayout) modifiedButton.getParent()).removeView(modifiedButton);
                 isDesertTileAsOasis = true;
                 RelativeLayout fieldLayout = (RelativeLayout) anchorView;
                 acceptButton.setText(R.string.button_text_oasis);
                 modifiedButton = createDynamicImage(0,
-                    oasisDrawableId,
-                    RelativeLayout.CENTER_HORIZONTAL,
-                    RelativeLayout.CENTER_VERTICAL);
+                        oasisDrawableId,
+                        RelativeLayout.CENTER_HORIZONTAL,
+                        RelativeLayout.CENTER_VERTICAL);
                 ViewGroup.LayoutParams params = modifiedButton.getLayoutParams();
                 params.width = 75;
                 params.height = 75;
@@ -685,6 +710,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         }
         cleanRack();
     }
+
     private void cleanRack(){
         legBettingTiles.clear();
         pyramidTiles.clear();
@@ -937,7 +963,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 dialog.show();
             }
         });
-        subscribedAreas.put(areaName,areaUpdateSubscriber);
+        subscribedAreas.put(areaName, areaUpdateSubscriber);
+        onBackPressedListener.setSubscribedAreas(subscribedAreas);
     }
 
     private void subscribeToEvents(){
@@ -945,23 +972,23 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         PusherEventSubscriber pusherEventSubscriber;
 
         PusherService.getInstance(getActivity()).addSubscriber(
-            pushEventNameEnum = PushEventNameEnum.MOVE_EVENT,
-            pusherEventSubscriber = new PusherEventSubscriber() {
-                @Override
-                public void onNewEvent(final AbstractPusherEvent moveEvent) {
-                    System.out.println("got new event");
-                    getPlayerStatus();
-                    getActivity().runOnUiThread(new Runnable() {
-                        public void run() {
-                            Toast.makeText(getActivity(), "new move event: " +
-                                    ((MoveEvent) moveEvent).getMoveId(), Toast.LENGTH_SHORT).show();
-                            updateHeaderBar();
-                            interactionIsPrevented = false;
-                        }
-                    });
-                }
-        });
-        subscribedPushers.put(pushEventNameEnum,pusherEventSubscriber);
+                pushEventNameEnum = PushEventNameEnum.MOVE_EVENT,
+                pusherEventSubscriber = new PusherEventSubscriber() {
+                    @Override
+                    public void onNewEvent(final AbstractPusherEvent moveEvent) {
+                        System.out.println("got new event");
+                        getPlayerStatus();
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getActivity(), "new move event: " +
+                                        ((MoveEvent) moveEvent).getMoveId(), Toast.LENGTH_SHORT).show();
+                                updateHeaderBar();
+                                interactionIsPrevented = false;
+                            }
+                        });
+                    }
+                });
+        subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
 
         PusherService.getInstance(getActivity()).addSubscriber(
                 pushEventNameEnum = PushEventNameEnum.PLAYER_TURN_EVENT,
@@ -979,7 +1006,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                         }
                     }
         });
-        subscribedPushers.put(pushEventNameEnum,pusherEventSubscriber);
+        subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
 
         PusherService.getInstance(getActivity()).addSubscriber(
                 pushEventNameEnum = PushEventNameEnum.LEG_OVER_EVENT,
@@ -999,25 +1026,14 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                     public void onNewEvent(final AbstractPusherEvent moveEvent) {
                         getActivity().runOnUiThread(new Runnable() {
                             public void run() {
-                                unsubscribeToAreaUpdates();
-                                unsubscribeToEvents();
+                                onBackPressedListener.unsubscribeFromAreas();
+                                onBackPressedListener.unsubscribeFromEvents();
                                 gameFinishEvaluation();
                             }
                         });
                     }
         });
-        subscribedPushers.put(pushEventNameEnum,pusherEventSubscriber);
-    }
-
-    private void unsubscribeToAreaUpdates(){
-        for (Map.Entry<AreaName, AreaUpdateSubscriber> subscribedArea : subscribedAreas.entrySet()){
-            AreaService.getInstance(getActivity()).removeSubscriber(subscribedArea.getKey(), subscribedArea.getValue());
-        }
-    }
-
-    private void unsubscribeToEvents(){
-        for (Map.Entry<PushEventNameEnum, PusherEventSubscriber> subscribedPusher : subscribedPushers.entrySet()){
-            PusherService.getInstance(getActivity()).removeSubscriber(subscribedPusher.getKey(), subscribedPusher.getValue());
-        }
+        subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
+        onBackPressedListener.setSubscribedPushers(subscribedPushers);
     }
 }
