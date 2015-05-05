@@ -133,6 +133,21 @@ public class UserServiceUT {
         assertEquals(1, testService.listUsers().size());
     }
 
+    @Test(expected = UserNotFoundException.class)
+    @SuppressWarnings("unchecked")
+    public void testGetUserUserNotFoundFail() throws Exception {
+
+        assertEquals(0, testService.listUsers().size());
+
+        //oracle values
+        UserResponseBean oracleResponse = TestUtils.toUserResponseBean(21, "hans");
+
+        //Assert testService has been initialized and call method to be tested
+        assertNotNull(testService);
+        UserResponseBean response = testService.addUser(TestUtils.toUserRequestBean(21, "hans"));
+        UserResponseBean result = testService.getUser(response.getId() + 1);
+    }
+
     @Test
     @SuppressWarnings("unchecked")
     public void testUpdateUser() throws Exception {
@@ -140,8 +155,10 @@ public class UserServiceUT {
     }
 
     @Test
-    //method not yet implemented
+    @SuppressWarnings("unchecked")
     public void testDeleteUser() throws Exception {
+
+        assertEquals(0, testService.listUsers().size());
 
         //create new User and and add it
         UserRequestBean request = TestUtils.toUserRequestBean(67,"karl");
@@ -151,14 +168,15 @@ public class UserServiceUT {
         UserLoginLogoutResponseBean tokenResponse = testService.login(response.getId());
         UserLoginLogoutRequestBean tokenRequest = TestUtils.toUserLLRequestBean(tokenResponse.getToken());
 
+        assertEquals(1, testService.listUsers().size());
+
         //Assert testService has been initialized and call method to be tested
         assertNotNull(testService);
         testService.deleteUser(response.getId(), tokenRequest);
 
         //Assertions
-        assertNull(mockUserRepo.findByUsername("karl"));
-
-
+        assertNull(mockUserRepo.findByUsername(response.getUsername()));
+        assertEquals(0, testService.listUsers().size());
     }
 
     @Test
@@ -183,10 +201,16 @@ public class UserServiceUT {
         assertEquals(1, testService.listUsers().size());
     }
 
+    @Test(expected = UserNotFoundException.class)
+    @SuppressWarnings("unchecked")
+    public void testLogoutUserNotFoundFail() throws Exception {
+        //TODO
+    }
+
     @Test
     @SuppressWarnings("unchecked")
     public void testLogout() throws Exception {
-        //void method, difficult to test, omitted for time being
+        //TODO is Status ONLINE before and OFFLINE after
     }
 
     @Test(expected = UserExistsException.class)
