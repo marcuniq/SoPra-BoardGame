@@ -35,22 +35,19 @@ public class UserMapperServiceUT {
     @Test
     @SuppressWarnings("unchecked")
     public void testToUser() throws Exception {
-        // set up test object
         UserRequestBean testBean = new UserRequestBean();
         testBean.setAge(20);
         testBean.setUsername("TestUsername");
 
-        // set up oracle values
+
         User oracleUser = new User();
         oracleUser.setUsername("TestUsername");
         oracleUser.setAge(20);
         oracleUser.setStatus(UserStatus.OFFLINE);
         String oracleToken = "067e6162-3b6f-4ae2-a171-2470b63dff00";
 
-        // test call
         User result = userMapperService.toUser(testBean);
 
-        // assertions
         Assert.assertEquals(result.getAge(), oracleUser.getAge());
         Assert.assertEquals(result.getUsername(), oracleUser.getUsername());
         Assert.assertEquals(result.getStatus(), oracleUser.getStatus());
