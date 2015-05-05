@@ -1,9 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.service;
 
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameCreateResponseBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerRequestBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRequestBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameResponseBean;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.*;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
@@ -17,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Marco
@@ -39,8 +37,12 @@ public class GameServiceImpl extends GameService {
     }
 
     @Override
-    public List<GameResponseBean> listGames() {
+    public List<GameResponseBean> listGames(String status) {
         List<Game> games = (List<Game>) gameRepository.findAll();
+
+        if(status != null)
+            games = games.stream().filter(game -> game.getStatus() == GameStatus.valueOf(status)).collect(Collectors.toList());
+
         return gameMapperService.toGameResponseBean(games);
     }
 

@@ -59,7 +59,7 @@ public class GameServiceUT {
     @SuppressWarnings("unchecked")
     public void testGetGameFail() throws Exception {
 
-        Assert.assertEquals(0, testGameService.listGames().size());
+        Assert.assertEquals(0, testGameService.listGames(null).size());
 
         Assert.assertNotNull(testGameService);
 
@@ -70,7 +70,7 @@ public class GameServiceUT {
     @SuppressWarnings("unchecked")
     public void testListGames() throws Exception {
 
-        Assert.assertEquals(0, testGameService.listGames().size());
+        Assert.assertEquals(0, testGameService.listGames(null).size());
         Assert.assertEquals(0, testUserService.listUsers().size());
 
         List<GameResponseBean> oracleResponseList = new ArrayList<GameResponseBean>();
@@ -84,14 +84,14 @@ public class GameServiceUT {
         UserLoginLogoutResponseBean loginResponse = testUserService.login(userResponse.getId());
 
         testGameService.addGame(TestUtils.toGameRequestBean("TestGame", loginResponse.getToken()));
-        List<GameResponseBean> result = testGameService.listGames();
+        List<GameResponseBean> result = testGameService.listGames(null);
 
         Assert.assertEquals(oracleResponseList.get(0).getId(), result.get(0).getId());
         Assert.assertEquals(oracleResponseList.get(0).getName(), result.get(0).getName());
         Assert.assertEquals(oracleResponseList.get(0).getOwner(), result.get(0).getOwner());
         Assert.assertEquals(oracleResponseList.size(), result.size());
 
-        Assert.assertEquals(1, testGameService.listGames().size());
+        Assert.assertEquals(1, testGameService.listGames(null).size());
         Assert.assertEquals(1, testUserService.listUsers().size());
     }
 
@@ -99,7 +99,7 @@ public class GameServiceUT {
     @SuppressWarnings("unchecked")
     public void testAddGame() throws Exception {
 
-        Assert.assertEquals(0, testGameService.listGames().size());
+        Assert.assertEquals(0, testGameService.listGames(null).size());
         Assert.assertEquals(0, testUserService.listUsers().size());
 
         Long oracleChannelNameLength = (long) "9b5eabcc-781b-483a-8eed-30d7eacb1567".length();
@@ -116,7 +116,7 @@ public class GameServiceUT {
 
         Assert.assertEquals((long) oracleChannelNameLength, gameResponse.getChannelName().length());
 
-        Assert.assertEquals(1, testGameService.listGames().size());
+        Assert.assertEquals(1, testGameService.listGames(null).size());
         Assert.assertEquals(1, testUserService.listUsers().size());
     }
 
@@ -124,7 +124,7 @@ public class GameServiceUT {
     @SuppressWarnings("unchecked")
     public void testGetGame() throws Exception {
 
-        Assert.assertEquals(0, testGameService.listGames().size());
+        Assert.assertEquals(0, testGameService.listGames(null).size());
         Assert.assertEquals(0, testUserService.listUsers().size());
 
         GameResponseBean oracleResponse = new GameResponseBean();
@@ -150,7 +150,7 @@ public class GameServiceUT {
         Assert.assertEquals(oracleResponse.getId(), gameResponse.getId());
         Assert.assertEquals((long) oracleChannelNameLength, gameResponse.getChannelName().length());
 
-        Assert.assertEquals(1, testGameService.listGames().size());
+        Assert.assertEquals(1, testGameService.listGames(null).size());
         Assert.assertEquals(1, testUserService.listUsers().size());
     }
 }
