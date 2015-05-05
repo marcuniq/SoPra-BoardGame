@@ -91,6 +91,15 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private LegBettingTile pickedTile;
     private Boolean raceBettingOnWinner = null;
 
+    private AreaUpdateSubscriber bruder;
+    private AreaUpdateSubscriber schwester;
+    private AreaUpdateSubscriber onkel;
+    private AreaUpdateSubscriber vater;
+    private PusherEventSubscriber tochter;
+    private PusherEventSubscriber mutter;
+    private PusherEventSubscriber tante;
+    private PusherEventSubscriber oma;
+
     public static GameFragment newInstance() {
         return new GameFragment();
     }
@@ -866,7 +875,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * (see PusherService.registerAreaServiceAsSubscriber())
      */
     private void subscribeToAreaUpdates(){
-        AreaService.getInstance(getActivity()).addSubscriber(AreaName.DICE_AREA, new AreaUpdateSubscriber() {
+        AreaService.getInstance(getActivity()).addSubscriber(AreaName.DICE_AREA, bruder = new AreaUpdateSubscriber() {
             @Override
             public void onUpdate(AbstractArea area) {
                 diceArea = (DiceArea) area;
@@ -879,7 +888,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        AreaService.getInstance(getActivity()).addSubscriber(AreaName.LEG_BETTING_AREA, new AreaUpdateSubscriber() {
+        AreaService.getInstance(getActivity()).addSubscriber(AreaName.LEG_BETTING_AREA, schwester = new AreaUpdateSubscriber() {
             @Override
             public void onUpdate(AbstractArea area) {
                 legBettingArea = (LegBettingArea) area;
@@ -893,7 +902,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        AreaService.getInstance(getActivity()).addSubscriber(AreaName.RACE_BETTING_AREA, new AreaUpdateSubscriber() {
+        AreaService.getInstance(getActivity()).addSubscriber(AreaName.RACE_BETTING_AREA, onkel = new AreaUpdateSubscriber() {
             @Override
             public void onUpdate(AbstractArea area) {
                 raceBettingArea = (RaceBettingArea) area;
@@ -907,7 +916,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        AreaService.getInstance(getActivity()).addSubscriber(AreaName.RACE_TRACK, new AreaUpdateSubscriber() {
+        AreaService.getInstance(getActivity()).addSubscriber(AreaName.RACE_TRACK, vater = new AreaUpdateSubscriber() {
             @Override
             public void onUpdate(AbstractArea area) {
                 raceTrack = (RaceTrack) area;
@@ -926,7 +935,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         // for demonstration purposes
         // subscribe to move event and display id
         PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.MOVE_EVENT,
-                new PusherEventSubscriber() {
+                tochter = new PusherEventSubscriber() {
                     @Override
                     public void onNewEvent(final AbstractPusherEvent moveEvent) {
                         System.out.println("got new event");
@@ -943,7 +952,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 });
 
         PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.PLAYER_TURN_EVENT,
-                new PusherEventSubscriber() {
+                mutter = new PusherEventSubscriber() {
                     @Override
                     public void onNewEvent(final AbstractPusherEvent event) {
                         System.out.println("got new event");
@@ -959,7 +968,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 });
 
         PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.LEG_OVER_EVENT,
-            new PusherEventSubscriber() {
+                tante = new PusherEventSubscriber() {
                 @Override
                 public void onNewEvent(final AbstractPusherEvent moveEvent) {
                     roundEvaluation();
@@ -968,14 +977,20 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             });
 
         PusherService.getInstance(getActivity()).addSubscriber(PushEventNameEnum.GAME_FINISHED_EVENT,
-                new PusherEventSubscriber() {
+                oma = new PusherEventSubscriber() {
                     @Override
                     public void onNewEvent(final AbstractPusherEvent moveEvent) {
-                        System.out.println("WRAAAAAAAAAAAAAHHHHHHH");
-
                         getActivity().runOnUiThread(new Runnable() {
                             public void run() {
                                 // TODO: remove from subscribers
+                                AreaService.getInstance(getActivity()).removeSubscriber(AreaName.DICE_AREA, bruder);
+                                AreaService.getInstance(getActivity()).removeSubscriber(AreaName.LEG_BETTING_AREA, schwester);
+                                AreaService.getInstance(getActivity()).removeSubscriber(AreaName.RACE_BETTING_AREA, onkel);
+                                AreaService.getInstance(getActivity()).removeSubscriber(AreaName.RACE_TRACK, vater);
+                                PusherService.getInstance(getActivity()).removeSubscriber(PushEventNameEnum.MOVE_EVENT, tochter);
+                                PusherService.getInstance(getActivity()).removeSubscriber(PushEventNameEnum.PLAYER_TURN_EVENT, mutter);
+                                PusherService.getInstance(getActivity()).removeSubscriber(PushEventNameEnum.LEG_OVER_EVENT, tante);
+                                PusherService.getInstance(getActivity()).removeSubscriber(PushEventNameEnum.GAME_FINISHED_EVENT, oma);
                                 gameFinishEvaluation();
                             }
                         });
