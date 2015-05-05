@@ -201,10 +201,16 @@ public class UserServiceUT {
         assertEquals(1, testService.listUsers().size());
     }
 
+    @Test(expected = UserNotFoundException.class)
+    @SuppressWarnings("unchecked")
+    public void testLogoutUserNotFoundFail() throws Exception {
+        //TODO
+    }
+
     @Test
     @SuppressWarnings("unchecked")
     public void testLogout() throws Exception {
-        //void method, difficult to test, omitted for time being
+        //TODO is Status ONLINE before and OFFLINE after
     }
 
     @Test(expected = UserExistsException.class)
