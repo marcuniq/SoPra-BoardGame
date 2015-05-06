@@ -24,18 +24,15 @@ public class RaceBettingCardStack implements Serializable, Stack<RaceBettingCard
     @Column
     private Boolean betOnWinner;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    private RaceBettingArea raceBettingArea;
-
-    @OneToMany(mappedBy = "stack", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "RACEBETTINGCARDSTACK_ID")
     private List<RaceBettingCard> stack;
 
 
     public RaceBettingCardStack(){
         init();
     }
-    public RaceBettingCardStack(RaceBettingArea raceBettingArea, Boolean betOnWinner){
-        this.raceBettingArea = raceBettingArea;
+    public RaceBettingCardStack(Boolean betOnWinner){
         this.betOnWinner = betOnWinner;
         init();
     }
@@ -50,7 +47,6 @@ public class RaceBettingCardStack implements Serializable, Stack<RaceBettingCard
         if(stack == null)
             stack = new ArrayList<>();
 
-        raceBettingCard.setStack(this);
         stack.add(raceBettingCard);
     }
 
@@ -60,7 +56,6 @@ public class RaceBettingCardStack implements Serializable, Stack<RaceBettingCard
         if(stack.size() > 0)
             result = stack.remove(stack.size()-1);
 
-        result.setStack(null);
         return result;
     }
 
@@ -96,14 +91,6 @@ public class RaceBettingCardStack implements Serializable, Stack<RaceBettingCard
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public RaceBettingArea getRaceBettingArea() {
-        return raceBettingArea;
-    }
-
-    public void setRaceBettingArea(RaceBettingArea raceBettingArea) {
-        this.raceBettingArea = raceBettingArea;
     }
 
     public List<RaceBettingCard> getStack() {
