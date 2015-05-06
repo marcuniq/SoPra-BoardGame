@@ -671,8 +671,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void success(MoveBean move, Response response) {
                 switch (moveType) {
                     case DICE_ROLLING:
-                        System.out.println("added tile : " + (pyramidTiles.size() + 1) + " to player's rack");
-                        pyramidTiles.add(pyramidTiles.size() + 1);
+                        if (pyramidTiles.size() < 4) pyramidTiles.add(pyramidTiles.size() + 1);
                         break;
                     case LEG_BETTING:
                         legBettingTiles.add(pickedTile);
@@ -1034,17 +1033,5 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         });
         subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
         onBackPressedListener.setSubscribedPushers(subscribedPushers);
-    }
-
-    private void unsubscribeToAreaUpdates(){
-        for (Map.Entry<AreaName, AreaUpdateSubscriber> subscribedArea : subscribedAreas.entrySet()){
-            AreaService.getInstance(getActivity()).removeSubscriber(subscribedArea.getKey(), subscribedArea.getValue());
-        }
-    }
-
-    private void unsubscribeToEvents(){
-        for (Map.Entry<PushEventNameEnum, PusherEventSubscriber> subscribedPusher : subscribedPushers.entrySet()){
-            PusherService.getInstance(getActivity()).removeSubscriber(subscribedPusher.getKey(), subscribedPusher.getValue());
-        }
     }
 }

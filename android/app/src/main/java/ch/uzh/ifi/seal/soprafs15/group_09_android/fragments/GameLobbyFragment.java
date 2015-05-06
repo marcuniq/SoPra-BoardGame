@@ -148,6 +148,7 @@ public class GameLobbyFragment extends ListFragment {
                 unsubscribeFromEvents();
                 if (isOwner) removeGame();
                 else removePlayerFromGame();
+                PusherService.getInstance(getActivity()).disconnect();
             }
         });
         return builder.create();
