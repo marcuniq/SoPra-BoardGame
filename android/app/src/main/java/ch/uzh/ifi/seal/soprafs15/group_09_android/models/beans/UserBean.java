@@ -18,6 +18,8 @@ public abstract class UserBean implements Parcelable {
     @Nullable
     public abstract Long id();
     @Nullable
+    public abstract Integer playerId();
+    @Nullable
     public abstract String username();
     @Nullable
     public abstract Integer age();
@@ -44,13 +46,13 @@ public abstract class UserBean implements Parcelable {
 
     public static UserBean create( String username,
                                Integer age) {
-        return new AutoParcel_UserBean( null, username, age, null,
+        return new AutoParcel_UserBean( null, null, username, age, null,
                                     null, null, null, null,
                                     null, null, null, null);
     }
 
     public static UserBean setToken( String token ) {
-        return new AutoParcel_UserBean( null, null, null, token,
+        return new AutoParcel_UserBean( null, null, null, null, token,
                 null, null, null, null,
                 null, null, null, null);
     }

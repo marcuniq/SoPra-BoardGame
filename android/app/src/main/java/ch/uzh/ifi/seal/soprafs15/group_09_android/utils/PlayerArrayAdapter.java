@@ -43,7 +43,7 @@ public class PlayerArrayAdapter extends GenericArrayAdapter<UserBean> {
 
     @Override
     public void setIcon(ImageView imageView, UserBean player, int index){
-        if (playerIdIsUserId) index = player.id().intValue();
+        if (playerIdIsUserId) index = player.playerId();
         imageView.setBackgroundResource(getContext().getResources().getIdentifier("c" + index + "_head", "drawable", getContext().getPackageName()));
     }
 }
