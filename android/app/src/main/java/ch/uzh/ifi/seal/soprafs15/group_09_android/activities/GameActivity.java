@@ -127,6 +127,7 @@ public class GameActivity extends MainActivity implements GameFragment.OnBackPre
                 unsubscribeFromEvents();
 
                 PusherService.getInstance(getApplicationContext()).unsubscribeFromChannel(channelName);
+                PusherService.getInstance(getApplicationContext()).removeAllSubscriber();
 
                 Intent intent = new Intent();
                 intent.setClass(getApplicationContext(), MenuActivity.class);

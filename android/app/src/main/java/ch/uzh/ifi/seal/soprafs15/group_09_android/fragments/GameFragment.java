@@ -1183,6 +1183,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                                 onBackPressedListener.unsubscribeFromAreas();
                                 onBackPressedListener.unsubscribeFromEvents();
                                 PusherService.getInstance(getActivity()).unsubscribeFromChannel(channelName);
+                                PusherService.getInstance(getActivity()).removeAllSubscriber();
                                 gameFinishEvaluation();
                             }
                         });

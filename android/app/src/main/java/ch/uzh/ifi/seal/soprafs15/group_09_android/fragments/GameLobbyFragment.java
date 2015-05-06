@@ -130,32 +130,15 @@ public class GameLobbyFragment extends ListFragment {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK){
-                    AlertDialog dialog = warningPopup();
-                    dialog.show();
+                    unsubscribeFromEvents();
+                    PusherService.getInstance(getActivity()).unsubscribeFromChannel(channelName);
+                    PusherService.getInstance(getActivity()).removeAllSubscriber();
+                    getActivity().onBackPressed();
                     return true;
                 }
                 return false;
             }
         });
-    }
-
-    private AlertDialog warningPopup() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("You have clicked on the back Button")
-                .setTitle("Do you want to log out from the lobby?:");
-        builder.setPositiveButton("Stay in GameBean", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // do nothing but close popup
-            }
-        });
-        builder.setNegativeButton("Log out", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                unsubscribeFromEvents();
-                PusherService.getInstance(getActivity()).unsubscribeFromChannel(channelName);
-                //removePlayerFromGame();
-            }
-        });
-        return builder.create();
     }
 
     private void onStartGame() {
