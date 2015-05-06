@@ -1,6 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.service;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -56,16 +57,12 @@ public class PusherService {
         PusherAPIService.getInstance().connect(new ConnectionEventListener() {
             @Override
             public void onConnectionStateChange(ConnectionStateChange change) {
-                System.out.println("State changed to " + change.getCurrentState() +
-                        " from " + change.getPreviousState());
+                Log.i("PusherService", "State changed to " + change.getCurrentState() + " from " + change.getPreviousState());
             }
 
             @Override
             public void onError(String message, String code, Exception e) {
-                System.out.println("There was a problem connecting!");
-                System.out.println("message: " + message);
-                System.out.println("code: " + code);
-                //System.out.println("exception: " + e.toString());
+                    Log.e("PusherService", "There was a problem connecting!" + "\nmessage: " + message + "\ncode:" + code);
             }
         }, ConnectionState.ALL);
 
@@ -79,7 +76,7 @@ public class PusherService {
         PusherAPIService.getInstance().bind(PushEventNameEnum.MOVE_EVENT.toString(), new SubscriptionEventListener() {
             @Override
             public void onEvent(String channel, String event, String data) {
-                System.out.println("Received move event with data: " + data);
+                Log.d("PusherService", "Received MOVE_EVENT with data: " + data);
 
                 MoveEventBean bean = gson.fromJson(data, MoveEventBean.class);
 
@@ -92,9 +89,9 @@ public class PusherService {
         PusherAPIService.getInstance().bind(PushEventNameEnum.PLAYER_LEFT_EVENT.toString(), new SubscriptionEventListener() {
             @Override
             public void onEvent(String channel, String event, String data) {
-                System.out.println("Received player left event with data: " + data);
+                Log.d("PusherService", "Received PLAYER_LEFT_EVENT with data: " + data);
 
-                PlayerLeftEventBean bean = gson.fromJson(data, PlayerLeftEventBean.class);
+                        PlayerLeftEventBean bean = gson.fromJson(data, PlayerLeftEventBean.class);
 
                 // notify subscriber
                 PusherEventSubscriberService.getInstance()
@@ -105,7 +102,7 @@ public class PusherService {
         PusherAPIService.getInstance().bind(PushEventNameEnum.LEG_OVER_EVENT.toString(), new SubscriptionEventListener() {
             @Override
             public void onEvent(String channel, String event, String data) {
-                System.out.println("Received leg over event with data: " + data);
+                Log.d("PusherService", "Received LEG_OVER_EVENT with data: " + data);
 
                 LegOverEventBean bean = gson.fromJson(data, LegOverEventBean.class);
 
@@ -118,7 +115,7 @@ public class PusherService {
         PusherAPIService.getInstance().bind(PushEventNameEnum.GAME_FINISHED_EVENT.toString(), new SubscriptionEventListener() {
             @Override
             public void onEvent(String channel, String event, String data) {
-                System.out.println("Received game finished event with data: " + data);
+                Log.d("PusherService", "Received GAME_FINISHED_EVENT with data: " + data);
 
                 GameFinishedEventBean bean = gson.fromJson(data, GameFinishedEventBean.class);
 
@@ -131,7 +128,7 @@ public class PusherService {
         PusherAPIService.getInstance().bind(PushEventNameEnum.GAME_START_EVENT.toString(), new SubscriptionEventListener() {
             @Override
             public void onEvent(String channel, String event, String data) {
-                System.out.println("Received game start event with data: " + data);
+                Log.d("PusherService", "Received GAME_START_EVENT with data: " + data);
 
                 GameStartEventBean bean = gson.fromJson(data, GameStartEventBean.class);
 
@@ -144,7 +141,7 @@ public class PusherService {
         PusherAPIService.getInstance().bind(PushEventNameEnum.PLAYER_TURN_EVENT.toString(), new SubscriptionEventListener() {
             @Override
             public void onEvent(String channel, String event, String data) {
-                System.out.println("Received player turn event with data: " + data);
+                Log.d("PusherService", "Received PLAYER_TURN_EVENT with data: " + data);
 
                 PlayerTurnEventBean bean = gson.fromJson(data, PlayerTurnEventBean.class);
 
@@ -157,7 +154,7 @@ public class PusherService {
         PusherAPIService.getInstance().bind(PushEventNameEnum.PLAYER_JOINED_EVENT.toString(), new SubscriptionEventListener() {
             @Override
             public void onEvent(String channel, String event, String data) {
-                System.out.println("Received player joined event with data: " + data);
+                Log.d("PusherService", "Received PLAYER_JOINED_EVENT with data: " + data);
 
                 PlayerJoinedEventBean bean = gson.fromJson(data, PlayerJoinedEventBean.class);
 
@@ -181,8 +178,7 @@ public class PusherService {
                     AreaService.getInstance(context).getAreasAndNotifySubscriber(gameId);
                 }
             });
-        }
-
+         }
     }
 
     public void unregister(Long gameId, String channelName){
@@ -191,18 +187,22 @@ public class PusherService {
     }
 
     public void disconnect(){
+        Log.i("PusherService", "disconnected");
         PusherAPIService.getInstance().disconnect();
     }
 
     public void unsubscribeFromChannel(String channelName){
+        Log.i("PusherService", "unsubscribed from channel " + channelName);
         PusherAPIService.getInstance().unsubscribe(channelName);
     }
 
     public void addSubscriber(PushEventNameEnum event, PusherEventSubscriber eventSubscriber){
+        Log.i("PusherService", "subscribed to new event: " + event);
         PusherEventSubscriberService.getInstance().addSubscriber(event, eventSubscriber);
     }
 
     public void removeSubscriber(PushEventNameEnum event, PusherEventSubscriber eventSubscriber){
+        Log.i("PusherService", "removed subscriber to event: " + eventSubscriber);
         PusherEventSubscriberService.getInstance().removeSubscriber(event, eventSubscriber);
     }
 
