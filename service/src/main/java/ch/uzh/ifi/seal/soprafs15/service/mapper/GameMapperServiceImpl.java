@@ -45,7 +45,7 @@ public class GameMapperServiceImpl extends GameMapperService {
         game.setName(bean.getName());
 
         User owner = userRepository.findByToken(bean.getToken());
-        game.setOwner(owner.getUsername());
+        game.setOwner(owner);
 
         return game;
     }
@@ -55,7 +55,7 @@ public class GameMapperServiceImpl extends GameMapperService {
         GameResponseBean bean = new GameResponseBean();
         bean.setId(game.getId());
         bean.setName(game.getName());
-        bean.setOwner(game.getOwner());
+        bean.setOwner(game.getOwner().getUsername());
         bean.setStatus(game.getStatus());
         bean.setNumberOfMoves(game.getMoves().size());
         bean.setNumberOfPlayers(game.getPlayers().size());

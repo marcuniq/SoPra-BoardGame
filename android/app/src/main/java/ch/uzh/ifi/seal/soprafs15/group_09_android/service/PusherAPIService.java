@@ -54,18 +54,12 @@ public class PusherAPIService {
         channel.bind(eventName, subscriptionEventListener);
     }
 
-    public Channel subscribe(GameBean game){
-        return subscribe(game.channelName());
-    }
 
     public Channel subscribe(String channelName){
         channel = pusher.subscribe(channelName);
         return channel;
     }
 
-    public void unsubscribe(GameBean game){
-        unsubscribe(game.channelName());
-    }
     public void unsubscribe(String channelName){
         pusher.unsubscribe(channelName);
         channel = null;

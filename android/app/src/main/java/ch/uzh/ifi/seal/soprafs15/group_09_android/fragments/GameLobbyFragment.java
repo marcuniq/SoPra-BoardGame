@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,9 +25,9 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.GameBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.GameStartEvent;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerJoinedEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherAPIService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventSubscriber;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
@@ -46,8 +47,10 @@ public class GameLobbyFragment extends ListFragment {
     private Boolean isFastMode = false;
     private CheckBox checkBox;
     private String token;
+    private String channelName;
     private List<UserBean> players;
     private boolean noLogout = true;
+
     private HashMap<PushEventNameEnum, PusherEventSubscriber> subscribedPushers = new HashMap<>();
 
     public GameLobbyFragment() {}
@@ -68,6 +71,7 @@ public class GameLobbyFragment extends ListFragment {
         gameId = this.getArguments().getLong("gameId");
         userId = this.getArguments().getLong("userId");
         isOwner = this.getArguments().getBoolean("isOwner");
+        channelName = this.getArguments().getString("gameChannel");
 
         SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
@@ -107,7 +111,8 @@ public class GameLobbyFragment extends ListFragment {
                 R.id.player_item_text,
                 R.id.player_item_description,
                 R.id.player_item_icon,
-                new ArrayList<UserBean>());
+                new ArrayList<UserBean>(),
+                false);
         setListAdapter(playerArrayAdapter);
 
         return v;
@@ -145,15 +150,16 @@ public class GameLobbyFragment extends ListFragment {
         });
         builder.setNegativeButton("Log out", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                unsubscribeToEvents();
-                if (isOwner) removeGame();
-                else removePlayerFromGame();
+                unsubscribeFromEvents();
+                PusherService.getInstance(getActivity()).unsubscribeFromChannel(channelName);
+                //removePlayerFromGame();
             }
         });
         return builder.create();
     }
 
     private void onStartGame() {
+        unsubscribeFromEvents();
         Intent intent = new Intent();
         intent.setClass(getActivity(), GameActivity.class);
         Bundle b = new Bundle();
@@ -161,7 +167,8 @@ public class GameLobbyFragment extends ListFragment {
         b.putLong("userId", userId);
         if(playerId != null)
             b.putInt("playerId", playerId);
-        b.putBoolean("fastMode", isFastMode);
+        b.putBoolean("isFastMode", isFastMode);
+        b.putString("gameChannel", channelName);
         intent.putExtras(b);
         startActivity(intent);
         getActivity().finish();
@@ -171,13 +178,13 @@ public class GameLobbyFragment extends ListFragment {
         PushEventNameEnum pushEventNameEnum;
         PusherEventSubscriber pusherEventSubscriber;
 
-        System.out.println("subscribe to game start");
+        Log.i("GameLobbyFragment", "subscribed to GAME_START_EVENT");
         PusherService.getInstance(getActivity()).addSubscriber(
                 pushEventNameEnum = PushEventNameEnum.GAME_START_EVENT,
                 pusherEventSubscriber = new PusherEventSubscriber() {
                     @Override
                     public void onNewEvent(final AbstractPusherEvent event) {
-                        System.out.println("got game start event");
+                        Log.d("GameLobbyFragment", "got new GAME_START_EVENT");
 
                         GameStartEvent gameStartEvent = (GameStartEvent) event;
 
@@ -185,29 +192,23 @@ public class GameLobbyFragment extends ListFragment {
 
                         onStartGame();
                     }
-        });
-        subscribedPushers.put(pushEventNameEnum,pusherEventSubscriber);
+                });
+        subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
 
-        System.out.println("subscribe to player joined events");
+        Log.i("GameLobbyFragment", "subscribed to PLAYER_JOINED_EVENT");
         PusherService.getInstance(getActivity()).addSubscriber(
                 pushEventNameEnum = PushEventNameEnum.PLAYER_JOINED_EVENT,
                 pusherEventSubscriber = new PusherEventSubscriber() {
                     @Override
                     public void onNewEvent(final AbstractPusherEvent event) {
-                        System.out.println("got player joined event");
+                        Log.d("GameLobbyFragment", "got new PLAYER_JOINED_EVENT");
 
                         PlayerJoinedEvent playerJoinedEvent = (PlayerJoinedEvent) event;
 
                         getPlayers();
                     }
-        });
-        subscribedPushers.put(pushEventNameEnum,pusherEventSubscriber);
-    }
-
-    private void unsubscribeToEvents(){
-        for (Map.Entry<PushEventNameEnum, PusherEventSubscriber> subscribedPusher : subscribedPushers.entrySet()){
-            PusherService.getInstance(getActivity()).removeSubscriber(subscribedPusher.getKey(), subscribedPusher.getValue());
-        }
+                });
+        subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
     }
 
     private void startGame(){
@@ -228,6 +229,7 @@ public class GameLobbyFragment extends ListFragment {
         RestService.getInstance(getActivity()).startFastMode(gameId, UserBean.setToken(token), new Callback<GameBean>() {
             @Override
             public void success(GameBean game, Response response) {
+                PusherService.getInstance(getActivity()).unsubscribeFromChannel(channelName);
                 onStartGame();
             }
 
@@ -261,7 +263,7 @@ public class GameLobbyFragment extends ListFragment {
     }
 
     public void removePlayerFromGame() {
-        RestService.getInstance(getActivity()).removeGamePlayer(gameId, playerId, UserBean.setToken(token), new Callback<UserBean>() {
+        RestService.getInstance(getActivity()).removeGamePlayerAsUser(gameId, playerId, true, UserBean.setToken(token), new Callback<UserBean>() {
             @Override
             public void success(UserBean user, Response response) {
                 getActivity().getSupportFragmentManager().popBackStack();
@@ -275,19 +277,11 @@ public class GameLobbyFragment extends ListFragment {
         });
     }
 
-    public void removeGame() {
-        RestService.getInstance(getActivity()).removeGame(gameId, UserBean.setToken(token), new Callback<GameBean>() {
-            @Override
-            public void success(GameBean game, Response response) {
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
-
-            @Override
-            public void failure(RetrofitError retrofitError) {
-                Toast.makeText(getActivity(), "Remove Game Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
-        });
+    private void unsubscribeFromEvents(){
+        for (Map.Entry<PushEventNameEnum, PusherEventSubscriber> subscribedPusher : subscribedPushers.entrySet()){
+            PusherService.getInstance(getActivity()).removeSubscriber(subscribedPusher.getKey(), subscribedPusher.getValue());
+        }
+        subscribedPushers.clear();
     }
 }
 

@@ -58,6 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/current_playing"
                 android:text="Currently playing:"
                 android:textColor="#ffffff"
                 android:layout_gravity="center_vertical"
@@ -144,6 +145,10 @@
         </RelativeLayout>
     </RelativeLayout>
 
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
@@ -445,4 +450,17 @@
 
         </RelativeLayout>
     </LinearLayout>
+
+    <!-- the button to go to next move event in fast mode -->
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/next_move_event_fastmode"
+        android:src="@drawable/button_next"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="320dp"
+        android:layout_marginStart="320dp"
+        android:contentDescription="next button for fast mode"
+        android:visibility="gone"/>
+    </RelativeLayout>
 </LinearLayout>

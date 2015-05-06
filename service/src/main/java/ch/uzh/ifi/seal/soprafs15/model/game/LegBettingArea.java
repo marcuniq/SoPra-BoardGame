@@ -15,23 +15,18 @@ import java.util.Map;
 @Entity
 public class LegBettingArea implements Serializable {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @OneToMany(mappedBy = "legBettingArea", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "legBettingArea", cascade = CascadeType.ALL)
     @Column(columnDefinition = "BLOB")
     @MapKeyColumn(name = "color", length = 50, nullable = false)
     @MapKeyEnumerated(EnumType.STRING)
     private Map<Color, LegBettingTileStack> legBettingTiles;
 
-    @OneToOne(cascade = CascadeType.ALL)//(fetch = FetchType.EAGER)
-    private GameState gameState;
 
     public LegBettingArea(){
         init();
@@ -80,7 +75,6 @@ public class LegBettingArea implements Serializable {
      */
     public LegBettingTile popLegBettingTile(Color c) {
         LegBettingTile tile = legBettingTiles.get(c).pop();
-        tile.setStack(null);
         return tile;
     }
 
@@ -119,13 +113,5 @@ public class LegBettingArea implements Serializable {
 
     public void setLegBettingTiles(Map<Color, LegBettingTileStack> legBettingTiles) {
         this.legBettingTiles = legBettingTiles;
-    }
-
-    public GameState getGameState() {
-        return gameState;
-    }
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
     }
 }

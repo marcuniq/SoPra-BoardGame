@@ -52,7 +52,9 @@ public class GamePlayerServiceImpl extends GamePlayerService {
 
     @Override
     public List<GamePlayerResponseBean> listPlayer(Long gameId) {
-        List<User> players = gameRepository.findOne(gameId).getPlayers();
+        Game game = gameRepository.findOne(gameId);
+
+        List<User> players = game.getPlayers();
 
         return gameMapperService.toGamePlayerResponseBean(players);
     }

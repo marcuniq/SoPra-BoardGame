@@ -57,16 +57,21 @@ public class GameMapperServiceUT {
     @SuppressWarnings("unchecked")
     public void testToGame() throws Exception {
 
+
         //oracle objects
+        User owner = new User();
+        owner.setAge(10);
+        owner.setUsername("owner");
+
         Game oracleGame = new Game();
         oracleGame.setName("testGame");
-        oracleGame.setOwner("owner");
+        oracleGame.setOwner(owner);
 
         //Assert testUserService has been initialized, create/add User, log him in and create GameRequestBean
         assertNotNull(testUserService);
-        UserResponseBean userResponse = testUserService.addUser(TestUtils.toUserRequestBean(10,"owner"));
+        UserResponseBean userResponse = testUserService.addUser(TestUtils.toUserRequestBean(owner.getAge(),owner.getUsername()));
         UserLoginLogoutResponseBean llResponse = testUserService.login(userResponse.getId());
-        GameRequestBean gameRequestBean = TestUtils.toGameRequestBean("testGame", llResponse.getToken());
+        GameRequestBean gameRequestBean = TestUtils.toGameRequestBean(oracleGame.getName(), llResponse.getToken());
 
         //Assert testMapperService has been initialized and call method to be tested
         assertNotNull(testMapperService);
@@ -74,7 +79,7 @@ public class GameMapperServiceUT {
 
         //Assertions
         assertEquals(oracleGame.getName(), result.getName());
-        assertEquals(oracleGame.getOwner(), result.getOwner());
+        assertEquals(oracleGame.getOwner().getUsername(), result.getOwner().getUsername());
 
     }
 
@@ -85,16 +90,18 @@ public class GameMapperServiceUT {
         //oracle values
         Long oracleId = (long) 1;
         String oracleName = "testGame";
-        String oracleOwner = "testOwner";
         GameStatus oracleStatus = GameStatus.OPEN;
         Integer oracleNumberOfMoves = 1;
         Integer oracleNumberOfPlayers = 1;
 
         //create object to test with
+        User owner = new User();
+        owner.setUsername("testOwner");
+
         Game testGame = new Game();
         testGame.setId(oracleId);
         testGame.setName(oracleName);
-        testGame.setOwner(oracleOwner);
+        testGame.setOwner(owner);
         testGame.setStatus(oracleStatus);
 
         //Assert testMapperService has been initialized and call method to test
@@ -104,7 +111,7 @@ public class GameMapperServiceUT {
         //Assertions
         assertEquals(oracleId, result.getId());
         assertEquals(oracleName, result.getName());
-        assertEquals(oracleOwner, result.getOwner());
+        assertEquals(owner.getUsername(), result.getOwner());
         assertEquals(oracleStatus, result.getStatus());
 
     }
@@ -116,17 +123,19 @@ public class GameMapperServiceUT {
         //oracle values
         Long oracleId = (long) 1;
         String oracleName = "testGame";
-        String oracleOwner = "testOwner";
         GameStatus oracleStatus = GameStatus.OPEN;
         Integer oracleNumberOfMoves = 1;
         Integer oracleNumberOfPlayers = 1;
         String oracleChannelName = "testChannel";
 
         //create object to test with
+        User owner = new User();
+        owner.setUsername("testOwner");
+
         Game testGame = new Game();
         testGame.setId(oracleId);
         testGame.setName(oracleName);
-        testGame.setOwner(oracleOwner);
+        testGame.setOwner(owner);
         testGame.setStatus(oracleStatus);
         testGame.setPusherChannelName(oracleChannelName);
 
@@ -137,7 +146,7 @@ public class GameMapperServiceUT {
         //Assertions
         assertEquals(oracleId, result.getId());
         assertEquals(oracleName, result.getName());
-        assertEquals(oracleOwner, result.getOwner());
+        assertEquals(owner.getUsername(), result.getOwner());
         // following assertion is omitted for the time being, because it's not implemented yet
         // assertEquals(oracleStatus, result.getStatus());
         assertEquals(oracleChannelName, result.getChannelName());
@@ -151,16 +160,18 @@ public class GameMapperServiceUT {
         //oracle values
         Long oracleId = (long) 1;
         String oracleName = "testGame";
-        String oracleOwner = "testOwner";
         GameStatus oracleStatus = GameStatus.OPEN;
         Integer oracleNumberOfMoves = 1;
         Integer oracleNumberOfPlayers = 1;
 
         //create object to test with
+        User owner = new User();
+        owner.setUsername("testOwner");
+
         Game testGame = new Game();
         testGame.setId(oracleId);
         testGame.setName(oracleName);
-        testGame.setOwner(oracleOwner);
+        testGame.setOwner(owner);
         testGame.setStatus(oracleStatus);
         List<Game> testList = new ArrayList<>();
         testList.add(testGame);
@@ -173,7 +184,7 @@ public class GameMapperServiceUT {
         //Assertions
         assertEquals(oracleId, result.get(0).getId());
         assertEquals(oracleName, result.get(0).getName());
-        assertEquals(oracleOwner, result.get(0).getOwner());
+        assertEquals(owner.getUsername(), result.get(0).getOwner());
         assertEquals(oracleStatus, result.get(0).getStatus());
 
     }
@@ -241,9 +252,12 @@ public class GameMapperServiceUT {
     public void testToMoveDesertTilePlacing() throws Exception {
 
         //set up testing objects (arguments in the method to be tested)
+        User owner = new User();
+        owner.setUsername("testOwner");
+
         Game testGame = new Game();
         testGame.setName("testGame");
-        testGame.setOwner("testOwner");
+        testGame.setOwner(owner);
 
         User testUser = new User();
         testUser.setId((long) 1);
@@ -279,9 +293,12 @@ public class GameMapperServiceUT {
     public void testToMoveDiceRolling () throws Exception{
 
         //set up testing objects (arguments in the method to be tested)
+        User owner = new User();
+        owner.setUsername("testOwner");
+
         Game testGame = new Game();
         testGame.setName("testGame");
-        testGame.setOwner("testOwner");
+        testGame.setOwner(owner);
 
         User testUser = new User();
         testUser.setId((long) 1);
@@ -356,7 +373,7 @@ public class GameMapperServiceUT {
         player.setUsername("testOwner");
 
         Game testGame = new Game();
-        testGame.setOwner(player.getUsername());
+        testGame.setOwner(player);
         testGame.setName("testName");
         testGame.setPusherChannelName("pusherChannelName");
         testGame.setId((long)1);

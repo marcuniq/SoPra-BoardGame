@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,25 +8,40 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.fragments.GameFragment;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.GameBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.AreaName;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.AreaService;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.AreaUpdateSubscriber;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventSubscriber;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class GameActivity extends MainActivity  {
+public class GameActivity extends MainActivity implements GameFragment.OnBackPressedListener {
 
     private Long gameId;
     private Long userId;
     private int playerId;
     private String token;
+    private String channelName;
+
+    private HashMap<AreaName, AreaUpdateSubscriber> subscribedAreas = new HashMap<>();
+    private HashMap<PushEventNameEnum, PusherEventSubscriber> subscribedPushers = new HashMap<>();
 
     /**
      * When the activity is created, do the following:
@@ -48,12 +64,14 @@ public class GameActivity extends MainActivity  {
             gameId = b.getLong("gameId");
             playerId = b.getInt("playerId");
             userId = b.getLong("userId");
-            Boolean fastMode = b.getBoolean("fastMode");
+            channelName = b.getString("gameChannel");
+            Boolean isFastMode = b.getBoolean("isFastMode");
 
             Fragment fragment = GameFragment.newInstance();
             Bundle bundle = new Bundle();
             bundle.putLong("gameId", gameId);
-            bundle.putBoolean("fastMode", fastMode);
+            bundle.putBoolean("isFastMode", isFastMode);
+            bundle.putString("gameChannel", channelName);
             fragment.setArguments(bundle);
 
             SharedPreferences sharedPref = this.getSharedPreferences("token", Context.MODE_PRIVATE);
@@ -61,6 +79,29 @@ public class GameActivity extends MainActivity  {
 
             setFragment(fragment);
         }
+    }
+
+    public void unsubscribeFromEvents(){
+        for (Map.Entry<PushEventNameEnum, PusherEventSubscriber> subscribedPusher : subscribedPushers.entrySet()){
+            PusherService.getInstance(this).removeSubscriber(subscribedPusher.getKey(), subscribedPusher.getValue());
+        }
+        subscribedPushers.clear();
+        Log.d("GameActivity", "unsubscribeFromLobbyEvents DONE");
+    }
+    public void unsubscribeFromAreas(){
+        for (Map.Entry<AreaName, AreaUpdateSubscriber> subscribedArea : subscribedAreas.entrySet()){
+            AreaService.getInstance(this).removeSubscriber(subscribedArea.getKey(), subscribedArea.getValue());
+        }
+        subscribedAreas.clear();
+        Log.d("GameActivity", "unsubscribeFromAreas DONE");
+    }
+    public void setSubscribedAreas (HashMap<AreaName, AreaUpdateSubscriber> subscribedAreas){
+        this.subscribedAreas = subscribedAreas;
+        Log.d("GameActivity", "setSubscribedAreas DONE");
+    }
+    public void setSubscribedPushers (HashMap<PushEventNameEnum, PusherEventSubscriber> subscribedPushers){
+        this.subscribedPushers = subscribedPushers;
+        Log.d("GameActivity", "setSubscribedLobbyPushers DONE");
     }
 
     @Override
@@ -80,7 +121,12 @@ public class GameActivity extends MainActivity  {
         });
         builder.setNegativeButton("Log out", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                removePlayerFromGame();
+                //removePlayerFromGame();
+
+                unsubscribeFromAreas();
+                unsubscribeFromEvents();
+
+                PusherService.getInstance(getApplicationContext()).unsubscribeFromChannel(channelName);
 
                 Intent intent = new Intent();
                 intent.setClass(getApplicationContext(), MenuActivity.class);
@@ -105,20 +151,6 @@ public class GameActivity extends MainActivity  {
             @Override
             public void failure(RetrofitError retrofitError) {
                 Toast.makeText(getApplicationContext(), "Remove Player from Game Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    public void removeGame() {
-        RestService.getInstance(this).removeGame(gameId, UserBean.setToken(token), new Callback<GameBean>() {
-            @Override
-            public void success(GameBean game, Response response) {
-
-            }
-
-            @Override
-            public void failure(RetrofitError retrofitError) {
-                Toast.makeText(getApplicationContext(), "Remove Game Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

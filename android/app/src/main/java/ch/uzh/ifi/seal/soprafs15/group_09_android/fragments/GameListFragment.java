@@ -31,6 +31,7 @@ public class GameListFragment extends ListFragment {
     private GameArrayAdapter gameArrayAdapter; // adapts the ArrayList of Games to the ListView
     private String token;
     private Long joinedGameId;
+    private String gameChannel;
     private Long userId;
 
     public GameListFragment() {}
@@ -120,6 +121,7 @@ public class GameListFragment extends ListFragment {
 
         final Long gameId = selectedGame.id();
         joinedGameId = gameId;
+        gameChannel = selectedGame.channelName();
         UserBean player = UserBean.setToken(token);
 
         RestService.getInstance(getActivity()).joinGame(gameId, player, new Callback<UserBean>() {
@@ -132,6 +134,7 @@ public class GameListFragment extends ListFragment {
                 bundle.putLong("gameId", joinedGameId);
                 bundle.putLong("userId", userId);
                 bundle.putBoolean("isOwner", false);
+                bundle.putString("gameChannel", gameChannel);
                 gameLobbyFragment.setArguments(bundle);
 
                 /* See all already created games (testing) */

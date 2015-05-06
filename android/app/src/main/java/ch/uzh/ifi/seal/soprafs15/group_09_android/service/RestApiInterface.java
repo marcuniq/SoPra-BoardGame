@@ -78,7 +78,7 @@ public interface RestApiInterface {
 
     /**
      * Creates a new game
-     * @Game game: The new game
+     * @param game: The new game
      * @param callback
      */
     @POST("/games")
@@ -104,11 +104,10 @@ public interface RestApiInterface {
     /**
      *
      * @param gameId
-     * @param token
      * @param callback
      */
-    @POST("/games/{gameId}")
-    void getGame(@Path("gameId") Long gameId, @Body UserBean token, Callback<GameBean> callback);
+    @GET("/games/{gameId}")
+    void getGame(@Path("gameId") Long gameId, Callback<GameBean> callback);
 
     /**
      *
@@ -177,7 +176,7 @@ public interface RestApiInterface {
     void removeGamePlayer(@Path("gameId") Long gameId, @Path("playerId") Integer playerId,@Body UserBean token, Callback<UserBean> callback);
 
     @DELETE("/games/{gameId}/players/{playerId}")
-    void removeGamePlayer(@Path("gameId") Long gameId, @Path("playerId") Integer playerId, @Query("isUserId") Boolean isUserId, @Body UserBean token, Callback<UserBean> callback);
+    void removeGamePlayerAsUser(@Path("gameId") Long gameId, @Path("playerId") Integer playerId, @Query("isUserId") Boolean isUserId, @Body UserBean token, Callback<UserBean> callback);
 
     @DELETE("/games/{gameId}")
     void removeGame(@Path("gameId") Long gameId, @Body UserBean token, Callback<GameBean> callback);

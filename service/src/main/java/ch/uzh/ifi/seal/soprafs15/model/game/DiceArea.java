@@ -36,8 +36,6 @@ public class DiceArea implements Serializable {
     @OrderColumn
     private List<Die> rolledDice;
 
-    @OneToOne(cascade = CascadeType.ALL)//(fetch = FetchType.EAGER)
-    private GameState gameState;
 
     @Transient
     private Random r = new Random(System.currentTimeMillis());
@@ -111,13 +109,5 @@ public class DiceArea implements Serializable {
 
     public void setRolledDice(List<Die> rolledDice) {
         this.rolledDice = rolledDice;
-    }
-
-    public GameState getGameState() {
-        return gameState;
-    }
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
     }
 }
