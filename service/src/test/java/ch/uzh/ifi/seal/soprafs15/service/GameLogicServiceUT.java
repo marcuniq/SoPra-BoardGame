@@ -118,7 +118,7 @@ public class GameLogicServiceUT {
 
         // Create new Game
         Game game = new Game();
-        game.setOwner(owner.getUsername());
+        game.setOwner(owner);
         game.addPlayer(owner);
         game.addPlayer(player);
 

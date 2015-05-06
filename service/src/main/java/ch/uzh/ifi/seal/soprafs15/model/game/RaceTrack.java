@@ -20,7 +20,7 @@ public class RaceTrack implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @OneToMany(mappedBy = "raceTrack", cascade=CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     @OrderBy("position ASC")
     private List<RaceTrackObject> fields = new ArrayList<>();
 
@@ -63,7 +63,6 @@ public class RaceTrack implements Serializable {
      * @param raceTrackObject CamelStack or DesertTile
      */
     public void addRaceTrackObject(RaceTrackObject raceTrackObject) {
-        raceTrackObject.setRaceTrack(this);
         fields.add(raceTrackObject);
         sortByPosition();
     }
@@ -78,7 +77,6 @@ public class RaceTrack implements Serializable {
      */
     public void removeRaceTrackObject(Integer position) {
         RaceTrackObject rto = getRaceTrackObject(position);
-        rto.setRaceTrack(null);
         fields.remove(rto);
     }
 
@@ -88,8 +86,14 @@ public class RaceTrack implements Serializable {
      * @return RaceTrackObject at requested position
      */
     public RaceTrackObject getRaceTrackObject(Integer position) {
-        Optional<RaceTrackObject> raceTrackObject = fields.stream().filter(rto -> rto.position == position).findFirst();
-        return raceTrackObject.isPresent() ? raceTrackObject.get() : null;
+        //Optional<RaceTrackObject> raceTrackObject = fields.stream().filter(rto -> rto.position == position).findFirst();
+        //return raceTrackObject.isPresent() ? raceTrackObject.get() : null;
+
+        for(RaceTrackObject o : fields){
+            if(o.getPosition().intValue() == position.intValue())
+                return o;
+        }
+        return null;
     }
 
     private List<CamelStack> findCamelStacks(){

@@ -21,9 +21,6 @@ public abstract class RaceTrackObject implements Serializable {
     @Column
     protected Integer position;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "RACETRACK_ID")
-    protected RaceTrack raceTrack;
 
 
     public Long getId() {
@@ -40,14 +37,6 @@ public abstract class RaceTrackObject implements Serializable {
 
     public void setPosition(Integer position) {
         this.position = position;
-    }
-
-    public RaceTrack getRaceTrack() {
-        return raceTrack;
-    }
-
-    public void setRaceTrack(RaceTrack raceTrack) {
-        this.raceTrack = raceTrack;
     }
 
 
