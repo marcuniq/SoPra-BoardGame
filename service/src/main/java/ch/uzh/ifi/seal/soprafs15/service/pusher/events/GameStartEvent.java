@@ -9,6 +9,10 @@ public class GameStartEvent extends AbstractPushEvent {
 
     private Map<Long, Integer> userIdToPlayerIdMap;
 
+    public GameStartEvent(){
+        super(PushEventNameEnum.GAME_START_EVENT);
+    }
+
     public GameStartEvent(Map<Long, Integer> userIdToPlayerIdMap) {
         super(PushEventNameEnum.GAME_START_EVENT);
         this.userIdToPlayerIdMap = userIdToPlayerIdMap;

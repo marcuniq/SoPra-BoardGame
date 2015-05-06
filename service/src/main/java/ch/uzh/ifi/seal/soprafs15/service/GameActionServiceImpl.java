@@ -125,6 +125,8 @@ public class GameActionServiceImpl extends GameActionService {
 
         gameLogicService.startFastMode(game);
 
+        // send game start event
+        pusherService.pushToSubscribers(new GameStartEvent(), game);
 
         return gameMapperService.toGameResponseBean(game);
     }

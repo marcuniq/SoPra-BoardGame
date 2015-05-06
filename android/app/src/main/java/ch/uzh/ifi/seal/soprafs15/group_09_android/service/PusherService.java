@@ -67,7 +67,6 @@ public class PusherService {
         }, ConnectionState.ALL);
 
         // subscribe to channel
-        //PusherService.getInstance().subscribe("test_channel");
         PusherAPIService.getInstance().subscribe(channelName);
 
         final Gson gson = new GsonBuilder().registerTypeAdapterFactory(new AutoValueAdapterFactory()).create();
@@ -181,6 +180,11 @@ public class PusherService {
          }
     }
 
+    public void unregister(Long gameId, String channelName){
+        unsubscribeFromChannel(channelName);
+        removeAllSubscriber();
+    }
+
     public void disconnect(){
         Log.i("PusherService", "disconnected");
         PusherAPIService.getInstance().disconnect();
@@ -199,5 +203,9 @@ public class PusherService {
     public void removeSubscriber(PushEventNameEnum event, PusherEventSubscriber eventSubscriber){
         Log.i("PusherService", "removed subscriber to event: " + eventSubscriber);
         PusherEventSubscriberService.getInstance().removeSubscriber(event, eventSubscriber);
+    }
+
+    public void removeAllSubscriber(){
+        PusherEventSubscriberService.getInstance().removeAllSubscriber();
     }
 }

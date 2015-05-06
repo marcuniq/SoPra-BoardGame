@@ -21,7 +21,7 @@ public class LegBettingArea implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @OneToMany(mappedBy = "legBettingArea", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     @Column(columnDefinition = "BLOB")
     @MapKeyColumn(name = "color", length = 50, nullable = false)
     @MapKeyEnumerated(EnumType.STRING)
@@ -48,7 +48,7 @@ public class LegBettingArea implements Serializable {
             list.add(tile_3);
             list.add(tile_5);
 
-            legBettingTiles.put(c, new LegBettingTileStack(this, c, list));
+            legBettingTiles.put(c, new LegBettingTileStack(c, list));
         }
     }
 
