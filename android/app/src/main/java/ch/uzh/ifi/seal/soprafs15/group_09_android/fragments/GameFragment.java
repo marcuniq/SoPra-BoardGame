@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,6 +37,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnu
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.GameColors;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.Moves;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.PlayerArrayAdapter;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -89,6 +91,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private Boolean interactionIsPrevented = false;
     private Boolean isFastMode;
     private String channelName;
+
+    private PlayerArrayAdapter playerArrayAdapter; // adapts the ArrayList of Games to the ListView
 
     private PopupWindow popupWindow;
     private View anchorView;
@@ -727,29 +731,25 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     }
 
     private void roundEvaluationPopup() {
-        View popupView = defaultPopup(getView(), R.layout.popup_round_evaluation);
+        View popupView = defaultPopup(getView(), R.layout.fragment_game_finish);
         pyramidTile.setImageResource(R.drawable.pyramid_tile_1_button);
-        TextView description = (TextView) popupView.findViewById(R.id.description);
 
-        String message = "";
-        Integer counter = 1;
+        roundEvaluation(popupView);
 
-        for (UserBean user : usersOrderedByMoney) {
-            message += counter + ". UserBean " + user.username() + " has " + user.money() + " egypt pounds. \n";
-            counter++;
-        }
+        TextView popupTitle = (TextView) popupView.findViewById(R.id.popupTitle);
+        TextView listTitle = (TextView) popupView.findViewById(R.id.list_title);
 
-        description.setText(message);
+        popupTitle.setText("Round Evaluation");
+        listTitle.setText("Round Ranking");
 
-        acceptButton.setText("OK");
-        acceptButton.setOnClickListener(new View.OnClickListener() {
+        Button closeButton = (Button) popupView.findViewById(R.id.close);
+
+        closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
             }
         });
-
-        rejectButton.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -995,7 +995,18 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void roundEvaluation() {
+    private void roundEvaluation(View view) {
+        playerArrayAdapter = new PlayerArrayAdapter(
+                getActivity(),
+                R.layout.player_item,
+                R.id.player_item_text,
+                R.id.player_item_description,
+                R.id.player_item_icon,
+                new ArrayList<UserBean>(),
+                false);
+        ListView list = (ListView) view.findViewById(android.R.id.list);
+        list.setAdapter(playerArrayAdapter);
+
         RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<UserBean>>() {
             @Override
             public void success(List<UserBean> users, Response response) {
@@ -1003,13 +1014,10 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public int compare(UserBean user1, UserBean user2) {
 
-                        return user1.money().compareTo(user2.money());
+                        return user2.money().compareTo(user1.money());
                     }
                 });
-
-                usersOrderedByMoney = users;
-
-                roundEvaluationPopup();
+                playerArrayAdapter.addAll(users);
             }
 
             @Override
@@ -1153,8 +1161,12 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onNewEvent(final AbstractPusherEvent moveEvent) {
                         Log.d("GameFragment", "got new LEG_OVER_EVENT");
-                        roundEvaluation();
                         cleanRack();
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                roundEvaluationPopup();
+                            }
+                        });
                     }
                 });
         subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
