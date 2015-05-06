@@ -63,12 +63,14 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private ArrayList<Integer> raceBettingFieldIds = new ArrayList<>();
     private Integer pyramidFieldId;
     private Integer pyramidTileId;
+    private Integer fastModeButtonId;
     private Integer helpButtonId;
     private Integer playerIconId;
     private Button acceptButton;
     private Button rejectButton;
     private ImageView modifiedButton;
     private ImageView pyramidTile;
+    private ImageView fastModeButton;
 
     // class variables
     private List<UserBean> players;
@@ -132,7 +134,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         if(b.containsKey("playerId"))
             playerId = b.getInt("playerId");
         else
-            playerId = 1;
+            playerId = 8;
         isOwner = b.getBoolean("isOwner");
         isFastMode = b.getBoolean("isFastMode");
 
@@ -158,7 +160,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         cleanRack(true);
 
         subscribeToAreaUpdates();
-
         subscribeToEvents();
 
         AreaService.getInstance(getActivity()).getAreasAndNotifySubscriber(gameId);
@@ -215,6 +216,12 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         if (playerIconId == v.getId()){
             playerInfoPopup(v, R.layout.popup_player_info);
         }
+        if (isFastMode && fastModeButtonId == v.getId()){
+            fastModeButton.setVisibility(View.GONE);
+            /* TODO: initiate next fast mode move event
+             * TODO: onNewFastModeEvent:
+             *  - fastModeButton.setVisibility(View.VISIBLE); */
+        }
     }
 
     /**
@@ -256,11 +263,16 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         playerIconId = R.id.player_icon;
         (getActivity().findViewById(playerIconId)).setOnClickListener(this);
 
+        // pyramid card tile stack
         pyramidTileId = R.id.pyramid_tile;
         pyramidTile = (ImageView) getActivity().findViewById(pyramidTileId);
         pyramidTile.setImageResource(R.drawable.pyramid_tile_1_button);
-    }
 
+        // next move event button for fast mode
+        fastModeButtonId = R.id.next_move_event_fastmode;
+        fastModeButton = (ImageView) getActivity().findViewById(fastModeButtonId);
+        if (isFastMode) (getActivity().findViewById(fastModeButtonId)).setOnClickListener(this);
+    }
 
     /**
      * Displays a Popup with the given layout and draws all the dices
@@ -886,6 +898,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         ((GameActivity) getActivity()).pushFragment(fragment);
     }
 
+
+
     /**
      * Called when creating this fragment
      *
@@ -998,10 +1012,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                         playerTurnEvent = (PlayerTurnEvent) event;
 
                         updateHeaderBar();
-
-                        if(playerId.equals(playerTurnEvent.getPlayerId())){
-                            // TODO notify player that it is her turn
-                        }
                     }
         });
         subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
