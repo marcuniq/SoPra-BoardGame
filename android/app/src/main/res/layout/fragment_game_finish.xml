@@ -59,7 +59,8 @@
                     android:text="Winner Ranking:"
                     android:textColor="#ffffff"
                     android:gravity="center"
-                    android:textSize="18sp">
+                    android:textSize="18sp"
+                    android:id="@+id/list_title">
                 </TextView>
 
                 <RelativeLayout
