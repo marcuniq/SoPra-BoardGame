@@ -2,14 +2,14 @@ package ch.uzh.ifi.seal.soprafs15.service;
 
 import ch.uzh.ifi.seal.soprafs15.Application;
 import ch.uzh.ifi.seal.soprafs15.TestUtils;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutRequestBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutResponseBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.user.*;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserExistsException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
+import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
+import ch.uzh.ifi.seal.soprafs15.service.mapper.UserMapperService;
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -44,14 +44,16 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class UserServiceUT {
 
-    //Create MockRepo
     @Mock
     private UserRepository mockUserRepo;
 
     @InjectMocks
     @Autowired
-    private UserService testService;
+    private UserService testUserService;
 
+    @InjectMocks
+    @Autowired
+    private UserMapperService userMapperService;
 
     @Before
     public void setUp() throws Exception {
@@ -62,90 +64,91 @@ public class UserServiceUT {
     @SuppressWarnings("unchecked")
     public void testLoginFail() throws Exception {
 
-        assertNotNull(testService);
+        assertNotNull(testUserService);
 
-        assertEquals(0, testService.listUsers().size());
+        assertEquals(0, testUserService.listUsers().size());
 
-        testService.login((long) 1);
+        testUserService.login((long) 1);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testListUsers() throws Exception {
 
-        assertEquals(0, testService.listUsers().size());
+        assertEquals(0, testUserService.listUsers().size());
 
         //oracle values
         List<UserResponseBean> oracleList = new ArrayList<>();
         oracleList.add(TestUtils.toUserResponseBean(12, "jakob"));
 
         //Assert testService has been initialized and call method to be tested
-        assertNotNull(testService);
-        testService.addUser(TestUtils.toUserRequestBean(12, "jakob"));
-        List<UserResponseBean> result = testService.listUsers();
+        assertNotNull(testUserService);
+        testUserService.addUser(TestUtils.toUserRequestBean(12, "jakob"));
+        List<UserResponseBean> result = testUserService.listUsers();
 
         assertEquals(oracleList.get(0).getAge(), result.get(0).getAge());
         assertEquals(oracleList.get(0).getUsername(), result.get(0).getUsername());
-        assertEquals(oracleList.size(), testService.listUsers().size());
+        assertEquals(oracleList.size(), testUserService.listUsers().size());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testAddUser() throws Exception {
 
-        assertEquals(0, testService.listUsers().size());
+        // assertions at init
+        assertNotNull(testUserService);
+        assertEquals(0, testUserService.listUsers().size());
         //when(mockUserRepo.save(any(User.class))).thenReturn(Long.valueOf(1));
 
-        //create new UserRequestBean to test with
+        // set up test object
         UserRequestBean requestBean = TestUtils.toUserRequestBean(15, "peter");
 
-        //oracle values
+        // set up oracle values
         UserResponseBean oracleResponse = TestUtils.toUserResponseBean(15, "peter");
 
         User testUser = new User();
         when(mockUserRepo.save(any(User.class))).thenReturn(testUser);
 
-        //Assert testService has been initialized and call method to be tested
-        assertNotNull(testService);
-        UserResponseBean responseBean = testService.addUser(requestBean);
+        UserResponseBean responseBean = testUserService.addUser(requestBean);
 
+        // assertions after test
         assertEquals(oracleResponse.getAge(), responseBean.getAge());
         assertEquals(oracleResponse.getUsername(), responseBean.getUsername());
-        assertEquals(1, testService.listUsers().size());
+        assertEquals(1, testUserService.listUsers().size());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testGetUser() throws Exception {
 
-        assertEquals(0, testService.listUsers().size());
+        assertEquals(0, testUserService.listUsers().size());
 
         //oracle values
         UserResponseBean oracleResponse = TestUtils.toUserResponseBean(21, "hans");
 
         //Assert testService has been initialized and call method to be tested
-        assertNotNull(testService);
-        UserResponseBean response = testService.addUser(TestUtils.toUserRequestBean(21, "hans"));
-        UserResponseBean result = testService.getUser(response.getId());
+        assertNotNull(testUserService);
+        UserResponseBean response = testUserService.addUser(TestUtils.toUserRequestBean(21, "hans"));
+        UserResponseBean result = testUserService.getUser(response.getId());
 
         assertEquals(oracleResponse.getAge(), result.getAge());
         assertEquals(oracleResponse.getUsername(), result.getUsername());
-        assertEquals(1, testService.listUsers().size());
+        assertEquals(1, testUserService.listUsers().size());
     }
 
     @Test(expected = UserNotFoundException.class)
     @SuppressWarnings("unchecked")
     public void testGetUserUserNotFoundFail() throws Exception {
 
-        assertEquals(0, testService.listUsers().size());
+        assertEquals(0, testUserService.listUsers().size());
 
         //oracle values
         UserResponseBean oracleResponse = TestUtils.toUserResponseBean(21, "hans");
 
         //Assert testService has been initialized and call method to be tested
-        assertNotNull(testService);
-        UserResponseBean response = testService.addUser(TestUtils.toUserRequestBean(21, "hans"));
-        UserResponseBean result = testService.getUser(response.getId() + 1);
+        assertNotNull(testUserService);
+        UserResponseBean response = testUserService.addUser(TestUtils.toUserRequestBean(21, "hans"));
+        UserResponseBean result = testUserService.getUser(response.getId() + 1);
     }
 
     @Test
@@ -158,77 +161,107 @@ public class UserServiceUT {
     @SuppressWarnings("unchecked")
     public void testDeleteUser() throws Exception {
 
-        assertEquals(0, testService.listUsers().size());
+        assertEquals(0, testUserService.listUsers().size());
 
-        //create new User and and add it
-        UserRequestBean request = TestUtils.toUserRequestBean(67,"karl");
-        UserResponseBean response = testService.addUser(request);
+        // Create new User
+        UserRequestBean userRequest = TestUtils.toUserRequestBean(92, "Troll");
+        UserResponseBean userResponse = testUserService.addUser(userRequest);
 
-        // login
-        UserLoginLogoutResponseBean tokenResponse = testService.login(response.getId());
-        UserLoginLogoutRequestBean tokenRequest = TestUtils.toUserLLRequestBean(tokenResponse.getToken());
+        // Login User
+        UserLoginLogoutResponseBean loginResponse = testUserService.login(userResponse.getId());
+        UserLoginLogoutRequestBean deleteRequest = TestUtils.toUserLLRequestBean(loginResponse.getToken());
 
-        assertEquals(1, testService.listUsers().size());
+        assertEquals(1, testUserService.listUsers().size());
 
-        //Assert testService has been initialized and call method to be tested
-        assertNotNull(testService);
-        testService.deleteUser(response.getId(), tokenRequest);
+        // Delete User
+        testUserService.deleteUser(userResponse.getId(), deleteRequest);
 
-        //Assertions
-        assertNull(mockUserRepo.findByUsername(response.getUsername()));
-        assertEquals(0, testService.listUsers().size());
+        assertEquals(0, testUserService.listUsers().size());
+        assertNull(testUserService.getUser(userResponse.getId()));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testLogin() throws Exception {
 
-        assertEquals(0, testService.listUsers().size());
+        assertEquals(0, testUserService.listUsers().size());
 
         //oracle values
         int oracleLength = "111e6162-3b6f-4ae2-a171-2470b63dff00".length();
 
         //create new User and add it
-        UserRequestBean request = TestUtils.toUserRequestBean(55,"paul");
-        UserResponseBean response = testService.addUser(request);
+        UserRequestBean request = TestUtils.toUserRequestBean(55, "paul");
+        UserResponseBean response = testUserService.addUser(request);
 
         //Assert testService has been initialized and call method to be tested
-        assertNotNull(testService);
-        UserLoginLogoutResponseBean result = testService.login(response.getId());
+        assertNotNull(testUserService);
+        UserLoginLogoutResponseBean result = testUserService.login(response.getId());
 
         //Assertions
         assertEquals(oracleLength, result.getToken().length());
-        assertEquals(1, testService.listUsers().size());
+        assertEquals(1, testUserService.listUsers().size());
+        //assertEquals(UserStatus.ONLINE, user.getStatus());
     }
+
+//    @Test
+//    @SuppressWarnings("unchecked")
+//    public void testLogout() throws Exception {
+//        // Create user
+//        UserRequestBean userRequest = TestUtils.toUserRequestBean(54, "Rolf");
+//        UserResponseBean userResponse = testService.addUser(userRequest);
+//
+//        // Assert that user status is OFFLINE (before Login)
+//        User userBeforeLogin = mockUserRepo.findByUsername(userRequest.getUsername());
+//        assertEquals(UserStatus.OFFLINE, userBeforeLogin.getStatus());
+//
+//        // Login user
+//        UserLoginLogoutResponseBean loginResponse = testService.login(userResponse.getId());
+//
+//        // Assert that user status is ONLINE (after login)
+//        User userBeforeLogout = mockUserRepo.findByToken(loginResponse.getToken());
+//        assertEquals(userResponse.getId(), userBeforeLogout.getId());
+//        assertEquals(UserStatus.ONLINE, userBeforeLogout.getStatus());
+//
+//        // Logout user
+//        UserLoginLogoutRequestBean logoutRequest = TestUtils.toUserLLRequestBean(loginResponse.getToken());
+//        testService.logout(userResponse.getId(), logoutRequest);
+//
+//        // Assert that user status is OFFLINE again (after Logout)
+//        User userAfterLogout = mockUserRepo.findByToken(loginResponse.getToken());
+//        assertEquals(UserStatus.OFFLINE, userAfterLogout.getStatus());
+//    }
 
     @Test(expected = UserNotFoundException.class)
     @SuppressWarnings("unchecked")
     public void testLogoutUserNotFoundFail() throws Exception {
-        //TODO
-    }
+        // Create user
+        UserRequestBean userRequest = TestUtils.toUserRequestBean(54, "Rudolf");
+        UserResponseBean userResponse = testUserService.addUser(userRequest);
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testLogout() throws Exception {
-        //TODO is Status ONLINE before and OFFLINE after
+        // Login user
+        UserLoginLogoutResponseBean loginResponse = testUserService.login(userResponse.getId());
+
+        // Logout user
+        UserLoginLogoutRequestBean logoutRequest = TestUtils.toUserLLRequestBean(loginResponse.getToken());
+        testUserService.logout(userResponse.getId() + 1, logoutRequest);
     }
 
     @Test(expected = UserExistsException.class)
     @SuppressWarnings("unchecked")
     public void testAddUserUserExistsFail() throws Exception {
-        assertNotNull(testService);
-        assertEquals(0, testService.listUsers().size());
+        assertNotNull(testUserService);
+        assertEquals(0, testUserService.listUsers().size());
 
         // create first user
         UserRequestBean firstUserRequest = TestUtils.toUserRequestBean(29, "Hansueli");
-        testService.addUser(firstUserRequest);
+        testUserService.addUser(firstUserRequest);
 
-        assertEquals(1, testService.listUsers().size());
+        assertEquals(1, testUserService.listUsers().size());
 
         // create second user (with same username)
         UserRequestBean invalidRequest = TestUtils.toUserRequestBean(85, firstUserRequest.getUsername());
-        testService.addUser(invalidRequest);
+        testUserService.addUser(invalidRequest);
 
-        assertEquals(1, testService.listUsers().size());
+        assertEquals(1, testUserService.listUsers().size());
     }
 }
