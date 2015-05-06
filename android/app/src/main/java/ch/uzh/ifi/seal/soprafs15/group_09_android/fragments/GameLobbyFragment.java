@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEv
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.GameStartEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerJoinedEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherAPIService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherEventSubscriber;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
@@ -45,6 +47,7 @@ public class GameLobbyFragment extends ListFragment {
     private Boolean isFastMode = false;
     private CheckBox checkBox;
     private String token;
+    private String channelName;
     private List<UserBean> players;
     private boolean noLogout = true;
 
@@ -116,6 +119,7 @@ public class GameLobbyFragment extends ListFragment {
     @Override
     public void onResume(){
         super.onResume();
+        getGame();
         getPlayers();
 
         /* Handle Back Button input */
@@ -146,9 +150,8 @@ public class GameLobbyFragment extends ListFragment {
         builder.setNegativeButton("Log out", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 unsubscribeFromEvents();
-                if (isOwner) removeGame();
-                else removePlayerFromGame();
-                PusherService.getInstance(getActivity()).disconnect();
+                PusherService.getInstance(getActivity()).unsubscribeFromChannel(channelName);
+                removePlayerFromGame();
             }
         });
         return builder.create();
@@ -156,6 +159,7 @@ public class GameLobbyFragment extends ListFragment {
 
     private void onStartGame() {
         unsubscribeFromEvents();
+        PusherService.getInstance(getActivity()).unsubscribeFromChannel(channelName);
         Intent intent = new Intent();
         intent.setClass(getActivity(), GameActivity.class);
         Bundle b = new Bundle();
@@ -173,13 +177,13 @@ public class GameLobbyFragment extends ListFragment {
         PushEventNameEnum pushEventNameEnum;
         PusherEventSubscriber pusherEventSubscriber;
 
-        System.out.println("subscribe to game start");
+        Log.i("GameLobbyFragment", "subscribed to GAME_START_EVENT");
         PusherService.getInstance(getActivity()).addSubscriber(
                 pushEventNameEnum = PushEventNameEnum.GAME_START_EVENT,
                 pusherEventSubscriber = new PusherEventSubscriber() {
                     @Override
                     public void onNewEvent(final AbstractPusherEvent event) {
-                        System.out.println("got game start event");
+                        Log.d("GameLobbyFragment", "got new GAME_START_EVENT");
 
                         GameStartEvent gameStartEvent = (GameStartEvent) event;
 
@@ -190,13 +194,13 @@ public class GameLobbyFragment extends ListFragment {
                 });
         subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
 
-        System.out.println("subscribe to player joined events");
+        Log.i("GameLobbyFragment", "subscribed to PLAYER_JOINED_EVENT");
         PusherService.getInstance(getActivity()).addSubscriber(
                 pushEventNameEnum = PushEventNameEnum.PLAYER_JOINED_EVENT,
                 pusherEventSubscriber = new PusherEventSubscriber() {
                     @Override
                     public void onNewEvent(final AbstractPusherEvent event) {
-                        System.out.println("got player joined event");
+                        Log.d("GameLobbyFragment", "got new PLAYER_JOINED_EVENT");
 
                         PlayerJoinedEvent playerJoinedEvent = (PlayerJoinedEvent) event;
 
@@ -256,6 +260,20 @@ public class GameLobbyFragment extends ListFragment {
         });
     }
 
+    private void getGame(){
+        RestService.getInstance(getActivity()).getGame(gameId, new Callback<GameBean>() {
+            @Override
+            public void success(GameBean newGame, Response response) {
+                channelName = newGame.channelName();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), "Get Game failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     public void removePlayerFromGame() {
         RestService.getInstance(getActivity()).removeGamePlayer(gameId, playerId, UserBean.setToken(token), new Callback<UserBean>() {
             @Override
@@ -266,21 +284,6 @@ public class GameLobbyFragment extends ListFragment {
             @Override
             public void failure(RetrofitError retrofitError) {
                 Toast.makeText(getActivity(), "Remove Player from Game Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
-        });
-    }
-
-    public void removeGame() {
-        RestService.getInstance(getActivity()).removeGame(gameId, UserBean.setToken(token), new Callback<GameBean>() {
-            @Override
-            public void success(GameBean game, Response response) {
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
-
-            @Override
-            public void failure(RetrofitError retrofitError) {
-                Toast.makeText(getActivity(), "Remove Game Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });

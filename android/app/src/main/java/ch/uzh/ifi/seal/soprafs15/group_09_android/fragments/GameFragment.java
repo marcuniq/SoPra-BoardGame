@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,6 +87,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private Boolean isOwner = false;
     private Boolean interactionIsPrevented = false;
     private Boolean isFastMode;
+    private String channelName;
 
     private PopupWindow popupWindow;
     private View anchorView;
@@ -141,6 +143,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             playerId = 8;
         isOwner = b.getBoolean("isOwner");
         isFastMode = b.getBoolean("isFastMode");
+        channelName = b.getString("gameChannel");
 
 
         SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
@@ -1086,17 +1089,16 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         PushEventNameEnum pushEventNameEnum;
         PusherEventSubscriber pusherEventSubscriber;
 
+        Log.i("GameFragment", "subscribed to MOVE_EVENT");
         PusherService.getInstance(getActivity()).addSubscriber(
                 pushEventNameEnum = PushEventNameEnum.MOVE_EVENT,
                 pusherEventSubscriber = new PusherEventSubscriber() {
                     @Override
                     public void onNewEvent(final AbstractPusherEvent moveEvent) {
-                        System.out.println("got new event");
+                        Log.d("GameFragment", "got new MOVE_EVENT");
                         getPlayerStatus();
                         getActivity().runOnUiThread(new Runnable() {
                             public void run() {
-                                Toast.makeText(getActivity(), "new move event: " +
-                                        ((MoveEvent) moveEvent).getMoveId(), Toast.LENGTH_SHORT).show();
                                 updateHeaderBar();
                                 interactionIsPrevented = false;
                             }
@@ -1105,12 +1107,13 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 });
         subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
 
+        Log.i("GameFragment", "subscribed to PLAYER_TURN_EVENT");
         PusherService.getInstance(getActivity()).addSubscriber(
                 pushEventNameEnum = PushEventNameEnum.PLAYER_TURN_EVENT,
                 pusherEventSubscriber = new PusherEventSubscriber() {
                     @Override
                     public void onNewEvent(final AbstractPusherEvent event) {
-                        System.out.println("got new event");
+                        Log.d("GameFragment", "got new PLAYER_TURN_EVENT");
                         interactionIsPrevented = false;
                         playerTurnEvent = (PlayerTurnEvent) event;
 
@@ -1119,17 +1122,20 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         });
         subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
 
+        Log.i("GameFragment", "subscribed to LEG_OVER_EVENT");
         PusherService.getInstance(getActivity()).addSubscriber(
                 pushEventNameEnum = PushEventNameEnum.LEG_OVER_EVENT,
                 pusherEventSubscriber = new PusherEventSubscriber() {
                     @Override
                     public void onNewEvent(final AbstractPusherEvent moveEvent) {
+                        Log.d("GameFragment", "got new LEG_OVER_EVENT");
                         roundEvaluation();
                         cleanRack();
                     }
                 });
         subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
 
+        Log.i("GameFragment", "subscribed to GAME_FINISHED_EVENT");
         PusherService.getInstance(getActivity()).addSubscriber(
                 pushEventNameEnum = PushEventNameEnum.GAME_FINISHED_EVENT,
                 pusherEventSubscriber = new PusherEventSubscriber() {
@@ -1137,8 +1143,10 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                     public void onNewEvent(final AbstractPusherEvent moveEvent) {
                         getActivity().runOnUiThread(new Runnable() {
                             public void run() {
+                                Log.d("GameFragment", "got new GAME_FINISHED_EVENT");
                                 onBackPressedListener.unsubscribeFromAreas();
                                 onBackPressedListener.unsubscribeFromEvents();
+                                PusherService.getInstance(getActivity()).unsubscribeFromChannel(channelName);
                                 gameFinishEvaluation();
                             }
                         });

@@ -107,8 +107,8 @@ public interface RestApiInterface {
      * @param token
      * @param callback
      */
-    @POST("/games/{gameId}")
-    void getGame(@Path("gameId") Long gameId, @Body UserBean token, Callback<GameBean> callback);
+    @GET("/games/{gameId}")
+    void getGame(@Path("gameId") Long gameId, Callback<GameBean> callback);
 
     /**
      *

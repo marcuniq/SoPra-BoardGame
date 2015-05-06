@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -37,6 +38,7 @@ public class GameActivity extends MainActivity implements GameFragment.OnBackPre
     private Long userId;
     private int playerId;
     private String token;
+    private String channelName;
 
     private HashMap<AreaName, AreaUpdateSubscriber> subscribedAreas = new HashMap<>();
     private HashMap<PushEventNameEnum, PusherEventSubscriber> subscribedPushers = new HashMap<>();
@@ -62,12 +64,14 @@ public class GameActivity extends MainActivity implements GameFragment.OnBackPre
             gameId = b.getLong("gameId");
             playerId = b.getInt("playerId");
             userId = b.getLong("userId");
+            channelName = b.getString("gameChannel");
             Boolean isFastMode = b.getBoolean("isFastMode");
 
             Fragment fragment = GameFragment.newInstance();
             Bundle bundle = new Bundle();
             bundle.putLong("gameId", gameId);
             bundle.putBoolean("isFastMode", isFastMode);
+            bundle.putString("gameChannel", channelName);
             fragment.setArguments(bundle);
 
             SharedPreferences sharedPref = this.getSharedPreferences("token", Context.MODE_PRIVATE);
@@ -82,22 +86,22 @@ public class GameActivity extends MainActivity implements GameFragment.OnBackPre
             PusherService.getInstance(this).removeSubscriber(subscribedPusher.getKey(), subscribedPusher.getValue());
         }
         subscribedPushers.clear();
-        System.out.println("XXXXX unsubscribeFromLobbyEvents DONE");
+        Log.d("GameActivity", "unsubscribeFromLobbyEvents DONE");
     }
     public void unsubscribeFromAreas(){
         for (Map.Entry<AreaName, AreaUpdateSubscriber> subscribedArea : subscribedAreas.entrySet()){
             AreaService.getInstance(this).removeSubscriber(subscribedArea.getKey(), subscribedArea.getValue());
         }
         subscribedAreas.clear();
-        System.out.println("XXXXX unsubscribeFromAreas DONE");
+        Log.d("GameActivity", "unsubscribeFromAreas DONE");
     }
     public void setSubscribedAreas (HashMap<AreaName, AreaUpdateSubscriber> subscribedAreas){
         this.subscribedAreas = subscribedAreas;
-        System.out.println("XXXXX setSubscribedAreas DONE");
+        Log.d("GameActivity", "setSubscribedAreas DONE");
     }
     public void setSubscribedPushers (HashMap<PushEventNameEnum, PusherEventSubscriber> subscribedPushers){
         this.subscribedPushers = subscribedPushers;
-        System.out.println("XXXXX setSubscribedLobbyPushers DONE");
+        Log.d("GameActivity", "setSubscribedLobbyPushers DONE");
     }
 
     @Override
@@ -122,6 +126,8 @@ public class GameActivity extends MainActivity implements GameFragment.OnBackPre
                 unsubscribeFromAreas();
                 unsubscribeFromEvents();
 
+                PusherService.getInstance(getApplicationContext()).unsubscribeFromChannel(channelName);
+
                 Intent intent = new Intent();
                 intent.setClass(getApplicationContext(), MenuActivity.class);
                 Bundle b = new Bundle();
@@ -145,20 +151,6 @@ public class GameActivity extends MainActivity implements GameFragment.OnBackPre
             @Override
             public void failure(RetrofitError retrofitError) {
                 Toast.makeText(getApplicationContext(), "Remove Player from Game Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    public void removeGame() {
-        RestService.getInstance(this).removeGame(gameId, UserBean.setToken(token), new Callback<GameBean>() {
-            @Override
-            public void success(GameBean game, Response response) {
-
-            }
-
-            @Override
-            public void failure(RetrofitError retrofitError) {
-                Toast.makeText(getApplicationContext(), "Remove Game Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

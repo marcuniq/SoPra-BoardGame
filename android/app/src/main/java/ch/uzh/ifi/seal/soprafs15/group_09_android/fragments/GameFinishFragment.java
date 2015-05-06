@@ -69,7 +69,6 @@ public class GameFinishFragment extends ListFragment {
             @Override
             public void onClick(View v) {
                 ((GameActivity)getActivity()).removePlayerFromGame();
-                if (isOwner) ((GameActivity)getActivity()).removeGame();
 
                 SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
                 token = sharedPref.getString("token", token);
