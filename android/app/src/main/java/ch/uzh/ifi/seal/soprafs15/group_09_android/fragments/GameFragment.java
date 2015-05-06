@@ -19,8 +19,12 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.GameActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.CamelBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DiceAreaBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DieBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.LegBettingAreaBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.MoveBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceBettingAreaBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackObjectBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.AreaName;
@@ -159,10 +163,14 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         addClickListenerToButtons();
         cleanRack(true);
 
-        subscribeToAreaUpdates();
-        subscribeToEvents();
+        if (!isFastMode){
+            subscribeToAreaUpdates();
+            subscribeToEvents();
+            AreaService.getInstance(getActivity()).getAreasAndNotifySubscriber(gameId);
+        } else {
+            interactionIsPrevented = true;
+        }
 
-        AreaService.getInstance(getActivity()).getAreasAndNotifySubscriber(gameId);
         getPlayerStatus();
     }
 
@@ -218,10 +226,99 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         }
         if (isFastMode && fastModeButtonId == v.getId()){
             fastModeButton.setVisibility(View.GONE);
-            /* TODO: initiate next fast mode move event
-             * TODO: onNewFastModeEvent:
-             *  - fastModeButton.setVisibility(View.VISIBLE); */
+            initiateNextFastModeMove();
         }
+    }
+
+    private void initiateNextFastModeMove() {
+        RestService.getInstance(getActivity()).triggerNextMoveInFastMode(gameId, UserBean.setToken(token), new Callback<MoveBean>() {
+            @Override
+            public void success(MoveBean move, Response response) {
+                switch (move.move()) {
+                    case DICE_ROLLING:
+                        getDiceArea();
+                        getRaceTrackArea();
+                        break;
+                    case LEG_BETTING:
+                        getLegBettingArea();
+                        break;
+                    case RACE_BETTING:
+                        getRaceBettingArea();
+                        break;
+                    case DESERT_TILE_PLACING:
+                        getRaceTrackArea();
+                        break;
+                    default:
+                        break;
+                }
+                fastModeButton.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                fastModeButton.setVisibility(View.VISIBLE);
+                Toast.makeText(getActivity(), " Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void getDiceArea() {
+        RestService.getInstance(getActivity()).getDiceArea(gameId, new Callback<DiceAreaBean>() {
+            @Override
+            public void success(DiceAreaBean newDiceAreaBean, Response response) {
+                diceArea = new DiceArea(newDiceAreaBean);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), "getDiceArea Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void getRaceTrackArea() {
+        RestService.getInstance(getActivity()).getRacetrack(gameId, new Callback<RaceTrackBean>() {
+            @Override
+            public void success(RaceTrackBean newRaceTrackBean, Response response) {
+                raceTrack = new RaceTrack(newRaceTrackBean);
+                updateRaceTrackFields();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), "getRaceTrackArea Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void getLegBettingArea() {
+        RestService.getInstance(getActivity()).getLegBettingArea(gameId, new Callback<LegBettingAreaBean>() {
+            @Override
+            public void success(LegBettingAreaBean newLegBettingAreaBean, Response response) {
+                legBettingArea = new LegBettingArea(newLegBettingAreaBean);
+                updateLegBettingFields();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), "getLegBettingArea Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void getRaceBettingArea() {
+        RestService.getInstance(getActivity()).getRaceBettingArea(gameId, new Callback<RaceBettingAreaBean>() {
+            @Override
+            public void success(RaceBettingAreaBean newRaceBettingAreaBean, Response response) {
+                raceBettingArea = new RaceBettingArea(newRaceBettingAreaBean);
+                updateRaceBettingFields();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(getActivity(), "getRaceBettingArea Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**
@@ -823,16 +920,24 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         TextView money = (TextView) getActivity().findViewById(R.id.money);
 
         playerIcon.setImageResource(getActivity().getResources().getIdentifier("c" + playerId + "_head", "id", getActivity().getPackageName()));
-        playerName.setText(players.get(playerId - 1).username());
-        if ( playerTurnEvent == null || playerId.equals(playerTurnEvent.getPlayerId()) ) {
-            currentPlayerName.setText("YOU");
+
+        if (isFastMode){
+            playerName.setText("FASTMODE");
+            currentPlayerName.setText("PLEASE TRIGGER NEXT FAST MODE MOVE");
             currentPlayerIcon.setVisibility(View.GONE);
+            fastModeButton.setVisibility(View.VISIBLE);
         } else {
-            currentPlayerName.setText(players.get(playerTurnEvent.getPlayerId()-1).username());
-            currentPlayerIcon.setImageResource(getActivity().getResources().getIdentifier("c" + playerTurnEvent.getPlayerId() + "_head", "id", getActivity().getPackageName()));
-            currentPlayerIcon.setVisibility(View.VISIBLE);
+            playerName.setText(players.get(playerId - 1).username());
+            if (playerTurnEvent == null || playerId.equals(playerTurnEvent.getPlayerId())) {
+                currentPlayerName.setText("YOU");
+                currentPlayerIcon.setVisibility(View.GONE);
+            } else {
+                currentPlayerName.setText(players.get(playerTurnEvent.getPlayerId() - 1).username());
+                currentPlayerIcon.setImageResource(getActivity().getResources().getIdentifier("c" + playerTurnEvent.getPlayerId() + "_head", "id", getActivity().getPackageName()));
+                currentPlayerIcon.setVisibility(View.VISIBLE);
+            }
+            money.setText(players.get(playerId - 1).money() + "");
         }
-        money.setText(players.get(playerId-1).money()+"");
     }
 
     /**
@@ -897,8 +1002,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
         ((GameActivity) getActivity()).pushFragment(fragment);
     }
-
-
 
     /**
      * Called when creating this fragment

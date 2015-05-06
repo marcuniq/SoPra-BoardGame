@@ -62,12 +62,12 @@ public class GameActivity extends MainActivity implements GameFragment.OnBackPre
             gameId = b.getLong("gameId");
             playerId = b.getInt("playerId");
             userId = b.getLong("userId");
-            Boolean fastMode = b.getBoolean("fastMode");
+            Boolean isFastMode = b.getBoolean("isFastMode");
 
             Fragment fragment = GameFragment.newInstance();
             Bundle bundle = new Bundle();
             bundle.putLong("gameId", gameId);
-            bundle.putBoolean("fastMode", fastMode);
+            bundle.putBoolean("isFastMode", isFastMode);
             fragment.setArguments(bundle);
 
             SharedPreferences sharedPref = this.getSharedPreferences("token", Context.MODE_PRIVATE);
@@ -84,7 +84,6 @@ public class GameActivity extends MainActivity implements GameFragment.OnBackPre
         subscribedPushers.clear();
         System.out.println("XXXXX unsubscribeFromLobbyEvents DONE");
     }
-
     public void unsubscribeFromAreas(){
         for (Map.Entry<AreaName, AreaUpdateSubscriber> subscribedArea : subscribedAreas.entrySet()){
             AreaService.getInstance(this).removeSubscriber(subscribedArea.getKey(), subscribedArea.getValue());
@@ -92,7 +91,6 @@ public class GameActivity extends MainActivity implements GameFragment.OnBackPre
         subscribedAreas.clear();
         System.out.println("XXXXX unsubscribeFromAreas DONE");
     }
-
     public void setSubscribedAreas (HashMap<AreaName, AreaUpdateSubscriber> subscribedAreas){
         this.subscribedAreas = subscribedAreas;
         System.out.println("XXXXX setSubscribedAreas DONE");

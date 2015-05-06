@@ -163,7 +163,7 @@ public class GameLobbyFragment extends ListFragment {
         b.putLong("userId", userId);
         if(playerId != null)
             b.putInt("playerId", playerId);
-        b.putBoolean("fastMode", isFastMode);
+        b.putBoolean("isFastMode", isFastMode);
         intent.putExtras(b);
         startActivity(intent);
         getActivity().finish();
