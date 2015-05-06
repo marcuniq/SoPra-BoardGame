@@ -70,7 +70,6 @@ task wrapper(type: Wrapper) {
 
 task stage { 
   dependsOn "build"
-  test.enabled = false
 }
 
 bootRun {
