@@ -33,7 +33,7 @@ public class GameState implements Serializable {
     @Column
     private Integer currentPlayerId = 1;
 
-    @OneToMany(mappedBy = "gameState", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Move> moves = new ArrayList<Move>();
 
     @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
@@ -43,13 +43,13 @@ public class GameState implements Serializable {
     @OneToOne(mappedBy = "gameState", cascade = CascadeType.ALL)
     private RaceTrack raceTrack = new RaceTrack();
 
-    @OneToOne(mappedBy = "gameState", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private LegBettingArea legBettingArea = new LegBettingArea();
 
-    @OneToOne(mappedBy = "gameState", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private RaceBettingArea raceBettingArea = new RaceBettingArea();
 
-    @OneToOne(mappedBy = "gameState", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private DiceArea diceArea = new DiceArea();
 
     @Column
@@ -67,9 +67,9 @@ public class GameState implements Serializable {
 
     private void init(){
         raceTrack.setGameState(this);
-        legBettingArea.setGameState(this);
-        raceBettingArea.setGameState(this);
-        diceArea.setGameState(this);
+        //legBettingArea.setGameState(this);
+        //raceBettingArea.setGameState(this);
+        //diceArea.setGameState(this);
 
         status = GameStatus.OPEN;
 
@@ -117,7 +117,6 @@ public class GameState implements Serializable {
     public void addMove(Move move) {
         if(!moves.contains(move)){
             moves.add(move);
-            move.setGameState(this);
         }
     }
 

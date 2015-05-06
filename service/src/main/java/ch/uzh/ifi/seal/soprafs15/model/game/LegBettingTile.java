@@ -36,10 +36,6 @@ public class LegBettingTile implements Serializable {
     @Column
     private Integer otherPositionLoss;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="LEGBETTINGTILESTACK_ID")
-    @JsonIgnore
-    private LegBettingTileStack stack;
 
 
 
@@ -77,14 +73,6 @@ public class LegBettingTile implements Serializable {
     }
 
 
-
-    public LegBettingTileStack getStack() {
-        return stack;
-    }
-
-    public void setStack(LegBettingTileStack stack) {
-        this.stack = stack;
-    }
 
     public Long getId() {
         return id;

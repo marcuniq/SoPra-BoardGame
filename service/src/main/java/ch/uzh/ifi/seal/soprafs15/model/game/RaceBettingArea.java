@@ -27,10 +27,6 @@ public class RaceBettingArea implements Serializable {
     @MapKeyColumn(name = "betOnWinner",nullable = false)
     private Map<Boolean, RaceBettingCardStack> raceBettings;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "GAMESTATE_ID")
-    private GameState gameState;
-
 
     public RaceBettingArea(){
         init();
@@ -116,13 +112,5 @@ public class RaceBettingArea implements Serializable {
 
     public void setRaceBettings(Map<Boolean, RaceBettingCardStack> raceBettings) {
         this.raceBettings = raceBettings;
-    }
-
-    public GameState getGameState() {
-        return gameState;
-    }
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
     }
 }

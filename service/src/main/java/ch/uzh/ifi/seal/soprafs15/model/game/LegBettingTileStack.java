@@ -27,7 +27,7 @@ public class LegBettingTileStack implements Serializable, Stack<LegBettingTile> 
     @JoinColumn(name = "LEGBETTINGAREA_ID")
     private LegBettingArea legBettingArea;
 
-    @OneToMany(mappedBy = "stack", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<LegBettingTile> tiles;
 
     public LegBettingTileStack(){}
@@ -36,7 +36,6 @@ public class LegBettingTileStack implements Serializable, Stack<LegBettingTile> 
         this.legBettingArea = legBettingArea;
         this.color = color;
         this.tiles = tiles;
-        this.tiles.stream().forEach(t -> t.setStack(this));
     }
 
     /**
