@@ -130,7 +130,7 @@ public class GameLogicServiceImpl extends GameLogicService {
         }
 
         // remove owner from player list
-        User owner = userRepository.findByUsername(game.getOwner());
+        User owner = game.getOwner();
         game.removePlayer(owner);
 
         // start game
@@ -329,15 +329,17 @@ public class GameLogicServiceImpl extends GameLogicService {
      * @param color is either the winning color or the losing color
      */
     private void payoutRaceBettings(List<RaceBettingCard> bettings, Color color){
-        List<Integer> moneyReward = Arrays.asList(8,5,3,2,1);
+        Stack<Integer> moneyReward = new Stack<>();
+        moneyReward.addAll(Arrays.asList(2,3,5,8));
 
         for(RaceBettingCard r : bettings){
+            User player = r.getUser();
             if(r.getColor() == color){
-                User player = r.getUser();
-
-                Integer winningMoney = !moneyReward.isEmpty() ? moneyReward.remove(0) : -1;
+                Integer winningMoney = !moneyReward.isEmpty() ? moneyReward.pop() : 1;
                 player.setMoney(player.getMoney() + winningMoney);
 
+            } else{
+                player.setMoney(player.getMoney() - 1);
             }
         }
     }
