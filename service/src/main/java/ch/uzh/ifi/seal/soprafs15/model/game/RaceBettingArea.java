@@ -22,7 +22,7 @@ public class RaceBettingArea implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @OneToMany(mappedBy = "raceBettingArea", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     @Column(columnDefinition = "BLOB")
     @MapKeyColumn(name = "betOnWinner",nullable = false)
     private Map<Boolean, RaceBettingCardStack> raceBettings;
@@ -38,10 +38,10 @@ public class RaceBettingArea implements Serializable {
     private void init() {
         raceBettings = new HashMap<>();
 
-        RaceBettingCardStack winnerBetting = new RaceBettingCardStack(this, true);
+        RaceBettingCardStack winnerBetting = new RaceBettingCardStack(true);
         raceBettings.put(true, winnerBetting);
 
-        RaceBettingCardStack loserBetting = new RaceBettingCardStack(this, false);
+        RaceBettingCardStack loserBetting = new RaceBettingCardStack(false);
         raceBettings.put(false, loserBetting);
     }
 
