@@ -71,6 +71,7 @@ public class GameLobbyFragment extends ListFragment {
         gameId = this.getArguments().getLong("gameId");
         userId = this.getArguments().getLong("userId");
         isOwner = this.getArguments().getBoolean("isOwner");
+        channelName = this.getArguments().getString("gameChannel");
 
         SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
@@ -110,7 +111,8 @@ public class GameLobbyFragment extends ListFragment {
                 R.id.player_item_text,
                 R.id.player_item_description,
                 R.id.player_item_icon,
-                new ArrayList<UserBean>());
+                new ArrayList<UserBean>(),
+                false);
         setListAdapter(playerArrayAdapter);
 
         return v;
@@ -119,7 +121,6 @@ public class GameLobbyFragment extends ListFragment {
     @Override
     public void onResume(){
         super.onResume();
-        getGame();
         getPlayers();
 
         /* Handle Back Button input */
@@ -151,7 +152,7 @@ public class GameLobbyFragment extends ListFragment {
             public void onClick(DialogInterface dialog, int id) {
                 unsubscribeFromEvents();
                 PusherService.getInstance(getActivity()).unsubscribeFromChannel(channelName);
-                removePlayerFromGame();
+                //removePlayerFromGame();
             }
         });
         return builder.create();
@@ -159,7 +160,6 @@ public class GameLobbyFragment extends ListFragment {
 
     private void onStartGame() {
         unsubscribeFromEvents();
-        PusherService.getInstance(getActivity()).unsubscribeFromChannel(channelName);
         Intent intent = new Intent();
         intent.setClass(getActivity(), GameActivity.class);
         Bundle b = new Bundle();
@@ -168,6 +168,7 @@ public class GameLobbyFragment extends ListFragment {
         if(playerId != null)
             b.putInt("playerId", playerId);
         b.putBoolean("isFastMode", isFastMode);
+        b.putString("gameChannel", channelName);
         intent.putExtras(b);
         startActivity(intent);
         getActivity().finish();
@@ -228,6 +229,7 @@ public class GameLobbyFragment extends ListFragment {
         RestService.getInstance(getActivity()).startFastMode(gameId, UserBean.setToken(token), new Callback<GameBean>() {
             @Override
             public void success(GameBean game, Response response) {
+                PusherService.getInstance(getActivity()).unsubscribeFromChannel(channelName);
                 onStartGame();
             }
 
@@ -260,22 +262,8 @@ public class GameLobbyFragment extends ListFragment {
         });
     }
 
-    private void getGame(){
-        RestService.getInstance(getActivity()).getGame(gameId, new Callback<GameBean>() {
-            @Override
-            public void success(GameBean newGame, Response response) {
-                channelName = newGame.channelName();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), "Get Game failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
     public void removePlayerFromGame() {
-        RestService.getInstance(getActivity()).removeGamePlayer(gameId, playerId, UserBean.setToken(token), new Callback<UserBean>() {
+        RestService.getInstance(getActivity()).removeGamePlayerAsUser(gameId, playerId, true, UserBean.setToken(token), new Callback<UserBean>() {
             @Override
             public void success(UserBean user, Response response) {
                 getActivity().getSupportFragmentManager().popBackStack();

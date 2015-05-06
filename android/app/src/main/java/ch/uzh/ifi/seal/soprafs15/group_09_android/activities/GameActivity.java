@@ -121,7 +121,7 @@ public class GameActivity extends MainActivity implements GameFragment.OnBackPre
         });
         builder.setNegativeButton("Log out", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                removePlayerFromGame();
+                //removePlayerFromGame();
 
                 unsubscribeFromAreas();
                 unsubscribeFromEvents();

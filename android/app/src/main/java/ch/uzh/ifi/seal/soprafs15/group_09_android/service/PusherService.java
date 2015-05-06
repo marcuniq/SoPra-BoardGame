@@ -178,8 +178,7 @@ public class PusherService {
                     AreaService.getInstance(context).getAreasAndNotifySubscriber(gameId);
                 }
             });
-        }
-
+         }
     }
 
     public void disconnect(){
@@ -198,7 +197,7 @@ public class PusherService {
     }
 
     public void removeSubscriber(PushEventNameEnum event, PusherEventSubscriber eventSubscriber){
-        Log.i("PusherService", "removed subscriber to event: " + event);
+        Log.i("PusherService", "removed subscriber to event: " + eventSubscriber);
         PusherEventSubscriberService.getInstance().removeSubscriber(event, eventSubscriber);
     }
 }
