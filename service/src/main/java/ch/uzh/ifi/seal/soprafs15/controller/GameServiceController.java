@@ -89,6 +89,18 @@ public class GameServiceController extends GenericService {
 
 
     /*
+     *	Context: /games/{gameId}
+     *  Description: Delete game with gameId
+     */
+    @RequestMapping(method = RequestMethod.DELETE, value = CONTEXT + "/{gameId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteGame(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean bean) {
+        logger.debug("delete game: " + gameId);
+
+        gameService.deleteGame(gameId, bean);
+    }
+
+    /*
      *	Context: /games/{gameId}/start
      *  Description: Start the game with gameId, only owner is allowed to do that
      */

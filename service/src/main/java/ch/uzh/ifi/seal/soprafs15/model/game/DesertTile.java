@@ -14,7 +14,7 @@ public class DesertTile extends RaceTrackObject implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne(cascade= CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name="USER_ID")
     private User owner;
 

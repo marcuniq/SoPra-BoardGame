@@ -57,16 +57,18 @@ public class UserMapperServiceUT {
     @Test
     @SuppressWarnings("unchecked")
     public void testToUserResponseBean() throws Exception {
-        Game testGame = new Game();
-        testGame.setName("TestGame");
-        testGame.setOwner("TestOwner");
-        testGame.setId((long) 0);
+
 
         User testUser = new User();
         testUser.setAge(30);
         testUser.setUsername("TestUser");
         //testUser.setGame(testGame);
         testUser.setId((long) 0);
+
+        Game testGame = new Game();
+        testGame.setName("TestGame");
+        testGame.setOwner(testUser);
+        testGame.setId((long) 0);
 
         UserResponseBean oracleUserResponseBean = new UserResponseBean();
         oracleUserResponseBean.setUsername("TestUser");
@@ -85,13 +87,15 @@ public class UserMapperServiceUT {
     @Test
     @SuppressWarnings("unchecked")
     public void testToUserResponseBeanList() throws Exception {
-        Game testGame = new Game();
-        testGame.setName("TestGame");
-        testGame.setOwner("TestOwner");
-        testGame.setId((long) 0);
+
 
         User testUser0 = new User();
         User testUser1 = new User();
+
+        Game testGame = new Game();
+        testGame.setName("TestGame");
+        testGame.setOwner(testUser0);
+        testGame.setId((long) 0);
 
         List<User> testList = new ArrayList();
         testList.add(testUser0);

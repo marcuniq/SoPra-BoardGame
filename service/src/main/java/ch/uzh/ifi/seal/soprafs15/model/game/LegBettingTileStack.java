@@ -24,9 +24,10 @@ public class LegBettingTileStack implements Serializable, Stack<LegBettingTile> 
     private Color color;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "LEGBETTINGAREA_ID")
     private LegBettingArea legBettingArea;
 
-    @OneToMany(mappedBy="stack", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "stack", cascade = CascadeType.ALL)
     private List<LegBettingTile> tiles;
 
     public LegBettingTileStack(){}

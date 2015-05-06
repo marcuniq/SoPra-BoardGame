@@ -36,7 +36,8 @@ public class DiceArea implements Serializable {
     @OrderColumn
     private List<Die> rolledDice;
 
-    @OneToOne(cascade = CascadeType.ALL)//(fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "GAMESTATE_ID")
     private GameState gameState;
 
     @Transient

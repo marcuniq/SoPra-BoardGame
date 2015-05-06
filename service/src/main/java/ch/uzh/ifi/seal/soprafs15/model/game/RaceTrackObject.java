@@ -22,7 +22,7 @@ public abstract class RaceTrackObject implements Serializable {
     protected Integer position;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="RACETRACK_ID")
+    @JoinColumn(name = "RACETRACK_ID")
     protected RaceTrack raceTrack;
 
 

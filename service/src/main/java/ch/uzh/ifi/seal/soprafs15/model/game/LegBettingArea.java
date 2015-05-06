@@ -15,22 +15,20 @@ import java.util.Map;
 @Entity
 public class LegBettingArea implements Serializable {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @OneToMany(mappedBy = "legBettingArea", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "legBettingArea", cascade = CascadeType.ALL)
     @Column(columnDefinition = "BLOB")
     @MapKeyColumn(name = "color", length = 50, nullable = false)
     @MapKeyEnumerated(EnumType.STRING)
     private Map<Color, LegBettingTileStack> legBettingTiles;
 
-    @OneToOne(cascade = CascadeType.ALL)//(fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "GAMESTATE_ID")
     private GameState gameState;
 
     public LegBettingArea(){

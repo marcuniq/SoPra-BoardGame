@@ -23,7 +23,8 @@ public class GameState implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "STATEMANAGER_ID")
     private StateManager stateManager;
 
     @Column
@@ -32,23 +33,23 @@ public class GameState implements Serializable {
     @Column
     private Integer currentPlayerId = 1;
 
-    @OneToMany(mappedBy="gameState", cascade = CascadeType.ALL) //, fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "gameState", cascade = CascadeType.ALL)
     private List<Move> moves = new ArrayList<Move>();
 
-    @OneToMany(mappedBy="gameState", cascade = CascadeType.ALL) //, fetch=FetchType.EAGER)
-    //@OrderColumn
+    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "USER_ID")
     private List<User> players = new ArrayList<User>();
 
-    @OneToOne(mappedBy = "gameState", cascade=CascadeType.ALL)
+    @OneToOne(mappedBy = "gameState", cascade = CascadeType.ALL)
     private RaceTrack raceTrack = new RaceTrack();
 
-    @OneToOne(mappedBy = "gameState", cascade=CascadeType.ALL)
+    @OneToOne(mappedBy = "gameState", cascade = CascadeType.ALL)
     private LegBettingArea legBettingArea = new LegBettingArea();
 
-    @OneToOne(mappedBy = "gameState", cascade=CascadeType.ALL)
+    @OneToOne(mappedBy = "gameState", cascade = CascadeType.ALL)
     private RaceBettingArea raceBettingArea = new RaceBettingArea();
 
-    @OneToOne(mappedBy = "gameState", cascade=CascadeType.ALL)
+    @OneToOne(mappedBy = "gameState", cascade = CascadeType.ALL)
     private DiceArea diceArea = new DiceArea();
 
     @Column
@@ -80,14 +81,14 @@ public class GameState implements Serializable {
     public void addPlayer(User player){
         if(!players.contains(player)){
             players.add(player);
-            player.setGameState(this);
+            //player.setGameState(this);
         }
     }
 
     public void removePlayer(User player){
         if(players.contains(player)){
             players.remove(player);
-            player.setGameState(null);
+            //player.setGameState(null);
 
             // remove all player related things from game
 

@@ -22,7 +22,8 @@ public class LegBettingTile implements Serializable {
     @Enumerated(EnumType.STRING)
     private Color color;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name="USER_ID")
     @JsonIgnore
     private User user;
 

@@ -24,7 +24,8 @@ public class RaceTrack implements Serializable {
     @OrderBy("position ASC")
     private List<RaceTrackObject> fields = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL)//(fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "GAMESTATE_ID")
     private GameState gameState;
 
     public RaceTrack(){
