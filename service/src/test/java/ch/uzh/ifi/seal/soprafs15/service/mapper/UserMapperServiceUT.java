@@ -35,19 +35,22 @@ public class UserMapperServiceUT {
     @Test
     @SuppressWarnings("unchecked")
     public void testToUser() throws Exception {
+        // set up test object
         UserRequestBean testBean = new UserRequestBean();
         testBean.setAge(20);
         testBean.setUsername("TestUsername");
 
-
+        // set up oracle values
         User oracleUser = new User();
         oracleUser.setUsername("TestUsername");
         oracleUser.setAge(20);
         oracleUser.setStatus(UserStatus.OFFLINE);
         String oracleToken = "067e6162-3b6f-4ae2-a171-2470b63dff00";
 
+        // test call
         User result = userMapperService.toUser(testBean);
 
+        // assertions
         Assert.assertEquals(result.getAge(), oracleUser.getAge());
         Assert.assertEquals(result.getUsername(), oracleUser.getUsername());
         Assert.assertEquals(result.getStatus(), oracleUser.getStatus());
@@ -57,16 +60,18 @@ public class UserMapperServiceUT {
     @Test
     @SuppressWarnings("unchecked")
     public void testToUserResponseBean() throws Exception {
-        Game testGame = new Game();
-        testGame.setName("TestGame");
-        testGame.setOwner("TestOwner");
-        testGame.setId((long) 0);
+
 
         User testUser = new User();
         testUser.setAge(30);
         testUser.setUsername("TestUser");
         //testUser.setGame(testGame);
         testUser.setId((long) 0);
+
+        Game testGame = new Game();
+        testGame.setName("TestGame");
+        testGame.setOwner(testUser);
+        testGame.setId((long) 0);
 
         UserResponseBean oracleUserResponseBean = new UserResponseBean();
         oracleUserResponseBean.setUsername("TestUser");
@@ -85,13 +90,15 @@ public class UserMapperServiceUT {
     @Test
     @SuppressWarnings("unchecked")
     public void testToUserResponseBeanList() throws Exception {
-        Game testGame = new Game();
-        testGame.setName("TestGame");
-        testGame.setOwner("TestOwner");
-        testGame.setId((long) 0);
+
 
         User testUser0 = new User();
         User testUser1 = new User();
+
+        Game testGame = new Game();
+        testGame.setName("TestGame");
+        testGame.setOwner(testUser0);
+        testGame.setId((long) 0);
 
         List<User> testList = new ArrayList();
         testList.add(testUser0);

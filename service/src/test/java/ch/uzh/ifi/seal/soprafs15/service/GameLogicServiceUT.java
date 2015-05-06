@@ -3,18 +3,25 @@ package ch.uzh.ifi.seal.soprafs15.service;
 import ch.uzh.ifi.seal.soprafs15.Application;
 import ch.uzh.ifi.seal.soprafs15.TestUtils;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.*;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
+import ch.uzh.ifi.seal.soprafs15.model.StateManager;
+import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Color;
+import ch.uzh.ifi.seal.soprafs15.model.game.Game;
+import ch.uzh.ifi.seal.soprafs15.model.game.GameState;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.InvalidMoveException;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.annotation.DirtiesContext;
@@ -22,6 +29,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.List;
+import java.util.Map;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Hakuna on 04.05.2015.
@@ -33,10 +44,10 @@ import java.util.List;
 public class GameLogicServiceUT {
 
     @Mock
-    protected GameRepository gameRepository;
+    protected GameRepository mockGameRepository;
 
     @Mock
-    private UserRepository mockUserRepo;
+    private UserRepository mockUserRepository;
 
     @InjectMocks
     @Autowired
@@ -62,6 +73,65 @@ public class GameLogicServiceUT {
     @Autowired
     private GameMoveService gameMoveService;
 
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testStartFastMode() throws Exception {
+        // Create new User
+        UserRequestBean userRequest = TestUtils.toUserRequestBean(64, "Leon");
+        UserResponseBean userResponse = userService.addUser(userRequest);
+
+        // Login User
+        UserLoginLogoutResponseBean loginResponse = userService.login(userResponse.getId());
+
+        // Create new Game
+        GameRequestBean gameRequest = TestUtils.toGameRequestBean("TestSpiel", loginResponse.getToken());
+        GameCreateResponseBean gameResponse = gameService.addGame(gameRequest);
+
+        GamePlayerRequestBean startFastRequest = TestUtils.toGamePlayerRequestBean(loginResponse.getToken());
+        GameResponseBean result = gameActionService.startFastMode(gameResponse.getId(), startFastRequest);
+
+        Assert.assertEquals(GameStatus.RUNNING, result.getStatus());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testCreatePlayerSequence() throws Exception {
+        // Create new Game State
+        GameState gameState = new GameState();
+
+        // Create new User
+        User owner = new User();
+        owner.setId((long) 1);
+        owner.setAge(23);
+        owner.setUsername("Jacqueline");
+
+        // Create another User
+        User player = new User();
+        player.setId((long) 2);
+        player.setAge(16);
+        player.setUsername("Erika");
+
+        // Create new Game
+        Game game = new Game();
+        game.setOwner(owner);
+        game.addPlayer(owner);
+        game.addPlayer(player);
+
+        // Create new State Manager
+        StateManager stateManager = new StateManager();
+        stateManager.setGame(game);
+        stateManager.setGameState(gameState);
+
+        Map<Long, Integer> result = gameLogicService.createPlayerSequence(game);
+
+        Assert.assertEquals(2, result.size());
+    }
+
     @Test(expected = InvalidMoveException.class)
     @SuppressWarnings("unchecked")
     public void testLegBettingInvalidMoveFail() throws Exception {
@@ -86,14 +156,12 @@ public class GameLogicServiceUT {
         UserLoginLogoutResponseBean playerLoginResponse = userService.login(userResponse.getId());
         String playerToken = playerLoginResponse.getToken();
 
-        // Create GamePlayerRequestBean with Token from 2nd User and assign it to the game as well
+        // Add 2nd User to game
         GamePlayerRequestBean addPlayerRequest = TestUtils.toGamePlayerRequestBean(playerToken);
         GameAddPlayerResponseBean addPlayerResponse = gamePlayerService.addPlayer(gameResponse.getId(), addPlayerRequest);
 
-        // Create GamePlayerRequestBean with Token of owner for Starting the game
-        GamePlayerRequestBean ownerPlayerRequest = TestUtils.toGamePlayerRequestBean(ownerToken);
-
         // Start Game
+        GamePlayerRequestBean ownerPlayerRequest = TestUtils.toGamePlayerRequestBean(ownerToken);
         GameResponseBean startGameResponse = gameActionService.startGame(gameResponse.getId(), ownerPlayerRequest);
 
         // Get PlayerId of currentPlayer

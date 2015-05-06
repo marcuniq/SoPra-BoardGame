@@ -44,7 +44,7 @@ public class UserServiceImpl extends UserService {
     public UserResponseBean addUser(UserRequestBean bean) {
 
         if(userRepository.findByUsername(bean.getUsername()) != null) {
-            throw new UserExistsException(userMapperService.toUser(bean), UserServiceImpl.class);
+            throw new UserExistsException(userRepository.findByUsername(bean.getUsername()), UserServiceImpl.class);
         }
 
         User user = userMapperService.toUser(bean);
@@ -62,34 +62,34 @@ public class UserServiceImpl extends UserService {
         return userMapperService.toUserResponseBean(user);
     }
 
-    @Override
-    public UserResponseBean updateUser(Long userId, UserLoginLogoutRequestBean bean) {
-        User user = userMapperService.toUser(bean);
-        User user_1 = userRepository.findOne(userId);
-
-        if(user_1 == null) {
-            throw new UserNotFoundException(userId, UserServiceImpl.class);
-        }
-
-        if(user_1 != null && user_1.getToken().equals(user.getToken())) {
-
-            user_1.setId(user.getId());
-            user_1.setAge(user.getAge());
-            user_1.setUsername(user.getUsername());
-            user_1.setGameState(user.getGameState());
-            user_1.setMoves(user.getMoves());
-            user_1.setToken(user.getToken());
-            user_1.setStatus(user.getStatus());
-            user_1.setRaceBettingCards(user.getRaceBettingCards());
-            user_1.setMoney(user.getMoney());
-            user_1.setLegBettingTiles(user.getLegBettingTiles());
-
-            userRepository.save(user_1);
-
-            return userMapperService.toUserResponseBean(user_1);
-        }
-        return null;
-    }
+//    @Override
+//    public UserResponseBean updateUser(Long userId, UserLoginLogoutRequestBean bean) {
+//        User user = userMapperService.toUser(bean);
+//        User user_1 = userRepository.findOne(userId);
+//
+//        if(user_1 == null) {
+//            throw new UserNotFoundException(userId, UserServiceImpl.class);
+//        }
+//
+//        if(user_1 != null && user_1.getToken().equals(user.getToken())) {
+//
+//            user_1.setId(user.getId());
+//            user_1.setAge(user.getAge());
+//            user_1.setUsername(user.getUsername());
+//            user_1.setGameState(user.getGameState());
+//            user_1.setMoves(user.getMoves());
+//            user_1.setToken(user.getToken());
+//            user_1.setStatus(user.getStatus());
+//            user_1.setRaceBettingCards(user.getRaceBettingCards());
+//            user_1.setMoney(user.getMoney());
+//            user_1.setLegBettingTiles(user.getLegBettingTiles());
+//
+//            userRepository.save(user_1);
+//
+//            return userMapperService.toUserResponseBean(user_1);
+//        }
+//        return null;
+//    }
 
     @Override
     public void deleteUser(Long userId, UserLoginLogoutRequestBean bean) {

@@ -23,7 +23,8 @@ public class RaceBettingCard implements Serializable {
     @Enumerated(EnumType.STRING)
     private Color color;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name ="USER_ID")
     @JsonIgnore
     private User user;
 

@@ -27,7 +27,7 @@ public class RaceBettingCardStack implements Serializable, Stack<RaceBettingCard
     @ManyToOne(cascade = CascadeType.ALL)
     private RaceBettingArea raceBettingArea;
 
-    @OneToMany(mappedBy="stack", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "stack", cascade = CascadeType.ALL)
     private List<RaceBettingCard> stack;
 
 

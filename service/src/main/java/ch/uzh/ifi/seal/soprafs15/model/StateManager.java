@@ -22,10 +22,11 @@ public class StateManager implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @OneToOne(mappedBy = "stateManager", cascade=CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name ="GAME_ID")
     private Game game;
 
-    @OneToOne(mappedBy = "stateManager", cascade=CascadeType.ALL)
+    @OneToOne(mappedBy = "stateManager", cascade = CascadeType.ALL)
     private GameState gameState;
 
 

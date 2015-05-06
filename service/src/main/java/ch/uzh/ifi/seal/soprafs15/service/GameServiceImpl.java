@@ -51,8 +51,7 @@ public class GameServiceImpl extends GameService {
         Game game = gameMapperService.toGame(bean);
 
         // add owner to player list
-        String username = game.getOwner();
-        User owner = userRepository.findByUsername(username);
+        User owner = game.getOwner();
         //owner.initForGamePlay();
         game.addPlayer(owner);
 
@@ -80,7 +79,9 @@ public class GameServiceImpl extends GameService {
             throw new GameNotFoundException(gameId, GameServiceImpl.class);
         }
 
-        if(game != null && game.getOwner().equals(owner.getUsername()))
-            gameRepository.delete(gameId);
+        if(game != null && game.getOwner().getId().equals(owner.getId())) {
+            gameRepository.delete(game);
+            //gameRepository.deleteAll();
+        }
     }
 }
