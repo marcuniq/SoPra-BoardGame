@@ -67,7 +67,6 @@ public class PusherService {
         }, ConnectionState.ALL);
 
         // subscribe to channel
-        //PusherService.getInstance().subscribe("test_channel");
         PusherAPIService.getInstance().subscribe(channelName);
 
         final Gson gson = new GsonBuilder().registerTypeAdapterFactory(new AutoValueAdapterFactory()).create();

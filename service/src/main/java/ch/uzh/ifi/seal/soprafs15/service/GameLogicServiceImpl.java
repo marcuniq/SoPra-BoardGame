@@ -180,7 +180,7 @@ public class GameLogicServiceImpl extends GameLogicService {
             MoveEnum randomMove = MoveEnum.randomMove();
 
             // make it a bit less random to avoid long waiting to find a valid move
-            if(loopIteration > 3)
+            if(loopIteration > 2)
                 randomMove = MoveEnum.DICE_ROLLING;
 
             bean.setMove(randomMove);
@@ -290,7 +290,7 @@ public class GameLogicServiceImpl extends GameLogicService {
                 switch (camelRankingMap.get(t.getColor())){
                     case FIRST: winningMoney = t.getLeadingPositionGain(); break;
                     case SECOND:winningMoney = t.getSecondPositionGain(); break;
-                    default:    winningMoney = t.getOtherPositionLoss(); break;
+                    default:    winningMoney = p.getMoney() <= 0 ? 0 : t.getOtherPositionLoss(); break;
                 }
 
                 p.setMoney(p.getMoney() + winningMoney);
@@ -338,8 +338,10 @@ public class GameLogicServiceImpl extends GameLogicService {
                 Integer winningMoney = !moneyReward.isEmpty() ? moneyReward.pop() : 1;
                 player.setMoney(player.getMoney() + winningMoney);
 
-            } else{
-                player.setMoney(player.getMoney() - 1);
+            } else {
+                // player cant have negative money
+                if(player.getMoney() > 0)
+                    player.setMoney(player.getMoney() - 1);
             }
         }
     }

@@ -143,7 +143,7 @@ public class GameLobbyFragment extends ListFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("You have clicked on the back Button")
                 .setTitle("Do you want to log out from the lobby?:");
-        builder.setPositiveButton("Stay in GameBean", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Stay in Game", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // do nothing but close popup
             }
@@ -151,7 +151,7 @@ public class GameLobbyFragment extends ListFragment {
         builder.setNegativeButton("Log out", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 unsubscribeFromEvents();
-                PusherService.getInstance(getActivity()).unsubscribeFromChannel(channelName);
+                PusherService.getInstance(getActivity()).unregister(gameId, channelName);
                 //removePlayerFromGame();
             }
         });
