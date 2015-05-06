@@ -189,6 +189,10 @@ public class PusherService {
         PusherAPIService.getInstance().disconnect();
     }
 
+    public void unsubscribeFromChannel(String channelName){
+        PusherAPIService.getInstance().unsubscribe(channelName);
+    }
+
     public void addSubscriber(PushEventNameEnum event, PusherEventSubscriber eventSubscriber){
         PusherEventSubscriberService.getInstance().addSubscriber(event, eventSubscriber);
     }
