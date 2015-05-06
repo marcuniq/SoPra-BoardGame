@@ -129,7 +129,7 @@ public class GameLobbyFragment extends ListFragment {
         getView().setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK){
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
                     AlertDialog dialog = warningPopup();
                     dialog.show();
                     return true;
@@ -190,7 +190,8 @@ public class GameLobbyFragment extends ListFragment {
 
                         GameStartEvent gameStartEvent = (GameStartEvent) event;
 
-                        playerId = gameStartEvent.getUserIdToPlayerIdMap().get(userId);
+                        if(gameStartEvent.getUserIdToPlayerIdMap() != null)
+                            playerId = gameStartEvent.getUserIdToPlayerIdMap().get(userId);
 
                         onStartGame();
                     }
@@ -231,8 +232,8 @@ public class GameLobbyFragment extends ListFragment {
         RestService.getInstance(getActivity()).startFastMode(gameId, UserBean.setToken(token), new Callback<GameBean>() {
             @Override
             public void success(GameBean game, Response response) {
-                PusherService.getInstance(getActivity()).unsubscribeFromChannel(channelName);
-                onStartGame();
+                //PusherService.getInstance(getActivity()).unsubscribeFromChannel(channelName);
+                //onStartGame();
             }
 
             @Override
@@ -248,12 +249,13 @@ public class GameLobbyFragment extends ListFragment {
             public void success(List<UserBean> newPlayers, Response response) {
                 playerArrayAdapter.clear();
                 setListAdapter(playerArrayAdapter);
-                ImageView playerCard = (ImageView)getActivity().findViewById(R.id.player_card);
+                ImageView playerCard = (ImageView) getActivity().findViewById(R.id.player_card);
                 int cardId;
                 for (UserBean player : newPlayers) {
                     playerArrayAdapter.add(player);
                     cardId = newPlayers.indexOf(player) + 1;
-                    if (userId.equals(player.id())) playerCard.setImageResource(getActivity().getResources().getIdentifier("c" + cardId, "drawable", getActivity().getPackageName()));
+                    if (userId.equals(player.id()))
+                        playerCard.setImageResource(getActivity().getResources().getIdentifier("c" + cardId, "drawable", getActivity().getPackageName()));
                 }
             }
 
