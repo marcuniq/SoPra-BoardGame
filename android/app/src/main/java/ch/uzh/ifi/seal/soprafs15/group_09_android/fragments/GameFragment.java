@@ -1129,6 +1129,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                                 Log.d("GameFragment", "got new GAME_FINISHED_EVENT");
                                 onBackPressedListener.unsubscribeFromAreas();
                                 onBackPressedListener.unsubscribeFromEvents();
+
                                 PusherService.getInstance(getActivity()).unregister(gameId, channelName);
                                 gameFinishEvaluation();
                             }

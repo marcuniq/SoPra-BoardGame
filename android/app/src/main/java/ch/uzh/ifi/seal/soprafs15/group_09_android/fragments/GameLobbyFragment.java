@@ -151,8 +151,10 @@ public class GameLobbyFragment extends ListFragment {
         builder.setNegativeButton("Log out", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 unsubscribeFromEvents();
+                PusherService.getInstance(getActivity()).unsubscribeFromChannel(channelName);
                 PusherService.getInstance(getActivity()).unregister(gameId, channelName);
                 //removePlayerFromGame();
+                getActivity().onBackPressed();
             }
         });
         return builder.create();
