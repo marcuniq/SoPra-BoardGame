@@ -157,28 +157,28 @@ public class UserServiceUT {
         // not implemented yet
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testDeleteUser() throws Exception {
-
-        assertEquals(0, testUserService.listUsers().size());
-
-        // Create new User
-        UserRequestBean userRequest = TestUtils.toUserRequestBean(92, "Troll");
-        UserResponseBean userResponse = testUserService.addUser(userRequest);
-
-        // Login User
-        UserLoginLogoutResponseBean loginResponse = testUserService.login(userResponse.getId());
-        UserLoginLogoutRequestBean deleteRequest = TestUtils.toUserLLRequestBean(loginResponse.getToken());
-
-        assertEquals(1, testUserService.listUsers().size());
-
-        // Delete User
-        testUserService.deleteUser(userResponse.getId(), deleteRequest);
-
-        assertEquals(0, testUserService.listUsers().size());
-        assertNull(testUserService.getUser(userResponse.getId()));
-    }
+//    @Test
+//    @SuppressWarnings("unchecked")
+//    public void testDeleteUser() throws Exception {
+//
+//        assertEquals(0, testUserService.listUsers().size());
+//
+//        // Create new User
+//        UserRequestBean userRequest = TestUtils.toUserRequestBean(92, "Troll");
+//        UserResponseBean userResponse = testUserService.addUser(userRequest);
+//
+//        // Login User
+//        UserLoginLogoutResponseBean loginResponse = testUserService.login(userResponse.getId());
+//        UserLoginLogoutRequestBean deleteRequest = TestUtils.toUserLLRequestBean(loginResponse.getToken());
+//
+//        assertEquals(1, testUserService.listUsers().size());
+//
+//        // Delete User
+//        testUserService.deleteUser(userResponse.getId(), deleteRequest);
+//
+//        assertEquals(0, testUserService.listUsers().size());
+//        assertNull(testUserService.getUser(userResponse.getId()));
+//    }
 
     @Test
     @SuppressWarnings("unchecked")
