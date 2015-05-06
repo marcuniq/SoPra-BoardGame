@@ -185,6 +185,11 @@ public class PusherService {
 
     }
 
+    public void unregister(Long gameId, String channelName){
+        unsubscribeFromChannel(channelName);
+        removeAllSubscriber();
+    }
+
     public void disconnect(){
         PusherAPIService.getInstance().disconnect();
     }
