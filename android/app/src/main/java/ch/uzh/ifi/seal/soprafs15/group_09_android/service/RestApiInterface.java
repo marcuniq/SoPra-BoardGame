@@ -1,5 +1,8 @@
 package ch.uzh.ifi.seal.soprafs15.group_09_android.service;
 
+
+import org.json.JSONObject;
+
 import java.util.List;
 
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.MoveBean;
@@ -15,6 +18,7 @@ import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
+import retrofit.http.Query;
 
 public interface RestApiInterface {
 
@@ -74,7 +78,7 @@ public interface RestApiInterface {
 
     /**
      * Creates a new game
-     * @Game game: The new game
+     * @param game: The new game
      * @param callback
      */
     @POST("/games")
@@ -96,6 +100,14 @@ public interface RestApiInterface {
      */
     @POST("/games/{gameId}/players")
     void joinGame(@Path("gameId") Long gameId, @Body UserBean token, Callback<UserBean> callback);
+
+    /**
+     *
+     * @param gameId
+     * @param callback
+     */
+    @GET("/games/{gameId}")
+    void getGame(@Path("gameId") Long gameId, Callback<GameBean> callback);
 
     /**
      *
@@ -142,8 +154,16 @@ public interface RestApiInterface {
      *
      * @param gameId
      */
-    @POST("/games/{gameId}/start-fast-mode")
+
+    @POST("/games/{gameId}/fast-mode/start")
     void startFastMode(@Path("gameId") Long gameId, @Body UserBean token, Callback<GameBean> callback);
+
+    /**
+     *
+     * @param gameId
+     */
+    @POST("/games/{gameId}/fast-mode/next")
+    void triggerNextMoveInFastMode(@Path("gameId") Long gameId, @Body UserBean token, Callback<MoveBean> callback);
 
     /**
      *
@@ -152,12 +172,22 @@ public interface RestApiInterface {
     @POST("/games/{gameId}/start")
     void start(@Path("gameId") Long gameId, @Body UserBean token, Callback<GameBean> callback);
 
-    /* TODO: java.lang.IllegalArgumentException: RestApiInterface.removeGamePlayer: Non-body HTTP method cannot contain @Body or @TypedOutput.
-     * man kann keinen Body mitschicken wenn man was löschen will? */
     @DELETE("/games/{gameId}/players/{playerId}")
-    void removeGamePlayer(@Path("gameId") Long gameId, @Path("playerId") Integer playerId, @Body UserBean token, Callback<UserBean> callback);
+    void removeGamePlayer(@Path("gameId") Long gameId, @Path("playerId") Integer playerId,@Body UserBean token, Callback<UserBean> callback);
+
+    @DELETE("/games/{gameId}/players/{playerId}")
+    void removeGamePlayerAsUser(@Path("gameId") Long gameId, @Path("playerId") Integer playerId, @Query("isUserId") Boolean isUserId, @Body UserBean token, Callback<UserBean> callback);
 
     @DELETE("/games/{gameId}")
     void removeGame(@Path("gameId") Long gameId, @Body UserBean token, Callback<GameBean> callback);
+
+    /**
+     *
+     * @param userId
+     * @param token
+     * @param callback actually empty, just using JSONObject as filler
+     */
+    @DELETE("/users/{userId}")
+    void removeUser(@Path("userId") Long userId, @Body UserBean token, Callback<JSONObject> callback);
 
 }

@@ -100,4 +100,16 @@ public class UserServiceController extends GenericService {
 
         userService.logout(userId, userLoginLogoutRequestBean);
 	}
+
+    /*
+    *	Context: /users/{userId}/delete
+    *  Description: Delete user with userId
+    */
+    @RequestMapping(method = RequestMethod.DELETE, value = CONTEXT + "/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable Long userId, @RequestBody @Valid UserLoginLogoutRequestBean userLoginLogoutRequestBean) {
+        logger.debug("delete user: " + userId);
+
+        userService.deleteUser(userId, userLoginLogoutRequestBean);
+    }
 }

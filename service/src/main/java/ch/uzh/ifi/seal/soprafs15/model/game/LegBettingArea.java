@@ -1,5 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.model.game;
 
+import ch.uzh.ifi.seal.soprafs15.model.move.LegBetting;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,23 +15,18 @@ import java.util.Map;
 @Entity
 public class LegBettingArea implements Serializable {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @OneToMany(mappedBy = "legBettingArea", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "legBettingArea", cascade = CascadeType.ALL)
     @Column(columnDefinition = "BLOB")
     @MapKeyColumn(name = "color", length = 50, nullable = false)
     @MapKeyEnumerated(EnumType.STRING)
     private Map<Color, LegBettingTileStack> legBettingTiles;
 
-    @OneToOne(cascade = CascadeType.ALL)//(fetch = FetchType.EAGER)
-    private GameState gameState;
 
     public LegBettingArea(){
         init();
@@ -78,7 +75,6 @@ public class LegBettingArea implements Serializable {
      */
     public LegBettingTile popLegBettingTile(Color c) {
         LegBettingTile tile = legBettingTiles.get(c).pop();
-        tile.setStack(null);
         return tile;
     }
 
@@ -89,6 +85,17 @@ public class LegBettingArea implements Serializable {
     public void pushLegBettingTile(LegBettingTile legBettingTile) {
         LegBettingTileStack stack = legBettingTiles.get(legBettingTile.getColor());
         stack.push(legBettingTile);
+    }
+
+    public void pushAndSort(List<LegBettingTile> tilesToPush){
+        for(Color c : Color.values()){
+            LegBettingTileStack stack = legBettingTiles.get(c);
+
+            tilesToPush.stream()
+                    .filter(t -> t.getColor() == c)
+                    .sorted((t1, t2) -> Integer.compare(t2.getLeadingPositionGain(), t1.getLeadingPositionGain()))
+                    .forEachOrdered(t -> stack.push(t));
+        }
     }
 
 
@@ -106,13 +113,5 @@ public class LegBettingArea implements Serializable {
 
     public void setLegBettingTiles(Map<Color, LegBettingTileStack> legBettingTiles) {
         this.legBettingTiles = legBettingTiles;
-    }
-
-    public GameState getGameState() {
-        return gameState;
-    }
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
     }
 }

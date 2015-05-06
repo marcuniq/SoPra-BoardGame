@@ -24,11 +24,12 @@ public class Game implements Serializable {
 	
 	@Column(nullable = false) 
 	private String name;
-	
-	@Column(nullable = false) 
-	private String owner;
 
-    @OneToOne(cascade=CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "USER_ID")
+	private User owner;
+
+    @OneToOne(mappedBy = "game", cascade = CascadeType.ALL)
     private StateManager stateManager;
 
     @Column
@@ -63,7 +64,6 @@ public class Game implements Serializable {
 
     public void removePlayer(User player){
         stateManager.removePlayer(player);
-        player.setGameState(null);
     }
 
     public List<Move> getMoves() {
@@ -129,11 +129,11 @@ public class Game implements Serializable {
 		this.name = name;
 	}
 
-	public String getOwner() {
+	public User getOwner() {
 		return owner;
 	}
 
-	public void setOwner(String owner) {
+	public void setOwner(User owner) {
 		this.owner = owner;
 	}
 

@@ -58,11 +58,13 @@ public class DesertTilePlacing extends Move {
         // constraints
         Boolean notPosition1 = position != 1;
         Boolean emptySpace = raceTrack.getRaceTrackObject(position) == null;
-        Boolean notAdjacentToAnotherDesertTile = raceTrack.getRaceTrackObject(position - 1) != null ?
+        Boolean notAfterAnotherDesertTile = raceTrack.getRaceTrackObject(position - 1) != null ?
                 raceTrack.getRaceTrackObject(position - 1).getClass() != DesertTile.class : true;
+        Boolean notBeforeAnotherDesertTile = raceTrack.getRaceTrackObject(position + 1) != null ?
+                raceTrack.getRaceTrackObject(position + 1).getClass() != DesertTile.class : true;
         Boolean userHasDesertTile = user.hasDesertTile();
 
-        return  notPosition1 && emptySpace && notAdjacentToAnotherDesertTile && userHasDesertTile;
+        return  notPosition1 && emptySpace && notAfterAnotherDesertTile && notBeforeAnotherDesertTile && userHasDesertTile;
     }
 
     /**

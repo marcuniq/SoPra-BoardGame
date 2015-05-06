@@ -51,10 +51,10 @@ public class GameServiceController extends GenericService {
 	@RequestMapping(method = RequestMethod.GET, value = CONTEXT)
 	@ResponseStatus(HttpStatus.OK)
     @ResponseBody
-	public List<GameResponseBean> listGames() {
+	public List<GameResponseBean> listGames(@RequestParam(required = false) final String status) {
 		logger.debug("listGames");
 
-        List<GameResponseBean> result = gameService.listGames();
+        List<GameResponseBean> result = gameService.listGames(status);
         return result;
 	}
 
@@ -87,6 +87,18 @@ public class GameServiceController extends GenericService {
         return result;
 	}
 
+
+    /*
+     *	Context: /games/{gameId}
+     *  Description: Delete game with gameId
+     */
+    @RequestMapping(method = RequestMethod.DELETE, value = CONTEXT + "/{gameId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteGame(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean bean) {
+        logger.debug("delete game: " + gameId);
+
+        gameService.deleteGame(gameId, bean);
+    }
 
     /*
      *	Context: /games/{gameId}/start
@@ -236,6 +248,22 @@ public class GameServiceController extends GenericService {
         return result;
 	}
 
+
+    /*
+     *	Context: /games/{gameId}/players/{playerId}
+     *  Description: Remove player with playerId of game with gameId
+     */
+    @RequestMapping(method = RequestMethod.DELETE, value = CONTEXT + "/{gameId}/players/{playerId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public void removePlayer(@PathVariable Long gameId, @PathVariable Integer playerId,
+                             @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean,
+                             @RequestParam(required = false) final Boolean isUserId) {
+        logger.debug("remove player " + playerId + " from game " + gameId);
+
+        gamePlayerService.removePlayer(gameId, playerId, gamePlayerRequestBean, isUserId);
+    }
+
     /*
      *	Context: /games/{gameId}/players/{playerId}/racebettingcards
      *  Description: Get player's race betting cards
@@ -247,7 +275,7 @@ public class GameServiceController extends GenericService {
                                             @RequestBody @Valid GamePlayerRequestBean gamePlayerRequestBean) {
         logger.debug("getRaceBettingCards: " + playerId);
 
-        List<RaceBettingCard> result = gamePlayerService.getRaceBettingCards(gameId, playerId);
+        List<RaceBettingCard> result = gamePlayerService.getRaceBettingCards(gameId, playerId, gamePlayerRequestBean);
         return result;
     }
 

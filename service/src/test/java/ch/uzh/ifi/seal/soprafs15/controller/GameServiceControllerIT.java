@@ -29,8 +29,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
-* Created by Hakuna on 17.04.2015.
-*/
+ * Created by Hakuna on 17.04.2015.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
@@ -240,9 +240,12 @@ public class GameServiceControllerIT {
         // Get PlayerId of currentPlayer
         Integer currentPlayerId = startGameResult.getBody().getCurrentPlayerId();
 
+        // Oracle Values
+        Long oracleUserId = (long) -1;
+        Long oracleMoveId = (long) 1;
+
         // Get Token of currentPlayer
         String currentPlayerToken = new String();
-        Long oracleUserId = (long) -1;
         ResponseEntity<List> players = template.getForEntity(base + "/games/1/players", List.class);
         List<LinkedHashMap> listOfPlayers = (List<LinkedHashMap>) players.getBody();
 
@@ -263,19 +266,14 @@ public class GameServiceControllerIT {
         Assert.assertEquals(0, movesBefore.size());
 
         // Add move
-        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(currentPlayerToken, MoveEnum.LEG_BETTING, null, null, Color.BLUE, null);
+        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(currentPlayerToken, MoveEnum.LEG_BETTING, null, null, Color.BLUE, null, null);
         ResponseEntity<GameMoveResponseBean> addMoveResult = TestUtils.addMove(moveRequest, gameResponse.getBody().getId(), template, base);
-
-        // Oracle values
-        Long oracleMoveId = (long) 1;
 
         Assert.assertNull(addMoveResult.getBody().getDesertTileAsOasis());
         Assert.assertNull(addMoveResult.getBody().getDesertTilePosition());
         Assert.assertNull(addMoveResult.getBody().getRaceBettingOnWinner());
         Assert.assertNull(addMoveResult.getBody().getDie());
-
         Assert.assertEquals((long) oracleMoveId, (long) addMoveResult.getBody().getId());
-
         Assert.assertEquals(gameResponse.getBody().getId(), addMoveResult.getBody().getGameId());
         Assert.assertEquals(oracleUserId, addMoveResult.getBody().getUserId());
         Assert.assertEquals(MoveEnum.LEG_BETTING, addMoveResult.getBody().getMove());
@@ -324,9 +322,12 @@ public class GameServiceControllerIT {
         // Get PlayerId of currentPlayer
         Integer currentPlayerId = startGameResult.getBody().getCurrentPlayerId();
 
+        // Oracle Values
+        Long oracleUserId = (long) -1;
+        Long oracleMoveId = (long) 1;
+
         // Get Token of currentPlayer
         String currentPlayerToken = new String();
-        Long oracleUserId = (long) -1;
         ResponseEntity<List> players = template.getForEntity(base + "/games/1/players", List.class);
         List<LinkedHashMap> listOfPlayers = (List<LinkedHashMap>) players.getBody();
 
@@ -347,16 +348,14 @@ public class GameServiceControllerIT {
         Assert.assertEquals(0, movesBefore.size());
 
         // Add move
-        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(currentPlayerToken, MoveEnum.DESERT_TILE_PLACING, false, 7, null, null);
+        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(currentPlayerToken, MoveEnum.DESERT_TILE_PLACING, false, 7, null, null, null);
         ResponseEntity<GameMoveResponseBean> result = TestUtils.addMove(moveRequest, gameResponse.getBody().getId(), template, base);
 
         Assert.assertNull(result.getBody().getRaceBettingOnWinner());
         Assert.assertNull(result.getBody().getDie());
-
         Assert.assertFalse(result.getBody().getDesertTileAsOasis());
-
         Assert.assertEquals(7, (long) result.getBody().getDesertTilePosition());
-        Assert.assertEquals(1, (long) result.getBody().getId());
+        Assert.assertEquals(oracleMoveId, result.getBody().getId());
         Assert.assertEquals(gameResponse.getBody().getId(), result.getBody().getGameId());
         Assert.assertEquals(oracleUserId, result.getBody().getUserId());
         Assert.assertEquals(MoveEnum.DESERT_TILE_PLACING, result.getBody().getMove());
@@ -366,89 +365,88 @@ public class GameServiceControllerIT {
         Assert.assertEquals(1, movesAfter.size());
     }
 
-//    @Test
-//    @SuppressWarnings("unchecked")
-//    public void testRaceBettingSuccess() throws Exception {
-//
-//        // Create new user (needed for creating new game)
-//        UserRequestBean ownerRequest = TestUtils.toUserRequestBean(44, "TestOwner");
-//        ResponseEntity<UserResponseBean> ownerResponse = TestUtils.createUser(ownerRequest, template, base);
-//
-//        // Login created user (to get Token for creating new game)
-//        ResponseEntity<UserLoginLogoutResponseBean> loginResponse = TestUtils.loginUser(ownerResponse.getBody().getId(), template, base);
-//        String ownerToken = loginResponse.getBody().getToken();
-//
-//        // Create new Game
-//        GameRequestBean gameRequest = TestUtils.toGameRequestBean("TestGame", ownerToken);
-//        ResponseEntity<GameCreateResponseBean> gameResponse = TestUtils.createGame(gameRequest, template, base);
-//
-//        // Create 2nd User
-//        UserRequestBean userRequest = TestUtils.toUserRequestBean(33, "TestPlayer");
-//        ResponseEntity<UserResponseBean> userResponse = TestUtils.createUser(userRequest, template, base);
-//
-//        // Login 2nd User
-//        ResponseEntity<UserLoginLogoutResponseBean> secondUserLoginResponse = TestUtils.loginUser(userResponse.getBody().getId(), template, base);
-//        String playerToken = secondUserLoginResponse.getBody().getToken();
-//
-//        // Create GamePlayerRequestBean with Token from 2nd User and assign it to the game as well
-//        GamePlayerRequestBean playerRequest = TestUtils.toGamePlayerRequestBean(playerToken);
-//        ResponseEntity<GameAddPlayerResponseBean> playerResponse = TestUtils.addPlayer(playerRequest, gameResponse.getBody().getId(), template, base);
-//
-//        // Create GamePlayerRequestBean with Token of owner for Starting the game
-//        GamePlayerRequestBean ownerPlayerRequest = TestUtils.toGamePlayerRequestBean(ownerToken);
-//
-//        // Start Game
-//        HttpEntity<GamePlayerRequestBean> httpEntity = new HttpEntity<GamePlayerRequestBean>(ownerPlayerRequest);
-//        ResponseEntity<GameCreateResponseBean> startGameResult = template.exchange(base + "/games/1/start", HttpMethod.POST, httpEntity, GameCreateResponseBean.class);
-//
-//        // Get PlayerId of currentPlayer
-//        Integer currentPlayerId = startGameResult.getBody().getCurrentPlayerId();
-//
-//        // Get Token of currentPlayer
-//        String currentPlayerToken = new String();
-//        Long oracleUserId = (long) -1;
-//        ResponseEntity<List> players = template.getForEntity(base + "/games/1/players", List.class);
-//        List<LinkedHashMap> listOfPlayers = (List<LinkedHashMap>) players.getBody();
-//
-//        for(LinkedHashMap map : listOfPlayers) {
-//            if(map.get("playerId") == currentPlayerId) {
-//                if(map.get("username").equals(playerResponse.getBody().getUsername())) {
-//                    currentPlayerToken = playerToken;
-//                    oracleUserId = playerResponse.getBody().getId();
-//                } else {
-//                    currentPlayerToken = ownerToken;
-//                    oracleUserId = ownerResponse.getBody().getId();
-//                }
-//            }
-//        }
-//
-//        // Game contains no moves after initialization (before we added any move)
-//        List<GameMoveResponseBean> movesBefore = template.getForObject(base + "/games/1/moves", List.class);
-//        Assert.assertEquals(0, movesBefore.size());
-//
-//        // Add Move
-//        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(currentPlayerToken, MoveEnum.RACE_BETTING, null, null, null, true);
-//        ResponseEntity<GameMoveResponseBean> result = TestUtils.addMove(moveRequest, gameResponse.getBody().getId(), template, base);
-//
-//        // Oracle values
-//        Long oracleMoveId = (long) 1;
-//
-//        Assert.assertNull(result.getBody().getDesertTileAsOasis());
-//        Assert.assertNull(result.getBody().getDesertTilePosition());
-//        Assert.assertNull(result.getBody().getLegBettingTile());
-//        Assert.assertNull(result.getBody().getDie());
-//
-//        Assert.assertTrue(result.getBody().getRaceBettingOnWinner());
-//
-//        Assert.assertEquals((long) oracleMoveId, (long) result.getBody().getId());
-//        Assert.assertEquals(gameResponse.getBody().getId(), result.getBody().getGameId());
-//        Assert.assertEquals(oracleUserId, result.getBody().getUserId());
-//        Assert.assertEquals(MoveEnum.RACE_BETTING, result.getBody().getMove());
-//
-//        // Game contains exactly one move (after we added one move)
-//        List<GameMoveResponseBean> movesAfter = template.getForObject(base + "/games/1/moves", List.class);
-//        Assert.assertEquals(1, movesAfter.size());
-//    }
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testRaceBettingSuccess() throws Exception {
+
+        // Create new user (needed for creating new game)
+        UserRequestBean ownerRequest = TestUtils.toUserRequestBean(44, "TestOwner");
+        ResponseEntity<UserResponseBean> ownerResponse = TestUtils.createUser(ownerRequest, template, base);
+
+        // Login created user (to get Token for creating new game)
+        ResponseEntity<UserLoginLogoutResponseBean> loginResponse = TestUtils.loginUser(ownerResponse.getBody().getId(), template, base);
+        String ownerToken = loginResponse.getBody().getToken();
+
+        // Create new Game
+        GameRequestBean gameRequest = TestUtils.toGameRequestBean("TestGame", ownerToken);
+        ResponseEntity<GameCreateResponseBean> gameResponse = TestUtils.createGame(gameRequest, template, base);
+
+        // Create 2nd User
+        UserRequestBean userRequest = TestUtils.toUserRequestBean(33, "TestPlayer");
+        ResponseEntity<UserResponseBean> userResponse = TestUtils.createUser(userRequest, template, base);
+
+        // Login 2nd User
+        ResponseEntity<UserLoginLogoutResponseBean> secondUserLoginResponse = TestUtils.loginUser(userResponse.getBody().getId(), template, base);
+        String playerToken = secondUserLoginResponse.getBody().getToken();
+
+        // Create GamePlayerRequestBean with Token from 2nd User and assign it to the game as well
+        GamePlayerRequestBean playerRequest = TestUtils.toGamePlayerRequestBean(playerToken);
+        ResponseEntity<GameAddPlayerResponseBean> playerResponse = TestUtils.addPlayer(playerRequest, gameResponse.getBody().getId(), template, base);
+
+        // Create GamePlayerRequestBean with Token of owner for Starting the game
+        GamePlayerRequestBean ownerPlayerRequest = TestUtils.toGamePlayerRequestBean(ownerToken);
+
+        // Start Game
+        HttpEntity<GamePlayerRequestBean> httpEntity = new HttpEntity<GamePlayerRequestBean>(ownerPlayerRequest);
+        ResponseEntity<GameCreateResponseBean> startGameResult = template.exchange(base + "/games/1/start", HttpMethod.POST, httpEntity, GameCreateResponseBean.class);
+
+        // Get PlayerId of currentPlayer
+        Integer currentPlayerId = startGameResult.getBody().getCurrentPlayerId();
+
+        // Oracle values
+        Long oracleMoveId = (long) 1;
+        Long oracleUserId = (long) -1;
+
+        // Get Token of currentPlayer
+        String currentPlayerToken = new String();
+
+        ResponseEntity<List> players = template.getForEntity(base + "/games/1/players", List.class);
+        List<LinkedHashMap> listOfPlayers = (List<LinkedHashMap>) players.getBody();
+
+        for(LinkedHashMap map : listOfPlayers) {
+            if(map.get("playerId") == currentPlayerId) {
+                if(map.get("username").equals(playerResponse.getBody().getUsername())) {
+                    currentPlayerToken = playerToken;
+                    oracleUserId = playerResponse.getBody().getId();
+                } else {
+                    currentPlayerToken = ownerToken;
+                    oracleUserId = ownerResponse.getBody().getId();
+                }
+            }
+        }
+
+        // Game contains no moves after initialization (before we added any move)
+        List<GameMoveResponseBean> movesBefore = template.getForObject(base + "/games/1/moves", List.class);
+        Assert.assertEquals(0, movesBefore.size());
+
+        // Add Move
+        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(currentPlayerToken, MoveEnum.RACE_BETTING, null, null, Color.ORANGE, true, Color.ORANGE);
+        ResponseEntity<GameMoveResponseBean> result = TestUtils.addMove(moveRequest, gameResponse.getBody().getId(), template, base);
+
+        Assert.assertNull(result.getBody().getDesertTileAsOasis());
+        Assert.assertNull(result.getBody().getDesertTilePosition());
+        Assert.assertNull(result.getBody().getLegBettingTile());
+        Assert.assertNull(result.getBody().getDie());
+        Assert.assertTrue(result.getBody().getRaceBettingOnWinner());
+        Assert.assertEquals((long) oracleMoveId, (long) result.getBody().getId());
+        Assert.assertEquals(gameResponse.getBody().getId(), result.getBody().getGameId());
+        Assert.assertEquals(oracleUserId, result.getBody().getUserId());
+        Assert.assertEquals(MoveEnum.RACE_BETTING, result.getBody().getMove());
+
+        // Game contains exactly one move (after we added one move)
+        List<GameMoveResponseBean> movesAfter = template.getForObject(base + "/games/1/moves", List.class);
+        Assert.assertEquals(1, movesAfter.size());
+    }
 
     @Test
     @SuppressWarnings("unchecked")
@@ -488,9 +486,12 @@ public class GameServiceControllerIT {
         // Get PlayerId of currentPlayer
         Integer currentPlayerId = startGameResult.getBody().getCurrentPlayerId();
 
+        // Oracle values
+        Long oracleMoveId = (long) 1;
+        Long oracleUserId = (long) -1;
+
         // Get Token of currentPlayer
         String currentPlayerToken = new String();
-        Long oracleUserId = (long) -1;
         ResponseEntity<List> players = template.getForEntity(base + "/games/1/players", List.class);
         List<LinkedHashMap> listOfPlayers = (List<LinkedHashMap>) players.getBody();
 
@@ -510,20 +511,15 @@ public class GameServiceControllerIT {
         List<GameMoveResponseBean> movesBefore = template.getForObject(base + "/games/1/moves", List.class);
         Assert.assertEquals(0, movesBefore.size());
 
-        // Oracle values
-        Long oracleMoveId = (long) 1;
-
         // Add Move
-        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(currentPlayerToken, MoveEnum.DICE_ROLLING, null, null, null, null);;
+        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(currentPlayerToken, MoveEnum.DICE_ROLLING, null, null, null, null, null);;
         ResponseEntity<GameMoveResponseBean> result = TestUtils.addMove(moveRequest, gameResponse.getBody().getId(), template, base);
 
         Assert.assertNull(result.getBody().getDesertTileAsOasis());
         Assert.assertNull(result.getBody().getDesertTilePosition());
         Assert.assertNull(result.getBody().getRaceBettingOnWinner());
         Assert.assertNull(result.getBody().getLegBettingTile());
-
         Assert.assertNotNull(result.getBody().getDie());
-
         Assert.assertEquals((long) oracleMoveId, (long) result.getBody().getId());
         Assert.assertEquals(gameResponse.getBody().getId(), result.getBody().getGameId());
         Assert.assertEquals(oracleUserId, result.getBody().getUserId());

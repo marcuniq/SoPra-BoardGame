@@ -49,7 +49,7 @@
         </LinearLayout>
 
         <RelativeLayout
-            android:layout_width="800dp"
+            android:layout_width="1000dp"
             android:layout_height="490dp"
             android:layout_marginTop="55dp"
             android:orientation="vertical"
@@ -66,9 +66,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/grid"
-                android:columnCount="6"
+                android:columnCount="10"
                 android:rowCount="3"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_margin="10dp">
             </GridLayout>
 

@@ -14,29 +14,17 @@ public class DesertTile extends RaceTrackObject implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue
-    private Long id;
-
-
-    @OneToOne(cascade= CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name="USER_ID")
     private User owner;
 
     private Boolean isOasis;
 
+
     public DesertTile(){}
 
     public DesertTile(User owner){
         this.owner = owner;
-    }
-
-    public void useAsOasis() {
-        isOasis = Boolean.TRUE;
-    }
-
-    public void useAsMirage() {
-        isOasis = Boolean.FALSE;
     }
 
     public Boolean getIsOasis() {
@@ -63,13 +51,5 @@ public class DesertTile extends RaceTrackObject implements Serializable {
         bean.setIsOasis(isOasis);
 
         return bean;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 }

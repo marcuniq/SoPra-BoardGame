@@ -16,8 +16,11 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
  */
 public class PlayerArrayAdapter extends GenericArrayAdapter<UserBean> {
 
-    public PlayerArrayAdapter(Context context, int resource, int textResourceId, int textDescriptionResourceId, int imageResourceId, ArrayList<UserBean> player) {
+    private boolean playerIdIsUserId = false;
+
+    public PlayerArrayAdapter(Context context, int resource, int textResourceId, int textDescriptionResourceId, int imageResourceId, ArrayList<UserBean> player, boolean playerIdIsUserId) {
         super(context, resource, textResourceId, textDescriptionResourceId, imageResourceId, player);
+        this.playerIdIsUserId = playerIdIsUserId;
     }
 
     /**
@@ -40,6 +43,7 @@ public class PlayerArrayAdapter extends GenericArrayAdapter<UserBean> {
 
     @Override
     public void setIcon(ImageView imageView, UserBean player, int index){
+        if (playerIdIsUserId) index = player.id().intValue();
         imageView.setBackgroundResource(getContext().getResources().getIdentifier("c" + index + "_head", "drawable", getContext().getPackageName()));
     }
 }

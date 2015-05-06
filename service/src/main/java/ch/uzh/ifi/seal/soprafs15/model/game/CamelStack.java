@@ -17,29 +17,21 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
 
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue
-    private Long id;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column
+    @Embedded
     private List<Camel> stack;
 
-    @ElementCollection
-    @Column
-    private List<Integer> previousPositions;
 
     public CamelStack(){
-
     }
     public CamelStack(List<Camel> camels){
         this.stack = camels;
-        this.previousPositions = new ArrayList<>();
     }
     public CamelStack(Integer position, List<Camel> camels) {
         this.position = position;
         this.stack = camels;
-        this.previousPositions = new ArrayList<>();
     }
 
     /**
@@ -115,7 +107,7 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
             // remove camels from stack
             stack.removeAll(newStack);
 
-            return  new CamelStackBooleanPair(new CamelStack(newStack), splitOccurred);
+            return  new CamelStackBooleanPair(new CamelStack(position, newStack), splitOccurred);
         }
     }
 
@@ -124,16 +116,12 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
      *
      * Camel stacks are merged, if a camel stack ends at a position, where another camel stack is
      *
-     * @param other camel stack to be put on this camel stack
+     * @param other camel stack to be pushed onto this camel stack
      */
-    public void merge(CamelStack other){
+    public void push(CamelStack other){
         stack.addAll(other.getStack());
-        previousPositions.addAll(other.getPreviousPositions());
     }
 
-    public void addPreviousPosition(Integer position){
-        previousPositions.add(position);
-    }
 
     public Camel getGroundCamel(){
         return stack.isEmpty() ? null : stack.get(0);
@@ -144,14 +132,6 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
     }
 
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public List<Camel> getStack() {
         return stack;
     }
@@ -160,20 +140,6 @@ public class CamelStack extends RaceTrackObject implements Serializable, Stack<C
         this.stack = stack;
     }
 
-    public List<Integer> getPreviousPositions() {
-        return previousPositions;
-    }
-
-    public void setPreviousPositions(List<Integer> previousPositions) {
-        this.previousPositions = previousPositions;
-    }
-
-
-    @Override
-    public void setPosition(Integer position){
-        previousPositions.add(this.position);
-        this.position = position;
-    }
 
     @Override
     public GameRaceTrackObjectResponseBean toBean() {

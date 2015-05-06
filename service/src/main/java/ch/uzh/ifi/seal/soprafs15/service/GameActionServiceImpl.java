@@ -12,6 +12,7 @@ import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.NotEnoughPlayerException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.OwnerNotFoundException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import ch.uzh.ifi.seal.soprafs15.service.pusher.PusherService;
 import ch.uzh.ifi.seal.soprafs15.service.pusher.events.GameStartEvent;
@@ -57,7 +58,7 @@ public class GameActionServiceImpl extends GameActionService {
         }
 
         if(owner == null) {
-            throw new OwnerNotFoundException(owner.getId(), GameActionServiceImpl.class);
+            throw new UserNotFoundException(bean.getToken(), GameActionServiceImpl.class);
         }
 
         if(!owner.getUsername().equals(game.getOwner())){

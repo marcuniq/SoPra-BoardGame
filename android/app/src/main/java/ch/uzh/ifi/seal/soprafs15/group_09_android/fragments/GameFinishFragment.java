@@ -61,15 +61,15 @@ public class GameFinishFragment extends ListFragment {
                 R.id.player_item_text,
                 R.id.player_item_description,
                 R.id.player_item_icon,
-                new ArrayList<UserBean>());
+                new ArrayList<UserBean>(),
+                true);
         setListAdapter(playerArrayAdapter);
 
         Button closeButton = (Button) v.findViewById(R.id.close);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((GameActivity)getActivity()).removePlayerFromGame();
-                if (isOwner) ((GameActivity)getActivity()).removeGame();
+                //((GameActivity)getActivity()).removePlayerFromGame();
 
                 SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
                 token = sharedPref.getString("token", token);
@@ -102,7 +102,7 @@ public class GameFinishFragment extends ListFragment {
                 Collections.sort(newPlayers, new Comparator<UserBean>() {
                     @Override
                     public int compare(UserBean user1, UserBean user2) {
-                        return user1.money().compareTo(user2.money());
+                        return user2.money().compareTo(user1.money());
                     }
                 });
                 setListAdapter(playerArrayAdapter);

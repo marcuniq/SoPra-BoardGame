@@ -21,14 +21,12 @@ public abstract class Move implements Serializable {
 	protected Long id;
 	
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="GAME_ID")
+    @JoinColumn(name = "GAME_ID")
     protected Game game;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    protected GameState gameState;
     
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="USER_ID")
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinColumn(name = "USER_ID")
     protected User user;
 
     public Move(){}
@@ -48,14 +46,6 @@ public abstract class Move implements Serializable {
 	public void setGame(Game game) {
 		this.game = game;
 	}
-
-    public GameState getGameState() {
-        return gameState;
-    }
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
-    }
 
 	public User getUser() {
 		return user;

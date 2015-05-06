@@ -1,10 +1,7 @@
 package ch.uzh.ifi.seal.soprafs15.service;
 
 import ch.uzh.ifi.seal.soprafs15.controller.GenericService;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameCreateResponseBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerRequestBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRequestBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameResponseBean;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.*;
 
 import java.util.List;
 
@@ -13,7 +10,7 @@ import java.util.List;
  */
 public abstract class GameService extends GenericService {
 
-    public abstract List<GameResponseBean> listGames();
+    public abstract List<GameResponseBean> listGames(String status);
 
     public abstract GameCreateResponseBean addGame(GameRequestBean bean);
 
