@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -19,6 +18,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.GameBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.GameStatus;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameArrayAdapter;
@@ -87,7 +87,7 @@ public class GameListFragment extends ListFragment {
     @Override
     public void onResume(){
         super.onResume();
-        RestService.getInstance(getActivity()).getGames(new Callback<List<GameBean>>() {
+        RestService.getInstance(getActivity()).getGamesWithStatus(GameStatus.OPEN, new Callback<List<GameBean>>() {
             @Override
             public void success(List<GameBean> games, Response response) {
                 gameArrayAdapter.clear();

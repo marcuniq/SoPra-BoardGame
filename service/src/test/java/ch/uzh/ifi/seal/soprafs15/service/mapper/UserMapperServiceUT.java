@@ -76,14 +76,12 @@ public class UserMapperServiceUT {
         UserResponseBean oracleUserResponseBean = new UserResponseBean();
         oracleUserResponseBean.setUsername("TestUser");
         oracleUserResponseBean.setAge(30);
-        oracleUserResponseBean.setGame("TestGame");
         oracleUserResponseBean.setId((long) 0);
 
         UserResponseBean result = userMapperService.toUserResponseBean(testUser);
 
         Assert.assertEquals(result.getUsername(), oracleUserResponseBean.getUsername());
         Assert.assertEquals(result.getAge(), oracleUserResponseBean.getAge());
-        //Assert.assertEquals(result.getGame(), oracleUserResponseBean.getGame());
         Assert.assertEquals(result.getId(), oracleUserResponseBean.getId());
     }
 
@@ -129,9 +127,7 @@ public class UserMapperServiceUT {
             userResponseBean.setAge(30 + count);
             userResponseBean.setUsername("TestUsername" + count.toString());
             userResponseBean.setId((long)0 + count);
-            if(count % 2 == 0) {
-                userResponseBean.setGame("TestGame");
-            }
+
             count++;
         }
 
@@ -142,7 +138,6 @@ public class UserMapperServiceUT {
         for(UserResponseBean userResponseBean : result) {
             Assert.assertEquals(userResponseBean.getAge(), oracleList.get(count).getAge());
             Assert.assertEquals(userResponseBean.getId(), oracleList.get(count).getId());
-            //Assert.assertEquals(userResponseBean.getGame(), oracleList.get(count).getGame());
             Assert.assertEquals(userResponseBean.getUsername(), oracleList.get(count).getUsername());
 
             count++;

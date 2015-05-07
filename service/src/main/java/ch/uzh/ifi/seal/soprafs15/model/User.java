@@ -33,26 +33,25 @@ public class User implements Serializable {
 	@Column(nullable = false) 
 	private UserStatus status;
 
-    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
-    private Game game;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Game> ownedGames;
 
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name="GAMESTATE_ID")
-    private GameState gameState;
+
+    // Player related fields
 	
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
     private List<Move> moves = new ArrayList<Move>();
 
     @Column
     private Integer money;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
     @MapKeyColumn(name = "color", length = 50, nullable = false)
     @MapKeyEnumerated(EnumType.STRING)
     private Map<Color, RaceBettingCard> raceBettingCards = new HashMap<>();
 
     @OneToMany( mappedBy = "user",
-                cascade = CascadeType.ALL,
+                cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH},
                 fetch = FetchType.EAGER)
     @Column(columnDefinition = "BLOB")
     private List<LegBettingTile> legBettingTiles = new ArrayList<>();
@@ -60,7 +59,7 @@ public class User implements Serializable {
     @Column
     private Integer playerId;
 
-    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "owner", cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
     private DesertTile desertTile;
 
     @Column
@@ -258,19 +257,11 @@ public class User implements Serializable {
         this.hasDesertTile = hasDesertTile;
     }
 
-    public Game getGame() {
-        return game;
+    public List<Game> getOwnedGames() {
+        return ownedGames;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
-    }
-
-    public GameState getGameState() {
-        return gameState;
-    }
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
+    public void setOwnedGames(List<Game> ownedGames) {
+        this.ownedGames = ownedGames;
     }
 }

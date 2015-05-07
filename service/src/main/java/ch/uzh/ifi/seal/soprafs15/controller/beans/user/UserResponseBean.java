@@ -5,8 +5,7 @@ public class UserResponseBean {
 	private Long id;
 	private Integer age;
 	private String username;
-	private String game;
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -24,11 +23,5 @@ public class UserResponseBean {
 	}
 	public void setUsername(String username) {
 		this.username = username;
-	}
-	public String getGame() {
-		return game;
-	}
-	public void setGame(String game) {
-		this.game = game;
 	}
 }

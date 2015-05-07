@@ -25,9 +25,9 @@ public class Game implements Serializable {
 	@Column(nullable = false) 
 	private String name;
 
-    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "USER_ID")
-	private User owner;
+    private User owner;
 
     @OneToOne(mappedBy = "game", cascade = CascadeType.ALL)
     private StateManager stateManager;
