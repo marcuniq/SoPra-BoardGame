@@ -22,10 +22,6 @@ public class LegBettingTile implements Serializable {
     @Enumerated(EnumType.STRING)
     private Color color;
 
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name="USER_ID")
-    @JsonIgnore
-    private User user;
 
     @Column
     private Integer leadingPositionGain;
@@ -87,13 +83,5 @@ public class LegBettingTile implements Serializable {
 
     public void setColor(Color color) {
         this.color = color;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }
