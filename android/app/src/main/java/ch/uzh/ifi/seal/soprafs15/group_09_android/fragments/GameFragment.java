@@ -948,7 +948,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 R.id.player_item_description,
                 R.id.player_item_icon,
                 new ArrayList<UserBean>(),
-                false);
+                true);
         ListView list = (ListView) view.findViewById(android.R.id.list);
         list.setAdapter(playerArrayAdapter);
 
