@@ -28,9 +28,6 @@ public abstract class UserBean implements Parcelable {
     @Nullable
     public abstract UserStatus status();
     @Nullable
-    public abstract String game();
-//    public abstract GameBean game();
-    @Nullable
     public abstract List<MoveBean> moves();
     @Nullable
     public abstract Integer money();
@@ -48,13 +45,13 @@ public abstract class UserBean implements Parcelable {
                                Integer age) {
         return new AutoParcel_UserBean( null, null, username, age, null,
                                     null, null, null, null,
-                                    null, null, null, null);
+                                    null, null, null);
     }
 
     public static UserBean setToken( String token ) {
         return new AutoParcel_UserBean( null, null, null, null, token,
                 null, null, null, null,
-                null, null, null, null);
+                null, null, null);
     }
 }
 

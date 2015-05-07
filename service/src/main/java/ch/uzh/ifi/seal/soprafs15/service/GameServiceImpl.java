@@ -53,7 +53,6 @@ public class GameServiceImpl extends GameService {
 
         // add owner to player list
         User owner = game.getOwner();
-        //owner.initForGamePlay();
         game.addPlayer(owner);
 
         game = gameRepository.save(game);
@@ -84,7 +83,7 @@ public class GameServiceImpl extends GameService {
             throw new UserNotFoundException(bean.getToken(), UserServiceImpl.class);
         }
 
-        if(game.getOwner().getId().equals(owner.getId())) {
+        if(game.getOwner().getId() == owner.getId()) {
             gameRepository.delete(game);
             //gameRepository.deleteAll();
         }
