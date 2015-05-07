@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -41,6 +42,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -139,7 +141,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         Bundle b = getActivity().getIntent().getExtras();
         gameId = b.getLong("gameId");
         userId = b.getLong("userId");
-        if(b.containsKey("playerId"))
+        if (b.containsKey("playerId"))
             playerId = b.getInt("playerId");
         else
             playerId = 8;
@@ -147,33 +149,34 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         isFastMode = b.getBoolean("isFastMode");
         channelName = b.getString("gameChannel");
 
-
         SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
 
+        interactionIsPrevented = isFastMode;
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.savedInstanceState = savedInstanceState;
         this.container = container;
-
         return inflater.inflate(R.layout.fragment_game, container, false);
     }
 
     @Override
-    public void onResume(){
-        super.onResume();
-
+    public void onStart(){
+        super.onStart();
         addClickListenerToButtons();
         cleanRack(true);
 
         subscribeToAreaUpdates();
         subscribeToAllEvents();
         AreaService.getInstance(getActivity()).getAreasAndNotifySubscriber(gameId);
+    }
 
-        interactionIsPrevented = isFastMode;
-
+    @Override
+    public void onResume(){
+        super.onResume();
         getGameStatus();
     }
 
@@ -859,7 +862,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         TextView money = (TextView) getActivity().findViewById(R.id.money);
         TextView currentPlaying = (TextView) getActivity().findViewById(R.id.current_playing);
 
-        playerIcon.setImageResource(getActivity().getResources().getIdentifier("c" + playerId + "_head", "id", getActivity().getPackageName()));
+        playerIcon.setBackgroundResource(getActivity().getResources().getIdentifier("c" + playerId + "_head", "drawable", getActivity().getPackageName()));
 
         if (isFastMode){
             playerName.setText("FASTMODE");
@@ -874,7 +877,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 currentPlayerIcon.setVisibility(View.GONE);
             } else {
                 currentPlayerName.setText(players.get(game.currentPlayerId() - 1).username());
-                currentPlayerIcon.setImageResource(getActivity().getResources().getIdentifier("c" + game.currentPlayerId() + "_head", "id", getActivity().getPackageName()));
+                currentPlayerIcon.setBackgroundResource(getActivity().getResources().getIdentifier("c" + game.currentPlayerId() + "_head", "drawable", getActivity().getPackageName()));
                 currentPlayerIcon.setVisibility(View.VISIBLE);
             }
             money.setText(players.get(playerId - 1).money() + "");
@@ -915,7 +918,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void success(GameBean newGameStatus, Response response) {
                 game = newGameStatus;
                 getPlayerStatus();
-
             }
 
             @Override
@@ -929,7 +931,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         RestService.getInstance(getActivity()).getGameMoves(gameId, new Callback<List<MoveBean>>() {
             @Override
             public void success(List<MoveBean> newMoves, Response response) {
-                lastMove = newMoves.get(newMoves.size()-1);
+                lastMove = newMoves.get(newMoves.size() - 1);
                 if (lastMove.move() == Moves.RACE_BETTING) updateRaceBettingFields();
             }
 
@@ -1125,8 +1127,11 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                     public void onNewEvent(final AbstractPusherEvent moveEvent) {
                         Log.d("GameFragment", "got new LEG_OVER_EVENT");
                         cleanRack();
+
                         getActivity().runOnUiThread(new Runnable() {
                             public void run() {
+                                if (popupWindow != null) popupWindow.dismiss();
+                                interactionIsPrevented = false;
                                 roundEvaluationPopup();
                             }
                         });

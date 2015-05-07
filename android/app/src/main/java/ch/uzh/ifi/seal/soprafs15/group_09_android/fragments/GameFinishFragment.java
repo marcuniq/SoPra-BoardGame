@@ -35,6 +35,7 @@ public class GameFinishFragment extends ListFragment {
     private boolean isOwner = false;
     private Long userId;
     private PlayerArrayAdapter playerArrayAdapter; // adapts the ArrayList of Games to the ListView
+    private Button closeButton;
 
     public GameFinishFragment() {}
 
@@ -66,32 +67,20 @@ public class GameFinishFragment extends ListFragment {
                 true);
         setListAdapter(playerArrayAdapter);
 
-        Button closeButton = (Button) v.findViewById(R.id.close);
+        closeButton = (Button) v.findViewById(R.id.close);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //((GameActivity)getActivity()).removePlayerFromGame();
-
-                SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
-                token = sharedPref.getString("token", token);
-
-                Intent intent = new Intent();
-                intent.setClass(getActivity(), MenuActivity.class);
-                Bundle b = new Bundle();
-                b.putLong("userId", userId);
-                b.putString("token", token);
-                intent.putExtras(b);
-                startActivity(intent);
-                getActivity().finish();
+                onClickCloseButton();
             }
         });
 
         return v;
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
+    public void onStart(){
+        super.onStart();
+
         RelativeLayout background = (RelativeLayout) getActivity().findViewById(R.id.view_background);
         background.setBackgroundResource(R.drawable.board);
         getPlayers();
@@ -121,4 +110,20 @@ public class GameFinishFragment extends ListFragment {
         });
     }
 
+    private void onClickCloseButton(){
+        ((GameActivity)getActivity()).removePlayerFromGame();
+        if (isOwner) ((GameActivity)getActivity()).removeGame();
+
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
+        token = sharedPref.getString("token", token);
+
+        Intent intent = new Intent();
+        intent.setClass(getActivity(), MenuActivity.class);
+        Bundle b = new Bundle();
+        b.putLong("userId", userId);
+        b.putString("token", token);
+        intent.putExtras(b);
+        startActivity(intent);
+        getActivity().finish();
+    }
 }

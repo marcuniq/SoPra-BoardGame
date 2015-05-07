@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,9 +50,6 @@ public class GameLobbyFragment extends ListFragment {
     private CheckBox checkBox;
     private String token;
     private String channelName;
-    private List<UserBean> players;
-    private boolean noLogout = true;
-
     private HashMap<PushEventNameEnum, PusherEventSubscriber> subscribedPushers = new HashMap<>();
 
     public GameLobbyFragment() {}
@@ -151,14 +150,12 @@ public class GameLobbyFragment extends ListFragment {
         builder.setNegativeButton("Leave game", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 unsubscribeFromEvents();
-
-                if (isOwner) {
-                    removeGame();
-                }
-
                 PusherService.getInstance(getActivity()).unsubscribeFromChannel(channelName);
                 PusherService.getInstance(getActivity()).unregister(gameId, channelName);
-                //removePlayerFromGame();
+
+                removeGamePlayerAsUser();
+                if (isOwner) removeGame();
+
                 getActivity().onBackPressed();
             }
         });
@@ -175,6 +172,7 @@ public class GameLobbyFragment extends ListFragment {
         if(playerId != null)
             b.putInt("playerId", playerId);
         b.putBoolean("isFastMode", isFastMode);
+        b.putBoolean("isOwner", isOwner);
         b.putString("gameChannel", channelName);
         intent.putExtras(b);
         startActivity(intent);
@@ -205,17 +203,17 @@ public class GameLobbyFragment extends ListFragment {
 
         Log.i("GameLobbyFragment", "subscribed to PLAYER_JOINED_EVENT");
         PusherService.getInstance(getActivity()).addSubscriber(
-            pushEventNameEnum = PushEventNameEnum.PLAYER_JOINED_EVENT,
-            pusherEventSubscriber = new PusherEventSubscriber() {
-                @Override
-                public void onNewEvent(final AbstractPusherEvent event) {
-                    Log.d("GameLobbyFragment", "got new PLAYER_JOINED_EVENT");
+                pushEventNameEnum = PushEventNameEnum.PLAYER_JOINED_EVENT,
+                pusherEventSubscriber = new PusherEventSubscriber() {
+                    @Override
+                    public void onNewEvent(final AbstractPusherEvent event) {
+                        Log.d("GameLobbyFragment", "got new PLAYER_JOINED_EVENT");
 
-                    PlayerJoinedEvent playerJoinedEvent = (PlayerJoinedEvent) event;
+                        PlayerJoinedEvent playerJoinedEvent = (PlayerJoinedEvent) event;
 
-                    getPlayers();
-                }
-            });
+                        getPlayers();
+                    }
+                });
         subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
     }
 
@@ -271,25 +269,24 @@ public class GameLobbyFragment extends ListFragment {
         });
     }
 
-    public void removePlayerFromGame() {
-        RestService.getInstance(getActivity()).removeGamePlayerAsUser(gameId, playerId, true, UserBean.setToken(token), new Callback<UserBean>() {
-            @Override
-            public void success(UserBean user, Response response) {
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
-
-            @Override
-            public void failure(RetrofitError retrofitError) {
-                Toast.makeText(getActivity(), "Remove Player from Game Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
-        });
-    }
-
     public void removeGame() {
         RestService.getInstance(getActivity()).removeGame(gameId, UserBean.setToken(token), new Callback<GameBean>() {
             @Override
             public void success(GameBean user, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
+
+    public void removeGamePlayerAsUser() {
+        RestService.getInstance(getActivity()).removeGamePlayerAsUser(gameId, userId.intValue(), true, UserBean.setToken(token), new Callback<UserBean>() {
+            @Override
+            public void success(UserBean user, Response response) {
 
             }
 

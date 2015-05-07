@@ -86,6 +86,10 @@ public class GameListFragment extends ListFragment {
     @Override
     public void onResume(){
         super.onResume();
+        getGamesWithStatus();
+    }
+
+    private void getGamesWithStatus(){
         RestService.getInstance(getActivity()).getGamesWithStatus(GameStatus.OPEN, new Callback<List<GameBean>>() {
             @Override
             public void success(List<GameBean> games, Response response) {
