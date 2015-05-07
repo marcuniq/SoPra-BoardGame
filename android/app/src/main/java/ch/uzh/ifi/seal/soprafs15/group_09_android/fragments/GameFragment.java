@@ -22,6 +22,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.CamelBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DiceAreaBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DieBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.GameBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.LegBettingAreaBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.MoveBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceBettingAreaBean;
@@ -78,10 +79,10 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
     // class variables
     private List<UserBean> players;
-    private PlayerTurnEvent playerTurnEvent;
     private MoveBean lastMove;
     private Long userId;
     private Long gameId;
+    private GameBean game;
     private Integer playerId;
     private String token;
     private Boolean isOwner = false;
@@ -96,7 +97,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private Bundle savedInstanceState;
     private ViewGroup container;
 
-    private List<UserBean> usersOrderedByMoney;
     private Drawable lastResource;
     private int currentPyramidTile;
     private Boolean isDesertTileAsOasis = null;
@@ -172,13 +172,9 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         subscribeToAllEvents();
         AreaService.getInstance(getActivity()).getAreasAndNotifySubscriber(gameId);
 
-        if (isFastMode){
-            interactionIsPrevented = false;
-        } else {
-            interactionIsPrevented = true;
-        }
+        interactionIsPrevented = isFastMode;
 
-        getPlayerStatus();
+        getGameStatus();
     }
 
     /**
@@ -192,7 +188,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      */
     public void onClick(View v) {
         // prevent action from a player if it's not his turn
-        if ( !interactionIsPrevented && (playerTurnEvent == null || playerId.equals(playerTurnEvent.getPlayerId())) ) {
+        if ( !isFastMode && !interactionIsPrevented && (game == null || playerId.equals(game.currentPlayerId()))) {
             if (!tileIsPlaced) {
                 for (Integer button : raceTrackFieldIds) {
                     if (button == v.getId()) {
@@ -255,15 +251,11 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void failure(RetrofitError error) {
-                if (diceArea != null && diceArea.getRolledDice().size() == 5)
-                    gameFinishEvaluation();
                 fastModeButton.setVisibility(View.VISIBLE);
                 Toast.makeText(getActivity(), " Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
-
-
 
     /**
      * Adds all the race track fields to the game's raceTrack
@@ -877,12 +869,12 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             fastModeButton.setVisibility(View.VISIBLE);
         } else {
             playerName.setText(players.get(playerId - 1).username());
-            if (playerTurnEvent == null || playerId.equals(playerTurnEvent.getPlayerId())) {
+            if (game == null || playerId.equals(game.currentPlayerId())) {
                 currentPlayerName.setText("YOU");
                 currentPlayerIcon.setVisibility(View.GONE);
             } else {
-                currentPlayerName.setText(players.get(playerTurnEvent.getPlayerId() - 1).username());
-                currentPlayerIcon.setImageResource(getActivity().getResources().getIdentifier("c" + playerTurnEvent.getPlayerId() + "_head", "id", getActivity().getPackageName()));
+                currentPlayerName.setText(players.get(game.currentPlayerId() - 1).username());
+                currentPlayerIcon.setImageResource(getActivity().getResources().getIdentifier("c" + game.currentPlayerId() + "_head", "id", getActivity().getPackageName()));
                 currentPlayerIcon.setVisibility(View.VISIBLE);
             }
             money.setText(players.get(playerId - 1).money() + "");
@@ -917,6 +909,37 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+    public void getGameStatus() {
+        RestService.getInstance(getActivity()).getGame(gameId, new Callback<GameBean>() {
+            @Override
+            public void success(GameBean newGameStatus, Response response) {
+                game = newGameStatus;
+                getPlayerStatus();
+
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                Toast.makeText(getActivity(), "Get Game's Status Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void getMoves() {
+        RestService.getInstance(getActivity()).getGameMoves(gameId, new Callback<List<MoveBean>>() {
+            @Override
+            public void success(List<MoveBean> newMoves, Response response) {
+                lastMove = newMoves.get(newMoves.size()-1);
+                if (lastMove.move() == Moves.RACE_BETTING) updateRaceBettingFields();
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                Toast.makeText(getActivity(), "Get Moves Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     private void roundEvaluation(View view) {
         playerArrayAdapter = new PlayerArrayAdapter(
                 getActivity(),
@@ -925,7 +948,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 R.id.player_item_description,
                 R.id.player_item_icon,
                 new ArrayList<UserBean>(),
-                false);
+                true);
         ListView list = (ListView) view.findViewById(android.R.id.list);
         list.setAdapter(playerArrayAdapter);
 
@@ -1057,10 +1080,11 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onNewEvent(final AbstractPusherEvent moveEvent) {
                         Log.d("GameFragment", "got new MOVE_EVENT");
-                        getPlayerStatus();
+
                         getActivity().runOnUiThread(new Runnable() {
                             public void run() {
-                                updateHeaderBar();
+                                getGameStatus();
+                                getMoves();
                                 interactionIsPrevented = false;
                             }
                         });
@@ -1082,9 +1106,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                     public void onNewEvent(final AbstractPusherEvent event) {
                         Log.d("GameFragment", "got new PLAYER_TURN_EVENT");
                         interactionIsPrevented = false;
-                        playerTurnEvent = (PlayerTurnEvent) event;
-
-                        updateHeaderBar();
+                        PlayerTurnEvent playerTurnEvent = (PlayerTurnEvent) event;
                     }
                 });
         subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
