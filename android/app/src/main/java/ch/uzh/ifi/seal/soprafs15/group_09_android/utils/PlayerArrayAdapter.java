@@ -36,7 +36,7 @@ public class PlayerArrayAdapter extends GenericArrayAdapter<UserBean> {
 
     @Override
     public void setTextDescription(TextView textView, UserBean player) {
-        if (player.money() == null || playerIdIsUserId) textView.setText("");
+        if (player.money() == null || !playerIdIsUserId) textView.setText("");
         else if (player.money() == 1) textView.setText(player.money() + " coin");
         else textView.setText(player.money() + " coins");
     }
