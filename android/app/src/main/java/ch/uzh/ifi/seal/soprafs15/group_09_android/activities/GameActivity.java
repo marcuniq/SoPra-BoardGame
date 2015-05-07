@@ -112,14 +112,14 @@ public class GameActivity extends MainActivity implements GameFragment.OnBackPre
 
     private AlertDialog warningPopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("You have clicked on the back Button")
-                .setTitle("Do you want to log out?:");
-        builder.setPositiveButton("Stay in GameBean", new DialogInterface.OnClickListener() {
+        builder.setMessage("You clicked on the back button")
+                .setTitle("Do you want to leave the game?:");
+        builder.setPositiveButton("Stay in game", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // do nothing but close popup
             }
         });
-        builder.setNegativeButton("Log out", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Leave game", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 //removePlayerFromGame();
 
