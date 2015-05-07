@@ -81,7 +81,7 @@ public class GameMoveServiceImpl extends GameMoveService {
             throw new GameNotFoundException(gameId, GameMoveServiceImpl.class);
         }
         if(player == null) {
-            throw new UserNotFoundException(bean.getToken(), true, GameMoveServiceImpl.class);
+            throw new UserNotFoundException(bean.getToken(), GameMoveServiceImpl.class);
         }
         if(move == null) {
             throw new MoveMappingException(GameMoveServiceImpl.class);

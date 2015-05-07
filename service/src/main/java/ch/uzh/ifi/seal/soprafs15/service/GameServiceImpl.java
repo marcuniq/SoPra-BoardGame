@@ -6,6 +6,7 @@ import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,7 +80,11 @@ public class GameServiceImpl extends GameService {
             throw new GameNotFoundException(gameId, GameServiceImpl.class);
         }
 
-        if(game != null && game.getOwner().getId().equals(owner.getId())) {
+        if (owner == null){
+            throw new UserNotFoundException(bean.getToken(), UserServiceImpl.class);
+        }
+
+        if(game.getOwner().getId().equals(owner.getId())) {
             gameRepository.delete(game);
             //gameRepository.deleteAll();
         }

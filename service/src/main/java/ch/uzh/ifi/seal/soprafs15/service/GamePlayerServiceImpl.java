@@ -54,6 +54,10 @@ public class GamePlayerServiceImpl extends GamePlayerService {
     public List<GamePlayerResponseBean> listPlayer(Long gameId) {
         Game game = gameRepository.findOne(gameId);
 
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GamePlayerServiceImpl.class);
+        }
+
         List<User> players = game.getPlayers();
 
         return gameMapperService.toGamePlayerResponseBean(players);
@@ -67,7 +71,7 @@ public class GamePlayerServiceImpl extends GamePlayerService {
         Game game = gameRepository.findOne(gameId);
 
         if (player == null){
-            throw new UserNotFoundException(bean.getToken(), true, UserServiceImpl.class);
+            throw new UserNotFoundException(bean.getToken(), UserServiceImpl.class);
         }
         if(game == null) {
             throw new GameNotFoundException(gameId, GamePlayerServiceImpl.class);
@@ -111,7 +115,7 @@ public class GamePlayerServiceImpl extends GamePlayerService {
         Game game = gameRepository.findOne(gameId);
 
         if (owner == null){
-            throw new UserNotFoundException(bean.getToken(), true, UserServiceImpl.class);
+            throw new UserNotFoundException(bean.getToken(), UserServiceImpl.class);
         }
         if(game == null) {
             throw new GameNotFoundException(gameId, GamePlayerServiceImpl.class);

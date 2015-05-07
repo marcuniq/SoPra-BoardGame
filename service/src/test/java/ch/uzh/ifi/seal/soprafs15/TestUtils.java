@@ -133,9 +133,4 @@ public class TestUtils {
 
         return template.exchange(base + "/games/" + gameId + "/moves", HttpMethod.POST, httpEntity, GameMoveResponseBean.class);
     }
-
-    public static ResponseEntity<Boolean> clearRepositories(RestTemplate template, URL base) {
-
-        return template.exchange(base + "/backend/reset", HttpMethod.POST, null, Boolean.class);
-    }
 }
