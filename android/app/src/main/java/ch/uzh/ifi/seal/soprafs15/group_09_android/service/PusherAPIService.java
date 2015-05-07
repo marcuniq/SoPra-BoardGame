@@ -61,7 +61,7 @@ public class PusherAPIService {
     }
 
     public void unsubscribe(String channelName){
-        if (getChannel() != null) {
+        if (channelName != null && getChannel() != null) {
             pusher.unsubscribe(channelName);
         }
         channel = null;
