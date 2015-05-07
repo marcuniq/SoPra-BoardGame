@@ -41,7 +41,7 @@ public class GameServiceImpl extends GameService {
     public List<GameResponseBean> listGames(String status) {
         List<Game> games = (List<Game>) gameRepository.findAll();
 
-        if(status != null)
+        if(status != null && games != null)
             games = games.stream().filter(game -> game.getStatus() == GameStatus.valueOf(status)).collect(Collectors.toList());
 
         return gameMapperService.toGameResponseBean(games);
@@ -53,6 +53,11 @@ public class GameServiceImpl extends GameService {
 
         // add owner to player list
         User owner = game.getOwner();
+
+        if (owner == null){
+            throw new UserNotFoundException(bean.getToken(), UserServiceImpl.class);
+        }
+
         game.addPlayer(owner);
 
         game = gameRepository.save(game);
@@ -85,7 +90,6 @@ public class GameServiceImpl extends GameService {
 
         if(game.getOwner().getId() == owner.getId()) {
             gameRepository.delete(game);
-            //gameRepository.deleteAll();
         }
     }
 }
