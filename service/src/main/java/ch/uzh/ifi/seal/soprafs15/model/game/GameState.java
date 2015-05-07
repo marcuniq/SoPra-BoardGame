@@ -70,9 +70,6 @@ public class GameState implements Serializable {
 
     private void init(){
         raceTrack.setGameState(this);
-        //legBettingArea.setGameState(this);
-        //raceBettingArea.setGameState(this);
-        //diceArea.setGameState(this);
 
         status = GameStatus.OPEN;
 
@@ -103,15 +100,12 @@ public class GameState implements Serializable {
 
             // put back leg betting tiles
             List<LegBettingTile> tiles = player.getLegBettingTiles();
-            for(LegBettingTile t : tiles)
-                t.setUser(null);
 
             player.setLegBettingTiles(null);
             legBettingArea.pushAndSort(tiles);
 
             // remove money
             player.setMoney(0);
-
         }
     }
 

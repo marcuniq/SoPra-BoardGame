@@ -45,14 +45,12 @@ public class User implements Serializable {
     @Column
     private Integer money;
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
+    @OneToMany(cascade = CascadeType.ALL)
     @MapKeyColumn(name = "color", length = 50, nullable = false)
     @MapKeyEnumerated(EnumType.STRING)
     private Map<Color, RaceBettingCard> raceBettingCards = new HashMap<>();
 
-    @OneToMany( mappedBy = "user",
-                cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH},
-                fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Column(columnDefinition = "BLOB")
     private List<LegBettingTile> legBettingTiles = new ArrayList<>();
 
@@ -93,7 +91,6 @@ public class User implements Serializable {
     public void addLegBettingTile(LegBettingTile tile){
         if(!legBettingTiles.contains(tile)){
             legBettingTiles.add(tile);
-            tile.setUser(this);
         }
     }
 
@@ -104,7 +101,6 @@ public class User implements Serializable {
     public void removeLegBettingTile(LegBettingTile tile){
         if(legBettingTiles.contains(tile)){
             legBettingTiles.remove(tile);
-            tile.setUser(null);
         }
     }
 
@@ -112,8 +108,6 @@ public class User implements Serializable {
      * Remove all tiles when leg is over
      */
     public void removeAllLegBettingTiles(){
-        for(LegBettingTile t : legBettingTiles)
-            t.setUser(null);
         legBettingTiles.clear();
     }
 
