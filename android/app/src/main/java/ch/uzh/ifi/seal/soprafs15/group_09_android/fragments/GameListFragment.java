@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -19,6 +18,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.R;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.activities.MenuActivity;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.GameBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.GameStatus;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.PusherService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.RestService;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.utils.GameArrayAdapter;
@@ -31,7 +31,6 @@ public class GameListFragment extends ListFragment {
     private GameArrayAdapter gameArrayAdapter; // adapts the ArrayList of Games to the ListView
     private String token;
     private Long joinedGameId;
-    private String gameChannel;
     private Long userId;
 
     public GameListFragment() {}
@@ -87,7 +86,11 @@ public class GameListFragment extends ListFragment {
     @Override
     public void onResume(){
         super.onResume();
-        RestService.getInstance(getActivity()).getGames(new Callback<List<GameBean>>() {
+        getGamesWithStatus();
+    }
+
+    private void getGamesWithStatus(){
+        RestService.getInstance(getActivity()).getGamesWithStatus(GameStatus.OPEN, new Callback<List<GameBean>>() {
             @Override
             public void success(List<GameBean> games, Response response) {
                 gameArrayAdapter.clear();
@@ -121,7 +124,6 @@ public class GameListFragment extends ListFragment {
 
         final Long gameId = selectedGame.id();
         joinedGameId = gameId;
-        gameChannel = selectedGame.channelName();
         UserBean player = UserBean.setToken(token);
 
         RestService.getInstance(getActivity()).joinGame(gameId, player, new Callback<UserBean>() {
@@ -134,7 +136,7 @@ public class GameListFragment extends ListFragment {
                 bundle.putLong("gameId", joinedGameId);
                 bundle.putLong("userId", userId);
                 bundle.putBoolean("isOwner", false);
-                bundle.putString("gameChannel", gameChannel);
+                bundle.putString("gameChannel", user.channelName());
                 gameLobbyFragment.setArguments(bundle);
 
                 /* See all already created games (testing) */

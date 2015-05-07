@@ -9,10 +9,7 @@ import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
-import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
-import ch.uzh.ifi.seal.soprafs15.service.exceptions.NotEnoughPlayerException;
-import ch.uzh.ifi.seal.soprafs15.service.exceptions.OwnerNotFoundException;
-import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.*;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import ch.uzh.ifi.seal.soprafs15.service.pusher.PusherService;
 import ch.uzh.ifi.seal.soprafs15.service.pusher.events.GameStartEvent;
@@ -61,17 +58,13 @@ public class GameActionServiceImpl extends GameActionService {
             throw new UserNotFoundException(bean.getToken(), GameActionServiceImpl.class);
         }
 
-        if(!owner.getUsername().equals(game.getOwner())){
-
+        if(owner.getId() != game.getOwner().getId()){
+            throw new NotAuthorizedException("You can't start the game, you are not the owner",GameActionServiceImpl.class);
         }
 
         if(game.getPlayers().size() < GameConstants.MIN_PLAYERS) {
             throw new NotEnoughPlayerException(game, GameActionServiceImpl.class);
         }
-
-
-
-        //TODO: Start game
 
         game.initForGamePlay();
         game.setStatus(GameStatus.RUNNING);
@@ -95,13 +88,15 @@ public class GameActionServiceImpl extends GameActionService {
         }
 
         if(owner == null) {
-            throw new OwnerNotFoundException(owner.getId(), GameActionServiceImpl.class);
+            throw new UserNotFoundException(bean.getToken(), GameActionServiceImpl.class);
         }
 
-        if(owner != null && game != null && game.getOwner().equals(owner.getUsername())) {
-            //TODO: Stop game
-
+        if(owner.getId() != game.getOwner().getId()){
+            throw new NotAuthorizedException("You can't start the game, you are not the owner",GameActionServiceImpl.class);
         }
+
+        //TODO: Stop game
+
 
         return gameMapperService.toGameResponseBean(game);
     }
@@ -116,15 +111,18 @@ public class GameActionServiceImpl extends GameActionService {
         }
 
         if(owner == null) {
-            throw new OwnerNotFoundException(owner.getId(), GameActionServiceImpl.class);
+            throw new UserNotFoundException(bean.getToken(), GameActionServiceImpl.class);
         }
 
-        if(!owner.getUsername().equals(game.getOwner())){
-
+        if(owner.getId() != game.getOwner().getId()){
+            throw new NotAuthorizedException("You can't start the game, you are not the owner",GameActionServiceImpl.class);
         }
 
+        // start fast mode loop
         gameLogicService.startFastMode(game);
 
+        // send game start event
+        pusherService.pushToSubscribers(new GameStartEvent(), game);
 
         return gameMapperService.toGameResponseBean(game);
     }
@@ -135,6 +133,19 @@ public class GameActionServiceImpl extends GameActionService {
         Game game = gameRepository.findOne(gameId);
         User owner = gameMapperService.toUser(bean);
 
+        if(game == null) {
+            throw new GameNotFoundException(gameId, GameActionServiceImpl.class);
+        }
+
+        if(owner == null) {
+            throw new UserNotFoundException(bean.getToken(), GameActionServiceImpl.class);
+        }
+
+        if(owner.getId() != game.getOwner().getId()){
+            throw new NotAuthorizedException("You can't trigger a move, you are not the owner",GameActionServiceImpl.class);
+        }
+
+        // trigger move
         Move move = gameLogicService.triggerMoveInFastMode(game);
 
         return gameMapperService.toGameMoveResponseBean(move);

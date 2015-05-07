@@ -34,22 +34,25 @@ public class GameState implements Serializable {
     private Integer currentPlayerId = 1;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "GAMESTATE_ID")
     private List<Move> moves = new ArrayList<Move>();
 
     @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "USER_ID")
     private List<User> players = new ArrayList<User>();
 
     @OneToOne(mappedBy = "gameState", cascade = CascadeType.ALL)
     private RaceTrack raceTrack = new RaceTrack();
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "LEGBETTINGAREA_ID")
     private LegBettingArea legBettingArea = new LegBettingArea();
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "RACEBETTINGAREA_ID")
     private RaceBettingArea raceBettingArea = new RaceBettingArea();
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "DICEAREA_ID")
     private DiceArea diceArea = new DiceArea();
 
     @Column
@@ -67,9 +70,6 @@ public class GameState implements Serializable {
 
     private void init(){
         raceTrack.setGameState(this);
-        //legBettingArea.setGameState(this);
-        //raceBettingArea.setGameState(this);
-        //diceArea.setGameState(this);
 
         status = GameStatus.OPEN;
 
@@ -81,14 +81,12 @@ public class GameState implements Serializable {
     public void addPlayer(User player){
         if(!players.contains(player)){
             players.add(player);
-            //player.setGameState(this);
         }
     }
 
     public void removePlayer(User player){
         if(players.contains(player)){
             players.remove(player);
-            //player.setGameState(null);
 
             // remove all player related things from game
 
@@ -102,15 +100,12 @@ public class GameState implements Serializable {
 
             // put back leg betting tiles
             List<LegBettingTile> tiles = player.getLegBettingTiles();
-            for(LegBettingTile t : tiles)
-                t.setUser(null);
 
             player.setLegBettingTiles(null);
             legBettingArea.pushAndSort(tiles);
 
             // remove money
             player.setMoney(0);
-
         }
     }
 

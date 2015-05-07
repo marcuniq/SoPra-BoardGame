@@ -133,4 +133,8 @@ public class AreaService {
         AreaUpdateSubscriberService.getInstance().removeSubscriber(area, areaUpdateSubscriberSubscriber);
     }
 
+    public void removeAllSubscriber(){
+        AreaUpdateSubscriberService.getInstance().removeAllSubscriber();
+    }
+
 }

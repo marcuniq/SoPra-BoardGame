@@ -6,6 +6,7 @@ import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
+import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,7 @@ public class GameServiceImpl extends GameService {
     public List<GameResponseBean> listGames(String status) {
         List<Game> games = (List<Game>) gameRepository.findAll();
 
-        if(status != null)
+        if(status != null && games != null)
             games = games.stream().filter(game -> game.getStatus() == GameStatus.valueOf(status)).collect(Collectors.toList());
 
         return gameMapperService.toGameResponseBean(games);
@@ -52,7 +53,11 @@ public class GameServiceImpl extends GameService {
 
         // add owner to player list
         User owner = game.getOwner();
-        //owner.initForGamePlay();
+
+        if (owner == null){
+            throw new UserNotFoundException(bean.getToken(), UserServiceImpl.class);
+        }
+
         game.addPlayer(owner);
 
         game = gameRepository.save(game);
@@ -79,9 +84,12 @@ public class GameServiceImpl extends GameService {
             throw new GameNotFoundException(gameId, GameServiceImpl.class);
         }
 
-        if(game != null && game.getOwner().getId().equals(owner.getId())) {
+        if (owner == null){
+            throw new UserNotFoundException(bean.getToken(), UserServiceImpl.class);
+        }
+
+        if(game.getOwner().getId() == owner.getId()) {
             gameRepository.delete(game);
-            //gameRepository.deleteAll();
         }
     }
 }

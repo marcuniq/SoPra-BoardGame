@@ -14,7 +14,7 @@ public class GameConstants {
     final public static Integer DESERT_TILE_MOVE_SPACE = 1;
     final public static Integer DICE_ROLLING_MONEY_WINNINGS = 1;
     final public static Integer FAST_MODE_NUMBER_PLAYERS = 5;
-    final public static Integer FAST_MODE_NUMBER_LOOPS = FAST_MODE_NUMBER_PLAYERS * 7;
+    final public static Integer FAST_MODE_NUMBER_LOOPS = FAST_MODE_NUMBER_PLAYERS * 5;
 
 
 }

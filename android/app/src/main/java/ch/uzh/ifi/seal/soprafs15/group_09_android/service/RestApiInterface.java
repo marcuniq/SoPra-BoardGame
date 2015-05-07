@@ -12,6 +12,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DiceAreaBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.LegBettingAreaBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceBettingAreaBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.GameStatus;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -44,6 +45,13 @@ public interface RestApiInterface {
      */
     @GET("/games")
     void getGames(Callback<List<GameBean>> callback);
+
+    /**
+     * Returns all games
+     * @param callback
+     */
+    @GET("/games")
+    void getGamesWithStatus(@Query("status") GameStatus status, Callback<List<GameBean>> callback);
 
     /**
      * Returns all players

@@ -8,9 +8,9 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,6 +23,7 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.*;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.CamelBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DiceAreaBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.DieBean;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.GameBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.LegBettingAreaBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.MoveBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceBettingAreaBean;
@@ -31,7 +32,6 @@ import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.RaceTrackObjectBe
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.beans.UserBean;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.AreaName;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.AbstractPusherEvent;
-import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.MoveEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PlayerTurnEvent;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.events.PushEventNameEnum;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.service.*;
@@ -42,12 +42,12 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class GameFragment extends Fragment implements View.OnClickListener {
 
@@ -81,10 +81,10 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
     // class variables
     private List<UserBean> players;
-    private PlayerTurnEvent playerTurnEvent;
     private MoveBean lastMove;
     private Long userId;
     private Long gameId;
+    private GameBean game;
     private Integer playerId;
     private String token;
     private Boolean isOwner = false;
@@ -99,7 +99,6 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private Bundle savedInstanceState;
     private ViewGroup container;
 
-    private List<UserBean> usersOrderedByMoney;
     private Drawable lastResource;
     private int currentPyramidTile;
     private Boolean isDesertTileAsOasis = null;
@@ -142,7 +141,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         Bundle b = getActivity().getIntent().getExtras();
         gameId = b.getLong("gameId");
         userId = b.getLong("userId");
-        if(b.containsKey("playerId"))
+        if (b.containsKey("playerId"))
             playerId = b.getInt("playerId");
         else
             playerId = 8;
@@ -150,41 +149,35 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         isFastMode = b.getBoolean("isFastMode");
         channelName = b.getString("gameChannel");
 
-
         SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
         token = sharedPref.getString("token", token);
 
+        interactionIsPrevented = isFastMode;
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.savedInstanceState = savedInstanceState;
         this.container = container;
-
         return inflater.inflate(R.layout.fragment_game, container, false);
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        addClickListenerToButtons();
+        cleanRack(true);
+
+        subscribeToAreaUpdates();
+        subscribeToAllEvents();
+        AreaService.getInstance(getActivity()).getAreasAndNotifySubscriber(gameId);
     }
 
     @Override
     public void onResume(){
         super.onResume();
-
-        addClickListenerToButtons();
-        cleanRack(true);
-
-        interactionIsPrevented = true;
-        if (!isFastMode){
-            subscribeToAreaUpdates();
-            subscribeToEvents();
-            AreaService.getInstance(getActivity()).getAreasAndNotifySubscriber(gameId);
-            interactionIsPrevented = false;
-        } else {
-            getDiceArea();
-            getRaceTrackArea();
-            getLegBettingArea();
-            getRaceBettingArea();
-        }
-
-        getPlayerStatus();
+        getGameStatus();
     }
 
     /**
@@ -198,7 +191,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      */
     public void onClick(View v) {
         // prevent action from a player if it's not his turn
-        if ( !interactionIsPrevented && (playerTurnEvent == null || playerId.equals(playerTurnEvent.getPlayerId())) ) {
+        if ( !isFastMode && !interactionIsPrevented && (game == null || playerId.equals(game.currentPlayerId()))) {
             if (!tileIsPlaced) {
                 for (Integer button : raceTrackFieldIds) {
                     if (button == v.getId()) {
@@ -255,90 +248,14 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             @Override
             public void success(MoveBean move, Response response) {
                 lastMove = move;
-                switch (move.move()) {
-                    case DICE_ROLLING:
-                        getDiceArea();
-                        getRaceTrackArea();
-                        break;
-                    case LEG_BETTING:
-                        getLegBettingArea();
-                        break;
-                    case RACE_BETTING:
-                        getRaceBettingArea();
-                        break;
-                    case DESERT_TILE_PLACING:
-                        getRaceTrackArea();
-                        break;
-                    default:
-                        break;
-                }
+                AreaService.getInstance(getActivity()).getAreasAndNotifySubscriber(gameId);
                 fastModeButton.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void failure(RetrofitError error) {
-                if (diceArea != null && diceArea.getRolledDice().size() == 5) gameFinishEvaluation();
                 fastModeButton.setVisibility(View.VISIBLE);
                 Toast.makeText(getActivity(), " Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    private void getDiceArea() {
-        RestService.getInstance(getActivity()).getDiceArea(gameId, new Callback<DiceAreaBean>() {
-            @Override
-            public void success(DiceAreaBean newDiceAreaBean, Response response) {
-                diceArea = new DiceArea(newDiceAreaBean);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), "getDiceArea Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    private void getRaceTrackArea() {
-        RestService.getInstance(getActivity()).getRacetrack(gameId, new Callback<RaceTrackBean>() {
-            @Override
-            public void success(RaceTrackBean newRaceTrackBean, Response response) {
-                raceTrack = new RaceTrack(newRaceTrackBean);
-                updateRaceTrackFields();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), "getRaceTrackArea Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    private void getLegBettingArea() {
-        RestService.getInstance(getActivity()).getLegBettingArea(gameId, new Callback<LegBettingAreaBean>() {
-            @Override
-            public void success(LegBettingAreaBean newLegBettingAreaBean, Response response) {
-                legBettingArea = new LegBettingArea(newLegBettingAreaBean);
-                updateLegBettingFields();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), "getLegBettingArea Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    private void getRaceBettingArea() {
-        RestService.getInstance(getActivity()).getRaceBettingArea(gameId, new Callback<RaceBettingAreaBean>() {
-            @Override
-            public void success(RaceBettingAreaBean newRaceBettingAreaBean, Response response) {
-                raceBettingArea = new RaceBettingArea(newRaceBettingAreaBean);
-                updateRaceBettingFields();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Toast.makeText(getActivity(), "getRaceBettingArea Failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -945,7 +862,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         TextView money = (TextView) getActivity().findViewById(R.id.money);
         TextView currentPlaying = (TextView) getActivity().findViewById(R.id.current_playing);
 
-        playerIcon.setImageResource(getActivity().getResources().getIdentifier("c" + playerId + "_head", "id", getActivity().getPackageName()));
+        playerIcon.setBackgroundResource(getActivity().getResources().getIdentifier("c" + playerId + "_head", "drawable", getActivity().getPackageName()));
 
         if (isFastMode){
             playerName.setText("FASTMODE");
@@ -955,12 +872,12 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             fastModeButton.setVisibility(View.VISIBLE);
         } else {
             playerName.setText(players.get(playerId - 1).username());
-            if (playerTurnEvent == null || playerId.equals(playerTurnEvent.getPlayerId())) {
+            if (game == null || playerId.equals(game.currentPlayerId())) {
                 currentPlayerName.setText("YOU");
                 currentPlayerIcon.setVisibility(View.GONE);
             } else {
-                currentPlayerName.setText(players.get(playerTurnEvent.getPlayerId() - 1).username());
-                currentPlayerIcon.setImageResource(getActivity().getResources().getIdentifier("c" + playerTurnEvent.getPlayerId() + "_head", "id", getActivity().getPackageName()));
+                currentPlayerName.setText(players.get(game.currentPlayerId() - 1).username());
+                currentPlayerIcon.setBackgroundResource(getActivity().getResources().getIdentifier("c" + game.currentPlayerId() + "_head", "drawable", getActivity().getPackageName()));
                 currentPlayerIcon.setVisibility(View.VISIBLE);
             }
             money.setText(players.get(playerId - 1).money() + "");
@@ -995,6 +912,36 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+    public void getGameStatus() {
+        RestService.getInstance(getActivity()).getGame(gameId, new Callback<GameBean>() {
+            @Override
+            public void success(GameBean newGameStatus, Response response) {
+                game = newGameStatus;
+                getPlayerStatus();
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                Toast.makeText(getActivity(), "Get Game's Status Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void getMoves() {
+        RestService.getInstance(getActivity()).getGameMoves(gameId, new Callback<List<MoveBean>>() {
+            @Override
+            public void success(List<MoveBean> newMoves, Response response) {
+                lastMove = newMoves.get(newMoves.size() - 1);
+                if (lastMove.move() == Moves.RACE_BETTING) updateRaceBettingFields();
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                Toast.makeText(getActivity(), "Get Moves Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     private void roundEvaluation(View view) {
         playerArrayAdapter = new PlayerArrayAdapter(
                 getActivity(),
@@ -1003,7 +950,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 R.id.player_item_description,
                 R.id.player_item_icon,
                 new ArrayList<UserBean>(),
-                false);
+                true);
         ListView list = (ListView) view.findViewById(android.R.id.list);
         list.setAdapter(playerArrayAdapter);
 
@@ -1117,7 +1064,14 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         onBackPressedListener.setSubscribedAreas(subscribedAreas);
     }
 
-    private void subscribeToEvents(){
+    private void subscribeToAllEvents() {
+        subscribeToMoveEvents();
+        subscribeToPlayerTurnEvents();
+        subscribeToLegOverEvents();
+        subscribeToGameFinishedEvents();
+    }
+
+    private void subscribeToMoveEvents() {
         PushEventNameEnum pushEventNameEnum;
         PusherEventSubscriber pusherEventSubscriber;
 
@@ -1128,16 +1082,23 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onNewEvent(final AbstractPusherEvent moveEvent) {
                         Log.d("GameFragment", "got new MOVE_EVENT");
-                        getPlayerStatus();
+
                         getActivity().runOnUiThread(new Runnable() {
                             public void run() {
-                                updateHeaderBar();
+                                getGameStatus();
+                                getMoves();
                                 interactionIsPrevented = false;
                             }
                         });
                     }
                 });
         subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
+        onBackPressedListener.setSubscribedPushers(subscribedPushers);
+    }
+
+    private void subscribeToPlayerTurnEvents() {
+        PushEventNameEnum pushEventNameEnum;
+        PusherEventSubscriber pusherEventSubscriber;
 
         Log.i("GameFragment", "subscribed to PLAYER_TURN_EVENT");
         PusherService.getInstance(getActivity()).addSubscriber(
@@ -1147,12 +1108,16 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                     public void onNewEvent(final AbstractPusherEvent event) {
                         Log.d("GameFragment", "got new PLAYER_TURN_EVENT");
                         interactionIsPrevented = false;
-                        playerTurnEvent = (PlayerTurnEvent) event;
-
-                        updateHeaderBar();
+                        PlayerTurnEvent playerTurnEvent = (PlayerTurnEvent) event;
                     }
-        });
+                });
         subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
+        onBackPressedListener.setSubscribedPushers(subscribedPushers);
+    }
+
+    private void subscribeToLegOverEvents() {
+        PushEventNameEnum pushEventNameEnum;
+        PusherEventSubscriber pusherEventSubscriber;
 
         Log.i("GameFragment", "subscribed to LEG_OVER_EVENT");
         PusherService.getInstance(getActivity()).addSubscriber(
@@ -1162,14 +1127,23 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                     public void onNewEvent(final AbstractPusherEvent moveEvent) {
                         Log.d("GameFragment", "got new LEG_OVER_EVENT");
                         cleanRack();
+
                         getActivity().runOnUiThread(new Runnable() {
                             public void run() {
+                                if (popupWindow != null) popupWindow.dismiss();
+                                interactionIsPrevented = false;
                                 roundEvaluationPopup();
                             }
                         });
                     }
                 });
         subscribedPushers.put(pushEventNameEnum, pusherEventSubscriber);
+        onBackPressedListener.setSubscribedPushers(subscribedPushers);
+    }
+
+    private void subscribeToGameFinishedEvents(){
+        PushEventNameEnum pushEventNameEnum;
+        PusherEventSubscriber pusherEventSubscriber;
 
         Log.i("GameFragment", "subscribed to GAME_FINISHED_EVENT");
         PusherService.getInstance(getActivity()).addSubscriber(
@@ -1182,7 +1156,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                                 Log.d("GameFragment", "got new GAME_FINISHED_EVENT");
                                 onBackPressedListener.unsubscribeFromAreas();
                                 onBackPressedListener.unsubscribeFromEvents();
-                                PusherService.getInstance(getActivity()).unsubscribeFromChannel(channelName);
+
+                                PusherService.getInstance(getActivity()).unregister(gameId, channelName);
                                 gameFinishEvaluation();
                             }
                         });

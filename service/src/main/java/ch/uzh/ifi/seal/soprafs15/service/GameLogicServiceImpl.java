@@ -41,7 +41,7 @@ public class GameLogicServiceImpl extends GameLogicService {
     protected GameMapperService gameMapperService;
     protected PusherService pusherService;
 
-    private Random random = new Random();
+    private Random random = new Random(System.currentTimeMillis());
 
     @Autowired
     public GameLogicServiceImpl(GameRepository gameRepository, UserRepository userRepository,
@@ -117,7 +117,7 @@ public class GameLogicServiceImpl extends GameLogicService {
         List<User> players = new ArrayList<>();
         for(int i = 1; i <= GameConstants.FAST_MODE_NUMBER_PLAYERS; i++){
             User fakeUser = new User();
-            fakeUser.setUsername("FakeUser" + i + "-Game" + game.getId());
+            fakeUser.setUsername("FastModePlayer" + i + "-Game" + game.getId());
             fakeUser.setAge(42);
             fakeUser.setStatus(UserStatus.ONLINE);
             fakeUser.setToken(UUID.randomUUID().toString());
@@ -138,21 +138,12 @@ public class GameLogicServiceImpl extends GameLogicService {
         game.setStatus(GameStatus.RUNNING);
 
         // create player sequence
-        Map<Long, Integer> userIdToPlayerIdMap = createPlayerSequence(game);
+        createPlayerSequence(game);
 
         // loop and make random moves until game is finished
         for(int i = 0; i < GameConstants.FAST_MODE_NUMBER_LOOPS && !game.getStatus().equals(GameStatus.FINISHED); ++i) {
             triggerMoveInFastMode(game);
         }
-
-        // roll back a couple of moves
-        //for(int i = 0; i < 3; i++){
-            //game.getStateManager().undoMove();
-        //}
-
-        // notify owner
-        //pusherService.pushToSubscribers(new FastModeAlmostFinishedEvent(), game);
-        //
     }
 
     @Override
@@ -180,7 +171,7 @@ public class GameLogicServiceImpl extends GameLogicService {
             MoveEnum randomMove = MoveEnum.randomMove();
 
             // make it a bit less random to avoid long waiting to find a valid move
-            if(loopIteration > 3)
+            if(loopIteration > 2)
                 randomMove = MoveEnum.DICE_ROLLING;
 
             bean.setMove(randomMove);
@@ -217,7 +208,7 @@ public class GameLogicServiceImpl extends GameLogicService {
 
     @Override
     public void stopFastMode(Game game) {
-
+        // TODO
     }
 
 
@@ -290,7 +281,7 @@ public class GameLogicServiceImpl extends GameLogicService {
                 switch (camelRankingMap.get(t.getColor())){
                     case FIRST: winningMoney = t.getLeadingPositionGain(); break;
                     case SECOND:winningMoney = t.getSecondPositionGain(); break;
-                    default:    winningMoney = t.getOtherPositionLoss(); break;
+                    default:    winningMoney = p.getMoney() <= 0 ? 0 : t.getOtherPositionLoss(); break;
                 }
 
                 p.setMoney(p.getMoney() + winningMoney);
@@ -334,12 +325,17 @@ public class GameLogicServiceImpl extends GameLogicService {
 
         for(RaceBettingCard r : bettings){
             User player = r.getUser();
+
             if(r.getColor() == color){
+                // player has bet on the right color
+
                 Integer winningMoney = !moneyReward.isEmpty() ? moneyReward.pop() : 1;
                 player.setMoney(player.getMoney() + winningMoney);
 
-            } else{
-                player.setMoney(player.getMoney() - 1);
+            } else {
+                // player cant have negative money
+                if(player.getMoney() > 0)
+                    player.setMoney(player.getMoney() - 1);
             }
         }
     }

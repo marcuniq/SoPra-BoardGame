@@ -14,6 +14,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.pusher.client.channel.User;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +41,7 @@ public class GameActivity extends MainActivity implements GameFragment.OnBackPre
     private int playerId;
     private String token;
     private String channelName;
+    private Boolean isOwner;
 
     private HashMap<AreaName, AreaUpdateSubscriber> subscribedAreas = new HashMap<>();
     private HashMap<PushEventNameEnum, PusherEventSubscriber> subscribedPushers = new HashMap<>();
@@ -66,6 +69,7 @@ public class GameActivity extends MainActivity implements GameFragment.OnBackPre
             userId = b.getLong("userId");
             channelName = b.getString("gameChannel");
             Boolean isFastMode = b.getBoolean("isFastMode");
+            isOwner = b.getBoolean("isOwner");
 
             Fragment fragment = GameFragment.newInstance();
             Bundle bundle = new Bundle();
@@ -112,21 +116,23 @@ public class GameActivity extends MainActivity implements GameFragment.OnBackPre
 
     private AlertDialog warningPopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("You have clicked on the back Button")
-                .setTitle("Do you want to log out?:");
-        builder.setPositiveButton("Stay in GameBean", new DialogInterface.OnClickListener() {
+        builder.setMessage("You clicked on the back button")
+                .setTitle("Do you want to leave the game?:");
+        builder.setPositiveButton("Stay in game", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // do nothing but close popup
             }
         });
-        builder.setNegativeButton("Log out", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Leave game", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                //removePlayerFromGame();
-
                 unsubscribeFromAreas();
                 unsubscribeFromEvents();
-
+                PusherService.getInstance(getApplicationContext()).removeAllSubscriber();
                 PusherService.getInstance(getApplicationContext()).unsubscribeFromChannel(channelName);
+                PusherService.getInstance(getApplicationContext()).unregister(gameId, channelName);
+
+                removePlayerFromGame();
+                if (isOwner) removeGame();
 
                 Intent intent = new Intent();
                 intent.setClass(getApplicationContext(), MenuActivity.class);
@@ -141,6 +147,20 @@ public class GameActivity extends MainActivity implements GameFragment.OnBackPre
         return builder.create();
     }
 
+    public void removeGame() {
+        RestService.getInstance(this).removeGame(gameId, UserBean.setToken(token), new Callback<GameBean>() {
+            @Override
+            public void success(GameBean game, Response response) {
+
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
+
     public void removePlayerFromGame() {
         RestService.getInstance(this).removeGamePlayer(gameId, playerId, UserBean.setToken(token), new Callback<UserBean>() {
             @Override
@@ -150,7 +170,7 @@ public class GameActivity extends MainActivity implements GameFragment.OnBackPre
 
             @Override
             public void failure(RetrofitError retrofitError) {
-                Toast.makeText(getApplicationContext(), "Remove Player from Game Failed: " + retrofitError.getMessage(), Toast.LENGTH_LONG).show();
+
             }
         });
     }
