@@ -23,16 +23,20 @@ public class LegBettingTileStack implements Serializable, Stack<LegBettingTile> 
     @Column
     private Color color;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "LEGBETTINGAREA_ID")
+    private LegBettingArea legBettingArea;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "LEGBETTINGTILESTACK_ID")
+    @OneToMany(mappedBy = "stack", cascade = CascadeType.ALL)
     private List<LegBettingTile> tiles;
 
     public LegBettingTileStack(){}
 
-    public LegBettingTileStack(Color color, List<LegBettingTile> tiles){
+    public LegBettingTileStack(LegBettingArea legBettingArea, Color color, List<LegBettingTile> tiles){
+        this.legBettingArea = legBettingArea;
         this.color = color;
         this.tiles = tiles;
+        this.tiles.stream().forEach(t -> t.setStack(this));
     }
 
     /**
@@ -93,5 +97,13 @@ public class LegBettingTileStack implements Serializable, Stack<LegBettingTile> 
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public LegBettingArea getLegBettingArea() {
+        return legBettingArea;
+    }
+
+    public void setLegBettingArea(LegBettingArea legBettingArea) {
+        this.legBettingArea = legBettingArea;
     }
 }

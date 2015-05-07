@@ -33,31 +33,34 @@ public class User implements Serializable {
 	@Column(nullable = false) 
 	private UserStatus status;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Game> ownedGames;
+    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
+    private Game game;
 
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name="GAMESTATE_ID")
+    private GameState gameState;
 
-    // Player related fields
-	
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Move> moves = new ArrayList<Move>();
 
     @Column
     private Integer money;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @MapKeyColumn(name = "color", length = 50, nullable = false)
     @MapKeyEnumerated(EnumType.STRING)
     private Map<Color, RaceBettingCard> raceBettingCards = new HashMap<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany( mappedBy = "user",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
     @Column(columnDefinition = "BLOB")
     private List<LegBettingTile> legBettingTiles = new ArrayList<>();
 
     @Column
     private Integer playerId;
 
-    @OneToOne(mappedBy = "owner", cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
+    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
     private DesertTile desertTile;
 
     @Column
@@ -91,6 +94,7 @@ public class User implements Serializable {
     public void addLegBettingTile(LegBettingTile tile){
         if(!legBettingTiles.contains(tile)){
             legBettingTiles.add(tile);
+            tile.setUser(this);
         }
     }
 
@@ -101,6 +105,7 @@ public class User implements Serializable {
     public void removeLegBettingTile(LegBettingTile tile){
         if(legBettingTiles.contains(tile)){
             legBettingTiles.remove(tile);
+            tile.setUser(null);
         }
     }
 
@@ -108,6 +113,8 @@ public class User implements Serializable {
      * Remove all tiles when leg is over
      */
     public void removeAllLegBettingTiles(){
+        for(LegBettingTile t : legBettingTiles)
+            t.setUser(null);
         legBettingTiles.clear();
     }
 
@@ -251,11 +258,19 @@ public class User implements Serializable {
         this.hasDesertTile = hasDesertTile;
     }
 
-    public List<Game> getOwnedGames() {
-        return ownedGames;
+    public Game getGame() {
+        return game;
     }
 
-    public void setOwnedGames(List<Game> ownedGames) {
-        this.ownedGames = ownedGames;
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 }

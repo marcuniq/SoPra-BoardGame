@@ -21,12 +21,15 @@ public class LegBettingArea implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "legBettingArea", cascade = CascadeType.ALL)
     @Column(columnDefinition = "BLOB")
     @MapKeyColumn(name = "color", length = 50, nullable = false)
     @MapKeyEnumerated(EnumType.STRING)
     private Map<Color, LegBettingTileStack> legBettingTiles;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "GAMESTATE_ID")
+    private GameState gameState;
 
     public LegBettingArea(){
         init();
@@ -48,7 +51,7 @@ public class LegBettingArea implements Serializable {
             list.add(tile_3);
             list.add(tile_5);
 
-            legBettingTiles.put(c, new LegBettingTileStack(c, list));
+            legBettingTiles.put(c, new LegBettingTileStack(this, c, list));
         }
     }
 
@@ -75,6 +78,7 @@ public class LegBettingArea implements Serializable {
      */
     public LegBettingTile popLegBettingTile(Color c) {
         LegBettingTile tile = legBettingTiles.get(c).pop();
+        tile.setStack(null);
         return tile;
     }
 
@@ -113,5 +117,13 @@ public class LegBettingArea implements Serializable {
 
     public void setLegBettingTiles(Map<Color, LegBettingTileStack> legBettingTiles) {
         this.legBettingTiles = legBettingTiles;
+    }
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 }
