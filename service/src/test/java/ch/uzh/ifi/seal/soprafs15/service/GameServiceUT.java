@@ -64,31 +64,31 @@ public class GameServiceUT {
         testGameService.getGame((long) 1);
     }
 
-//    @Test
-//    @SuppressWarnings("unchecked")
-//    public void testDeleteGame() throws Exception {
-//
-//        Assert.assertEquals(0, testGameService.listGames(null).size());
-//        Assert.assertEquals(0, testUserService.listUsers().size());
-//
-//        Assert.assertNotNull(testGameService);
-//        Assert.assertNotNull(testUserService);
-//
-//        UserRequestBean userRequest = TestUtils.toUserRequestBean(22, "TestOwner");
-//        UserResponseBean userResponse = testUserService.addUser(userRequest);
-//        UserLoginLogoutResponseBean loginResponse = testUserService.login(userResponse.getId());
-//
-//        GameResponseBean gameResponse = testGameService.addGame(TestUtils.toGameRequestBean("TestGame", loginResponse.getToken()));
-//
-//        Assert.assertEquals(1, testGameService.listGames(null).size());
-//        Assert.assertEquals(1, testUserService.listUsers().size());
-//
-//        GamePlayerRequestBean deleteRequest = TestUtils.toGamePlayerRequestBean(loginResponse.getToken());
-//        testGameService.deleteGame(gameResponse.getId(), deleteRequest);
-//
-//        Assert.assertEquals(0, testGameService.listGames(null).size());
-//        Assert.assertEquals(1, testUserService.listUsers().size());
-//    }
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testDeleteGame() throws Exception {
+
+        Assert.assertEquals(0, testGameService.listGames(null).size());
+        Assert.assertEquals(0, testUserService.listUsers().size());
+
+        Assert.assertNotNull(testGameService);
+        Assert.assertNotNull(testUserService);
+
+        UserRequestBean userRequest = TestUtils.toUserRequestBean(22, "TestOwner");
+        UserResponseBean userResponse = testUserService.addUser(userRequest);
+        UserLoginLogoutResponseBean loginResponse = testUserService.login(userResponse.getId());
+
+        GameResponseBean gameResponse = testGameService.addGame(TestUtils.toGameRequestBean("TestGame", loginResponse.getToken()));
+
+        Assert.assertEquals(1, testGameService.listGames(null).size());
+        Assert.assertEquals(1, testUserService.listUsers().size());
+
+        GamePlayerRequestBean deleteRequest = TestUtils.toGamePlayerRequestBean(loginResponse.getToken());
+        testGameService.deleteGame(gameResponse.getId(), deleteRequest);
+
+        Assert.assertEquals(0, testGameService.listGames(null).size());
+        Assert.assertEquals(1, testUserService.listUsers().size());
+    }
 
     @Test(expected = GameNotFoundException.class)
     @SuppressWarnings("unchecked")
