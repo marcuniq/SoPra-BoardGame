@@ -37,19 +37,9 @@ import static org.junit.Assert.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class GameMapperServiceUT {
 
-    //Create MockRepo
-    @Mock
-    private UserRepository mockUserRepo;
-    @Mock
-    private GameRepository mockGameRepo;
-    @Mock
-    private MoveRepository mockMoveRepo;
-
-    @InjectMocks
     @Autowired
     private GameMapperService testMapperService;
 
-    @InjectMocks
     @Autowired
     private UserService testUserService;
 

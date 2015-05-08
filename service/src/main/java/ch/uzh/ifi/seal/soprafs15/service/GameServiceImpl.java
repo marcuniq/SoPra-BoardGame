@@ -89,6 +89,7 @@ public class GameServiceImpl extends GameService {
         }
 
         if(game.getOwner().getId() == owner.getId()) {
+            owner.removeFromOwnedGames(game);
             gameRepository.delete(game);
         }
     }

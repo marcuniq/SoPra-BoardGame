@@ -2,8 +2,12 @@ package ch.uzh.ifi.seal.soprafs15.service;
 
 import ch.uzh.ifi.seal.soprafs15.Application;
 import ch.uzh.ifi.seal.soprafs15.TestUtils;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameCreateResponseBean;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameRequestBean;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.*;
 import ch.uzh.ifi.seal.soprafs15.model.User;
+import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserExistsException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
@@ -44,21 +48,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class UserServiceUT {
 
-    @Mock
-    private UserRepository mockUserRepo;
-
-    @InjectMocks
     @Autowired
     private UserService testUserService;
-
-    @InjectMocks
-    @Autowired
-    private UserMapperService userMapperService;
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test(expected = UserNotFoundException.class)
     @SuppressWarnings("unchecked")
@@ -106,9 +97,6 @@ public class UserServiceUT {
         // set up oracle values
         UserResponseBean oracleResponse = TestUtils.toUserResponseBean(15, "peter");
 
-        User testUser = new User();
-        when(mockUserRepo.save(any(User.class))).thenReturn(testUser);
-
         UserResponseBean responseBean = testUserService.addUser(requestBean);
 
         // assertions after test
@@ -151,34 +139,28 @@ public class UserServiceUT {
         UserResponseBean result = testUserService.getUser(response.getId() + 1);
     }
 
+
     @Test
     @SuppressWarnings("unchecked")
-    public void testUpdateUser() throws Exception {
-        // not implemented yet
-    }
+    public void testDeleteUser() throws Exception {
 
-//    @Test
-//    @SuppressWarnings("unchecked")
-//    public void testDeleteUser() throws Exception {
-//
-//        assertEquals(0, testUserService.listUsers().size());
-//
-//        // Create new User
-//        UserRequestBean userRequest = TestUtils.toUserRequestBean(92, "Troll");
-//        UserResponseBean userResponse = testUserService.addUser(userRequest);
-//
-//        // Login User
-//        UserLoginLogoutResponseBean loginResponse = testUserService.login(userResponse.getId());
-//        UserLoginLogoutRequestBean deleteRequest = TestUtils.toUserLLRequestBean(loginResponse.getToken());
-//
-//        assertEquals(1, testUserService.listUsers().size());
-//
-//        // Delete User
-//        testUserService.deleteUser(userResponse.getId(), deleteRequest);
-//
-//        assertEquals(0, testUserService.listUsers().size());
-//        assertNull(testUserService.getUser(userResponse.getId()));
-//    }
+        assertEquals(0, testUserService.listUsers().size());
+
+        // Create new User
+        UserRequestBean userRequest = TestUtils.toUserRequestBean(92, "Troll");
+        UserResponseBean userResponse = testUserService.addUser(userRequest);
+
+        // Login User
+        UserLoginLogoutResponseBean loginResponse = testUserService.login(userResponse.getId());
+        UserLoginLogoutRequestBean deleteRequest = TestUtils.toUserLLRequestBean(loginResponse.getToken());
+
+        assertEquals(1, testUserService.listUsers().size());
+
+        // Delete User
+        testUserService.deleteUser(userResponse.getId(), deleteRequest);
+
+        assertEquals(0, testUserService.listUsers().size());
+    }
 
     @Test
     @SuppressWarnings("unchecked")

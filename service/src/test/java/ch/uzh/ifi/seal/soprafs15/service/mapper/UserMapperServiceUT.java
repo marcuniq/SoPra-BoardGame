@@ -9,8 +9,13 @@ import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -28,9 +33,9 @@ import java.util.List;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class UserMapperServiceUT {
 
-    protected UserRepository userRepository;
+    @Autowired
+    private UserMapperService userMapperService;
 
-    protected UserMapperService userMapperService = new UserMapperServiceImpl(userRepository);
 
     @Test
     @SuppressWarnings("unchecked")

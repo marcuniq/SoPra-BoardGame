@@ -46,6 +46,7 @@ public class GameMapperServiceImpl extends GameMapperService {
 
         User owner = userRepository.findByToken(bean.getToken());
         game.setOwner(owner);
+        owner.addToOwnedGames(game);
 
         return game;
     }

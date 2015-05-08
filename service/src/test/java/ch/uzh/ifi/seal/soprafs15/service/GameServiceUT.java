@@ -3,12 +3,16 @@ package ch.uzh.ifi.seal.soprafs15.service;
 import ch.uzh.ifi.seal.soprafs15.Application;
 import ch.uzh.ifi.seal.soprafs15.TestUtils;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.*;
+import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
+import ch.uzh.ifi.seal.soprafs15.model.repositories.MoveRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
+import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
+import ch.uzh.ifi.seal.soprafs15.service.mapper.UserMapperService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,24 +38,12 @@ import java.util.List;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class GameServiceUT {
 
-    @Mock
-    private GameRepository mockGameRepo;
-
-    @Mock
-    private UserRepository mockUserRepo;
-
-    @InjectMocks
     @Autowired
     private GameService testGameService;
 
-    @InjectMocks
     @Autowired
     private UserService testUserService;
 
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test(expected = GameNotFoundException.class)
     @SuppressWarnings("unchecked")
@@ -212,5 +204,32 @@ public class GameServiceUT {
 
         Assert.assertEquals(1, testGameService.listGames("OPEN").size());
         Assert.assertEquals(1, testUserService.listUsers().size());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testDeleteOwner() throws Exception {
+
+        Assert.assertEquals(0, testGameService.listGames(null).size());
+        Assert.assertEquals(0, testUserService.listUsers().size());
+
+        Assert.assertNotNull(testGameService);
+        Assert.assertNotNull(testUserService);
+
+        UserRequestBean userRequest = TestUtils.toUserRequestBean(22, "TestOwner");
+        UserResponseBean userResponse = testUserService.addUser(userRequest);
+        UserLoginLogoutResponseBean loginResponse = testUserService.login(userResponse.getId());
+
+        GameResponseBean gameResponse = testGameService.addGame(TestUtils.toGameRequestBean("TestGame", loginResponse.getToken()));
+
+        Assert.assertEquals(1, testGameService.listGames(null).size());
+        Assert.assertEquals(1, testUserService.listUsers().size());
+
+        UserLoginLogoutRequestBean deleteRequest = TestUtils.toUserLLRequestBean(loginResponse.getToken());
+
+        testUserService.deleteUser(userResponse.getId(), deleteRequest);
+
+        Assert.assertEquals(0, testGameService.listGames(null).size());
+        Assert.assertEquals(0, testUserService.listUsers().size());
     }
 }
