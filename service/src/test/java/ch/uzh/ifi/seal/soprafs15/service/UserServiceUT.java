@@ -193,7 +193,7 @@ public class UserServiceUT {
 //        UserResponseBean userResponse = testService.addUser(userRequest);
 //
 //        // Assert that user status is OFFLINE (before Login)
-//        User userBeforeLogin = mockUserRepo.findByUsername(userRequest.getUsername());
+//        User userBeforeLogin = userRepo.findByUsername(userRequest.getUsername());
 //        assertEquals(UserStatus.OFFLINE, userBeforeLogin.getStatus());
 //
 //        // Login user

@@ -620,6 +620,13 @@ public class GameServiceControllerUT {
         List<RaceBettingCard> result = gameServiceController.getRaceBettingCards(gameResponse.getId(), currentPlayerId, getRBCsRequest);
 
         Assert.assertEquals(5, result.size());
+
+        GameMoveRequestBean raceBettingRequest = TestUtils.toGameMoveRequestBean(firstPlayerToken, MoveEnum.RACE_BETTING, null, null, null, true, Color.WHITE);
+        GameMoveResponseBean raceBettingResponse = gameMoveService.addMove(gameResponse.getId(), raceBettingRequest);
+
+        result = gameServiceController.getRaceBettingCards(gameResponse.getId(), currentPlayerId, getRBCsRequest);
+
+        Assert.assertEquals(4, result.size());
     }
 
     @Test
