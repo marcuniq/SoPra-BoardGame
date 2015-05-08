@@ -33,26 +33,24 @@ public class User implements Serializable {
 	@Column(nullable = false) 
 	private UserStatus status;
 
-    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
-    private Game game;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name="GAMESTATE_ID")
     private GameState gameState;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Move> moves = new ArrayList<Move>();
 
     @Column
     private Integer money;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     @MapKeyColumn(name = "color", length = 50, nullable = false)
     @MapKeyEnumerated(EnumType.STRING)
     private Map<Color, RaceBettingCard> raceBettingCards = new HashMap<>();
 
     @OneToMany( mappedBy = "user",
-            cascade = CascadeType.ALL,
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
             fetch = FetchType.EAGER)
     @Column(columnDefinition = "BLOB")
     private List<LegBettingTile> legBettingTiles = new ArrayList<>();
@@ -60,7 +58,7 @@ public class User implements Serializable {
     @Column
     private Integer playerId;
 
-    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "owner", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private DesertTile desertTile;
 
     @Column
@@ -256,14 +254,6 @@ public class User implements Serializable {
 
     public void setHasDesertTile(Boolean hasDesertTile) {
         this.hasDesertTile = hasDesertTile;
-    }
-
-    public Game getGame() {
-        return game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
     }
 
     public GameState getGameState() {
