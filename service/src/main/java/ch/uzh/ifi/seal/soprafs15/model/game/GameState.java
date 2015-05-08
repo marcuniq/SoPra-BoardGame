@@ -38,6 +38,7 @@ public class GameState implements Serializable {
     private List<Move> moves = new ArrayList<Move>();
 
     @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "USER_ID")
     private List<User> players = new ArrayList<User>();
 
     @OneToOne(mappedBy = "gameState", cascade = CascadeType.ALL)
@@ -81,12 +82,14 @@ public class GameState implements Serializable {
     public void addPlayer(User player){
         if(!players.contains(player)){
             players.add(player);
+            //player.setGameState(this);
         }
     }
 
     public void removePlayer(User player){
         if(players.contains(player)){
             players.remove(player);
+            //player.setGameState(null);
 
             // remove all player related things from game
 
@@ -100,6 +103,8 @@ public class GameState implements Serializable {
 
             // put back leg betting tiles
             List<LegBettingTile> tiles = player.getLegBettingTiles();
+            for(LegBettingTile t : tiles)
+                t.setUser(null);
 
             player.setLegBettingTiles(null);
             legBettingArea.pushAndSort(tiles);
@@ -112,6 +117,7 @@ public class GameState implements Serializable {
     public void addMove(Move move) {
         if(!moves.contains(move)){
             moves.add(move);
+            //move.setGameState(this);
         }
     }
 

@@ -22,6 +22,10 @@ public class LegBettingTile implements Serializable {
     @Enumerated(EnumType.STRING)
     private Color color;
 
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name="USER_ID")
+    @JsonIgnore
+    private User user;
 
     @Column
     private Integer leadingPositionGain;
@@ -32,6 +36,10 @@ public class LegBettingTile implements Serializable {
     @Column
     private Integer otherPositionLoss;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="LEGBETTINGTILESTACK_ID")
+    @JsonIgnore
+    private LegBettingTileStack stack;
 
 
 
@@ -70,6 +78,14 @@ public class LegBettingTile implements Serializable {
 
 
 
+    public LegBettingTileStack getStack() {
+        return stack;
+    }
+
+    public void setStack(LegBettingTileStack stack) {
+        this.stack = stack;
+    }
+
     public Long getId() {
         return id;
     }
@@ -83,5 +99,13 @@ public class LegBettingTile implements Serializable {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
