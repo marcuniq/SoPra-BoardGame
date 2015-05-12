@@ -90,6 +90,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private Boolean isOwner = false;
     private Boolean interactionIsPrevented = false;
     private Boolean isFastMode;
+    private Boolean showQuickGuidePopup = true;
     private String channelName;
 
     private PlayerArrayAdapter playerArrayAdapter; // adapts the ArrayList of Games to the ListView
@@ -190,6 +191,13 @@ public class GameFragment extends Fragment implements View.OnClickListener {
      * @param v the view that is clicked on
      */
     public void onClick(View v) {
+        // Show quick guide popup once after the first click
+        if (showQuickGuidePopup) {
+            quickGuidePopup();
+            showQuickGuidePopup = false;
+            return;
+        }
+
         // prevent action from a player if it's not his turn
         if ( !isFastMode && !interactionIsPrevented && (game == null || playerId.equals(game.currentPlayerId()))) {
             if (!tileIsPlaced) {
@@ -658,6 +666,19 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
         popupTitle.setText("Round Evaluation");
         listTitle.setText("Round Ranking");
+
+        Button closeButton = (Button) popupView.findViewById(R.id.close);
+
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+    }
+
+    private void quickGuidePopup() {
+        View popupView = defaultPopup(getView(), R.layout.popup_quick_guide);
 
         Button closeButton = (Button) popupView.findViewById(R.id.close);
 

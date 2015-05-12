@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="48dp"
+            android:background="#333333">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:text="Quick Guide"
+                    android:textColor="#ffffff"
+                    android:gravity="center"
+                    android:textSize="24sp" android:id="@+id/popupTitle"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/close"
+                    android:text="X"
+                    android:background="#ff175a26"
+                    android:textColor="#ffffff"
+                    android:textSize="24sp"
+                    android:clickable="true"
+                    android:layout_margin="5dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"/>
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="800dp"
+            android:layout_height="600dp"
+            android:layout_marginTop="130dp"
+            android:orientation="vertical"
+            android:layout_centerInParent="true"
+            android:background="@drawable/border">
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="#95d35400"
+                android:layout_centerHorizontal="true">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="1. Click on the pyramid to roll a dice."
+                        android:id="@+id/textView"
+                        android:layout_marginTop="37dp"
+                        android:layout_alignParentTop="true" android:layout_alignLeft="@+id/textView3"
+                        android:layout_alignStart="@+id/textView3"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="2. Click on the left character in the nav bar to get an overview of the played cards."
+                        android:id="@+id/textView3"
+                        android:layout_marginTop="25dp"
+                        android:layout_below="@+id/textView"
+                        android:layout_marginLeft="25dp" android:layout_marginRight="25dp"/>
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="3. To set a desert tile click on a field on the board."
+                        android:id="@+id/textView4"
+                        android:layout_marginTop="25dp"
+                        android:layout_below="@+id/textView3" android:layout_alignLeft="@+id/textView3"
+                        android:layout_alignStart="@+id/textView3" android:layout_marginLeft="0dp"
+                        android:layout_marginRight="25dp"/>
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="4. To get a leg betting card click on your preferred chard."
+                        android:id="@+id/textView5" android:layout_below="@+id/textView4"
+                        android:layout_alignLeft="@+id/textView4" android:layout_alignStart="@+id/textView4"
+                        android:layout_marginTop="25dp"/>
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="5. To set on the olle or tolle camel click on the right top or right bottom corner."
+                        android:id="@+id/textView6"
+                        android:layout_marginTop="25dp" android:layout_below="@+id/textView5"
+                        android:layout_alignLeft="@+id/textView5" android:layout_alignStart="@+id/textView5"
+                        android:layout_marginRight="25dp"/>
+            </RelativeLayout>
+    </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>
