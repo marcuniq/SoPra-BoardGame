@@ -1,5 +1,10 @@
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/game_board_top"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+<LinearLayout
     android:orientation="vertical"
     android:id="@+id/game_board"
     android:layout_width="fill_parent"
@@ -45,56 +50,44 @@
         </RelativeLayout>
 
         <!-- display current player -->
-        <RelativeLayout
+        <!-- displays current player's name -->
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true">
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/current_playing"
+            android:text="Currently playing:"
+            android:textColor="#ffffff"
+            android:layout_gravity="center_vertical"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="360dp"
+            android:layout_marginStart="360dp"/>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent">
-            <!-- displays current player's name -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:id="@+id/current_playing"
-                android:text="Currently playing:"
-                android:textColor="#ffffff"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="5dp"
-                android:layout_marginEnd="5dp"/>
+        <!-- displays current player's image -->
+        <ImageView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:id="@+id/current_player_icon"
+            android:background="@drawable/c1_head"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@string/hello_world"
+            android:visibility="visible"
+            android:layout_centerInParent="true"/>
 
-            <!-- displays current player's image -->
-            <ImageView
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:id="@+id/current_player_icon"
-                android:background="@drawable/c1_head"
-                android:layout_gravity="center_vertical"
-                android:contentDescription="@string/hello_world"
-                android:visibility="visible"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginEnd="10dp"/>
-
-            <!-- displays current player's name -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/app_name"
-                android:textColor="#ffffff"
-                android:id="@+id/current_player_name"
-                android:layout_gravity="center_vertical"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"/>
-            </LinearLayout>
-        </RelativeLayout>
-
+        <!-- displays current player's name -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/app_name"
+            android:textColor="#ffffff"
+            android:id="@+id/current_player_name"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="550dp"
+            android:layout_marginStart="550dp"/>
 
         <!-- displays the coin with the amount of coins inside -->
         <RelativeLayout
@@ -131,7 +124,8 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginRight="12dp">
+            android:layout_marginRight="12dp"
+            android:layout_marginEnd="12dp">
 
             <ImageButton
                 android:layout_width="40dp"
@@ -147,318 +141,327 @@
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@drawable/board">
-        <RelativeLayout
+        <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <GridLayout
-                android:id="@+id/gridView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:columnCount="5"
-                android:rowCount="5"
-                android:orientation="vertical">
-
-                <RelativeLayout
-                    android:layout_width="@dimen/grid_item_width"
-                    android:layout_height="@dimen/grid_item_height"
-                    android:id="@+id/field1"
-                    android:layout_row="2"
-                    android:layout_column="4"
-                    android:clickable="true"
-                    android:contentDescription="@string/field1">
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="@dimen/grid_item_width"
-                    android:layout_height="@dimen/grid_item_height"
-                    android:id="@+id/field2"
-                    android:layout_row="3"
-                    android:layout_column="4"
-                    android:clickable="true"
-                    android:contentDescription="@string/field2">
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="@dimen/grid_item_width"
-                    android:layout_height="@dimen/grid_item_height"
-                    android:id="@+id/field3"
-                    android:layout_row="4"
-                    android:layout_column="4"
-                    android:clickable="true"
-                    android:contentDescription="@string/field3">
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="@dimen/grid_item_width"
-                    android:layout_height="@dimen/grid_item_height"
-                    android:id="@+id/field4"
-                    android:layout_row="4"
-                    android:layout_column="3"
-                    android:clickable="true"
-                    android:contentDescription="@string/field4">
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="@dimen/grid_item_width"
-                    android:layout_height="@dimen/grid_item_height"
-                    android:id="@+id/field5"
-                    android:layout_row="4"
-                    android:layout_column="2"
-                    android:clickable="true"
-                    android:contentDescription="@string/field5">
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="@dimen/grid_item_width"
-                    android:layout_height="@dimen/grid_item_height"
-                    android:id="@+id/field6"
-                    android:layout_row="4"
-                    android:layout_column="1"
-                    android:clickable="true"
-                    android:contentDescription="@string/field6">
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="@dimen/grid_item_width"
-                    android:layout_height="@dimen/grid_item_height"
-                    android:id="@+id/field7"
-                    android:layout_row="4"
-                    android:layout_column="0"
-                    android:clickable="true"
-                    android:contentDescription="@string/field7">
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="@dimen/grid_item_width"
-                    android:layout_height="@dimen/grid_item_height"
-                    android:id="@+id/field8"
-                    android:layout_row="3"
-                    android:layout_column="0"
-                    android:clickable="true"
-                    android:contentDescription="@string/field8">
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="@dimen/grid_item_width"
-                    android:layout_height="@dimen/grid_item_height"
-                    android:id="@+id/field9"
-                    android:layout_row="2"
-                    android:layout_column="0"
-                    android:clickable="true"
-                    android:contentDescription="@string/field9">
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="@dimen/grid_item_width"
-                    android:layout_height="@dimen/grid_item_height"
-                    android:id="@+id/field10"
-                    android:layout_row="1"
-                    android:layout_column="0"
-                    android:clickable="true"
-                    android:contentDescription="@string/field10">
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="@dimen/grid_item_width"
-                    android:layout_height="@dimen/grid_item_height"
-                    android:id="@+id/field11"
-                    android:layout_row="0"
-                    android:layout_column="0"
-                    android:clickable="true"
-                    android:contentDescription="@string/field11">
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="@dimen/grid_item_width"
-                    android:layout_height="@dimen/grid_item_height"
-                    android:id="@+id/field12"
-                    android:layout_row="0"
-                    android:layout_column="1"
-                    android:clickable="true"
-                    android:contentDescription="@string/field12">
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="@dimen/grid_item_width"
-                    android:layout_height="@dimen/grid_item_height"
-                    android:id="@+id/field13"
-                    android:layout_row="0"
-                    android:layout_column="2"
-                    android:clickable="true"
-                    android:contentDescription="@string/field13">
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="@dimen/grid_item_width"
-                    android:layout_height="@dimen/grid_item_height"
-                    android:id="@+id/field14"
-                    android:layout_row="0"
-                    android:layout_column="3"
-                    android:clickable="true"
-                    android:contentDescription="@string/field14">
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="@dimen/grid_item_width"
-                    android:layout_height="@dimen/grid_item_height"
-                    android:id="@+id/field15"
-                    android:layout_row="0"
-                    android:layout_column="4"
-                    android:clickable="true"
-                    android:contentDescription="@string/field15">
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="@dimen/grid_item_width"
-                    android:layout_height="@dimen/grid_item_height"
-                    android:id="@+id/field16"
-                    android:layout_row="1"
-                    android:layout_column="4"
-                    android:clickable="true"
-                    android:contentDescription="@string/field16">
-                </RelativeLayout>
-            </GridLayout>
-
-            <!-- the "button" to roll a dice -->
-            <ImageButton
-                android:layout_width="@dimen/pyramid_width"
-                android:layout_height="@dimen/pyramid_height"
-                android:id="@+id/dice"
-                android:background="@drawable/pyramid"
-                android:contentDescription="@string/dice"
-                android:layout_marginStart="@dimen/pyramid_margin_left"
-                android:layout_marginLeft="@dimen/pyramid_margin_left"
-                android:layout_centerVertical="true" />
-
-        </RelativeLayout>
-
-        <!-- legbetting tile buttons-->
-        <RelativeLayout
-            android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="fill_parent"
+            android:background="@drawable/board">
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-            <!-- legbetting cards blue -->
-            <ImageView
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:id="@+id/legbetting_blue"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="-6dp"
-                android:layout_marginStart="-6dp"
-                android:contentDescription="@string/legbetting_blue"
-                android:scaleType="fitCenter"
-                android:src="@drawable/legbettingtile_blue_5_button"
-                android:clickable="true"/>
+                <GridLayout
+                    android:id="@+id/gridView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:columnCount="5"
+                    android:rowCount="5"
+                    android:orientation="vertical">
 
-            <!-- legbetting cards green -->
-            <ImageView
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:id="@+id/legbetting_green"
-                android:layout_marginTop="73dp"
-                android:layout_marginLeft="78dp"
-                android:layout_marginStart="78dp"
-                android:contentDescription="@string/legbetting_green"
-                android:scaleType="fitCenter"
-                android:src="@drawable/legbettingtile_green_5_button"
-                android:clickable="true"/>
+                    <RelativeLayout
+                        android:layout_width="@dimen/grid_item_width"
+                        android:layout_height="@dimen/grid_item_height"
+                        android:id="@+id/field1"
+                        android:layout_row="2"
+                        android:layout_column="4"
+                        android:clickable="true"
+                        android:contentDescription="@string/field1">
+                    </RelativeLayout>
 
-            <!-- legbetting cards orange -->
-            <ImageView
-                android:layout_width="140dp"
-                android:layout_height="80dp"
-                android:id="@+id/legbetting_orange"
-                android:layout_marginTop="208dp"
-                android:layout_marginLeft="118dp"
-                android:layout_marginStart="118dp"
-                android:contentDescription="@string/legbetting_orange"
-                android:scaleType="fitCenter"
-                android:src="@drawable/legbettingtile_orange_5_button"
-                android:clickable="true"/>
+                    <RelativeLayout
+                        android:layout_width="@dimen/grid_item_width"
+                        android:layout_height="@dimen/grid_item_height"
+                        android:id="@+id/field2"
+                        android:layout_row="3"
+                        android:layout_column="4"
+                        android:clickable="true"
+                        android:contentDescription="@string/field2">
+                    </RelativeLayout>
 
-            <!-- legbetting cards yellow -->
-            <ImageView
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:id="@+id/legbetting_yellow"
-                android:layout_marginTop="285dp"
-                android:layout_marginLeft="78dp"
-                android:layout_marginStart="78dp"
-                android:contentDescription="@string/legbetting_yellow"
-                android:scaleType="fitCenter"
-                android:src="@drawable/legbettingtile_yellow_5_button"
-                android:clickable="true"/>
+                    <RelativeLayout
+                        android:layout_width="@dimen/grid_item_width"
+                        android:layout_height="@dimen/grid_item_height"
+                        android:id="@+id/field3"
+                        android:layout_row="4"
+                        android:layout_column="4"
+                        android:clickable="true"
+                        android:contentDescription="@string/field3">
+                    </RelativeLayout>
 
-            <!-- legbetting cards white -->
-            <ImageView
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:id="@+id/legbetting_white"
-                android:layout_marginTop="351dp"
-                android:layout_marginLeft="-5dp"
-                android:layout_marginStart="-5dp"
-                android:contentDescription="@string/legbetting_white"
-                android:scaleType="fitCenter"
-                android:src="@drawable/legbettingtile_white_5_button"
-                android:clickable="true"/>
+                    <RelativeLayout
+                        android:layout_width="@dimen/grid_item_width"
+                        android:layout_height="@dimen/grid_item_height"
+                        android:id="@+id/field4"
+                        android:layout_row="4"
+                        android:layout_column="3"
+                        android:clickable="true"
+                        android:contentDescription="@string/field4">
+                    </RelativeLayout>
 
-            <!-- winner betting -->
-            <ImageView
-                android:layout_width="110dp"
-                android:layout_height="75dp"
-                android:id="@+id/winner_betting"
-                android:layout_marginTop="13dp"
-                android:layout_marginLeft="280dp"
-                android:layout_marginStart="280dp"
-                android:contentDescription="@string/winner_betting"
-                android:clickable="true"
-                android:src="@drawable/empty_image"/>
+                    <RelativeLayout
+                        android:layout_width="@dimen/grid_item_width"
+                        android:layout_height="@dimen/grid_item_height"
+                        android:id="@+id/field5"
+                        android:layout_row="4"
+                        android:layout_column="2"
+                        android:clickable="true"
+                        android:contentDescription="@string/field5">
+                    </RelativeLayout>
 
-            <ImageView
-                android:layout_width="140dp"
-                android:layout_height="80dp"
-                android:id="@+id/pyramid_tile"
-                android:layout_marginTop="208dp"
-                android:layout_marginLeft="260dp"
-                android:layout_marginStart="260dp"
-                android:contentDescription="@string/pyramid_tile"
-                android:scaleType="fitCenter"
-                android:src="@drawable/pyramid_tile_1_button"
-                android:clickable="true"/>
+                    <RelativeLayout
+                        android:layout_width="@dimen/grid_item_width"
+                        android:layout_height="@dimen/grid_item_height"
+                        android:id="@+id/field6"
+                        android:layout_row="4"
+                        android:layout_column="1"
+                        android:clickable="true"
+                        android:contentDescription="@string/field6">
+                    </RelativeLayout>
 
-            <!-- loser betting -->
-            <ImageView
-                android:layout_width="110dp"
-                android:layout_height="75dp"
-                android:id="@+id/loser_betting"
-                android:layout_marginTop="414dp"
-                android:layout_marginLeft="280dp"
-                android:layout_marginStart="280dp"
-                android:contentDescription="@string/loser_betting"
-                android:clickable="true"
-                android:src="@drawable/empty_image"/>
+                    <RelativeLayout
+                        android:layout_width="@dimen/grid_item_width"
+                        android:layout_height="@dimen/grid_item_height"
+                        android:id="@+id/field7"
+                        android:layout_row="4"
+                        android:layout_column="0"
+                        android:clickable="true"
+                        android:contentDescription="@string/field7">
+                    </RelativeLayout>
 
-        </RelativeLayout>
-    </LinearLayout>
+                    <RelativeLayout
+                        android:layout_width="@dimen/grid_item_width"
+                        android:layout_height="@dimen/grid_item_height"
+                        android:id="@+id/field8"
+                        android:layout_row="3"
+                        android:layout_column="0"
+                        android:clickable="true"
+                        android:contentDescription="@string/field8">
+                    </RelativeLayout>
 
-    <!-- the button to go to next move event in fast mode -->
-    <ImageView
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/next_move_event_fastmode"
-        android:src="@drawable/button_next"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="320dp"
-        android:layout_marginStart="320dp"
-        android:contentDescription="next button for fast mode"
-        android:visibility="gone"/>
+                    <RelativeLayout
+                        android:layout_width="@dimen/grid_item_width"
+                        android:layout_height="@dimen/grid_item_height"
+                        android:id="@+id/field9"
+                        android:layout_row="2"
+                        android:layout_column="0"
+                        android:clickable="true"
+                        android:contentDescription="@string/field9">
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="@dimen/grid_item_width"
+                        android:layout_height="@dimen/grid_item_height"
+                        android:id="@+id/field10"
+                        android:layout_row="1"
+                        android:layout_column="0"
+                        android:clickable="true"
+                        android:contentDescription="@string/field10">
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="@dimen/grid_item_width"
+                        android:layout_height="@dimen/grid_item_height"
+                        android:id="@+id/field11"
+                        android:layout_row="0"
+                        android:layout_column="0"
+                        android:clickable="true"
+                        android:contentDescription="@string/field11">
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="@dimen/grid_item_width"
+                        android:layout_height="@dimen/grid_item_height"
+                        android:id="@+id/field12"
+                        android:layout_row="0"
+                        android:layout_column="1"
+                        android:clickable="true"
+                        android:contentDescription="@string/field12">
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="@dimen/grid_item_width"
+                        android:layout_height="@dimen/grid_item_height"
+                        android:id="@+id/field13"
+                        android:layout_row="0"
+                        android:layout_column="2"
+                        android:clickable="true"
+                        android:contentDescription="@string/field13">
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="@dimen/grid_item_width"
+                        android:layout_height="@dimen/grid_item_height"
+                        android:id="@+id/field14"
+                        android:layout_row="0"
+                        android:layout_column="3"
+                        android:clickable="true"
+                        android:contentDescription="@string/field14">
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="@dimen/grid_item_width"
+                        android:layout_height="@dimen/grid_item_height"
+                        android:id="@+id/field15"
+                        android:layout_row="0"
+                        android:layout_column="4"
+                        android:clickable="true"
+                        android:contentDescription="@string/field15">
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="@dimen/grid_item_width"
+                        android:layout_height="@dimen/grid_item_height"
+                        android:id="@+id/field16"
+                        android:layout_row="1"
+                        android:layout_column="4"
+                        android:clickable="true"
+                        android:contentDescription="@string/field16">
+                    </RelativeLayout>
+                </GridLayout>
+
+                <!-- the "button" to roll a dice -->
+                <ImageButton
+                    android:layout_width="@dimen/pyramid_width"
+                    android:layout_height="@dimen/pyramid_height"
+                    android:id="@+id/dice"
+                    android:background="@drawable/pyramid"
+                    android:contentDescription="@string/dice"
+                    android:layout_marginStart="@dimen/pyramid_margin_left"
+                    android:layout_marginLeft="@dimen/pyramid_margin_left"
+                    android:layout_centerVertical="true" />
+
+            </RelativeLayout>
+
+            <!-- legbetting tile buttons-->
+            <RelativeLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <!-- legbetting cards blue -->
+                <ImageView
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:id="@+id/legbetting_blue"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="-6dp"
+                    android:layout_marginStart="-6dp"
+                    android:contentDescription="@string/legbetting_blue"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/legbettingtile_blue_5_button"
+                    android:clickable="true"/>
+
+                <!-- legbetting cards green -->
+                <ImageView
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:id="@+id/legbetting_green"
+                    android:layout_marginTop="73dp"
+                    android:layout_marginLeft="78dp"
+                    android:layout_marginStart="78dp"
+                    android:contentDescription="@string/legbetting_green"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/legbettingtile_green_5_button"
+                    android:clickable="true"/>
+
+                <!-- legbetting cards orange -->
+                <ImageView
+                    android:layout_width="140dp"
+                    android:layout_height="80dp"
+                    android:id="@+id/legbetting_orange"
+                    android:layout_marginTop="208dp"
+                    android:layout_marginLeft="118dp"
+                    android:layout_marginStart="118dp"
+                    android:contentDescription="@string/legbetting_orange"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/legbettingtile_orange_5_button"
+                    android:clickable="true"/>
+
+                <!-- legbetting cards yellow -->
+                <ImageView
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:id="@+id/legbetting_yellow"
+                    android:layout_marginTop="285dp"
+                    android:layout_marginLeft="78dp"
+                    android:layout_marginStart="78dp"
+                    android:contentDescription="@string/legbetting_yellow"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/legbettingtile_yellow_5_button"
+                    android:clickable="true"/>
+
+                <!-- legbetting cards white -->
+                <ImageView
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:id="@+id/legbetting_white"
+                    android:layout_marginTop="351dp"
+                    android:layout_marginLeft="-5dp"
+                    android:layout_marginStart="-5dp"
+                    android:contentDescription="@string/legbetting_white"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/legbettingtile_white_5_button"
+                    android:clickable="true"/>
+
+                <!-- winner betting -->
+                <ImageView
+                    android:layout_width="110dp"
+                    android:layout_height="75dp"
+                    android:id="@+id/winner_betting"
+                    android:layout_marginTop="13dp"
+                    android:layout_marginLeft="280dp"
+                    android:layout_marginStart="280dp"
+                    android:contentDescription="@string/winner_betting"
+                    android:clickable="true"
+                    android:src="@drawable/empty_image"/>
+
+                <ImageView
+                    android:layout_width="140dp"
+                    android:layout_height="80dp"
+                    android:id="@+id/pyramid_tile"
+                    android:layout_marginTop="208dp"
+                    android:layout_marginLeft="260dp"
+                    android:layout_marginStart="260dp"
+                    android:contentDescription="@string/pyramid_tile"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/pyramid_tile_1_button"
+                    android:clickable="true"/>
+
+                <!-- loser betting -->
+                <ImageView
+                    android:layout_width="110dp"
+                    android:layout_height="75dp"
+                    android:id="@+id/loser_betting"
+                    android:layout_marginTop="414dp"
+                    android:layout_marginLeft="280dp"
+                    android:layout_marginStart="280dp"
+                    android:contentDescription="@string/loser_betting"
+                    android:clickable="true"
+                    android:src="@drawable/empty_image"/>
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <!-- the button to go to next move event in fast mode -->
+        <ImageView
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/next_move_event_fastmode"
+            android:src="@drawable/button_next"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="320dp"
+            android:layout_marginStart="320dp"
+            android:contentDescription="next button for fast mode"
+            android:visibility="gone"/>
     </RelativeLayout>
 </LinearLayout>
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:contentDescription="The Instruction Guide"
+        android:id="@+id/ivInstructions"
+        android:visibility="gone"
+        android:clickable="true"
+        android:layout_centerInParent="true"/>
+</RelativeLayout>

@@ -89,8 +89,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private String token;
     private Boolean isOwner = false;
     private Boolean interactionIsPrevented = false;
-    private Boolean isFastMode;
-    private Boolean showQuickGuidePopup = true;
+    private Boolean isFastMode = false;
+    private Boolean showQuickGuidePopup = !isFastMode;
     private String channelName;
 
     private PlayerArrayAdapter playerArrayAdapter; // adapts the ArrayList of Games to the ListView
@@ -109,6 +109,10 @@ public class GameFragment extends Fragment implements View.OnClickListener {
 
     private HashMap<AreaName, AreaUpdateSubscriber> subscribedAreas = new HashMap<>();
     private HashMap<PushEventNameEnum, PusherEventSubscriber> subscribedPushers = new HashMap<>();
+
+    private ImageView instructionImage;
+    private int current = 0;
+    private ArrayList<Integer> images = new ArrayList<>();
 
     private OnBackPressedListener onBackPressedListener;
 
@@ -142,12 +146,10 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         Bundle b = getActivity().getIntent().getExtras();
         gameId = b.getLong("gameId");
         userId = b.getLong("userId");
-        if (b.containsKey("playerId"))
-            playerId = b.getInt("playerId");
-        else
-            playerId = 8;
+        if (b.containsKey("playerId")) playerId = b.getInt("playerId");
+        else playerId = 8;
+        if (b.containsKey("isFastMode")) isFastMode = b.getBoolean("isFastMode");
         isOwner = b.getBoolean("isOwner");
-        isFastMode = b.getBoolean("isFastMode");
         channelName = b.getString("gameChannel");
 
         SharedPreferences sharedPref = getActivity().getSharedPreferences("token", Context.MODE_PRIVATE);
@@ -621,8 +623,8 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT );
-            lp.width = 98;
-            lp.height = 156;
+            lp.width = 147;
+            lp.height = 234;
             image.setLayoutParams(lp);
             image.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             grid.addView(image);
@@ -680,12 +682,50 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private void quickGuidePopup() {
         View popupView = defaultPopup(getView(), R.layout.popup_quick_guide);
 
-        Button closeButton = (Button) popupView.findViewById(R.id.close);
+        Button closeButton = (Button) popupView.findViewById(R.id.reject);
 
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
+            }
+        });
+
+        Button instructionGuideButton = (Button) popupView.findViewById(R.id.accept);
+
+        instructionGuideButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                giveInstructions();
+            }
+        });
+    }
+
+    private void giveInstructions(){
+        instructionImage = (ImageView) getActivity().findViewById(R.id.ivInstructions);
+
+        images.clear();
+        current = 0;
+        images.add(R.drawable.username_icon_explain);
+        images.add(R.drawable.current_player_explain);
+        images.add(R.drawable.help_rules_money);
+        images.add(R.drawable.roll_a_dice);
+        images.add(R.drawable.desert_oasis_tile_placing);
+        images.add(R.drawable.take_legbetting_tile);
+        images.add(R.drawable.overall_winner_loser);
+
+        instructionImage.setVisibility(View.VISIBLE);
+        instructionImage.setImageResource(images.get(current++));
+
+        instructionImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (current < images.size()){
+                    instructionImage.setImageResource(images.get(current++));
+                } else {
+                    instructionImage.setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -954,7 +994,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             public void success(List<MoveBean> newMoves, Response response) {
                 lastMove = newMoves.get(newMoves.size() - 1);
 
-                if (lastMove.playerId().equals(playerId)) {
+                if (!lastMove.playerId().equals(playerId)) {
                     String message = "" + players.get(lastMove.playerId() - 1).username();
                     switch (lastMove.move()) {
                         case RACE_BETTING:
@@ -1005,6 +1045,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         RestService.getInstance(getActivity()).getPlayers(gameId, new Callback<List<UserBean>>() {
             @Override
             public void success(List<UserBean> users, Response response) {
+                playerArrayAdapter.clear();
                 Collections.sort(users, new Comparator<UserBean>() {
                     @Override
                     public int compare(UserBean user1, UserBean user2) {

@@ -156,7 +156,7 @@ public class GameActivity extends MainActivity implements GameFragment.OnBackPre
 
             @Override
             public void failure(RetrofitError retrofitError) {
-
+                Log.e("GameActivity", "remove game failed");
             }
         });
     }
@@ -170,7 +170,7 @@ public class GameActivity extends MainActivity implements GameFragment.OnBackPre
 
             @Override
             public void failure(RetrofitError retrofitError) {
-
+                Log.e("GameActivity", "remove player failed");
             }
         });
     }
