@@ -953,7 +953,29 @@ public class GameFragment extends Fragment implements View.OnClickListener {
             @Override
             public void success(List<MoveBean> newMoves, Response response) {
                 lastMove = newMoves.get(newMoves.size() - 1);
-                if (lastMove.move() == Moves.RACE_BETTING) updateRaceBettingFields();
+
+                String message = "Player " + players.get(lastMove.playerId()-1);
+                switch (lastMove.move()){
+                    case RACE_BETTING:
+                        updateRaceBettingFields();
+                        if (lastMove.raceBettingOnWinner()) message += " has bet on the Winner Camel.";
+                        else  message += " has bet on the Loser Camel.";
+                        break;
+                    case LEG_BETTING:
+                        message += " has taken a " + lastMove.legBettingTileColor().name().toLowerCase() + " Legbetting Card.";
+                        break;
+                    case DESERT_TILE_PLACING:
+                        if (lastMove.desertTileAsOasis()) message += " has placed a Oasis Tile on Field " + lastMove.desertTilePosition() + ".";
+                        else message += " has placed a Desert Tile on Field " + lastMove.desertTilePosition() + ".";
+                        break;
+                    case DICE_ROLLING:
+                        message += " has rolled the Dice.";
+                        break;
+                    default:
+                        message += " has performed an unknown move.";
+                        break;
+                }
+                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
             }
 
             @Override
