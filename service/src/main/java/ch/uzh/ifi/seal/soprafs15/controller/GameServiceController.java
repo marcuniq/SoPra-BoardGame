@@ -90,10 +90,10 @@ public class GameServiceController extends GenericService {
 
 
     /*
-     *	Context: /games/{gameId}
+     *	Context: /games/{gameId}/delete
      *  Description: Delete game with gameId
      */
-    @RequestMapping(method = RequestMethod.DELETE, value = CONTEXT + "/{gameId}")
+    @RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteGame(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean bean) {
         logger.debug("delete game: " + gameId);
@@ -251,10 +251,10 @@ public class GameServiceController extends GenericService {
 
 
     /*
-     *	Context: /games/{gameId}/players/{playerId}
+     *	Context: /games/{gameId}/players/{playerId}/delete
      *  Description: Remove player with playerId of game with gameId
      */
-    @RequestMapping(method = RequestMethod.DELETE, value = CONTEXT + "/{gameId}/players/{playerId}")
+    @RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/players/{playerId}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void removePlayer(@PathVariable Long gameId, @PathVariable Integer playerId,

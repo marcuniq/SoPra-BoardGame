@@ -67,9 +67,8 @@ public class GameActionServiceImpl extends GameActionService {
             throw new NotEnoughPlayerException(game, GameActionServiceImpl.class);
         }
 
+        // initialize game for playing
         game.initForGamePlay();
-        game.setStatus(GameStatus.RUNNING);
-        game.setStartTime(LocalDateTime.now());
 
         // create player sequence
         Map<Long, Integer> userIdToPlayerIdMap = gameLogicService.createPlayerSequence(game);

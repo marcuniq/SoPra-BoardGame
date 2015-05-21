@@ -39,7 +39,6 @@ public class Game implements Serializable {
     private String pusherChannelName;
 
     @Column
-    @CreatedDate
     private LocalDateTime creationTime;
 
 
@@ -56,6 +55,9 @@ public class Game implements Serializable {
     }
 
     public void initForGamePlay() {
+        setStatus(GameStatus.RUNNING);
+        setStartTime(LocalDateTime.now());
+
         stateManager.getRaceTrack().initForGamePlay();
 
         for(User p : stateManager.getPlayers())
