@@ -54,7 +54,7 @@
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="#95d35400"
+                android:background="#c8d35400"
                 android:layout_centerHorizontal="true">
 
                 <TextView

@@ -78,7 +78,7 @@
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="#70d35400">
+                    android:background="#c8d35400">
                 <ListView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
