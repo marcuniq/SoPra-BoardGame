@@ -7,6 +7,7 @@ import ch.uzh.ifi.seal.soprafs15.model.StateManager;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +59,9 @@ public class GameState implements Serializable {
 
     @Column
     private Boolean isInFastMode;
+
+    @Column
+    private LocalDateTime startTime;
 
 
     public GameState(StateManager stateManager){
@@ -225,5 +229,13 @@ public class GameState implements Serializable {
 
     public void setIsInFastMode(Boolean isInFastMode) {
         this.isInFastMode = isInFastMode;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 }

@@ -4,9 +4,12 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameStatus;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 import ch.uzh.ifi.seal.soprafs15.model.StateManager;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,6 +38,10 @@ public class Game implements Serializable {
     @Column
     private String pusherChannelName;
 
+    @Column
+    @CreatedDate
+    private LocalDateTime creationTime;
+
 
     public Game(){
         init();
@@ -44,6 +51,8 @@ public class Game implements Serializable {
         stateManager = new StateManager(this);
 
         pusherChannelName = UUID.randomUUID().toString();
+
+        creationTime = LocalDateTime.now();
     }
 
     public void initForGamePlay() {
@@ -112,6 +121,14 @@ public class Game implements Serializable {
         stateManager.setIsInFastMode(isInFastMode);
     }
 
+    public void setStartTime(LocalDateTime startTime){
+        stateManager.setStartTime(startTime);
+    }
+
+    public LocalDateTime getStartTime(){
+        return stateManager.getStartTime();
+    }
+
 
     public Long getId() {
 		return id;
@@ -151,5 +168,13 @@ public class Game implements Serializable {
 
     public void setStateManager(StateManager stateManager) {
         this.stateManager = stateManager;
+    }
+
+    public LocalDateTime getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
     }
 }

@@ -1,6 +1,5 @@
-package ch.uzh.ifi.seal.soprafs15.service;
+package ch.uzh.ifi.seal.soprafs15.service.game;
 
-import ch.uzh.ifi.seal.soprafs15.GameConstants;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GamePlayerRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameResponseBean;
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
@@ -62,12 +62,13 @@ public class GameActionServiceImpl extends GameActionService {
             throw new NotAuthorizedException("You can't start the game, you are not the owner",GameActionServiceImpl.class);
         }
 
-        if(game.getPlayers().size() < GameConstants.MIN_PLAYERS) {
-            throw new NotEnoughPlayerException(game, GameActionServiceImpl.class);
-        }
+//        if(game.getPlayers().size() < GameConstants.MIN_PLAYERS) {
+//            throw new NotEnoughPlayerException(game, GameActionServiceImpl.class);
+//        }
 
         game.initForGamePlay();
         game.setStatus(GameStatus.RUNNING);
+        game.setStartTime(LocalDateTime.now());
 
         // create player sequence
         Map<Long, Integer> userIdToPlayerIdMap = gameLogicService.createPlayerSequence(game);

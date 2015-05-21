@@ -1,23 +1,16 @@
 package ch.uzh.ifi.seal.soprafs15.model.move;
 
-import ch.uzh.ifi.seal.soprafs15.TestUtils;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.game.*;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutResponseBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
-import ch.uzh.ifi.seal.soprafs15.model.StateManager;
-import ch.uzh.ifi.seal.soprafs15.model.User;
-import ch.uzh.ifi.seal.soprafs15.model.game.*;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.MoveRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
-import ch.uzh.ifi.seal.soprafs15.service.*;
-import org.junit.Assert;
-import org.junit.Test;
+import ch.uzh.ifi.seal.soprafs15.service.game.GameActionService;
+import ch.uzh.ifi.seal.soprafs15.service.game.GameMoveService;
+import ch.uzh.ifi.seal.soprafs15.service.game.GamePlayerService;
+import ch.uzh.ifi.seal.soprafs15.service.game.GameService;
+import ch.uzh.ifi.seal.soprafs15.service.user.UserService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.staticmock.MockStaticEntityMethods;
 import org.springframework.test.annotation.DirtiesContext;
 
 /**
