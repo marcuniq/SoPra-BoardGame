@@ -278,7 +278,7 @@ public class GameLobbyFragment extends ListFragment {
 
             @Override
             public void failure(RetrofitError retrofitError) {
-
+                Log.e("GameLobbyFragment", "remove game failed");
             }
         });
     }
@@ -292,7 +292,7 @@ public class GameLobbyFragment extends ListFragment {
 
             @Override
             public void failure(RetrofitError retrofitError) {
-
+                Log.e("GameLobbyFragment", "remove player failed");
             }
         });
     }

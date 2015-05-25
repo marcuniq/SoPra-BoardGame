@@ -20,7 +20,7 @@
     <FrameLayout
         android:layout_width="390dp"
         android:layout_height="320dp"
-        android:background="#70d35400">
+        android:background="#c8d35400">
 
         <Button
             android:id="@+id/loginButton"
@@ -77,11 +77,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Username"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_marginTop="15dp"
+            android:textStyle="bold"
             android:textSize="22sp"
             android:textColor="#ffffff"
-            android:layout_gravity="center_horizontal|top"
-            android:textStyle="bold"
-            android:layout_marginTop="15dp"
             android:shadowColor="#000000"
             android:shadowRadius="2"/>
     </FrameLayout>

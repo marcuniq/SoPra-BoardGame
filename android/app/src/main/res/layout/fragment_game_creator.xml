@@ -18,7 +18,7 @@
     <FrameLayout
             android:layout_width="390dp"
             android:layout_height="320dp"
-            android:background="#70d35400">
+            android:background="#c8d35400">
         <TextView
             android:id="@+id/tvNewGameName"
             android:layout_width="wrap_content"
