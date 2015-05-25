@@ -4,6 +4,7 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import auto.parcel.AutoParcel;
+import ch.uzh.ifi.seal.soprafs15.group_09_android.models.LegBettingTile;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.gson.AutoGson;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.GameColors;
 import ch.uzh.ifi.seal.soprafs15.group_09_android.models.enums.Moves;
@@ -35,6 +36,9 @@ public abstract class MoveBean implements Parcelable {
     @Nullable
     public abstract Integer desertTilePosition();
 
+    @Nullable
+    public abstract LegBettingTile legBettingTile();
+
     public static MoveBean create( String token,
                                Moves move,
                                GameColors legBettingTileColor,
@@ -53,7 +57,8 @@ public abstract class MoveBean implements Parcelable {
                 raceBettingOnWinner,
                 raceBettingColor,
                 desertTileAsOasis,
-                desertTilePosition );
+                desertTilePosition,
+                null);
     }
 }
 

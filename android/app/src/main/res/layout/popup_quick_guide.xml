@@ -6,8 +6,8 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_centerInParent="true">
 
         <LinearLayout
@@ -16,12 +16,13 @@
             android:background="#333333">
 
             <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:text="Your Rack"
+                    android:text="Do You need Instructions?"
                     android:textColor="#ffffff"
                     android:gravity="center"
                     android:textSize="24sp"
@@ -30,7 +31,7 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/accept"
+                    android:id="@+id/reject"
                     android:text="X"
                     android:background="#ff175a26"
                     android:textColor="#ffffff"
@@ -40,41 +41,38 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"/>
 
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/reject"
-                    android:visibility="invisible"/>
             </RelativeLayout>
         </LinearLayout>
 
         <RelativeLayout
-            android:layout_width="1000dp"
-            android:layout_height="490dp"
-            android:layout_marginTop="55dp"
+            android:layout_width="400dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="130dp"
             android:orientation="vertical"
-            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
             android:background="@drawable/border">
 
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:background="#c8d35400"
-                android:layout_centerInParent="true">
+                android:layout_centerHorizontal="true">
 
-            <GridLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/grid"
-                android:columnCount="10"
-                android:rowCount="3"
-                android:orientation="vertical"
-                android:layout_margin="10dp">
-            </GridLayout>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/accept"
+                    android:text="Yes"
+                    android:background="#ff175a26"
+                    android:textColor="#ffffff"
+                    android:textSize="24sp"
+                    android:clickable="true"
+                    android:layout_margin="5dp"
+                    android:layout_centerInParent="true"/>
 
-        </RelativeLayout>
-
+            </RelativeLayout>
     </RelativeLayout>
+
     </RelativeLayout>
 
 </RelativeLayout>

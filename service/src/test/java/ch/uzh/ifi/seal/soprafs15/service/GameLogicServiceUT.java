@@ -3,7 +3,6 @@ package ch.uzh.ifi.seal.soprafs15.service;
 import ch.uzh.ifi.seal.soprafs15.Application;
 import ch.uzh.ifi.seal.soprafs15.TestUtils;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.*;
-import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
@@ -15,6 +14,8 @@ import ch.uzh.ifi.seal.soprafs15.model.game.GameState;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.InvalidMoveException;
+import ch.uzh.ifi.seal.soprafs15.service.game.*;
+import ch.uzh.ifi.seal.soprafs15.service.user.UserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by Hakuna on 04.05.2015.

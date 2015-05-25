@@ -1,10 +1,11 @@
-package ch.uzh.ifi.seal.soprafs15.service;
+package ch.uzh.ifi.seal.soprafs15.service.game;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.*;
 import ch.uzh.ifi.seal.soprafs15.model.User;
 import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
+import ch.uzh.ifi.seal.soprafs15.service.user.UserServiceImpl;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
@@ -89,6 +90,7 @@ public class GameServiceImpl extends GameService {
         }
 
         if(game.getOwner().getId() == owner.getId()) {
+            owner.removeFromOwnedGames(game);
             gameRepository.delete(game);
         }
     }

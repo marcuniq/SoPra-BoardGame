@@ -11,6 +11,8 @@ import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.GameNotFoundException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.NotEnoughPlayerException;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.UserNotFoundException;
+import ch.uzh.ifi.seal.soprafs15.service.game.*;
+import ch.uzh.ifi.seal.soprafs15.service.user.UserService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

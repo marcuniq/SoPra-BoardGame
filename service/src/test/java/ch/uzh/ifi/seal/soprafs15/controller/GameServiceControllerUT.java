@@ -10,8 +10,9 @@ import ch.uzh.ifi.seal.soprafs15.model.game.Color;
 import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingCard;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
-import ch.uzh.ifi.seal.soprafs15.service.*;
 import ch.uzh.ifi.seal.soprafs15.service.exceptions.NotYourTurnException;
+import ch.uzh.ifi.seal.soprafs15.service.game.*;
+import ch.uzh.ifi.seal.soprafs15.service.user.UserService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,12 +20,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -620,6 +619,13 @@ public class GameServiceControllerUT {
         List<RaceBettingCard> result = gameServiceController.getRaceBettingCards(gameResponse.getId(), currentPlayerId, getRBCsRequest);
 
         Assert.assertEquals(5, result.size());
+
+        GameMoveRequestBean raceBettingRequest = TestUtils.toGameMoveRequestBean(firstPlayerToken, MoveEnum.RACE_BETTING, null, null, null, true, Color.WHITE);
+        GameMoveResponseBean raceBettingResponse = gameMoveService.addMove(gameResponse.getId(), raceBettingRequest);
+
+        result = gameServiceController.getRaceBettingCards(gameResponse.getId(), currentPlayerId, getRBCsRequest);
+
+        Assert.assertEquals(4, result.size());
     }
 
     @Test

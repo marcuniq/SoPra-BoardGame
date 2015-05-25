@@ -4,7 +4,7 @@ import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutRequestBea
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserLoginLogoutResponseBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserRequestBean;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.UserResponseBean;
-import ch.uzh.ifi.seal.soprafs15.service.UserService;
+import ch.uzh.ifi.seal.soprafs15.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +105,7 @@ public class UserServiceController extends GenericService {
     *	Context: /users/{userId}/delete
     *  Description: Delete user with userId
     */
-    @RequestMapping(method = RequestMethod.DELETE, value = CONTEXT + "/{userId}")
+    @RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{userId}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long userId, @RequestBody @Valid UserLoginLogoutRequestBean userLoginLogoutRequestBean) {
         logger.debug("delete user: " + userId);

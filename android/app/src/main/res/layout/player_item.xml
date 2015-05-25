@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:id="@+id/player_list_item"
-    android:background="#70d35400"
+    android:background="#c8d35400"
     android:minHeight="80dp">
 
     <ImageView

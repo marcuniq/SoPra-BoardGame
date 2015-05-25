@@ -10,14 +10,9 @@ import ch.uzh.ifi.seal.soprafs15.model.game.*;
 import ch.uzh.ifi.seal.soprafs15.model.move.DesertTilePlacing;
 import ch.uzh.ifi.seal.soprafs15.model.move.DiceRolling;
 import ch.uzh.ifi.seal.soprafs15.model.move.Move;
-import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
-import ch.uzh.ifi.seal.soprafs15.model.repositories.MoveRepository;
-import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
-import ch.uzh.ifi.seal.soprafs15.service.UserService;
+import ch.uzh.ifi.seal.soprafs15.service.user.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.annotation.DirtiesContext;
@@ -26,7 +21,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -37,19 +31,9 @@ import static org.junit.Assert.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class GameMapperServiceUT {
 
-    //Create MockRepo
-    @Mock
-    private UserRepository mockUserRepo;
-    @Mock
-    private GameRepository mockGameRepo;
-    @Mock
-    private MoveRepository mockMoveRepo;
-
-    @InjectMocks
     @Autowired
     private GameMapperService testMapperService;
 
-    @InjectMocks
     @Autowired
     private UserService testUserService;
 

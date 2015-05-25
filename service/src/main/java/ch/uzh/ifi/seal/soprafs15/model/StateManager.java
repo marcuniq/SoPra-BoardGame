@@ -6,6 +6,7 @@ import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -85,6 +86,12 @@ public class StateManager implements Serializable {
     }
     public void setIsInFastMode(Boolean isInFastMode){
         gameState.setIsInFastMode(isInFastMode);
+    }
+    public LocalDateTime getStartTime(){
+        return gameState.getStartTime();
+    }
+    public void setStartTime(LocalDateTime startTime){
+        gameState.setStartTime(startTime);
     }
 
     public void addPlayer(User player){

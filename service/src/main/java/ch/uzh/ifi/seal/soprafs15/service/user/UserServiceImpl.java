@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs15.service;
+package ch.uzh.ifi.seal.soprafs15.service.user;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.user.*;
 import ch.uzh.ifi.seal.soprafs15.model.User;

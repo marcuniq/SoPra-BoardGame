@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs15.service;
+package ch.uzh.ifi.seal.soprafs15.service.game;
 
 import ch.uzh.ifi.seal.soprafs15.GameConstants;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.GameMoveRequestBean;
@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -133,9 +134,8 @@ public class GameLogicServiceImpl extends GameLogicService {
         User owner = game.getOwner();
         game.removePlayer(owner);
 
-        // start game
+        // initialize game for playing
         game.initForGamePlay();
-        game.setStatus(GameStatus.RUNNING);
 
         // create player sequence
         createPlayerSequence(game);

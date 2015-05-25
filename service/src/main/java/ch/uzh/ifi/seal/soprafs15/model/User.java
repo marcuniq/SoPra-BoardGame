@@ -33,6 +33,8 @@ public class User implements Serializable {
 	@Column(nullable = false) 
 	private UserStatus status;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Game> ownedGames;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name="GAMESTATE_ID")
@@ -160,6 +162,14 @@ public class User implements Serializable {
         return hasDesertTile;
     }
 
+    public void addToOwnedGames(Game game){
+        ownedGames.add(game);
+    }
+
+    public void removeFromOwnedGames(Game game){
+        ownedGames.remove(game);
+    }
+
     public Map<Color, RaceBettingCard> getRaceBettingCards() {
         return raceBettingCards;
     }
@@ -262,5 +272,13 @@ public class User implements Serializable {
 
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
+    }
+
+    public List<Game> getOwnedGames() {
+        return ownedGames;
+    }
+
+    public void setOwnedGames(List<Game> ownedGames) {
+        this.ownedGames = ownedGames;
     }
 }

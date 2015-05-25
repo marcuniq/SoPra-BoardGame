@@ -1,4 +1,4 @@
-package ch.uzh.ifi.seal.soprafs15.service;
+package ch.uzh.ifi.seal.soprafs15.service.game;
 
 import ch.uzh.ifi.seal.soprafs15.controller.GenericService;
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.MoveEnum;

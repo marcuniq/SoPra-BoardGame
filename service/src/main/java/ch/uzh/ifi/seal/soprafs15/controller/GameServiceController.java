@@ -2,7 +2,8 @@ package ch.uzh.ifi.seal.soprafs15.controller;
 
 import ch.uzh.ifi.seal.soprafs15.controller.beans.game.*;
 import ch.uzh.ifi.seal.soprafs15.model.game.RaceBettingCard;
-import ch.uzh.ifi.seal.soprafs15.service.*;
+import ch.uzh.ifi.seal.soprafs15.service.game.*;
+import ch.uzh.ifi.seal.soprafs15.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,10 +90,10 @@ public class GameServiceController extends GenericService {
 
 
     /*
-     *	Context: /games/{gameId}
+     *	Context: /games/{gameId}/delete
      *  Description: Delete game with gameId
      */
-    @RequestMapping(method = RequestMethod.DELETE, value = CONTEXT + "/{gameId}")
+    @RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteGame(@PathVariable Long gameId, @RequestBody @Valid GamePlayerRequestBean bean) {
         logger.debug("delete game: " + gameId);
@@ -250,10 +251,10 @@ public class GameServiceController extends GenericService {
 
 
     /*
-     *	Context: /games/{gameId}/players/{playerId}
+     *	Context: /games/{gameId}/players/{playerId}/delete
      *  Description: Remove player with playerId of game with gameId
      */
-    @RequestMapping(method = RequestMethod.DELETE, value = CONTEXT + "/{gameId}/players/{playerId}")
+    @RequestMapping(method = RequestMethod.POST, value = CONTEXT + "/{gameId}/players/{playerId}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void removePlayer(@PathVariable Long gameId, @PathVariable Integer playerId,
