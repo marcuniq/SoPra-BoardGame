@@ -88,7 +88,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private Integer playerId;
     private String token;
     private Boolean isOwner = false;
-    private Boolean interactionIsPrevented = false;
+    private boolean interactionIsPrevented = false;
     private Boolean isFastMode = false;
     private Boolean showQuickGuidePopup = !isFastMode;
     private String channelName;
