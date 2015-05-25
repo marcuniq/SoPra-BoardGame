@@ -180,13 +180,13 @@ public interface RestApiInterface {
     @POST("/games/{gameId}/start")
     void start(@Path("gameId") Long gameId, @Body UserBean token, Callback<GameBean> callback);
 
-    @DELETE("/games/{gameId}/players/{playerId}")
+    @POST("/games/{gameId}/players/{playerId}")
     void removeGamePlayer(@Path("gameId") Long gameId, @Path("playerId") Integer playerId,@Body UserBean token, Callback<UserBean> callback);
 
-    @DELETE("/games/{gameId}/players/{playerId}")
+    @POST("/games/{gameId}/players/{playerId}")
     void removeGamePlayerAsUser(@Path("gameId") Long gameId, @Path("playerId") Integer playerId, @Query("isUserId") Boolean isUserId, @Body UserBean token, Callback<UserBean> callback);
 
-    @DELETE("/games/{gameId}")
+    @POST("/games/{gameId}")
     void removeGame(@Path("gameId") Long gameId, @Body UserBean token, Callback<GameBean> callback);
 
     /**
@@ -195,7 +195,7 @@ public interface RestApiInterface {
      * @param token
      * @param callback actually empty, just using JSONObject as filler
      */
-    @DELETE("/users/{userId}")
+    @POST("/users/{userId}")
     void removeUser(@Path("userId") Long userId, @Body UserBean token, Callback<JSONObject> callback);
 
 }
