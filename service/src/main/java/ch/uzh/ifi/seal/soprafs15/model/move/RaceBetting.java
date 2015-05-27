@@ -37,7 +37,14 @@ public class RaceBetting extends Move {
 
     @Override
     public Boolean isValid() {
-        return user.hasRaceBettingCard(color);
+
+        Boolean hasRaceBettingCardColor = user.hasRaceBettingCard(color);
+
+        // add reason for being invalid move
+        if(!hasRaceBettingCardColor)
+            addInvalidReason("You already have placed the race betting card of color " + color.toString());
+
+        return hasRaceBettingCardColor;
     }
 
     /**

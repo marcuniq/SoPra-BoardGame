@@ -62,6 +62,19 @@ public class DesertTilePlacing extends Move {
                 raceTrack.getRaceTrackObject(position + 1).getClass() != DesertTile.class : true;
         Boolean userHasDesertTile = user.hasDesertTile();
 
+        // explain reasons for being an invalid move
+        if(!notPosition1)
+            addInvalidReason("You are not allowed to place your desert tile on field 1.");
+
+        if(!emptySpace)
+            addInvalidReason("The chosen field is not empty.");
+
+        if(!notAfterAnotherDesertTile || ! notBeforeAnotherDesertTile)
+            addInvalidReason("You are not allowed to place your desert tile adjacent to another desert tile.");
+
+        if(!userHasDesertTile)
+            addInvalidReason("You have already placed your desert tile.");
+
         return  notPosition1 && emptySpace && notAfterAnotherDesertTile && notBeforeAnotherDesertTile && userHasDesertTile;
     }
 

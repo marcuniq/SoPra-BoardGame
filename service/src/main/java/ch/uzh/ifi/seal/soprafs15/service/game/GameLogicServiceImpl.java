@@ -89,7 +89,7 @@ public class GameLogicServiceImpl extends GameLogicService {
 
         // valid move? else throw exception
         if(!move.isValid()) {
-            throw new InvalidMoveException("Invalid Move", GameLogicServiceImpl.class);
+            throw new InvalidMoveException(move, GameLogicServiceImpl.class);
         }
 
         // execute move

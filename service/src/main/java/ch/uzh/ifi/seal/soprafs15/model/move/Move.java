@@ -6,6 +6,8 @@ import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
@@ -25,6 +27,9 @@ public abstract class Move implements Serializable {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "USER_ID")
     protected User user;
+
+	@Transient
+	protected List<String> invalidReasons = new ArrayList<>();
 
     public Move(){}
 
@@ -50,6 +55,18 @@ public abstract class Move implements Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public List<String> getInvalidReasons() {
+		return invalidReasons;
+	}
+
+	public void setInvalidReasons(List<String> invalidReasons) {
+		this.invalidReasons = invalidReasons;
+	}
+
+	public void addInvalidReason(String reason){
+		invalidReasons.add(reason);
 	}
 
 
