@@ -58,7 +58,7 @@ public class GameMapperServiceImpl extends GameMapperService {
         bean.setName(game.getName());
         bean.setOwner(game.getOwner().getUsername());
         bean.setStatus(game.getStatus());
-        bean.setNumberOfMoves(game.getMoves().size());
+        bean.setNumberOfMoves(moveRepository.findByGame(game).size());
         bean.setNumberOfPlayers(game.getPlayers().size());
         bean.setCurrentPlayerId(game.getCurrentPlayerId());
 
