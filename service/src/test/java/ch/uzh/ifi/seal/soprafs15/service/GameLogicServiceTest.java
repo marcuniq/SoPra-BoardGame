@@ -6,6 +6,7 @@ import ch.uzh.ifi.seal.soprafs15.model.game.Game;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.GameRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.MoveRepository;
 import ch.uzh.ifi.seal.soprafs15.model.repositories.UserRepository;
+import ch.uzh.ifi.seal.soprafs15.service.game.GameLogicService;
 import ch.uzh.ifi.seal.soprafs15.service.mapper.GameMapperService;
 import ch.uzh.ifi.seal.soprafs15.service.pusher.PusherService;
 import org.junit.Before;
