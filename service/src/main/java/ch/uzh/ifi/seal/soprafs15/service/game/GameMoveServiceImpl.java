@@ -64,7 +64,9 @@ public class GameMoveServiceImpl extends GameMoveService {
             throw new GameNotFoundException(gameId, GameMoveServiceImpl.class);
         }
 
-        return gameMapperService.toGameMoveResponseBean(game.getMoves());
+        List<Move> moves = moveRepository.findByGame(game);
+
+        return gameMapperService.toGameMoveResponseBean(moves);
     }
 
     @Override

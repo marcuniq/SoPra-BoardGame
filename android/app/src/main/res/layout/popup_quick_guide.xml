@@ -32,7 +32,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/reject"
-                    android:text="X"
+                    android:text="Skip Guide"
                     android:background="#ff175a26"
                     android:textColor="#ffffff"
                     android:textSize="24sp"
@@ -59,10 +59,10 @@
                 android:layout_centerHorizontal="true">
 
                 <Button
-                    android:layout_width="wrap_content"
+                    android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/accept"
-                    android:text="Yes"
+                    android:text="Show Quick Guide"
                     android:background="#ff175a26"
                     android:textColor="#ffffff"
                     android:textSize="24sp"

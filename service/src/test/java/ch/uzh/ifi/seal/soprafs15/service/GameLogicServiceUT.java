@@ -335,15 +335,18 @@ public class GameLogicServiceUT {
         Integer currentPlayerId = startGameResponse.getCurrentPlayerId();
 
         // Get Token of not currentPlayer
-        String currentPlayerToken = new String();
+        String player1Token = new String();
+        String player2Token = new String();
         List<GamePlayerResponseBean> players = gamePlayerService.listPlayer(gameResponse.getId());
 
         for(GamePlayerResponseBean player : players) {
             if(player.getPlayerId() == currentPlayerId) {
                 if(player.getUsername().equals(userResponse.getUsername())) {
-                    currentPlayerToken = playerToken;
+                    player1Token = playerToken;
+                    player2Token = ownerToken;
                 } else {
-                    currentPlayerToken = ownerToken;
+                    player1Token = ownerToken;
+                    player2Token = playerToken;
                 }
             }
         }
@@ -352,12 +355,19 @@ public class GameLogicServiceUT {
         List<GameMoveResponseBean> movesBefore = gameMoveService.listMoves(gameResponse.getId());
         Assert.assertEquals(0, movesBefore.size());
 
-        // Add Move
-        GameMoveRequestBean moveRequest = TestUtils.toGameMoveRequestBean(currentPlayerToken, MoveEnum.RACE_BETTING, null, null, null, true, null);
-        GameMoveResponseBean result = gameMoveService.addMove(gameResponse.getId(), moveRequest);
 
-        // Game contains still no Move (after we tried to add an Invalid Move)
+        // Add Moves
+        GameMoveRequestBean moveRequest1 = TestUtils.toGameMoveRequestBean(player1Token, MoveEnum.RACE_BETTING, null, null, null, true, Color.BLUE);
+        GameMoveResponseBean result1 = gameMoveService.addMove(gameResponse.getId(), moveRequest1);
+
+        GameMoveRequestBean moveRequest2 = TestUtils.toGameMoveRequestBean(player2Token, MoveEnum.RACE_BETTING, null, null, null, true, Color.BLUE);
+        GameMoveResponseBean result2 = gameMoveService.addMove(gameResponse.getId(), moveRequest2);
+
+        GameMoveRequestBean moveRequest3 = TestUtils.toGameMoveRequestBean(player1Token, MoveEnum.RACE_BETTING, null, null, null, true, Color.BLUE);
+        GameMoveResponseBean result3 = gameMoveService.addMove(gameResponse.getId(), moveRequest3);
+
+        // Game contains only moves before invalid Move
         List<GameMoveResponseBean> movesAfter = gameMoveService.listMoves(gameResponse.getId());
-        Assert.assertEquals(0, movesAfter.size());
+        Assert.assertEquals(2, movesAfter.size());
     }
 }

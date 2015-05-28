@@ -90,7 +90,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
     private Boolean isOwner = false;
     private boolean interactionIsPrevented = false;
     private Boolean isFastMode = false;
-    private Boolean showQuickGuidePopup = !isFastMode;
+    private Boolean showQuickGuidePopup = true;
     private String channelName;
 
     private PlayerArrayAdapter playerArrayAdapter; // adapts the ArrayList of Games to the ListView
@@ -156,6 +156,7 @@ public class GameFragment extends Fragment implements View.OnClickListener {
         token = sharedPref.getString("token", token);
 
         interactionIsPrevented = isFastMode;
+        showQuickGuidePopup = !isFastMode;
     }
 
 

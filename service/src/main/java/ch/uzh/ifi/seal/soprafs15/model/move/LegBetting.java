@@ -41,7 +41,13 @@ public class LegBetting extends Move {
     public Boolean isValid() {
         LegBettingArea legBettingArea = game.getLegBettingArea();
 
-        return legBettingArea.peekLegBettingTile(legBettingTile.getColor()) != null;
+        Boolean colorAvailable = legBettingArea.peekLegBettingTile(legBettingTile.getColor()) != null;
+
+        // add reason for being an invalid move
+        if(!colorAvailable)
+            addInvalidReason("The chosen color is not available anymore.");
+
+        return colorAvailable;
     }
 
     /**

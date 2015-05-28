@@ -1,5 +1,6 @@
 package ch.uzh.ifi.seal.soprafs15.service.exceptions;
 
+import ch.uzh.ifi.seal.soprafs15.model.move.Move;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -9,9 +10,8 @@ import org.springframework.http.HttpStatus;
  */
 public class InvalidMoveException extends CheckedException {
 
-    public InvalidMoveException(String message, Class invoker) {
-        // BAD_REQUEST or FORBIDDEN?
-        super(message, invoker, HttpStatus.BAD_REQUEST);
+    public InvalidMoveException(Move move, Class invoker) {
+        this("Invalid Move. Reason(s): " + move.getInvalidReasons().toString(), invoker, HttpStatus.BAD_REQUEST);
     }
 
     public InvalidMoveException(String message, Class invoker, HttpStatus status) {
